@@ -619,26 +619,4 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	public void exitClicked() {
 		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public void switchToPlayerNameScreen() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void switchToPlayerNameScreen(boolean soundMusic,
-			boolean soundEffects) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void switchToIntroScreen(boolean soundMusic, boolean soundEffects) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void switchToOptionsScreen(boolean soundMusic, boolean soundEffects) {
-		// TODO Auto-generated method stub
-	}
-	
 }
