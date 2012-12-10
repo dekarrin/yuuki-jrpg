@@ -9,7 +9,6 @@
 	<property name="DIST_ROOT" value="../dist"/>
 	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
 	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
-	<property name="GUI" value="yuuki/gui/UI" />
 	<property name="BATTLE" value="yuuki/battle" />
 	<property name="BUFF" value="yuuki/buff" />
 	<property name="ACTION" value="yuuki/action" />
@@ -25,18 +24,6 @@
 	
 	
 	<!-- PUBLIC TARGETS -->
-	
-	<target name="test-GraphicsEngine" depends="ui">
-		<antcall target="-test">
-			<param name="TEST_CLASS" value="yuuki.ui.GraphicalEngineTest" />
-		</antcall>
-	</target>
-        
-        <target name="test-OptionsMenu" depends="gui">
-		<antcall target="-test">
-			<param name="TEST_CLASS" value="yuuki.gui.UI.OptionsMenu" />
-		</antcall>
-	</target>
 	
 	<target name="test-main" depends="debug,main">
 		<antcall target="-test">
@@ -59,20 +46,7 @@
 	</target>
 	
 	<target name="all" depends="main,gui"></target>
-	
-	<target name="gui">
-		<antcall target="-build">
-			<param name="PACKAGE" value="${GUI}" />
-		</antcall>
-                <copydir src="${SOURCE_ROOT}/${GUI}/OptionsMenuGuiAssets" dest="${BUILD_ROOT}/${GUI}/OptionsMenuGuiAssets"/>
-                <copydir src="${SOURCE_ROOT}/${GUI}/BattleScreenAssets" dest="${BUILD_ROOT}/${GUI}/BattleScreenAssets"/>
-                <copydir src="${SOURCE_ROOT}/${GUI}/GuiSoundAssets" dest="${BUILD_ROOT}/${GUI}/GuiSoundAssets"/>
-                <copydir src="${SOURCE_ROOT}/${GUI}/MainTitleGuiAssets" dest="${BUILD_ROOT}/${GUI}/MainTitleGuiAssets"/>
-                <copydir src="${SOURCE_ROOT}/${GUI}/PlayerNameGuiAssets" dest="${BUILD_ROOT}/${GUI}/PlayerNameGuiAssets"/>
-                
-                
-	</target>
-	
+
 	<target name="main" depends="battle,ui">
 		<antcall target="-build">
 			<param name="PACKAGE" value="yuuki" />
