@@ -1,0 +1,191 @@
+<project name="Yuuki" basedir="." default="all">
+	
+	<!-- magic properties -->
+	<property name="ant.build.javac.source" value="1.7" />
+	<property name="ant.build.javac.target" value="1.7" />
+
+	<!-- dir definitions -->
+	<property name="SOURCE_ROOT" value="src" />
+	<property name="DIST_ROOT" value="../dist"/>
+	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
+	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
+	<property name="GUI" value="yuuki/gui/UI" />
+	<property name="BATTLE" value="yuuki/battle" />
+	<property name="BUFF" value="yuuki/buff" />
+	<property name="ACTION" value="yuuki/action" />
+	<property name="ENTITY" value="yuuki/entity" />
+	<property name="UI" value="yuuki/ui" />
+	
+	<!-- other properties -->
+	<property name="warnings" value="all" />
+	
+	<condition property="warning_count" value="${warnings}" else="all">
+		<isset property="warnings"/>
+	</condition>
+	
+	
+	<!-- PUBLIC TARGETS -->
+	
+	<target name="test-GraphicsEngine" depends="ui">
+		<antcall target="-test">
+			<param name="TEST_CLASS" value="yuuki.ui.GraphicalEngineTest" />
+		</antcall>
+	</target>
+        
+        <target name="test-OptionsMenu" depends="gui">
+		<antcall target="-test">
+			<param name="TEST_CLASS" value="yuuki.gui.UI.OptionsMenu" />
+		</antcall>
+	</target>
+	
+	<target name="test-main" depends="debug,main">
+		<antcall target="-test">
+			<param name="TEST_CLASS" value="yuuki.YuukiEngine" />
+		</antcall>
+	</target>
+	
+	<target name="test-battle" depends="debug,battle">
+		<antcall target="-test">
+			<param name="TEST_CLASS" value="yuuki.battle.BattleTest" />
+		</antcall>
+	</target>
+	
+	<target name="debug">
+		<property name="DEBUG_TYPE" value="lines,vars,source" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${DIST_ROOT}" />
+	</target>
+	
+	<target name="all" depends="main,gui"></target>
+	
+	<target name="gui">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${GUI}" />
+		</antcall>
+                <copydir src="${SOURCE_ROOT}/${GUI}/OptionsMenuGuiAssets" dest="${BUILD_ROOT}/${GUI}/OptionsMenuGuiAssets"/>
+                <copydir src="${SOURCE_ROOT}/${GUI}/BattleScreenAssets" dest="${BUILD_ROOT}/${GUI}/BattleScreenAssets"/>
+                <copydir src="${SOURCE_ROOT}/${GUI}/GuiSoundAssets" dest="${BUILD_ROOT}/${GUI}/GuiSoundAssets"/>
+                <copydir src="${SOURCE_ROOT}/${GUI}/MainTitleGuiAssets" dest="${BUILD_ROOT}/${GUI}/MainTitleGuiAssets"/>
+                <copydir src="${SOURCE_ROOT}/${GUI}/PlayerNameGuiAssets" dest="${BUILD_ROOT}/${GUI}/PlayerNameGuiAssets"/>
+                
+                
+	</target>
+	
+	<target name="main" depends="battle,ui">
+		<antcall target="-build">
+			<param name="PACKAGE" value="yuuki" />
+			<param name="NAME" value="YuukiEngine" />
+		</antcall>
+	</target>
+	
+	<target name="ui" depends="buff,action,entity">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${UI}" />
+		</antcall>
+	</target>
+	
+	<target name="battle" depends="buff,action,entity">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${BATTLE}" />
+		</antcall>
+	</target>
+	
+	<target name="entity" depends="action,buff">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${ENTITY}" />
+		</antcall>
+	</target>
+	
+	<target name="action" depends="buff">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${ACTION}" />
+		</antcall>
+	</target>
+	
+	<target name="buff">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${BUFF}" />
+		</antcall>
+	</target>
+	
+	<target name="doc-all" depends="doc-battle,doc-gui"></target>
+	
+	<target name="doc-gui">
+		<antcall target="-doc">
+			<param name="PACKAGE" value="${GUI}" />
+			<param name="ACCESS" value="private" />
+		</antcall>
+	</target>
+	
+	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">
+		<antcall target="-doc">
+			<param name="PACKAGE" value="${BATTLE}" />
+			<param name="ACCESS" value="private" />
+		</antcall>
+	</target>
+	
+	<target name="doc-buff">
+		<antcall target="-doc">
+			<param name="PACKAGE" value="${BUFF}" />
+			<param name="ACCESS" value="private" />
+		</antcall>
+	</target>
+	
+	<target name="doc-action" depends="doc-buff">
+		<antcall target="-doc">
+			<param name="PACKAGE" value="${ACTION}" />
+			<param name="ACCESS" value="private" />
+		</antcall>
+	</target>
+	
+	<target name="doc-entity" depends="doc-action,doc-buff">
+		<antcall target="-doc">
+			<param name="PACKAGE" value="${ENTITY}" />
+			<param name="ACCESS" value="private" />
+		</antcall>
+	</target>
+	
+	
+	<!-- PRIVATE TARGETS -->
+	
+	<!-- PACKAGE - The path of the package to build -->
+	<!-- NAME - The name of the source file. Leave blank for all in package -->
+	<target name="-build">
+		<mkdir dir="${BUILD_ROOT}" />
+		<condition property="debug.on" value="on" else="off">
+			<isset property="DEBUG_TYPE" />
+		</condition>
+		<condition property="debug.level" value="${DEBUG_TYPE}">
+			<isset property="DEBUG_TYPE" />
+		</condition>
+		<condition property="source.name" value="${NAME}" else="*">
+			<isset property="NAME" />
+		</condition>
+		<javac includeantruntime="false" srcdir="${SOURCE_ROOT}" destdir="${BUILD_ROOT}" debug="${debug.on}" debuglevel="${debug.level}">
+			<!-- <compilerarg value="-Werror" /> -->
+			<compilerarg value="-Xlint:${warning_count}" />
+			<include name="${PACKAGE}/${source.name}.java" />
+		</javac>
+	</target>
+	
+	<!-- TEST_CLASS - The class to test -->
+	<target name="-test">
+         <java classname="${TEST_CLASS}" classpath="${BUILD_ROOT}" fork="false" />
+		<!-- <echo message="${RUN_ERR}" /> -->
+	</target>
+	
+	<!-- Requires two params: -->
+	<!-- PACKAGE - The path of the package to document -->
+	<!-- ACCESS - The access modifier to use; defaults to protected -->
+	<target name="-doc">
+		<property name="SRC" value="${SOURCE_ROOT}/${PACKAGE}" />
+		<property name="DEST" value="${DOC_ROOT}" />
+		<condition property="ACC" value="${ACCESS}" else="protected">
+			<isset property="ACCESS" />
+		</condition>
+		<javadoc sourcepath="${SRC}" destdir="${DEST}" access="${ACC}" failonerror="true" />
+	</target>
+	
+</project>

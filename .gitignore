@@ -4,3 +4,27 @@
 *.jar
 *.war
 *.ear
+
+#################
+## NetBeans
+#################
+nbproject/
+
+#################
+## Eclipse
+#################
+
+*.pydevproject
+.project
+.metadata
+bin/
+tmp/
+*.class
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
