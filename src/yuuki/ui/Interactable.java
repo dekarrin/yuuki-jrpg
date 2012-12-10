@@ -26,52 +26,23 @@ public interface Interactable {
 	 * instances.
 	 */
 	public void destroy();
-	
+        
 	/**
-	 * Shows the intro screen.
+	 * Shows the Player Name screen.
 	 */
-	public String switchToPlayerNameScreen();
-        
-        /**
-	 * Shows the intro screen.
-         * 
-         * @param soundMusic If music should play.
-         * @param soundEffects If effects should play.
-	 */
-	public String switchToPlayerNameScreen(boolean soundMusic, boolean soundEffects);
-        
-        /**
-         * Shows the Player Name screen.
-         */
-	public String switchToIntroScreen();
-        
-        /**
-         * Shows the Player Name screen.
-         */
-	public String switchToIntroScreen(boolean soundMusic, boolean soundEffects);
+	public void switchToIntroScreen();
         
 	/**
 	 * Shows the options screen.
-         * 
-         * @param soundMusic If music should play.
-         * @param soundEffects If effects should play.
 	 */
-	public String switchToOptionsScreen();
-	
-        /**
-	 * Shows the options screen.
-         * 
-         * @param soundMusic If music should play.
-         * @param soundEffects If effects should play.
-	 */
-	public String switchToOptionsScreen(boolean soundMusic, boolean soundEffects);
+	public void switchToOptionsScreen();
         
 	/**
 	 * Shows the battle screen.
 	 *
 	 * @param fighters The characters fighting.
 	 */
-	public void switchToBattleScreen(Character[][] fighters, boolean soundMusic, boolean soundEffect);
+	public void switchToBattleScreen(Character[][] fighters);
 	
 	/**
 	 * Updates the displayed stats of a character during a battle.
@@ -326,6 +297,13 @@ public interface Interactable {
 	 * @return The selected target.
 	 */
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters);
+	
+	/**
+	 * Plays a sound from an audio file.
+	 *
+	 * @param path The file name of the sound.
+	 */
+	public void playSound(String path);
 	
 	/**
 	 * Displays a message to the user.

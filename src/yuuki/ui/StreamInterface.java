@@ -62,8 +62,7 @@ public class StreamInterface implements Interactable {
 		BATTLE,
 		OVERWORLD,
 		PAUSE,
-		ENDING,
-                PLAYERNAME;
+		ENDING;
 	}
 	
 	/**
@@ -111,33 +110,12 @@ public class StreamInterface implements Interactable {
 			e.printStackTrace();
 		}
 	}
-        
-        /**
-         * Shows the PlayerName Screen.
-         */
-        @Override
-        public String switchToPlayerNameScreen() {
-            screen = Screen.PLAYERNAME;
-            println("Please Enter Your Name:");
-            return "Override Corrections";
-        }
-	/**
-         * Shows the PlayerName Screen.
-         * 
-         * @param soundMusic Whether music plays or not.
-         * @param soundEffects Whether effects play or not.
-         */
-        @Override
-        public String switchToPlayerNameScreen(boolean soundMusic, boolean soundEffects) {
-            screen = Screen.PLAYERNAME;
-            println("Please Enter Your Name:");
-            return "Override Corrections";
-        }
+	
 	/**
 	 * Shows the intro message and displays the main menu.
 	 */
 	@Override
-	public String switchToIntroScreen() {
+	public void switchToIntroScreen() {
 		screen = Screen.INTRO;
 		println("+-------------------------------------+");
 		println("|                Yuuki                |");
@@ -146,32 +124,14 @@ public class StreamInterface implements Interactable {
 		println("+-------------------------------------+");
 		println();
 		pause();
-                return "Override corrections";
 	}
-	/**
-	 * Shows the intro message and displays the main menu.
-         * 
-         * @param soundMusic Whether music plays or not.
-         * @param soundEffects Whether effects play or not.
-	 */
-	@Override
-	public String switchToIntroScreen(boolean soundEffects, boolean soundMusic) {
-		screen = Screen.INTRO;
-		println("+-------------------------------------+");
-		println("|                Yuuki                |");
-		println("|                                     |");
-		println("|  By Python'); DROP TABLE Teams;--   |");
-		println("+-------------------------------------+");
-		println();
-		pause();
-                return "Override Corrections";
-	}
+	
 	/**
 	 * Shows the options screen. The user is prompted to change options
 	 * until he quits out of this screen.
 	 */
 	@Override
-	public String switchToOptionsScreen() {
+	public void switchToOptionsScreen() {
 		screen = Screen.OPTIONS;
 		boolean inOptions = true;
 		while (inOptions) {
@@ -181,35 +141,15 @@ public class StreamInterface implements Interactable {
 				inOptions = false;
 			}
 		}
-                return "Override Corrections";
 	}
-        /**
-	 * Shows the options screen. The user is prompted to change options
-	 * until he quits out of this screen.
-         * 
-         * @param soundMusic Whether music plays or not.
-         * @param soundEffects Whether effects play or not.
-	 */
-	@Override
-        public String switchToOptionsScreen(boolean soundMusic, boolean soundEffects) {
-            screen = Screen.OPTIONS;
-            boolean inOptions = true;
-            while (inOptions) {
-                String[] choices = {"Back to main menu"};
-                int opt = getChoice("Enter option", choices);
-                if (opt == 0) {
-                    inOptions = false;
-                }
-            }
-            return "Override Corrections";
-        }
+	
 	/**
 	 * Displays the battle scene.
 	 *
 	 * @param fighters The characters who are fighting.
 	 */
 	@Override
-	public void switchToBattleScreen(Character[][] fighters, boolean soundMusic, boolean soundEffects) {
+	public void switchToBattleScreen(Character[][] fighters) {
 		screen = Screen.BATTLE;
 		showBattleIntro(fighters);
 		showTeams(fighters);
@@ -473,7 +413,12 @@ public class StreamInterface implements Interactable {
 		println(" are victorious!");
 		pause();
 	}
-
+	
+	/**
+	 * Has no effect.
+	 */
+	@Override
+	public void playSound(String path) {}
 	
 	/**
 	 * Displays the message that a Character says.
@@ -901,11 +846,11 @@ public class StreamInterface implements Interactable {
 	 */
 	private void pause() {
 		println("(press enter to continue)");
-//		try {
-//			stdin.readLine();
-//		} catch(IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			stdin.readLine();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

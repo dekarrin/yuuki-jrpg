@@ -89,28 +89,26 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	@Override
-	public String switchToIntroScreen() {
+	public void switchToIntroScreen() {
 		introScreen.addListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				switchWindow(introScreen);
 			}
 		});
-                return "Override Corrections";
 	}
 	
 	@Override
-	public String switchToOptionsScreen() {
+	public void switchToOptionsScreen() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				switchWindow(optionsScreen);
 			}
 		});
-                return "Override Corrections";
 	}
 	
 	@Override
-	public void switchToBattleScreen(Character[][] fighters, boolean soundMusic, boolean soundEffects) {
+	public void switchToBattleScreen(Character[][] fighters) {
 		class Runner implements Runnable {
 			public Character[][] fighters;
 			public void run() {
@@ -468,6 +466,10 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		SwingUtilities.invokeLater(runner);
 	}
 	
+	@Override
+	public void playSound(String path) {
+	
+	}
 	
 	@Override
 	public int selectAction(Action[] actions) {
@@ -601,52 +603,42 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	@Override
 	public void newGameClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void loadGameClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void optionsClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void exitClicked() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public String switchToPlayerNameScreen() {
+	public void switchToPlayerNameScreen() {
 		// TODO Auto-generated method stub
-		return "Override Corrections";
 	}
 
 	@Override
-	public String switchToPlayerNameScreen(boolean soundMusic,
+	public void switchToPlayerNameScreen(boolean soundMusic,
 			boolean soundEffects) {
 		// TODO Auto-generated method stub
-            return "Override Corrections";
-		
 	}
 
 	@Override
-	public String switchToIntroScreen(boolean soundMusic, boolean soundEffects) {
+	public void switchToIntroScreen(boolean soundMusic, boolean soundEffects) {
 		// TODO Auto-generated method stub
-            return "Override Corrections";
-		
 	}
 
 	@Override
-	public String switchToOptionsScreen(boolean soundMusic, boolean soundEffects) {
+	public void switchToOptionsScreen(boolean soundMusic, boolean soundEffects) {
 		// TODO Auto-generated method stub
-		return "Override Corrections";
 	}
 	
 }
