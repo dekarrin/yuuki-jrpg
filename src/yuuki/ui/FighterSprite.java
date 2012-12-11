@@ -2,9 +2,12 @@ package yuuki.ui;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.CharacterIterator;
 
 import yuuki.entity.Character;
+import yuuki.entity.Stat;
 
 import javax.swing.JPanel;
 
@@ -54,6 +57,41 @@ public class FighterSprite extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.fill(new Rectangle(size));
 		g2.drawString(nameText.getIterator(), 0, 0);
+	}
+	
+	/**
+	 * Adds the stat mod text to this Sprite.
+	 * @param s
+	 */
+	public void addStatMod(Stat s) {
+		// TODO Auto-generated method stub
+		System.out.println(getLabel() + " has a " + s.getModifier() + " on "
+				+ s.getName());
+	}
+	
+	public void showDamage(Stat stat, int damage) {
+		// TODO graphics update
+		System.out.println(getLabel() + " took " + damage + " to "
+				+ stat.getName());
+	}
+	
+	public void showDamage(Stat stat, double damage) {
+		// TODO graphics update
+		System.out.println(getLabel() + " took " + damage + " to "
+				+ stat.getName());
+	}
+	
+	public void removeStatMod(Stat s) {
+		// TODO Auto-generated method stub
+	}
+	
+	private String getLabel() {
+		String name = "";
+		AttributedCharacterIterator i = nameText.getIterator();
+		for(char c = i.first(); c != CharacterIterator.DONE; c = i.next()) {
+			name += c;
+		}
+		return name;
 	}
 	
 	private void setNameText(String text) {

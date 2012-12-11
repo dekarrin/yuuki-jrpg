@@ -41,6 +41,30 @@ public class Stat implements Cloneable {
 	}
 	
 	/**
+	 * Checks whether this Stat has a mod.
+	 * 
+	 * @return True if the modifier multiplier is anything but 1.
+	 */
+	public boolean hasModifier() {
+		return (modifier != 1.0);
+	}
+	
+	/**
+	 * Checks whether two Stats are equal.
+	 * 
+	 * @param i2 The instance to check this one against.
+	 * 
+	 * @return Whether the two instances are equal.
+	 */
+	public boolean equals(Stat i2) {
+		boolean sameName = (this.name == i2.name);
+		boolean sameBase = (this.base == i2.base);
+		boolean sameGain = (this.gain == i2.gain);
+		boolean sameMod = (this.modifier == i2.modifier);
+		return (sameName && sameBase && sameGain && sameMod);
+	}
+	
+	/**
 	 * Creates a clone of this Stat.
 	 *
 	 * @return The clone.
@@ -83,6 +107,15 @@ public class Stat implements Cloneable {
 	 */
 	public void removeModifier(double mod) {
 		modifier /= mod;
+	}
+	
+	/**
+	 * Gets the total modifier for this Stat.
+	 * 
+	 * The total modifier.
+	 */
+	public double getModifier() {
+		return modifier;
 	}
 	
 	

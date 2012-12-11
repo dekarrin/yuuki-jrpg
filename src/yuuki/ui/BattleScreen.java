@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -17,9 +18,6 @@ public class BattleScreen extends JPanel {
 	private Character[][] fighters;
 	
 	private FighterSprite[][] fighterGraphics;
-	
-	private Stat[][] originalStats;
-	
 	/**
 	 * Adds the fighters to the screen.
 	 * 
@@ -28,7 +26,6 @@ public class BattleScreen extends JPanel {
 	public void startBattle(Character[][] fighters) {
 		this.fighters = fighters;
 		setLayout(new BorderLayout());
-		extractStats();
 		addCharacters();
 	}
 	
@@ -36,7 +33,7 @@ public class BattleScreen extends JPanel {
 	 * Shows the transition into the battle.
 	 */
 	public void showStart() {
-		
+		// TODO empty
 	}
 	
 	/**
@@ -44,15 +41,41 @@ public class BattleScreen extends JPanel {
 	 * 
 	 * @param fighter The fighter to show the stat change for.
 	 */
-	public void showStatChange(Character fighter) {
-		
+	public void showStatUpdate(Character fighter) {
+		ArrayList<ArrayList<Stat>> list = fighter.getStatModList();
+		ArrayList<Stat> modded = list.get(0);
+		ArrayList<Stat> unmodded = list.get(1);
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		for (Stat s: modded) {
+			sprite.addStatMod(s);
+		}
+		for (Stat s: unmodded) {
+			sprite.removeStatMod(s);
+		}
 	}
 	
 	/**
-	 * Extracts the original stats from the fighters for comparison.
+	 * Shows that a fighter took damage.
+	 * 
+	 * @param fighter The fighter that took damage.
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage.
 	 */
-	private void extractStats() {
-		originalStats = new Stat[fighters.length][];
+	public void showDamage(Character fighter, Stat stat, int damage) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showDamage(stat, damage);
+	}
+	
+	/**
+	 * Shows that a fighter took damage.
+	 * 
+	 * @param fighter The fighter that took damage.
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage.
+	 */
+	public void showDamage(Character fighter, Stat stat, double damage) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showDamage(stat, damage);
 	}
 	
 	/**
@@ -73,7 +96,9 @@ public class BattleScreen extends JPanel {
 		for (int i = 0; i < fighters.length; i++) {
 			fighterGraphics[i] = new FighterSprite[fighters[i].length];
 			for (int j = 0; j < fighters[i].length; j++) {
-				fighterGraphics[i][j] = new FighterSprite(fighters[i][j]);
+				FighterSprite fs = new FighterSprite(fighters[i][j]);
+				fighterGraphics[i][j] = fs;
+				fighters[i][j].setSprite(fs);
 			}
 		}
 	}

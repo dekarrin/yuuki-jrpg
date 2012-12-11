@@ -102,6 +102,11 @@ public abstract class Character {
 	private int teamId;
 	
 	/**
+	 * The sprite for this Character in the GUI.
+	 */
+	private javax.swing.JComponent sprite = null;
+	
+	/**
 	 * Calculates the experience required to be at a level.
 	 *
 	 * @param level The level to get the required experience for.
@@ -652,6 +657,30 @@ public abstract class Character {
 	}
 	
 	/**
+	 * Gets a modified stat list for this character. Each item will be a stat
+	 * with a mod on it. The stats are cloned so that they may not be modified.
+	 * 
+	 * @return An array with the modified stats as the first index and the
+	 * unmodified stats as the second index.
+	 */
+	public ArrayList<ArrayList<Stat>> getStatModList() {
+		ArrayList<ArrayList<Stat>> list = new ArrayList<ArrayList<Stat>>(2);
+		ArrayList<Stat> modded = new ArrayList<Stat>();
+		ArrayList<Stat> unmodded = new ArrayList<Stat>();
+		list.add(modded);
+		list.add(unmodded);
+		(hp.hasModifier() ? modded : unmodded).add(hp.clone());
+		(mp.hasModifier() ? modded : unmodded).add(mp.clone());
+		(strength.hasModifier() ? modded : unmodded).add(strength.clone());
+		(defense.hasModifier() ? modded : unmodded).add(defense.clone());
+		(agility.hasModifier() ? modded : unmodded).add(agility.clone());
+		(accuracy.hasModifier() ? modded : unmodded).add(accuracy.clone());
+		(magic.hasModifier() ? modded : unmodded).add(magic.clone());
+		(luck.hasModifier() ? modded : unmodded).add(luck.clone());
+		return list;
+	}
+	
+	/**
 	 * Gets the Buffs currently on this Character.
 	 *
 	 * @return The Buffs.
@@ -695,6 +724,24 @@ public abstract class Character {
 	public void addBuff(Buff b) {
 		b.setTarget(this);
 		buffs.add(b);
+	}
+	
+	/**
+	 * Sets the sprite for this Character.
+	 * 
+	 * @param sprite The sprite to set it to.
+	 */
+	public void setSprite(javax.swing.JComponent sprite) {
+		this.sprite = sprite;
+	}
+	
+	/**
+	 * Gets the sprite for this Character.
+	 * 
+	 * @return The sprite that this Character is set to use.
+	 */
+	public javax.swing.JComponent getSprite() {
+		return sprite;
 	}
 	
 	/**

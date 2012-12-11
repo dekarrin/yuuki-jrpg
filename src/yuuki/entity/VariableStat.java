@@ -25,6 +25,19 @@ public class VariableStat extends Stat implements Cloneable {
 	}
 	
 	/**
+	 * Checks whether two VariableStats are equal.
+	 * 
+	 * @param i2 The instance to check this one against.
+	 * 
+	 * @return Whether the two instances are equal.
+	 */
+	public boolean equals(VariableStat i2) {
+		boolean sameStat = (super.equals(i2));
+		boolean sameValue = (this.currentValue == i2.currentValue);
+		return (sameStat && sameValue);
+	}
+	
+	/**
 	 * Creates a clone of this VariableStat.
 	 *
 	 * @return The clone.
