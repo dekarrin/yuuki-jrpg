@@ -1,17 +1,24 @@
 package yuuki.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.BorderLayout;
+
+import javax.swing.*;
 
 import yuuki.entity.Character;
+import yuuki.entity.Stat;
 
 @SuppressWarnings("serial")
 public class BattleScreen extends JPanel {
+	
+	public static final int BOTTOM_TEAM_INDEX = 0;
+	
+	public static final int TOP_TEAM_INDEX = 1;
 
 	private Character[][] fighters;
 	
 	private FighterSprite[][] fighterGraphics;
+	
+	private Stat[][] originalStats;
 	
 	/**
 	 * Adds the fighters to the screen.
@@ -20,6 +27,8 @@ public class BattleScreen extends JPanel {
 	 */
 	public void startBattle(Character[][] fighters) {
 		this.fighters = fighters;
+		setLayout(new BorderLayout());
+		extractStats();
 		addCharacters();
 	}
 	
@@ -31,13 +40,29 @@ public class BattleScreen extends JPanel {
 	}
 	
 	/**
+	 * Shows a stat change on a fighter.
+	 * 
+	 * @param fighter The fighter to show the stat change for.
+	 */
+	public void showStatChange(Character fighter) {
+		
+	}
+	
+	/**
+	 * Extracts the original stats from the fighters for comparison.
+	 */
+	private void extractStats() {
+		originalStats = new Stat[fighters.length][];
+	}
+	
+	/**
 	 * Adds the Characters to the screen.
 	 */
 	private void addCharacters() {
 		// TODO: optimize for more than one team
 		createAllGraphics();
-		addTopTeam();
 		addBottomTeam();
+		addTopTeam();
 	}
 	
 	/**
@@ -56,4 +81,22 @@ public class BattleScreen extends JPanel {
 	/**
 	 * Adds a team to the bottom row.
 	 */
+	private void addBottomTeam() {
+		Box team = new Box(BoxLayout.X_AXIS);
+		for (FighterSprite fs: fighterGraphics[BOTTOM_TEAM_INDEX]) {
+			team.add(fs);
+		}
+		add(team, BorderLayout.SOUTH);
+	}
+	
+	/**
+	 * Adds a team to the top row.
+	 */
+	private void addTopTeam() {
+		Box team = new Box(BoxLayout.X_AXIS);
+		for (FighterSprite fs: fighterGraphics[TOP_TEAM_INDEX]) {
+			team.add(fs);
+		}
+		add(team, BorderLayout.NORTH);
+	}
 }

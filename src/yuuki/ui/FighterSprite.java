@@ -53,7 +53,7 @@ public class FighterSprite extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.fill(new Rectangle(size));
-		// paint name;
+		g2.drawString(nameText.getIterator(), 0, 0);
 	}
 	
 	private void setNameText(String text) {
