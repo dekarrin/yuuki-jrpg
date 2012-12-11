@@ -153,7 +153,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Character fighter;
 			public void run() {
-//				battleScreen.showStatUpdate(fighter);
+				battleScreen.showStatUpdate(fighter);
 			}
 		}
 		Runner r = new Runner();
@@ -168,7 +168,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 			public Stat stat;
 			public int damage;
 			public void run() {
-//				battleScreen.showDamage(fighter, stat, damage);
+				battleScreen.showDamage(fighter, stat, damage);
 			}
 		}
 		Runner r = new Runner();
@@ -185,7 +185,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 			public Stat stat;
 			public double damage;
 			public void run() {
-//				battleScreen.showDamage(fighter, stat, damage);
+				battleScreen.showDamage(fighter, stat, damage);
 			}
 		}
 		Runner r = new Runner();
@@ -202,7 +202,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 			public Stat stat;
 			public int amount;
 			public void run() {
-//				battleScreen.showRecovery(fighter, stat, amount);
+				battleScreen.showRecovery(fighter, stat, amount);
 			}
 		}
 		Runner r = new Runner();
@@ -219,7 +219,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 			public Stat stat;
 			public double amount;
 			public void run() {
-//				battleScreen.showRecovery(fighter, stat, amount);
+				battleScreen.showRecovery(fighter, stat, amount);
 			}
 		}
 		Runner r = new Runner();
@@ -234,7 +234,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Action action;
 			public void run() {
-//				battleScreen.showActionPreparation(action);
+				battleScreen.showActionPreparation(action);
 			}
 		}
 		Runner r = new Runner();
@@ -247,7 +247,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Action action;
 			public void run() {
-//				battleScreen.showActionFailure(action);
+				battleScreen.showActionFailure(action);
 			}
 		}
 		Runner r = new Runner();
@@ -260,7 +260,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Action action;
 			public void run() {
-//				battleScreen.showActionUse(action);
+				battleScreen.showActionUse(action);
 			}
 		}
 		Runner r = new Runner();
@@ -273,7 +273,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Buff buff;
 			public void run() {
-//				battleScreen.showBuffActivation(buff);
+				battleScreen.showBuffActivation(buff);
 			}
 		}
 		Runner r = new Runner();
@@ -286,7 +286,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Buff buff;
 			public void run() {
-//				battleScreen.showBuffApplication(buff);
+				battleScreen.showBuffApplication(buff);
 			}
 		}
 		Runner r = new Runner();
@@ -299,7 +299,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Buff buff;
 			public void run() {
-//				battleScreen.showBuffDeactivation(buff);
+				battleScreen.showBuffDeactivation(buff);
 			}
 		}
 		Runner r = new Runner();
@@ -312,7 +312,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Character c;
 			public void run() {
-//				battleScreen.showCharacterRemoval(c);
+				battleScreen.showCharacterRemoval(c);
 			}
 		}
 		Runner r = new Runner();
@@ -325,7 +325,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		class Runner implements Runnable {
 			public Character[] cs;
 			public void run() {
-//				battleScreen.showCharacterVictory(cs);
+				battleScreen.showCharacterVictory(cs);
 			}
 		}
 		Runner r = new Runner();
