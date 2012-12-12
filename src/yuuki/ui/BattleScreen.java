@@ -42,16 +42,14 @@ public class BattleScreen extends JPanel {
 	 * @param fighter The fighter to show the stat change for.
 	 */
 	public void showStatUpdate(Character fighter) {
-		ArrayList<ArrayList<Stat>> list = fighter.getStatModList();
-		ArrayList<Stat> modded = list.get(0);
-		ArrayList<Stat> unmodded = list.get(1);
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		for (Stat s: modded) {
-			sprite.addStatMod(s);
-		}
-		for (Stat s: unmodded) {
-			sprite.removeStatMod(s);
-		}
+		System.out.println(fighter.getName());
+		System.out.println("STR: " + fighter.getStrength());
+		System.out.println("DEF: " + fighter.getDefense());
+		System.out.println("AGT: " + fighter.getAgility());
+		System.out.println("ACC: " + fighter.getAccuracy());
+		System.out.println("MAG: " + fighter.getMagic());
+		System.out.println("LUK: " + fighter.getLuck());
+		System.out.println();
 	}
 	
 	/**

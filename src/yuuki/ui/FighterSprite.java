@@ -9,6 +9,9 @@ import java.text.CharacterIterator;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -19,23 +22,25 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class FighterSprite extends JPanel {
 	
-	public static final int WIDTH = 80;
+	public static final int IMAGE_WIDTH = 80;
 	
-	public static final int HEIGHT = 120;
+	public static final int IMAGE_HEIGHT = 120;
 	
-	public static final int N_STYLE = Font.PLAIN;
+	public static final int BUFF_HEIGHT = 30;
+	
+	public static final int BAR_HEIGHT = 10;
 	
 	public static final int N_SIZE = 10;
 	
-	public static final String N_FONT = "Verdana";
+	private StatBar healthBar;
 	
-	public static final Color N_COLOR = Color.BLACK;
+	private StatBar manaBar;
 	
-	private final Dimension size;
+	private JComponent image;
 	
-	private final Font nameFont;
+	private JLabel nameText;
 	
-	private AttributedString nameText;
+	private JComponent buffs;
 
 	/**
 	 * Creates a new FighterSprite from a Character.
@@ -43,20 +48,25 @@ public class FighterSprite extends JPanel {
 	 * @param fighter The Character to make the sprite for.
 	 */
 	public FighterSprite(Character fighter) {
-		size = new Dimension(WIDTH, HEIGHT);
-		nameFont = new Font(N_FONT, N_STYLE, N_SIZE);
-		setNameText(fighter.getName());
-	}
-	
-	public Dimension getPreferredSize() {
-		return size;
-	}
-	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-		g2.fill(new Rectangle(size));
-		g2.drawString(nameText.getIterator(), 0, 0);
+		int actualHeight = IMAGE_HEIGHT + N_SIZE;
+		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
+		setPreferredSize(new Dimension(IMAGE_WIDTH, actualHeight));
+		nameText = new JLabel(fighter.getName());
+		healthBar = new StatBar(IMAGE_WIDTH, BAR_HEIGHT, Color.RED);
+		manaBar = new StatBar(IMAGE_WIDTH, BAR_HEIGHT, Color.BLUE);
+		image = new JPanel();
+		image.setPreferredSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
+		image.setBackground(Color.GREEN);
+		image.setOpaque(true);
+		buffs = new JPanel();
+		buffs.setPreferredSize(new Dimension(IMAGE_WIDTH, BUFF_HEIGHT));
+		buffs.setOpaque(true);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(buffs);
+		add(healthBar);
+		add(manaBar);
+		add(nameText);
+		add(buffs);
 	}
 	
 	/**
@@ -83,21 +93,6 @@ public class FighterSprite extends JPanel {
 	
 	public void removeStatMod(Stat s) {
 		// TODO Auto-generated method stub
-	}
-	
-	private String getLabel() {
-		String name = "";
-		AttributedCharacterIterator i = nameText.getIterator();
-		for(char c = i.first(); c != CharacterIterator.DONE; c = i.next()) {
-			name += c;
-		}
-		return name;
-	}
-	
-	private void setNameText(String text) {
-		nameText = new AttributedString(text);
-		nameText.addAttribute(TextAttribute.FONT, nameFont);
-		nameText.addAttribute(TextAttribute.FOREGROUND, N_COLOR);
 	}
 	
 }
