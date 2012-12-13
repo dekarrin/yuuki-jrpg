@@ -63,16 +63,57 @@ public class FighterSprite extends JPanel {
 		return new Dimension(SPRITE_WIDTH, actualHeight);
 	}
 	
+	/**
+	 * Updates this FighterSprite to show that a stat took damage.
+	 * 
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage taken.
+	 */
 	public void showDamage(Stat stat, int damage) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat took damage.
+	 * 
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage taken.
+	 */
+	public void showDamage(Stat stat, double damage) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat recovered.
+	 * 
+	 * @param stat The stat that recovered.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Stat stat, int amount) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat recovered.
+	 * 
+	 * @param stat The stat that recovered.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Stat stat, double amount) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite with new stat values.
+	 * 
+	 * @param stat The stat to update.
+	 */
+	private void updateStat(Stat stat) {
 		if (healthBar.isWatching(stat)) {
 			healthBar.update();
 		} else if (manaBar.isWatching(stat)) {
 			manaBar.update();
 		}
-	}
-	
-	public void showDamage(Stat stat, double damage) {
-		showDamage(stat, 0); // actual damage value doesn't matter
 	}
 	
 	/**

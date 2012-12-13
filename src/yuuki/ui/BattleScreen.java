@@ -1,7 +1,6 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -74,6 +73,30 @@ public class BattleScreen extends JPanel {
 	public void showDamage(Character fighter, Stat stat, double damage) {
 		FighterSprite sprite = (FighterSprite) fighter.getSprite();
 		sprite.showDamage(stat, damage);
+	}
+	
+	/**
+	 * Shows that a fighter recovered.
+	 * 
+	 * @param fighter The fighter that recovered.
+	 * @param stat The stat that was recovered.
+	 * @param damage The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, int amount) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showRecovery(stat, amount);
+	}
+	
+	/**
+	 * Shows that a fighter recovered.
+	 * 
+	 * @param fighter The fighter that recovered.
+	 * @param stat The stat that was recovered.
+	 * @param damage The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, double amount) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showRecovery(stat, amount);
 	}
 	
 	/**
