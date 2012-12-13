@@ -1,6 +1,7 @@
 /**
  * A Stat that has a variable current value. The total effective value is used
- * as the maximum value for the current value.
+ * as the maximum value for the current value. Thread-safe to allow access by
+ * UI threads.
  */
 
 package yuuki.entity;
@@ -31,7 +32,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 * 
 	 * @return Whether the two instances are equal.
 	 */
-	public boolean equals(VariableStat i2) {
+	public synchronized boolean equals(VariableStat i2) {
 		boolean sameStat = (super.equals(i2));
 		boolean sameValue = (this.currentValue == i2.currentValue);
 		return (sameStat && sameValue);
@@ -42,7 +43,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 *
 	 * @return The clone.
 	 */
-	public VariableStat clone() {
+	public synchronized VariableStat clone() {
 		return (VariableStat) super.clone();
 	}
 	
@@ -54,7 +55,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 * @param mod The amount of the modifier to add.
 	 * @param level The level of the Character that the stat is on.
 	 */
-	public void addModifier(double mod, int level) {
+	public synchronized void addModifier(double mod, int level) {
 		double percent = currentValue / getMax(level);
 		addModifier(mod);
 		currentValue = (int) Math.round(getMax(level) * percent);
@@ -69,7 +70,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 * @param mod The amount of the modifier to add.
 	 * @param level The level of the Character that the stat is on.
 	 */
-	public void removeModifier(double mod, int level) {
+	public synchronized void removeModifier(double mod, int level) {
 		double percent = currentValue / getMax(level);
 		removeModifier(mod);
 		currentValue = (int) Math.round(getMax(level) * percent);
@@ -81,7 +82,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 *
 	 * @return The current value.
 	 */
-	public int getCurrent() {
+	public synchronized int getCurrent() {
 		return currentValue;
 	}
 	
@@ -97,7 +98,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 * @return True if the current value increased by the full amount given;
 	 * otherwise, false.
 	 */
-	public boolean gain(int amount, int level) {
+	public synchronized boolean gain(int amount, int level) {
 		int maxAmount = getMax(level) - currentValue;
 		boolean amountInBounds = (amount <= maxAmount);
 		currentValue += (amountInBounds ? amount : maxAmount);
@@ -114,7 +115,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 * @return True if the current value decreased by the full amount given;
 	 * otherwise, false.
 	 */
-	public boolean lose(int amount) {
+	public synchronized boolean lose(int amount) {
 		boolean amountInBounds = (amount <= currentValue);
 		currentValue -= (amountInBounds ? amount : currentValue);
 		return amountInBounds;
@@ -125,14 +126,14 @@ public class VariableStat extends Stat implements Cloneable {
 	 *
 	 * @param level The level of the Character the stat is on.
 	 */
-	public void restore(int level) {
+	public synchronized void restore(int level) {
 		currentValue = getMax(level);
 	}
 	
 	/**
 	 * Sets the current value to 0.
 	 */
-	public void drain() {
+	public synchronized void drain() {
 		currentValue = 0;
 	}
 	
@@ -143,7 +144,7 @@ public class VariableStat extends Stat implements Cloneable {
 	 *
 	 * @return The effective value.
 	 */
-	public int getMax(int level) {
+	public synchronized int getMax(int level) {
 		return getEffective(level);
 	}
 }

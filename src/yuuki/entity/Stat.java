@@ -1,5 +1,6 @@
 /**
- * A stat used by a Character.
+ * A stat used by a Character. Fully thread-safe to enable the GUI to establish
+ * change listeners on a Stat.
  */
 
 package yuuki.entity;
@@ -24,7 +25,7 @@ public class Stat implements Cloneable {
 	/**
 	 * The name of this stat.
 	 */
-	private String name;
+	private final String name;
 	
 	/**
 	 * Allocates a new Stat.
@@ -41,11 +42,11 @@ public class Stat implements Cloneable {
 	}
 	
 	/**
-	 * Checks whether this Stat has a mod.
+	 * Checks whether this Stat has a modifier.
 	 * 
 	 * @return True if the modifier multiplier is anything but 1.
 	 */
-	public boolean hasModifier() {
+	public synchronized boolean hasModifier() {
 		return (modifier != 1.0);
 	}
 	
@@ -56,7 +57,7 @@ public class Stat implements Cloneable {
 	 * 
 	 * @return Whether the two instances are equal.
 	 */
-	public boolean equals(Stat i2) {
+	public synchronized boolean equals(Stat i2) {
 		boolean sameName = (this.name == i2.name);
 		boolean sameBase = (this.base == i2.base);
 		boolean sameGain = (this.gain == i2.gain);
@@ -69,7 +70,7 @@ public class Stat implements Cloneable {
 	 *
 	 * @return The clone.
 	 */
-	public Stat clone() {
+	public synchronized Stat clone() {
 		Stat clone = null;
 		try {
 			clone = (Stat) super.clone();
@@ -80,22 +81,12 @@ public class Stat implements Cloneable {
 	}
 	
 	/**
-	 * Checks whether or not this Stat has a current value that varies. Derived
-	 * classes may override.
-	 *
-	 * @return false.
-	 */
-	public boolean hasCurrentValue() {
-		return false;
-	}
-	
-	/**
 	 * Adds a modifier to this Stat. Modifiers change the final effective
 	 * value.
 	 *
 	 * @param mod The amount of the modifier to add.
 	 */
-	public void addModifier(double mod) {
+	public synchronized void addModifier(double mod) {
 		modifier *= mod;
 	}
 	
@@ -105,8 +96,11 @@ public class Stat implements Cloneable {
 	 *
 	 * @param mod The amount of the modifier to remove.
 	 */
-	public void removeModifier(double mod) {
+	public synchronized void removeModifier(double mod) {
 		modifier /= mod;
+		if (Math.abs(1.0 - modifier) <= 0.1) { // fix precision issues
+			modifier = 1.0;
+		}
 	}
 	
 	/**
@@ -114,7 +108,7 @@ public class Stat implements Cloneable {
 	 * 
 	 * The total modifier.
 	 */
-	public double getModifier() {
+	public synchronized double getModifier() {
 		return modifier;
 	}
 	
@@ -124,7 +118,7 @@ public class Stat implements Cloneable {
 	 *
 	 * @return The base value.
 	 */
-	public int getBaseValue() {
+	public synchronized int getBaseValue() {
 		return base;
 	}
 	
@@ -133,7 +127,7 @@ public class Stat implements Cloneable {
 	 *
 	 * @param amount The amount to increase the base value by.
 	 */
-	public void increaseBase(int amount) {
+	public synchronized void increaseBase(int amount) {
 		base += amount;
 	}
 	
@@ -145,7 +139,7 @@ public class Stat implements Cloneable {
 	 *
 	 * @return The effective value of this Stat for the given level.
 	 */
-	public int getEffective(int level) {
+	public synchronized int getEffective(int level) {
 		int effective = (base + (gain * level));
 		effective = (int) Math.round(effective * modifier);
 		return effective;
@@ -156,7 +150,7 @@ public class Stat implements Cloneable {
 	 *
 	 * @return Amount gained per level.
 	 */
-	public int getLevelGain() {
+	public synchronized int getLevelGain() {
 		return gain;
 	}
 	
