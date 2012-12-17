@@ -103,6 +103,8 @@ public abstract class Character {
 	
 	/**
 	 * The sprite for this Character in the GUI.
+	 * 
+	 * TODO: Make type more specific to get around type-casting.
 	 */
 	private javax.swing.JComponent sprite = null;
 	

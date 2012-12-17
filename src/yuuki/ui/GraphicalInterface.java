@@ -1,17 +1,11 @@
 package yuuki.ui;
 
-import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.JOptionPane;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;

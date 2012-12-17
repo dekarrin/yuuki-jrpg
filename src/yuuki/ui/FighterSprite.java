@@ -6,6 +6,7 @@ import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
 import yuuki.action.*;
+import yuuki.buff.Buff;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -110,6 +111,55 @@ public class FighterSprite extends JPanel {
 	 * @param action The action to show.
 	 */
 	public void showActionPreparation(Action action) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows this sprite failing at an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionFailure(Action action) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows this sprite performing an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionUse(Action action) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows a buff being activated on this sprite.
+	 * 
+	 * @param buff The buff to show being activated.
+	 */
+	public void showBuffActivation(Buff buff) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows a buff being applied on this sprite.
+	 * 
+	 * @param buff The buff to show being applied.
+	 */
+	public void showBuffApplication(Buff buff) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows a buff being deactivated on this sprite.
+	 * 
+	 * @param buff The buff to show being deactivated.
+	 */
+	public void showBuffDeactivation(Buff buff) {
+		// TODO: actually do something
+	}
+
+	public void showCharacterVictory() {
 		// TODO: actually do something
 	}
 	
