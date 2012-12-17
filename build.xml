@@ -45,7 +45,7 @@
 		<delete dir="${DIST_ROOT}" />
 	</target>
 	
-	<target name="all" depends="main,gui"></target>
+	<target name="all" depends="main"></target>
 
 	<target name="main" depends="battle,ui">
 		<antcall target="-build">
@@ -84,14 +84,7 @@
 		</antcall>
 	</target>
 	
-	<target name="doc-all" depends="doc-battle,doc-gui"></target>
-	
-	<target name="doc-gui">
-		<antcall target="-doc">
-			<param name="PACKAGE" value="${GUI}" />
-			<param name="ACCESS" value="private" />
-		</antcall>
-	</target>
+	<target name="doc-all" depends="doc-battle"></target>
 	
 	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">
 		<antcall target="-doc">

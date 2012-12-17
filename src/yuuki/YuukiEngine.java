@@ -8,6 +8,8 @@ package yuuki;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+
+import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.StreamInterface;
 import yuuki.battle.Battle;
@@ -35,10 +37,7 @@ public class YuukiEngine implements Runnable {
 	 * @param args Command line arguments. Not used.
 	 */
 	public static void main(String[] args) {
-		InputStream in = System.in;
-		OutputStream out = System.out;
-		OutputStream error = System.err;
-		YuukiEngine gameEngine = new YuukiEngine(in, out, error);
+		YuukiEngine gameEngine = new YuukiEngine();
 		Thread gameThread = new Thread(gameEngine, "GameEngine");
 		gameThread.start();
 	}
@@ -52,6 +51,13 @@ public class YuukiEngine implements Runnable {
 	 */
 	public YuukiEngine(InputStream in, OutputStream out, OutputStream error) {
 		ui = new StreamInterface(in, out, error);
+	}
+	
+	/**
+	 * Creates a new YuukiEngine with a Swing-based GUI.
+	 */
+	public YuukiEngine() {
+		ui = new GraphicalInterface();
 	}
 	
 	/**
