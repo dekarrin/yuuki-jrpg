@@ -5,6 +5,7 @@ import java.awt.*;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
+import yuuki.action.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -101,6 +102,15 @@ public class FighterSprite extends JPanel {
 	 */
 	public void showRecovery(Stat stat, double amount) {
 		updateStat(stat);
+	}
+	
+	/**
+	 * Shows this sprite preparing to do an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionPreparation(Action action) {
+		// TODO: actually do something
 	}
 	
 	/**

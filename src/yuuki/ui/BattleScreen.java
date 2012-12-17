@@ -2,8 +2,12 @@ package yuuki.ui;
 
 import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
+
+import yuuki.action.Action;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 
@@ -97,6 +101,17 @@ public class BattleScreen extends JPanel {
 	public void showRecovery(Character fighter, Stat stat, double amount) {
 		FighterSprite sprite = (FighterSprite) fighter.getSprite();
 		sprite.showRecovery(stat, amount);
+	}
+	
+	/**
+	 * Shows a sprite preparing to do an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionPreparation(Action action) {
+		Character fighter = action.getOrigin();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showActionPreparation(action);
 	}
 	
 	/**
