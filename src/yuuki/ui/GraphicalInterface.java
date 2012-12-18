@@ -1,5 +1,6 @@
 package yuuki.ui;
 
+import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -15,6 +16,16 @@ import yuuki.entity.Stat;
  * A user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener {
+	
+	/**
+	 * The width of the game window.
+	 */
+	public static final int WINDOW_WIDTH = 800;
+	
+	/**
+	 * The height of the game window.
+	 */
+	public static final int WINDOW_HEIGHT = 600;
 	
 	/**
 	 * The message box for the game.
@@ -61,6 +72,13 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	private JPanel endingScreen;
 	
 	/**
+	 * Allocates a new GraphicalInterface. Its components are created.
+	 */
+	public GraphicalInterface() {
+		createComponents();
+	}
+	
+	/**
 	 * Creates the components of the main JFrame and draws the main window on
 	 * screen.
 	 */
@@ -68,7 +86,6 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	public void initialize() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createComponents();
 				refreshWindow();
 			}
 		});
@@ -547,6 +564,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	private void createMainWindow() {
 		mainContent = new JPanel();
 		mainWindow = new JFrame("Yuuki - A JRPG");
+		Dimension size = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
+		mainWindow.setPreferredSize(size);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.add(mainContent);
 		mainWindow.add(messageBox);
