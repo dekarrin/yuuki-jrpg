@@ -175,7 +175,11 @@ public abstract class Character {
 	 * @return the String version.
 	 */
 	public String toString() {
-		return getName() + " lv." + getLevel();
+		String strVer = getName() + " lv." + getLevel();
+		if (getFighterId() != -1) {
+			strVer += " on team " + getFighterId();
+		}
+		return strVer;
 	}
 	
 	/**

@@ -435,11 +435,11 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	@Override
-	public int getChoice(String prompt, String[] options) {
+	public Object getChoice(String prompt, Object[] options) {
 		class StringMessenger implements Runnable {
 			public String prompt;
-			public String[] options;
-			public int value;
+			public Object[] options;
+			public Object value;
 			public void run() {
 				value = messageBox.getChoice(prompt, options);
 			}
@@ -458,7 +458,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	@Override
-	public int getChoice(String[] options) {
+	public Object getChoice(Object[] options) {
 		return getChoice("Select an option", options);
 	}
 	
@@ -483,29 +483,21 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	@Override
-	public int selectAction(Action[] actions) {
-		String[] options = new String[actions.length];
-		for (int i = 0; i < actions.length; i++) {
-			options[i] = actions[i].getName();
-		}
-		return getChoice("Select an action", options);
+	public Action selectAction(Action[] actions) {
+		return (Action) getChoice("Select an action", actions);
 	}
 	
 	@Override
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
-		ArrayList<String> charNames = new ArrayList<String>();
 		ArrayList<Character> chars = new ArrayList<Character>();
 		for (int i = 0; i < fighters.size(); i++) {
 			ArrayList<Character> team = fighters.get(i);
 			for (int j = 0; j < team.size(); j++) {
-				Character c = team.get(j);
-				chars.add(c);
-				charNames.add(c.getName() + " on team " + i);
+				chars.add(team.get(j));
 			}
 		}
-		String[] charNamesArr = charNames.toArray(new String[0]);
-		int index = getChoice("Select a target", charNamesArr);
-		return chars.get(index);
+		Character[] charsArr = chars.toArray(new Character[0]);
+		return (Character) getChoice("Select a target", charsArr);
 	}
 	
 	@Override
@@ -513,8 +505,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		String[] ops = new String[2];
 		ops[0] = yes;
 		ops[1] = no;
-		int option = getChoice(prompt, ops);
-		return (option == 0);
+		String choice = (String) getChoice(prompt, ops);
+		return (choice.equals(yes));
 	}
 	
 	/**

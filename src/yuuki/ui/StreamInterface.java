@@ -136,8 +136,8 @@ public class StreamInterface implements Interactable {
 		boolean inOptions = true;
 		while (inOptions) {
 			String[] choices = {"Back to main menu"};
-			int opt = getChoice("Enter option", choices);
-			if (opt == 0) {
+			String opt = (String) getChoice("Enter option", choices);
+			if (opt.equals("Back to main menu")) {
 				inOptions = false;
 			}
 		}
@@ -615,40 +615,23 @@ public class StreamInterface implements Interactable {
 		return getDouble("", min, max);
 	}
 	
-	/**
-	 * Gets a choice from the user. The choice may be one of the given Strings
-	 * in the array.
-	 *
-	 * @param prompt The prompt to show the user.
-	 * @param options The Strings from which the user must choose.
-	 *
-	 * @return The index of the user's choice.
-	 */
 	@Override
-	public int getChoice(String prompt, String[] options) {
+	public Object getChoice(String prompt, Object[] options) {
 		int choice = 0;
 		String builtPrompt = "OPTION:\n";
 		for (int i = 0; i < options.length; i++) {
 			builtPrompt += (i + 1);
 			builtPrompt += " - ";
-			builtPrompt += options[i];
+			builtPrompt += options[i].toString();
 			builtPrompt += '\n';
 		}
 		builtPrompt += prompt;
 		choice = getInt(builtPrompt, 1, options.length) - 1;
-		return choice;
+		return options[choice];
 	}
 	
-	/**
-	 * Gets a choice from the user. The choice may be one of the given Strings
-	 * in the array.
-	 *
-	 * @param options The Strings from which the user must choose.
-	 *
-	 * @return The index of the user's choice.
-	 */
 	@Override
-	public int getChoice(String[] options) {
+	public Object getChoice(Object[] options) {
 		return getChoice("", options);
 	}
 	
@@ -663,7 +646,7 @@ public class StreamInterface implements Interactable {
 	 */
 	public boolean confirm(String prompt, String yes, String no) {
 		String[] options = {yes, no};
-		return (getChoice(prompt, options) == 0);
+		return (getChoice(prompt, options).equals(yes));
 	}
 	
 	/**
@@ -671,14 +654,10 @@ public class StreamInterface implements Interactable {
 	 *
 	 * @param moves The moves from which the player may select.
 	 *
-	 * @return The index of the selected Action.
+	 * @return The selected Action.
 	 */
-	public int selectAction(Action[] moves) {
-		String[] moveNames = new String[moves.length];
-		for (int i = 0; i < moves.length; i++) {
-			moveNames[i] = moves[i].getName();
-		}
-		return getChoice("Select a move", moveNames);
+	public Action selectAction(Action[] moves) {
+		return (Action) getChoice("Select a move", moves);
 	}
 	
 	/**
@@ -689,19 +668,15 @@ public class StreamInterface implements Interactable {
 	 * @return The selected target.
 	 */
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
-		ArrayList<String> charNames = new ArrayList<String>();
 		ArrayList<Character> chars = new ArrayList<Character>();
 		for (int i = 0; i < fighters.size(); i++) {
 			ArrayList<Character> team = fighters.get(i);
 			for (int j = 0; j < team.size(); j++) {
-				Character c = team.get(j);
-				chars.add(c);
-				charNames.add(c.getName() + " on team " + i);
+				chars.add(team.get(j));
 			}
 		}
-		String[] charNamesArr = charNames.toArray(new String[0]);
-		int index = getChoice("Select a target", charNamesArr);
-		return chars.get(index);
+		Character[] charsArr = chars.toArray(new Character[0]);
+		return (Character) getChoice("Select a target", charsArr);
 	}
 	
 	/**

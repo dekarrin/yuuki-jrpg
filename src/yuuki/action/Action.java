@@ -168,6 +168,15 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
+	 * Gets the string version of this Action. Its name is returned.
+	 * 
+	 * @return This Action's name.
+	 */
+	public String toString() {
+		return getName();
+	}
+	
+	/**
 	 * Gets the effect of this Action.
 	 *
 	 * @return The effect value of this Action.

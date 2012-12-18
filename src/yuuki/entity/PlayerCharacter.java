@@ -52,8 +52,8 @@ public class PlayerCharacter extends Character {
 	 * @return The move that was selected by the player.
 	 */
 	protected Action selectAction(ArrayList<ArrayList<Character>> fighters) {
-		int index = ui.selectAction(moves);
-		return moves[index].clone();
+		Action m = ui.selectAction(moves);
+		return m.clone();
 	}
 	
 	/**

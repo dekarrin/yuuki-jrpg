@@ -249,25 +249,25 @@ public interface Interactable {
 	public double getDouble(double min, double max);
 	
 	/**
-	 * Gets a choice from the user. The choice may be one of the given Strings
-	 * in the array.
+	 * Gets a choice from the user. The choice may be one of the given Objects
+	 * in the array. Each of the Objects should have a valid toString() method.
 	 *
 	 * @param prompt The prompt to show the user.
-	 * @param options The Strings from which the user must choose.
+	 * @param options The Objects from which the user must choose.
 	 *
-	 * @return The index of the user's choice.
+	 * @return The user's choice.
 	 */
-	public int getChoice(String prompt, String[] options);
+	public Object getChoice(String prompt, Object[] options);
 	
 	/**
-	 * Gets a choice from the user. The choice may be one of the given Strings
-	 * in the array.
+	 * Gets a choice from the user. The choice may be one of the given Objects
+	 * in the array. Each of the Objects should have a valid toString() method.
 	 *
-	 * @param options The Strings from which the user must choose.
+	 * @param options The Objects from which the user must choose.
 	 *
-	 * @return The index of the user's choice.
+	 * @return The user's choice.
 	 */
-	public int getChoice(String[] options);
+	public Object getChoice(Object[] options);
 	
 	/**
 	 * Gets a confirmation from the user.
@@ -285,9 +285,9 @@ public interface Interactable {
 	 *
 	 * @param moves The moves from which the player may select.
 	 *
-	 * @return The index of the selected Action.
+	 * @return The selected Action.
 	 */
-	public int selectAction(Action[] moves);
+	public Action selectAction(Action[] moves);
 	
 	/**
 	 * Gets the target of a move.
