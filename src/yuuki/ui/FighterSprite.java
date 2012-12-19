@@ -208,6 +208,7 @@ public class FighterSprite extends JPanel {
 	 */
 	private void initializeNameLabel(String name) {
 		nameLabel.setText(name);
+		nameLabel.setVisible(true);
 	}
 	
 	/**
@@ -217,6 +218,7 @@ public class FighterSprite extends JPanel {
 		imagePanel.setPreferredSize(new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT));
 		imagePanel.setBackground(Color.GREEN);
 		imagePanel.setOpaque(true);
+		imagePanel.setVisible(true);
 	}
 	
 	/**
@@ -228,6 +230,7 @@ public class FighterSprite extends JPanel {
 	private void initializeHealthBar(VariableStat hpStat, int level) {
 		healthBar.setStat(hpStat);
 		healthBar.setLevel(level);
+		healthBar.setVisible(true);
 	}
 	
 	/**
@@ -239,6 +242,7 @@ public class FighterSprite extends JPanel {
 	private void initializeManaBar(VariableStat mpStat, int level) {
 		manaBar.setStat(mpStat);
 		manaBar.setLevel(level);
+		manaBar.setVisible(true);
 	}
 	
 	/**
@@ -247,6 +251,7 @@ public class FighterSprite extends JPanel {
 	private void initializeBuffPanel() {
 		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
 		buffPanel.setOpaque(true);
+		buffPanel.setVisible(true);
 	}
 	
 	/**

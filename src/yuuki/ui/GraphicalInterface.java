@@ -1,10 +1,14 @@
 package yuuki.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import yuuki.action.Action;
@@ -26,6 +30,11 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 * The height of the game window.
 	 */
 	public static final int WINDOW_HEIGHT = 600;
+	
+	/**
+	 * The height of the message box within the window.
+	 */
+	public static final int MESSAGE_BOX_HEIGHT = 100;
 	
 	/**
 	 * The message box for the game.
@@ -86,6 +95,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	public void initialize() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				mainWindow.setVisible(true);
+				mainContent.setVisible(true);
 				refreshWindow();
 			}
 		});
@@ -129,6 +140,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 			}
 		}
 		Runner r = new Runner();
+		r.fighters = fighters;
 		SwingUtilities.invokeLater(r);
 	}
 	
@@ -502,9 +514,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	
 	@Override
 	public boolean confirm(String prompt, String yes, String no) {
-		String[] ops = new String[2];
-		ops[0] = yes;
-		ops[1] = no;
+		String[] ops = {yes, no};
 		String choice = (String) getChoice(prompt, ops);
 		return (choice.equals(yes));
 	}
@@ -516,7 +526,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 */
 	private void switchWindow(JPanel panel) {
 		clearWindow();
-		mainContent.add(panel);
+		mainContent.add(panel, BorderLayout.NORTH);
+		mainContent.add(messageBox, BorderLayout.CENTER);
 		refreshWindow();
 	}
 	
@@ -525,14 +536,12 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 */
 	private void refreshWindow() {
 		mainWindow.pack();
-		mainWindow.setVisible(true);
 	}
 	
 	/**
 	 * Clears the main window of all components.
 	 */
 	private void clearWindow() {
-		mainWindow.setVisible(false);
 		mainContent.removeAll();
 	}
 	
@@ -540,7 +549,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 * Creates the screens used in this GUI.
 	 */
 	private void createComponents() {
-		messageBox = new MessageBox();
+		createMessageBox();
 		createMainWindow();
 		createIntroScreen();
 		createOptionsScreen();
@@ -551,16 +560,25 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	/**
+	 * Creates the message box.
+	 */
+	private void createMessageBox() {
+		messageBox = new MessageBox();
+		Dimension size = new Dimension(WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
+		messageBox.setPreferredSize(size);
+	}
+	
+	/**
 	 * Creates the primary window.
 	 */
 	private void createMainWindow() {
-		mainContent = new JPanel();
-		mainWindow = new JFrame("Yuuki - A JRPG");
 		Dimension size = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
-		mainWindow.setPreferredSize(size);
+		mainContent = new JPanel();
+		mainContent.setPreferredSize(size);
+		mainContent.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.add(mainContent);
-		mainWindow.add(messageBox);
 	}
 	
 	/**
@@ -582,6 +600,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 */
 	private void createBattleScreen() {
 		battleScreen = new BattleScreen();
+		battleScreen.setVisible(true);
 	}
 	
 	/**

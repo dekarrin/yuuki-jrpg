@@ -1,7 +1,9 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -19,19 +21,24 @@ public class BattleScreen extends JPanel {
 	public static final int BOTTOM_TEAM_INDEX = 0;
 	
 	public static final int TOP_TEAM_INDEX = 1;
-
-	private Character[][] fighters;
 	
 	private ArrayList<ArrayList<FighterSprite>> fighterGraphics;
+	
+	/**
+	 * Creates this BattleScreen and makes it visible.
+	 */
+	public BattleScreen() {
+		setBorder(BorderFactory.createLineBorder(Color.RED));
+		setLayout(new BorderLayout());
+	}
+	
 	/**
 	 * Adds the fighters to the screen.
 	 * 
-	 * @param fighters
+	 * @param fighters The fighters to add.
 	 */
 	public void startBattle(Character[][] fighters) {
-		this.fighters = fighters;
-		setLayout(new BorderLayout());
-		createAllGraphics();
+		createAllGraphics(fighters);
 		addCharacters();
 	}
 	
@@ -48,13 +55,16 @@ public class BattleScreen extends JPanel {
 	 * @param fighter The fighter to show the stat change for.
 	 */
 	public void showStatUpdate(Character fighter) {
-		System.out.println(fighter.getName());
-		System.out.println("STR: " + fighter.getStrength());
-		System.out.println("DEF: " + fighter.getDefense());
-		System.out.println("AGT: " + fighter.getAgility());
-		System.out.println("ACC: " + fighter.getAccuracy());
-		System.out.println("MAG: " + fighter.getMagic());
-		System.out.println("LUK: " + fighter.getLuck());
+		Character f = fighter;
+		System.out.println(f.getName());
+		System.out.println("HP: " + f.getHP() + "/" + f.getMaxHP());
+		System.out.println("HP: " + f.getMP() + "/" + f.getMaxMP());
+		System.out.println("STR: " + f.getStrength());
+		System.out.println("DEF: " + f.getDefense());
+		System.out.println("AGT: " + f.getAgility());
+		System.out.println("ACC: " + f.getAccuracy());
+		System.out.println("MAG: " + f.getMagic());
+		System.out.println("LUK: " + f.getLuck());
 		System.out.println();
 	}
 	
@@ -187,6 +197,18 @@ public class BattleScreen extends JPanel {
 		}
 		refreshSprites();
 	}
+
+	/**
+	 * Shows the victory animation for the given characters.
+	 * 
+	 * @param cs The characters to show the animation for.
+	 */
+	public void showCharacterVictory(Character[] cs) {
+		for (int i = 0; i < cs.length; i++) {
+			FighterSprite sprite = (FighterSprite) cs[i].getSprite();
+			sprite.showCharacterVictory();
+		}
+	}
 	
 	/**
 	 * Removes all sprites on the screen and adds the ones in this
@@ -215,8 +237,10 @@ public class BattleScreen extends JPanel {
 	
 	/**
 	 * Creates the graphics for each character.
+	 * 
+	 * @param fighters The fighters to make the graphics for.
 	 */
-	private void createAllGraphics() {
+	private void createAllGraphics(Character[][] fighters) {
 		fighterGraphics =
 				new ArrayList<ArrayList<FighterSprite>>(fighters.length);
 		for (int i = 0; i < fighters.length; i++) {
@@ -224,6 +248,7 @@ public class BattleScreen extends JPanel {
 					new ArrayList<FighterSprite>(fighters[i].length);
 			for (int j = 0; j < fighters[i].length; j++) {
 				FighterSprite fs = new FighterSprite(fighters[i][j]);
+				fs.setVisible(true);
 				teamGraphics.add(fs);
 				fighters[i][j].setSprite(fs);
 			}
@@ -251,17 +276,5 @@ public class BattleScreen extends JPanel {
 			team.add(fs);
 		}
 		add(team, BorderLayout.NORTH);
-	}
-
-	/**
-	 * Shows the victory animation for the given characters.
-	 * 
-	 * @param cs The characters to show the animation for.
-	 */
-	public void showCharacterVictory(Character[] cs) {
-		for (int i = 0; i < cs.length; i++) {
-			FighterSprite sprite = (FighterSprite) cs[i].getSprite();
-			sprite.showCharacterVictory();
-		}
 	}
 }

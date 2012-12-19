@@ -1,10 +1,12 @@
 package yuuki.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,6 +26,7 @@ public class IntroScreen extends JPanel implements MouseListener {
 	private JButton exitButton;
 
 	public IntroScreen() {
+		setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		listeners = new ArrayList<IntroScreenListener>();
 		newGameButton = new JButton("New Game");
 		loadGameButton = new JButton("Load Game");
