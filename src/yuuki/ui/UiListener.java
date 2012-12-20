@@ -11,5 +11,5 @@ public interface UiListener {
 	public void onLoadGameRequested();
 	public void onOptionsScreenRequested();
 	public void onQuitRequested();
-	public void onCreateCharacter(String name);
+	public void onCreateCharacter(String name, int level);
 }

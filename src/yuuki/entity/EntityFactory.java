@@ -15,9 +15,9 @@ import yuuki.ui.Interactable;
  */
 public class EntityFactory {
 	
-	public static final String MONSTER_DEFINITIONS_FILE = "data/monsters.csv";
+	public static final String MONSTER_DEFINITIONS_FILE = "../data/monsters.csv";
 	
-	public static final String ACTION_DEFINITIONS_FILE = "data/actions.csv";
+	public static final String ACTION_DEFINITIONS_FILE = "../data/actions.csv";
 	
 	private class ActionDefinition {
 		public String name;
@@ -84,9 +84,9 @@ public class EntityFactory {
 	
 	public PlayerCharacter createPlayer(String name, int level,
 			Interactable ui) {
-		StatModel sm = getStatModel(name);
+		StatModel sm = getStatModel("__PLAYER");
 		PlayerCharacter m;
-		m = new PlayerCharacter(	sm.name, level, sm.moves, sm.hp, sm.mp,
+		m = new PlayerCharacter(	name, level, sm.moves, sm.hp, sm.mp,
 									sm.str, sm.def, sm.agl, sm.acc, sm.mag,
 									sm.luk, ui);
 		return m;
@@ -220,7 +220,7 @@ public class EntityFactory {
 	private int[] parseToInts(String[] toParse, int start) {
 		int[] parsed = new int[toParse.length-start];
 		for (int i = start; i < toParse.length; i++) {
-			parsed[i] = Integer.parseInt(toParse[i]);
+			parsed[i - start] = Integer.parseInt(toParse[i]);
 		}
 		return parsed;
 	}

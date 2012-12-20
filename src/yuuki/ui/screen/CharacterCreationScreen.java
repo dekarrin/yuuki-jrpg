@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 public class CharacterCreationScreen extends JPanel implements MouseListener {
 	
@@ -18,20 +20,34 @@ public class CharacterCreationScreen extends JPanel implements MouseListener {
 	private JButton createCharacterButton;
 	
 	private JTextField nameField;
+	
+	private JSpinner levelField;
 
 	public CharacterCreationScreen() {
 		setLayout(new FlowLayout());
 		listeners = new ArrayList<CharacterCreationScreenListener>();
 		createCharacterButton = new JButton("Create Character");
 		nameField = new JTextField(40);
+		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
 		createCharacterButton.addMouseListener(this);
-		add(new JLabel("Enter Character name"));
+		add(new JLabel("Name: "));
 		add(nameField);
+		add(new JLabel("Level: "));
+		add(levelField);
 		add(createCharacterButton);
 	}
 	
-	public String getData() {
+	public void addListener(CharacterCreationScreenListener l) {
+		listeners.add(l);
+	}
+	
+	public String getName() {
 		return nameField.getText();
+	}
+	
+	public int getLevel() {
+		Integer obj = (Integer) levelField.getValue();
+		return obj.intValue();
 	}
 	
 	public void mouseClicked(MouseEvent e) {

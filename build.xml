@@ -7,6 +7,7 @@
 	<!-- dir definitions -->
 	<property name="SOURCE_ROOT" value="src" />
 	<property name="DIST_ROOT" value="../dist"/>
+	<property name="DATA_ROOT" value="data" />
 	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
 	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
 	<property name="BATTLE" value="yuuki/battle" />
@@ -45,7 +46,7 @@
 		<delete dir="${DIST_ROOT}" />
 	</target>
 	
-	<target name="all" depends="main"></target>
+	<target name="all" depends="main,copy-data"></target>
 
 	<target name="main" depends="battle,ui">
 		<antcall target="-build">
@@ -85,6 +86,10 @@
 	</target>
 	
 	<target name="doc-all" depends="doc-battle"></target>
+	
+	<target name="copy-data">
+		<copydir src="${DATA_ROOT}" dest="${DIST_ROOT}/${DATA_ROOT}"/>
+	</target>
 	
 	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">
 		<antcall target="-doc">

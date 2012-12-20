@@ -29,6 +29,11 @@ public class YuukiEngine implements Runnable, UiListener {
 	private PlayerCharacter player;
 	
 	/**
+	 * The creator of all entities.
+	 */
+	private EntityFactory entityMaker;
+	
+	/**
 	 * Program execution hook. Creates a new thread in which to execute the
 	 * game engine in and then starts the thread.
 	 *
@@ -44,6 +49,7 @@ public class YuukiEngine implements Runnable, UiListener {
 	 */
 	public YuukiEngine() {
 		ui = new GraphicalInterface(this);
+		entityMaker = new EntityFactory();
 	}
 	
 	/**
@@ -285,7 +291,7 @@ public class YuukiEngine implements Runnable, UiListener {
 
 	@Override
 	public void onNewGameRequested() {
-		// TODO Auto-generated method stub
+		ui.switchToCharacterCreationScreen();
 	}
 
 	@Override
@@ -306,6 +312,6 @@ public class YuukiEngine implements Runnable, UiListener {
 	
 	@Override
 	public void onCreateCharacter(String name, int level) {
-		
+		player = entityMaker.createPlayer(name, level, ui);
 	}
 }

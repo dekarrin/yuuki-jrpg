@@ -140,6 +140,7 @@ CharacterCreationScreenListener {
 	
 	@Override
 	public void switchToCharacterCreationScreen() {
+		charCreationScreen.addListener(this);
 		class Runner implements Runnable {
 			public void run() {
 				switchWindow(charCreationScreen);
@@ -690,13 +691,20 @@ CharacterCreationScreenListener {
 	
 	@Override
 	public void createCharacterClicked() {
-		String name = charCreationScreen.getData();
+		String name = charCreationScreen.getName();
 		if (!name.equals("")) {
-			mainProgram.onCreateCharacter(name);
+			mainProgram.onCreateCharacter(name, charCreationScreen.getLevel());
+			showUnimpMsg();
+		} else {
+			alert("You must enter a name!");
 		}
 	}
 	
 	private void showUnimpMsg() {
-		JOptionPane.showMessageDialog(null, "Feature not implmented!");
+		alert("Feature not implmented!");
+	}
+	
+	private void alert(String msg) {
+		JOptionPane.showMessageDialog(null, msg);
 	}
 }
