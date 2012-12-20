@@ -1,0 +1,6 @@
+#id,	name,				params
+"0",	"Flee",				""
+"1",	"BasicDefense",		"1"
+"2",	"BasicAttack",		"3.0"
+"3",	"BasicAttack",		"4.0"
+"4",	"BasicAttack",		"1.0"

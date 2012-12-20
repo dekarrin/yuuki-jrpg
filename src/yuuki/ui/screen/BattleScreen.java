@@ -1,4 +1,4 @@
-package yuuki.ui;
+package yuuki.ui.screen;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +14,7 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.ui.FighterSprite;
 
 @SuppressWarnings("serial")
 public class BattleScreen extends JPanel {

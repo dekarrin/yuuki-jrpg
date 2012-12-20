@@ -1,14 +1,11 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -16,11 +13,17 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.ui.screen.BattleScreen;
+import yuuki.ui.screen.CharacterCreationScreen;
+import yuuki.ui.screen.CharacterCreationScreenListener;
+import yuuki.ui.screen.IntroScreen;
+import yuuki.ui.screen.IntroScreenListener;
 
 /**
  * A user interface that uses the Swing framework.
  */
-public class GraphicalInterface implements Interactable, IntroScreenListener {
+public class GraphicalInterface implements Interactable, IntroScreenListener,
+CharacterCreationScreenListener {
 	
 	/**
 	 * The width of the game window.
@@ -80,6 +83,11 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 * The object performing the actual work.
 	 */
 	private UiListener mainProgram;
+
+	/**
+	 * The screen where character creation is done.
+	 */
+	private CharacterCreationScreen charCreationScreen;
 	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
@@ -128,6 +136,17 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 				switchWindow(optionsScreen);
 			}
 		});
+	}
+	
+	@Override
+	public void switchToCharacterCreationScreen() {
+		class Runner implements Runnable {
+			public void run() {
+				switchWindow(charCreationScreen);
+			}
+		}
+		Runner r = new Runner();
+		SwingUtilities.invokeLater(r);
 	}
 	
 	@Override
@@ -558,6 +577,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 		createOverworldScreen();
 		createPauseScreen();
 		createEndingScreen();
+		createPlayerCreationScreen();
 	}
 	
 	/**
@@ -566,6 +586,16 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	private void createMainWindow() {
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	/**
+	 * Creates the player creation screen.
+	 */
+	private void createPlayerCreationScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
+		charCreationScreen = new CharacterCreationScreen();
+		charCreationScreen.setPreferredSize(size);
 	}
 	
 	/**
@@ -656,6 +686,14 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	@Override
 	public void exitClicked() {
 		mainProgram.onQuitRequested();
+	}
+	
+	@Override
+	public void createCharacterClicked() {
+		String name = charCreationScreen.getData();
+		if (!name.equals("")) {
+			mainProgram.onCreateCharacter(name);
+		}
 	}
 	
 	private void showUnimpMsg() {

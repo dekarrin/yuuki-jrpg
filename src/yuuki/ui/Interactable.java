@@ -45,6 +45,11 @@ public interface Interactable {
 	public void switchToBattleScreen(Character[][] fighters);
 	
 	/**
+	 * Shows the player creation screen.
+	 */
+	public void switchToCharacterCreationScreen();
+	
+	/**
 	 * Updates the displayed stats of a character during a battle.
 	 *
 	 * @param fighter The Character to update.

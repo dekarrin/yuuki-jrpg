@@ -99,6 +99,13 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
+	 * Allows the creation of an instance without knowing the arguments.
+	 * 
+	 * @param args The arguments to the creation of an instance.
+	 */
+	public abstract Action createInstance(String[] args);
+	
+	/**
 	 * Clones this Action.
 	 *
 	 * @return A clone of this Action.

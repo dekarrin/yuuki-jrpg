@@ -20,6 +20,16 @@ public class BasicDefense extends Action implements Cloneable {
 	}
 	
 	/**
+	 * Creates a BasicDefense from an existing one.
+	 * 
+	 * @param args Must contain a single int that is the duration.
+	 */
+	public BasicAttack createInstance(String[] args) {
+		int d = Integer.parseInt(args[0]);
+		return new BasicAttack(d);
+	}
+	
+	/**
 	 * Creates a clone of this BasicDefense.
 	 *
 	 * @return The clone.

@@ -1,4 +1,4 @@
-package yuuki.ui;
+package yuuki.ui.screen;
 
 import java.awt.Color;
 import java.awt.Component;

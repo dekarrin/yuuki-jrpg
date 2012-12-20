@@ -14,6 +14,10 @@ public class Flee extends Action {
         super("Flee", 0.0, 0.0, null, null);
     }
     
+    public Flee createInstance(String[] args) {
+    	return new Flee();
+    }
+    
     protected void applyBuffs()
     {
         

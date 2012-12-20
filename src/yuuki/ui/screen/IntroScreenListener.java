@@ -1,4 +1,4 @@
-package yuuki.ui;
+package yuuki.ui.screen;
 
 public interface IntroScreenListener {
 	public void newGameClicked();

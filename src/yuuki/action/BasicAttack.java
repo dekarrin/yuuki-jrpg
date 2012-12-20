@@ -19,6 +19,16 @@ public class BasicAttack extends Skill implements Cloneable {
 	}
 	
 	/**
+	 * Creates a BasicAttack from an existing one.
+	 * 
+	 * @param args Must contain a single double that is damage.
+	 */
+	public BasicAttack createInstance(String[] args) {
+		double d = Double.parseDouble(args[0]);
+		return new BasicAttack(d);
+	}
+	
+	/**
 	 * Creates a clone of this BasicAttack.
 	 *
 	 * @return The clone.
