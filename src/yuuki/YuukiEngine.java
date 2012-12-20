@@ -34,6 +34,11 @@ public class YuukiEngine implements Runnable, UiListener {
 	private EntityFactory entityMaker;
 	
 	/**
+	 * The current battle.
+	 */
+	private Battle battle;
+	
+	/**
 	 * Program execution hook. Creates a new thread in which to execute the
 	 * game engine in and then starts the thread.
 	 *
@@ -317,6 +322,8 @@ public class YuukiEngine implements Runnable, UiListener {
 	
 	@Override
 	public void onBattleStarted() {
-		ui.display(null, "That feature is not implemented.");
+		NonPlayerCharacter slime = entityMaker.createNpc("slime", 2);
+		Character[][] fighters = {{player}, {slime}};
+		ui.switchToBattleScreen(fighters);
 	}
 }
