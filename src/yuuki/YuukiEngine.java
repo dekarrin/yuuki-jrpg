@@ -59,7 +59,6 @@ public class YuukiEngine implements Runnable, UiListener {
 		ui.initialize();
 		ui.switchToIntroScreen();
 		/*
-		ui.switchToOverworldScreen();
 		while (stillFighting) {
 			battleOneOnOne(player, createJill());
 			stillFighting = ui.confirm("Battle again?", "Yes", "No");
@@ -313,5 +312,11 @@ public class YuukiEngine implements Runnable, UiListener {
 	@Override
 	public void onCreateCharacter(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
+		ui.switchToOverworldScreen();
+	}
+	
+	@Override
+	public void onBattleStarted() {
+		ui.showUnimpMsg();
 	}
 }

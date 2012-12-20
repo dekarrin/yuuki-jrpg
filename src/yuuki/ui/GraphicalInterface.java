@@ -18,12 +18,14 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.OverworldScreen;
+import yuuki.ui.screen.OverworldScreenListener;
 
 /**
  * A user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener {
+CharacterCreationScreenListener, OverworldScreenListener {
 	
 	/**
 	 * The width of the game window.
@@ -67,7 +69,7 @@ CharacterCreationScreenListener {
 	/**
 	 * The overworld screen.
 	 */
-	private JPanel overworldScreen;
+	private OverworldScreen overworldScreen;
 	
 	/**
 	 * The pause screen.
@@ -167,6 +169,7 @@ CharacterCreationScreenListener {
 	
 	@Override
 	public void switchToOverworldScreen() {
+		overworldScreen.addListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				switchWindow(overworldScreen);
@@ -645,7 +648,7 @@ CharacterCreationScreenListener {
 	private void createOverworldScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		overworldScreen = new JPanel();
+		overworldScreen = new OverworldScreen();
 		overworldScreen.setPreferredSize(size);
 	}
 	
@@ -700,7 +703,12 @@ CharacterCreationScreenListener {
 		}
 	}
 	
-	private void showUnimpMsg() {
+	@Override
+	public void startBattleClicked() {
+		mainProgram.onBattleStarted();
+	}
+	
+	public void showUnimpMsg() {
 		alert("Feature not implmented!");
 	}
 	

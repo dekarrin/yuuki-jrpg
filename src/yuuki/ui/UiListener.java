@@ -12,4 +12,5 @@ public interface UiListener {
 	public void onOptionsScreenRequested();
 	public void onQuitRequested();
 	public void onCreateCharacter(String name, int level);
+	public void onBattleStarted();
 }

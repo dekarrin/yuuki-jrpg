@@ -49,6 +49,9 @@ public interface Interactable {
 	 */
 	public void switchToCharacterCreationScreen();
 	
+	// TODO: REMOVE WHEN DONE
+	public void showUnimpMsg();
+	
 	/**
 	 * Updates the displayed stats of a character during a battle.
 	 *
