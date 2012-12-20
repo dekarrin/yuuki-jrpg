@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import yuuki.action.Action;
@@ -46,11 +47,6 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	private JFrame mainWindow;
 	
 	/**
-	 * The main content of the window.
-	 */
-	private JPanel mainContent;
-	
-	/**
 	 * The intro screen.
 	 */
 	private IntroScreen introScreen;
@@ -81,9 +77,15 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	private JPanel endingScreen;
 	
 	/**
+	 * The object performing the actual work.
+	 */
+	private UiListener mainProgram;
+	
+	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 */
-	public GraphicalInterface() {
+	public GraphicalInterface(UiListener mainProgram) {
+		this.mainProgram = mainProgram;
 		createComponents();
 	}
 	
@@ -95,9 +97,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	public void initialize() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				mainWindow.setVisible(true);
-				mainContent.setVisible(true);
 				refreshWindow();
+				mainWindow.setVisible(true);
 			}
 		});
 	}
@@ -107,7 +108,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 */
 	@Override
 	public void destroy() {
-		
+		mainWindow.dispose();
 	}
 	
 	@Override
@@ -526,8 +527,8 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 */
 	private void switchWindow(JPanel panel) {
 		clearWindow();
-		mainContent.add(panel, BorderLayout.NORTH);
-		mainContent.add(messageBox, BorderLayout.CENTER);
+		mainWindow.add(panel, BorderLayout.CENTER);
+		mainWindow.add(messageBox, BorderLayout.SOUTH);
 		refreshWindow();
 	}
 	
@@ -542,7 +543,7 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 * Clears the main window of all components.
 	 */
 	private void clearWindow() {
-		mainContent.removeAll();
+		mainWindow.getContentPane().removeAll();
 	}
 	
 	/**
@@ -560,46 +561,50 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	}
 	
 	/**
-	 * Creates the message box.
-	 */
-	private void createMessageBox() {
-		messageBox = new MessageBox();
-		Dimension size = new Dimension(WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
-		messageBox.setPreferredSize(size);
-	}
-	
-	/**
 	 * Creates the primary window.
 	 */
 	private void createMainWindow() {
-		Dimension size = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
-		mainContent = new JPanel();
-		mainContent.setPreferredSize(size);
-		mainContent.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainWindow.add(mainContent);
+	}
+	
+	/**
+	 * Creates the message box.
+	 */
+	private void createMessageBox() {
+		Dimension size = new Dimension(WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
+		messageBox = new MessageBox();
+		messageBox.setPreferredSize(size);
 	}
 	
 	/**
 	 * Creates the intro screen.
 	 */
 	private void createIntroScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		introScreen = new IntroScreen();
+		introScreen.setPreferredSize(size);
 	}
 	
 	/**
 	 * Creates the options screen.
 	 */
 	private void createOptionsScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		optionsScreen = new JPanel();
+		optionsScreen.setPreferredSize(size);
 	}
 	
 	/**
 	 * Creates the battle screen.
 	 */
 	private void createBattleScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		battleScreen = new BattleScreen();
+		battleScreen.setPreferredSize(size);
 		battleScreen.setVisible(true);
 	}
 	
@@ -607,40 +612,53 @@ public class GraphicalInterface implements Interactable, IntroScreenListener {
 	 * Creates the overworld screen.
 	 */
 	private void createOverworldScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		overworldScreen = new JPanel();
+		overworldScreen.setPreferredSize(size);
 	}
 	
 	/**
 	 * Creates the pause screen.
 	 */
 	private void createPauseScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		pauseScreen = new JPanel();
+		pauseScreen.setPreferredSize(size);
 	}
 	
 	/**
 	 * Creates the ending screen.
 	 */
 	private void createEndingScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Dimension size = new Dimension(WINDOW_WIDTH, height);
 		endingScreen = new JPanel();
+		endingScreen.setPreferredSize(size);
 	}
 
 	@Override
 	public void newGameClicked() {
-		// TODO Auto-generated method stub
+		mainProgram.onNewGameRequested();
 	}
 
 	@Override
 	public void loadGameClicked() {
-		// TODO Auto-generated method stub
+		showUnimpMsg();
 	}
 
 	@Override
 	public void optionsClicked() {
-		// TODO Auto-generated method stub
+		showUnimpMsg();
 	}
 
 	@Override
 	public void exitClicked() {
-		// TODO Auto-generated method stub
+		mainProgram.onQuitRequested();
+	}
+	
+	private void showUnimpMsg() {
+		JOptionPane.showMessageDialog(null, "Feature not implmented!");
 	}
 }

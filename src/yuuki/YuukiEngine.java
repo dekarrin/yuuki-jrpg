@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.StreamInterface;
+import yuuki.ui.UiListener;
 import yuuki.battle.Battle;
 import yuuki.action.*;
 import yuuki.buff.*;
 import yuuki.entity.Character;
 import yuuki.entity.*;
 
-public class YuukiEngine implements Runnable {
+public class YuukiEngine implements Runnable, UiListener {
 
 	/**
 	 * The user interface.
@@ -38,8 +39,7 @@ public class YuukiEngine implements Runnable {
 	 */
 	public static void main(String[] args) {
 		YuukiEngine gameEngine = new YuukiEngine();
-		Thread gameThread = new Thread(gameEngine, "GameEngine");
-		gameThread.start();
+		gameEngine.run();
 	}
 	
 	/**
@@ -57,16 +57,16 @@ public class YuukiEngine implements Runnable {
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
-		ui = new GraphicalInterface();
+		ui = new GraphicalInterface(this);
 	}
 	
 	/**
 	 * Runs the engine.
 	 */
 	public void run() {
-		boolean stillFighting = true;
 		ui.initialize();
 		ui.switchToIntroScreen();
+		/*
 		createPlayer(10);
 		ui.switchToOverworldScreen();
 		while (stillFighting) {
@@ -74,7 +74,7 @@ public class YuukiEngine implements Runnable {
 			stillFighting = ui.confirm("Battle again?", "Yes", "No");
 		}
 		ui.switchToEndingScreen();
-		ui.destroy();
+		ui.destroy();*/
 	}
 	
 	/**
@@ -487,4 +487,25 @@ public class YuukiEngine implements Runnable {
 	 * @param battle The battle to output the state of.
 	 */
 	private void outputVictory(Battle battle) {}
+
+	@Override
+	public void onNewGameRequested() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onLoadGameRequested() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onOptionsScreenRequested() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onQuitRequested() {
+		ui.destroy();
+		System.exit(0);
+	}
 }

@@ -26,7 +26,6 @@ public class IntroScreen extends JPanel implements MouseListener {
 	private JButton exitButton;
 
 	public IntroScreen() {
-		setBorder(BorderFactory.createLineBorder(Color.GREEN));
 		listeners = new ArrayList<IntroScreenListener>();
 		newGameButton = new JButton("New Game");
 		loadGameButton = new JButton("Load Game");
