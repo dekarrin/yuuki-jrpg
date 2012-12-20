@@ -590,6 +590,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	private void createMainWindow() {
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainWindow.setResizable(false);
 	}
 	
 	/**
@@ -697,7 +698,6 @@ CharacterCreationScreenListener, OverworldScreenListener {
 		String name = charCreationScreen.getName();
 		if (!name.equals("")) {
 			mainProgram.onCreateCharacter(name, charCreationScreen.getLevel());
-			showUnimpMsg();
 		} else {
 			alert("You must enter a name!");
 		}
@@ -709,7 +709,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	}
 	
 	public void showUnimpMsg() {
-		alert("Feature not implmented!");
+		display(null, "That feature has not yet been implemented.");
 	}
 	
 	private void alert(String msg) {

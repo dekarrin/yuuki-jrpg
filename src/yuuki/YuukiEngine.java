@@ -317,6 +317,6 @@ public class YuukiEngine implements Runnable, UiListener {
 	
 	@Override
 	public void onBattleStarted() {
-		ui.showUnimpMsg();
+		ui.display(null, "That feature is not implemented.");
 	}
 }
