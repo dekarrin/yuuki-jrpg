@@ -27,6 +27,15 @@
 	
 	<!-- PUBLIC TARGETS -->
 	
+	<target name="dist-jar" depends="clean,all">
+		<jar destfile="${DIST_ROOT}/yuuki.jar">
+			<fileset dir="${BUILD_ROOT}" />
+			<manifest>
+				<attribute name="Main-Class" value="yuuki.YuukiEngine" />
+			</manifest>
+		</jar>
+	</target>
+	
 	<target name="test-main" depends="debug,main">
 		<antcall target="-test">
 			<param name="TEST_CLASS" value="yuuki.YuukiEngine" />
