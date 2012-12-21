@@ -97,7 +97,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void spawnBattleThread(Battle battle, boolean display) {
 		BattleRunner r = new BattleRunner(battle, display);
-		(new Thread(r)).start();
+		Thread t = new Thread(r, "MainBattle");
+		t.start();
 	}
 	
 	/**

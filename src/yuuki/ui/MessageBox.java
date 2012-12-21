@@ -74,7 +74,7 @@ public class MessageBox extends JPanel implements MouseListener {
 		if (clearThread != null) {
 			clearThread.interrupt();
 		}
-		clearThread = new Thread(p);
+		clearThread = new Thread(p, "MessageBoxCleanup");
 		clearThread.start();
 	}
 	
