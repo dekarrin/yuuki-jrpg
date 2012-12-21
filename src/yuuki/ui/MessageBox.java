@@ -9,11 +9,9 @@ import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import yuuki.entity.Character;
 
@@ -34,6 +32,7 @@ public class MessageBox extends JPanel implements MouseListener {
 	
 	public MessageBox() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
 		input = new JTextField(30);
 		enterButton = new JButton("Enter");
@@ -49,10 +48,12 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	public void getString(String prompt) {
+		System.out.println("Hit getString");
 		showTextPrompt(prompt);
 	}
 	
 	public void getChoice(String prompt, Object[] options) {
+		System.out.println("Hit getChoice");
 		optionValues = new HashMap<JButton, Object>(options.length);
 		showChoicePrompt(prompt, options);
 	}

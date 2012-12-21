@@ -8,6 +8,7 @@ import yuuki.entity.VariableStat;
 import yuuki.action.*;
 import yuuki.buff.Buff;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -49,6 +50,7 @@ public class FighterSprite extends JPanel {
 	 */
 	public FighterSprite(Character fighter) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBorder(BorderFactory.createLineBorder(Color.RED));
 		createComponents();
 		initializeComponents(fighter);
 		addComponents();

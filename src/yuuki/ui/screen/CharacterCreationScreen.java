@@ -13,6 +13,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+@SuppressWarnings("serial")
 public class CharacterCreationScreen extends JPanel implements MouseListener {
 	
 	private ArrayList<CharacterCreationScreenListener> listeners;

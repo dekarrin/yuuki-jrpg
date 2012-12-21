@@ -305,7 +305,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 
 	@Override
 	public void requestQuit() {
-		int quit = JOptionPane.showConfirmDialog(null, "Quit?", "Quit Yuuki?",
+		int quit = JOptionPane.showConfirmDialog(null,
+				"Are you sure you want to quit?", "Quit Confirmation",
 				JOptionPane.YES_NO_OPTION);
 		if (quit == JOptionPane.YES_OPTION) {
 			ui.destroy();

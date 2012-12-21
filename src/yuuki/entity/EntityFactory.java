@@ -2,8 +2,9 @@ package yuuki.entity;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +16,9 @@ import yuuki.ui.Interactable;
  */
 public class EntityFactory {
 	
-	public static final String MONSTER_DEFINITIONS_FILE = "../data/monsters.csv";
+	public static final String MONSTERS_FILE = "/yuuki/resource/monsters.csv";
 	
-	public static final String ACTION_DEFINITIONS_FILE = "../data/actions.csv";
+	public static final String ACTIONS_FILE = "/yuuki/resource/actions.csv";
 	
 	private class ActionDefinition {
 		public String name;
@@ -188,7 +189,8 @@ public class EntityFactory {
 	private void readMonsterDefinitions() throws FileNotFoundException,
 	IOException {
 		BufferedReader r = null;
-		r = new BufferedReader(new FileReader(MONSTER_DEFINITIONS_FILE));
+		InputStream file = getClass().getResourceAsStream(MONSTERS_FILE);
+		r = new BufferedReader(new InputStreamReader(file));
 		String line = null;
 		int num = 1;
 		while ((line = r.readLine()) != null) {
@@ -210,7 +212,8 @@ public class EntityFactory {
 	private void readActionDefinitions() throws FileNotFoundException,
 	IOException {
 		BufferedReader r = null;
-		r = new BufferedReader(new FileReader(ACTION_DEFINITIONS_FILE));
+		InputStream file = getClass().getResourceAsStream(ACTIONS_FILE);
+		r = new BufferedReader(new InputStreamReader(file));
 		String line = null;
 		int num = 1;
 		while ((line = r.readLine()) != null) {
@@ -255,15 +258,15 @@ public class EntityFactory {
 		md.attacks = parseToInts(parts[1].split(":"), 0);
 		int[] stats = parseToInts(parts, 2);
 		md.hp	= stats[0];
-		md.hpg	= stats[1];
-		md.mp	= stats[2];
-		md.mpg	= stats[3];
-		md.str	= stats[4];
-		md.def	= stats[5];
-		md.agl	= stats[6];
-		md.acc	= stats[7];
-		md.mag	= stats[8];
-		md.luk	= stats[9];
+		md.mp	= stats[1];
+		md.str	= stats[2];
+		md.def	= stats[3];
+		md.agl	= stats[4];
+		md.acc	= stats[5];
+		md.mag	= stats[6];
+		md.luk	= stats[7];
+		md.hpg	= stats[8];
+		md.mpg	= stats[9];
 		md.strg	= stats[10];
 		md.defg	= stats[11];
 		md.aglg	= stats[12];

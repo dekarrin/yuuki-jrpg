@@ -7,7 +7,6 @@
 	<!-- dir definitions -->
 	<property name="SOURCE_ROOT" value="src" />
 	<property name="DIST_ROOT" value="../dist"/>
-	<property name="DATA_ROOT" value="data" />
 	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
 	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
 	<property name="BATTLE" value="yuuki/battle" />
@@ -15,6 +14,8 @@
 	<property name="ACTION" value="yuuki/action" />
 	<property name="ENTITY" value="yuuki/entity" />
 	<property name="UI" value="yuuki/ui" />
+	<property name="SCREEN" value="yuuki/ui/screen" />
+	<property name="RESOURCE" value="yuuki/resource" />
 	
 	<!-- other properties -->
 	<property name="warnings" value="all" />
@@ -46,7 +47,7 @@
 		<delete dir="${DIST_ROOT}" />
 	</target>
 	
-	<target name="all" depends="main,copy-data"></target>
+	<target name="all" depends="main,resource"></target>
 
 	<target name="main" depends="battle,ui">
 		<antcall target="-build">
@@ -55,9 +56,15 @@
 		</antcall>
 	</target>
 	
-	<target name="ui" depends="buff,action,entity">
+	<target name="ui" depends="screen,buff,action,entity">
 		<antcall target="-build">
 			<param name="PACKAGE" value="${UI}" />
+		</antcall>
+	</target>
+	
+	<target name="screen" depends="buff,action,entity">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${SCREEN}" />
 		</antcall>
 	</target>
 	
@@ -87,8 +94,8 @@
 	
 	<target name="doc-all" depends="doc-battle"></target>
 	
-	<target name="copy-data">
-		<copydir src="${DATA_ROOT}" dest="${DIST_ROOT}/${DATA_ROOT}"/>
+	<target name="resource">
+		<copydir src="${SOURCE_ROOT}/${RESOURCE}" dest="${BUILD_ROOT}/${RESOURCE}"/>
 	</target>
 	
 	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">

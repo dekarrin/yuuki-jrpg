@@ -9,10 +9,8 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 
+@SuppressWarnings("serial")
 public class OverworldScreen extends JPanel implements MouseListener {
 
 private ArrayList<OverworldScreenListener> listeners;

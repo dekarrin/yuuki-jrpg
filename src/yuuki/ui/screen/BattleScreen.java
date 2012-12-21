@@ -1,9 +1,7 @@
 package yuuki.ui.screen;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -29,7 +27,6 @@ public class BattleScreen extends JPanel {
 	 * Creates this BattleScreen and makes it visible.
 	 */
 	public BattleScreen() {
-		setBorder(BorderFactory.createLineBorder(Color.RED));
 		setLayout(new BorderLayout());
 	}
 	
@@ -59,7 +56,7 @@ public class BattleScreen extends JPanel {
 		Character f = fighter;
 		System.out.println(f.getName());
 		System.out.println("HP: " + f.getHP() + "/" + f.getMaxHP());
-		System.out.println("HP: " + f.getMP() + "/" + f.getMaxMP());
+		System.out.println("MP: " + f.getMP() + "/" + f.getMaxMP());
 		System.out.println("STR: " + f.getStrength());
 		System.out.println("DEF: " + f.getDefense());
 		System.out.println("AGT: " + f.getAgility());
