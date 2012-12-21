@@ -11,7 +11,7 @@ import yuuki.action.*;
 import yuuki.ui.Interactable;
 
 /**
- * Generates monsters based on their names.
+ * Generates entities based on their names.
  */
 public class EntityFactory {
 	
@@ -25,7 +25,7 @@ public class EntityFactory {
 		public String[] args;
 	}
 
-	private class MonsterDefinition {
+	private class EntityDefinition {
 		public String name;
 		public int str = 0;		// strength
 		public int strg = 0;	// strength gain
@@ -61,14 +61,14 @@ public class EntityFactory {
 		public int xp;
 	}
 	
-	private HashMap<String, MonsterDefinition> monsters;
+	private HashMap<String, EntityDefinition> entities;
 	
 	private HashMap<Integer, ActionDefinition> actions;
 	
 	private HashMap<String, Action> actionBases;
 	
 	public EntityFactory() {
-		monsters = new HashMap<String, MonsterDefinition>();
+		entities = new HashMap<String, EntityDefinition>();
 		actions = new HashMap<Integer, ActionDefinition>();
 		actionBases = new HashMap<String, Action>();
 		createBaseActions();
@@ -80,6 +80,16 @@ public class EntityFactory {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Returns an array containing the names of all defined entities.
+	 * 
+	 * @return The entities.
+	 */
+	public String[] getEntityNames() {
+		String[] names = entities.keySet().toArray(new String[0]);
+		return names;
 	}
 	
 	public PlayerCharacter createPlayer(String name, int level,
@@ -106,27 +116,27 @@ public class EntityFactory {
 	 * @param size
 	 * @param levelMin
 	 * @param levelMax
-	 * @param names Leave null for any random monster.
+	 * @param names Leave null for any random entity.
 	 * @return
 	 */
 	public NonPlayerCharacter[] createRandomNpcTeam(int size, int levelMin,
 			int levelMax, String... names) {
-		NonPlayerCharacter[] monsters = new NonPlayerCharacter[size];
+		NonPlayerCharacter[] entities = new NonPlayerCharacter[size];
 		for (int i = 0; i < size; i++) {
-			monsters[i] = createRandomNpc(levelMin, levelMax, names);
+			entities[i] = createRandomNpc(levelMin, levelMax, names);
 		}
-		return monsters;
+		return entities;
 	}
 	
 	/**
 	 * @param levelMin
 	 * @param levelMax
-	 * @param names Leave null for any random monster.
+	 * @param names Leave null for any random entity.
 	 * @return
 	 */
 	public NonPlayerCharacter createRandomNpc(int levelMin, int levelMax,
 			String... names) {
-		Set<String> validNames = monsters.keySet();
+		Set<String> validNames = entities.keySet();
 		if (names != null) {
 			Set<String> wantedNames = new HashSet<String>();
 			for (String n: names) {
@@ -142,13 +152,13 @@ public class EntityFactory {
 		int diff = levelMax - levelMin;
 		int level = levelMin + (int) Math.floor(Math.random() * diff);
 		String name = possibleNames[nameInd];
-		NonPlayerCharacter monster = createNpc(name, level);
-		return monster;
+		NonPlayerCharacter entity = createNpc(name, level);
+		return entity;
 	}
 	
 	private StatModel getStatModel(String name) {
 		StatModel sm = new StatModel();
-		MonsterDefinition md = monsters.get(name);
+		EntityDefinition md = entities.get(name.toLowerCase());
 		sm.name = md.name;
 		sm.hp = new VariableStat("health", md.hp, md.hpg);
 		sm.mp = new VariableStat("mana", md.mp, md.mpg);
@@ -184,8 +194,9 @@ public class EntityFactory {
 		while ((line = r.readLine()) != null) {
 			if (line.charAt(0) != '#') {
 				try {
-					MonsterDefinition md = parseMonsterDefinition(line);
-					monsters.put(md.name, md);
+					// entity names are case-insensitive
+					EntityDefinition md = parseMonsterDefinition(line);
+					entities.put(md.name.toLowerCase(), md);
 				} catch(RuntimeException e) {
 					System.err.println("Error parsing line #" + num + " of " +
 							"monster definitions file.");
@@ -237,8 +248,8 @@ public class EntityFactory {
 		return ad;
 	}
 	
-	private MonsterDefinition parseMonsterDefinition(String line) {
-		MonsterDefinition md = new MonsterDefinition();
+	private EntityDefinition parseMonsterDefinition(String line) {
+		EntityDefinition md = new EntityDefinition();
 		String[] parts = readCsv(line);
 		md.name	= parts[0];
 		md.attacks = parseToInts(parts[1].split(":"), 0);

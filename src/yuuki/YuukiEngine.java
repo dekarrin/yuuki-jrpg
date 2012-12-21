@@ -7,16 +7,18 @@ package yuuki;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
-import yuuki.ui.UiListener;
+import yuuki.ui.UiExecutor;
 import yuuki.battle.Battle;
 import yuuki.action.*;
 import yuuki.buff.*;
 import yuuki.entity.Character;
 import yuuki.entity.*;
 
-public class YuukiEngine implements Runnable, UiListener {
+public class YuukiEngine implements Runnable, UiExecutor {
 
 	/**
 	 * The user interface.
@@ -36,7 +38,22 @@ public class YuukiEngine implements Runnable, UiListener {
 	/**
 	 * The current battle.
 	 */
-	private Battle battle;
+	private Battle mainBattle;
+	
+	/**
+	 * Handles the execution of a battle.
+	 */
+	private class BattleRunner implements Runnable {
+		private Battle battle;
+		private boolean display;
+		public BattleRunner(Battle battle, boolean display) {
+			this.battle = battle;
+			this.display = display;
+		}
+		public void run() {
+			runBattle(battle, display);
+		}
+	};
 	
 	/**
 	 * Program execution hook. Creates a new thread in which to execute the
@@ -73,86 +90,64 @@ public class YuukiEngine implements Runnable, UiListener {
 	}
 	
 	/**
-	 * Starts a battle between two characters. Switches to the battle screen,
-	 * runs the battle, then switches to the overworld screen.
-	 *
-	 * @param f1 The first fighter.
-	 * @param f2 The second fighter.
-	 *
-	 * @return The winner of the battle.
+	 * Spawns a thread that runs a battle to completion.
+	 * 
+	 * @param battle The battle to run through.
+	 * @param display Whether the battle should be displayed on the GUI.
 	 */
-	private Character battleOneOnOne(Character f1, Character f2) {
-		Character[] t1 = {f1};
-		Character[] t2 = {f2};
-		Character[][] fighters = new Character[2][1];
-		fighters[0] = t1;
-		fighters[1] = t2;
-		ui.display(null, "Oh no! Random monsters!");
-		Battle b = new Battle(fighters);
-		showBattle(fighters, b);
-		Character winner = b.getFighters(0).get(0);
-		return winner;
+	private void spawnBattleThread(Battle battle, boolean display) {
+		BattleRunner r = new BattleRunner(battle, display);
+		(new Thread(r)).start();
 	}
 	
 	/**
-	 * Switches to the battle screen, runs through a battle, then switches to
-	 * the overworld screen.
-	 *
-	 * @param fighters The characters in the battle.
-	 * @param battle The battle to show.
-	 */
-	private void showBattle(Character[][] fighters, Battle b) {
-		ui.switchToBattleScreen(fighters);
-		runBattle(b);
-		ui.switchToOverworldScreen();
-	}
-	
-	/**
-	 * Runs a battle to completion. If the UI is switched to the battle screen,
-	 * it is displayed there; otherwise it is not displayed at all.
+	 * Runs a battle to completion.
 	 *
 	 * @param battle The battle to run
+	 * @param display Whether the battle should be displayed.
 	 */
-	private void runBattle(Battle battle) {
+	private void runBattle(Battle battle, boolean display) {
 		while (battle.advance()) {
-			switch (battle.getLastState()) {
-				case STARTING_TURN:
-					outputTurnStart(battle);
-					break;
-					
-				case GETTING_ACTION:
-					outputActionGet(battle);
-					break;
-					
-				case APPLYING_ACTION:
-					outputActionApplication(battle);
-					break;
-					
-				case APPLYING_BUFFS:
-					outputBuffApplication(battle);
-					break;
-					
-				case CHECKING_DEATH:
-					outputDeathCheck(battle);
-					break;
-					
-				case ENDING_TURN:
-					outputTeamDeathCheck(battle);
-					break;
-					
-				case CHECKING_VICTORY:
-					// not sure we care about this state
-					break;
-					
-				case LOOTING:
-					outputLoot(battle);
-					break;
-					
-				default:
-					break;
-			}
-			if (battle.getState() == Battle.State.ENDING) {
-				outputVictory(battle);
+			if (display) {
+				switch (battle.getLastState()) {
+					case STARTING_TURN:
+						outputTurnStart(battle);
+						break;
+						
+					case GETTING_ACTION:
+						outputActionGet(battle);
+						break;
+						
+					case APPLYING_ACTION:
+						outputActionApplication(battle);
+						break;
+						
+					case APPLYING_BUFFS:
+						outputBuffApplication(battle);
+						break;
+						
+					case CHECKING_DEATH:
+						outputDeathCheck(battle);
+						break;
+						
+					case ENDING_TURN:
+						outputTeamDeathCheck(battle);
+						break;
+						
+					case CHECKING_VICTORY:
+						// not sure we care about this state
+						break;
+						
+					case LOOTING:
+						outputLoot(battle);
+						break;
+						
+					default:
+						break;
+				}
+				if (battle.getState() == Battle.State.ENDING) {
+					outputVictory(battle);
+				}
 			}
 		}
 	}
@@ -294,36 +289,49 @@ public class YuukiEngine implements Runnable, UiListener {
 	private void outputVictory(Battle battle) {}
 
 	@Override
-	public void onNewGameRequested() {
+	public void requestNewGame() {
 		ui.switchToCharacterCreationScreen();
 	}
 
 	@Override
-	public void onLoadGameRequested() {
+	public void requestLoadGame() {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void onOptionsScreenRequested() {
+	public void requestOptionsScreen() {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void onQuitRequested() {
-		ui.destroy();
-		System.exit(0);
+	public void requestQuit() {
+		int quit = JOptionPane.showConfirmDialog(null, "Quit?", "Quit Yuuki?",
+				JOptionPane.YES_NO_OPTION);
+		if (quit == JOptionPane.YES_OPTION) {
+			ui.destroy();
+			System.exit(0);
+		}
 	}
 	
 	@Override
-	public void onCreateCharacter(String name, int level) {
+	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
 		ui.switchToOverworldScreen();
 	}
 	
 	@Override
-	public void onBattleStarted() {
+	public void requestBattle(boolean display) {
 		NonPlayerCharacter slime = entityMaker.createNpc("slime", 2);
 		Character[][] fighters = {{player}, {slime}};
-		ui.switchToBattleScreen(fighters);
+		Battle battle = new Battle(fighters);
+		if (display) {
+			mainBattle = battle;
+			ui.switchToBattleScreen(fighters);
+		}
+	}
+	
+	@Override
+	public void requestBattleStart() {
+		spawnBattleThread(mainBattle, true);
 	}
 }

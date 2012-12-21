@@ -2,6 +2,9 @@ package yuuki.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
@@ -84,7 +87,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	/**
 	 * The object performing the actual work.
 	 */
-	private UiListener mainProgram;
+	private UiExecutor mainProgram;
 
 	/**
 	 * The screen where character creation is done.
@@ -94,7 +97,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 */
-	public GraphicalInterface(UiListener mainProgram) {
+	public GraphicalInterface(UiExecutor mainProgram) {
 		this.mainProgram = mainProgram;
 		createComponents();
 	}
@@ -157,9 +160,10 @@ CharacterCreationScreenListener, OverworldScreenListener {
 		class Runner implements Runnable {
 			public Character[][] fighters;
 			public void run() {
-				battleScreen.startBattle(fighters);
+				battleScreen.initBattle(fighters);
 				switchWindow(battleScreen);
 				battleScreen.showStart();
+				mainProgram.requestBattleStart();
 			}
 		}
 		Runner r = new Runner();
@@ -382,21 +386,28 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	
 	@Override
 	public String getString(String prompt) {
-		class Runner implements Runnable {
+		class Runner implements Runnable, MessageBoxInputListener {
 			public String prompt;
-			public String value;
+			public String value = null;
 			public void run() {
-				value = messageBox.getString(prompt);
+				messageBox.addListener(this);
+				messageBox.getString(prompt);
 			}
+			public void enterClicked(String input) {
+				value = input;
+				messageBox.removeListener(this);
+			}
+			public void optionClicked(Object option) {}
 		};
 		Runner r = new Runner();
 		r.prompt = prompt;
-		try {
-			SwingUtilities.invokeAndWait(r);
-		} catch(InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		SwingUtilities.invokeLater(r);
+		while (r.value == null) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		return r.value;
 	}
@@ -472,23 +483,30 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	
 	@Override
 	public Object getChoice(String prompt, Object[] options) {
-		class StringMessenger implements Runnable {
+		class StringMessenger implements Runnable, MessageBoxInputListener {
 			public String prompt;
 			public Object[] options;
-			public Object value;
+			public Object value = null;
 			public void run() {
-				value = messageBox.getChoice(prompt, options);
+				messageBox.addListener(this);
+				messageBox.getChoice(prompt, options);
+			}
+			public void enterClicked(String s) {}
+			public void optionClicked(Object option) {
+				value = option;
+				messageBox.removeListener(this);
 			}
 		};
 		StringMessenger runner = new StringMessenger();
 		runner.prompt = prompt;
 		runner.options = options;
-		try {
-			SwingUtilities.invokeAndWait(runner);
-		} catch(InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		SwingUtilities.invokeLater(runner);
+		while (runner.value == null) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		return runner.value;
 	}
@@ -573,8 +591,8 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * Creates the screens used in this GUI.
 	 */
 	private void createComponents() {
-		createMessageBox();
 		createMainWindow();
+		createMessageBox();
 		createIntroScreen();
 		createOptionsScreen();
 		createBattleScreen();
@@ -588,9 +606,16 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * Creates the primary window.
 	 */
 	private void createMainWindow() {
+		WindowListener l = new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				mainProgram.requestQuit();
+			}
+		};
 		mainWindow = new JFrame("Yuuki - A JRPG");
-		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
+		mainWindow.addWindowListener(l);
 	}
 	
 	/**
@@ -675,7 +700,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 
 	@Override
 	public void newGameClicked() {
-		mainProgram.onNewGameRequested();
+		mainProgram.requestNewGame();
 	}
 
 	@Override
@@ -690,14 +715,15 @@ CharacterCreationScreenListener, OverworldScreenListener {
 
 	@Override
 	public void exitClicked() {
-		mainProgram.onQuitRequested();
+		mainProgram.requestQuit();
 	}
 	
 	@Override
 	public void createCharacterClicked() {
 		String name = charCreationScreen.getName();
+		int level = charCreationScreen.getLevel();
 		if (!name.equals("")) {
-			mainProgram.onCreateCharacter(name, charCreationScreen.getLevel());
+			mainProgram.requestCharacterCreation(name, level);
 		} else {
 			alert("You must enter a name!");
 		}
@@ -705,7 +731,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	
 	@Override
 	public void startBattleClicked() {
-		mainProgram.onBattleStarted();
+		mainProgram.requestBattle(true);
 	}
 	
 	public void showUnimpMsg() {

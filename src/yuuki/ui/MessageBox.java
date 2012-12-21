@@ -3,6 +3,8 @@ package yuuki.ui;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,7 +28,9 @@ public class MessageBox extends JPanel implements MouseListener {
 	
 	private JButton enterButton;
 	
-	private MessageBoxInputListener listener;
+	private ArrayList<MessageBoxInputListener> listeners;
+	
+	private HashMap<JButton, Object> optionValues;
 	
 	public MessageBox() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -36,22 +40,21 @@ public class MessageBox extends JPanel implements MouseListener {
 		add(textBox);
 	}
 	
-	public void getString(String prompt, MessageBoxInputListener l) {
-		removeAll();
-		add(new JLabel(prompt));
-		add(input);
-		add(enterButton);
-		this.listener = l;
+	public void addListener(MessageBoxInputListener l) {
+		listeners.add(l);
 	}
 	
-	public Object getChoice(String prompt, Object[] options) {
-		Object selected = null;
-		while (selected == null) {
-			selected = JOptionPane.showInputDialog(this, prompt,
-					"Choice Selection", JOptionPane.QUESTION_MESSAGE, null,
-					options, options[0]);
-		}
-		return selected;
+	public void removeListener(MessageBoxInputListener l) {
+		listeners.remove(l);
+	}
+	
+	public void getString(String prompt) {
+		showTextPrompt(prompt);
+	}
+	
+	public void getChoice(String prompt, Object[] options) {
+		optionValues = new HashMap<JButton, Object>(options.length);
+		showChoicePrompt(prompt, options);
 	}
 	
 	public void display(Character speaker, String message) {
@@ -74,40 +77,66 @@ public class MessageBox extends JPanel implements MouseListener {
 		clearThread.start();
 	}
 	
+	private void showTextPrompt(String prompt) {
+		removeAll();
+		add(new JLabel(prompt));
+		add(input);
+		add(enterButton);
+	}
+	
+	private void showChoicePrompt(String prompt, Object[] options) {
+		removeAll();
+		add(new JLabel(prompt));
+		for (Object opt: options) {
+			JButton button = new JButton(opt.toString());
+			optionValues.put(button, opt);
+			button.addMouseListener(this);
+			add(button);
+		}
+	}
+	
+	private void showTextBox() {
+		removeAll();
+		add(textBox);
+	}
+	
 	private void fireEnterClicked() {
-		
+		showTextBox();
+		String rawInput = input.getText();
+		for (MessageBoxInputListener l: listeners) {
+			l.enterClicked(rawInput);
+		}
+	}
+	
+	private void fireOptionClicked(JButton option) {
+		showTextBox();
+		Object optValue = optionValues.get(option);
+		for (MessageBoxInputListener l: listeners) {
+			l.optionClicked(optValue);
+		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getComponent() == enterButton) {
 			fireEnterClicked();
+		} else {
+			JButton hitButton = (JButton) e.getComponent();
+			fireOptionClicked(hitButton);
 		}
 		
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent arg0) {}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent arg0) {}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseReleased(MouseEvent arg0) {}
 	
 }

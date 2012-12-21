@@ -38,7 +38,7 @@ public class BattleScreen extends JPanel {
 	 * 
 	 * @param fighters The fighters to add.
 	 */
-	public void startBattle(Character[][] fighters) {
+	public void initBattle(Character[][] fighters) {
 		createAllGraphics(fighters);
 		addCharacters();
 	}
