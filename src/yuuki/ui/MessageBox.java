@@ -48,10 +48,12 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	public void getString(String prompt) {
+		joinWithClearThread();
 		showTextPrompt(prompt);
 	}
 	
 	public void getChoice(String prompt, Object[] options) {
+		joinWithClearThread();
 		optionValues = new HashMap<JButton, Object>(options.length);
 		showChoicePrompt(prompt, options);
 	}
@@ -65,6 +67,7 @@ public class MessageBox extends JPanel implements MouseListener {
 				if (speaker != null) {
 					spkr = speaker.getName() + ": ";
 				}
+				System.out.println(spkr + message);
 				textBox.setText(spkr + message);
 				try {
 					Thread.sleep(5000);
@@ -80,6 +83,16 @@ public class MessageBox extends JPanel implements MouseListener {
 		}
 		clearThread = new Thread(p, "MessageBoxCleanup");
 		clearThread.start();
+	}
+	
+	private void joinWithClearThread() {
+		if (clearThread != null && clearThread.isAlive()) {
+			try {
+				clearThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void showTextPrompt(String prompt) {
@@ -114,7 +127,10 @@ public class MessageBox extends JPanel implements MouseListener {
 	private void fireEnterClicked() {
 		showTextBox();
 		String rawInput = input.getText();
-		for (MessageBoxInputListener l: listeners) {
+		// make a copy in case listeners remove themselves during iteration
+		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
+		MessageBoxInputListener[] listenersList = listeners.toArray(ls);
+		for (MessageBoxInputListener l: listenersList) {
 			l.enterClicked(rawInput);
 		}
 	}
@@ -122,7 +138,10 @@ public class MessageBox extends JPanel implements MouseListener {
 	private void fireOptionClicked(JButton option) {
 		showTextBox();
 		Object optValue = optionValues.get(option);
-		for (MessageBoxInputListener l: listeners) {
+		// make a copy in case listeners remove themselves during iteration
+		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
+		MessageBoxInputListener[] listenersList = listeners.toArray(ls);
+		for (MessageBoxInputListener l: listenersList) {
 			l.optionClicked(optValue);
 		}
 	}

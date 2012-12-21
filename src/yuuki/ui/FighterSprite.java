@@ -176,6 +176,8 @@ public class FighterSprite extends JPanel {
 		} else if (manaBar.isWatching(stat)) {
 			manaBar.update();
 		}
+		revalidate();
+		repaint();
 	}
 	
 	/**
