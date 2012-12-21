@@ -36,7 +36,7 @@ public class MessageBox extends JPanel implements MouseListener {
 		textBox = new JTextArea("", 5, 70);
 		input = new JTextField(30);
 		enterButton = new JButton("Enter");
-		add(textBox);
+		showTextBox();
 	}
 	
 	public void addListener(MessageBoxInputListener l) {
@@ -48,21 +48,24 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	public void getString(String prompt) {
-		System.out.println("Hit getString");
 		showTextPrompt(prompt);
 	}
 	
 	public void getChoice(String prompt, Object[] options) {
-		System.out.println("Hit getChoice");
 		optionValues = new HashMap<JButton, Object>(options.length);
 		showChoicePrompt(prompt, options);
 	}
 	
 	public void display(Character speaker, String message) {
 		class Pauser implements Runnable {
+			public Character speaker;
 			public String message;
 			public void run() {
-				textBox.setText(message);
+				String spkr = "";
+				if (speaker != null) {
+					spkr = speaker.getName() + ": ";
+				}
+				textBox.setText(spkr + message);
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {}
@@ -71,6 +74,7 @@ public class MessageBox extends JPanel implements MouseListener {
 		}
 		Pauser p = new Pauser();
 		p.message = message;
+		p.speaker = speaker;
 		if (clearThread != null) {
 			clearThread.interrupt();
 		}
@@ -83,6 +87,8 @@ public class MessageBox extends JPanel implements MouseListener {
 		add(new JLabel(prompt));
 		add(input);
 		add(enterButton);
+		revalidate();
+		repaint();
 	}
 	
 	private void showChoicePrompt(String prompt, Object[] options) {
@@ -94,11 +100,15 @@ public class MessageBox extends JPanel implements MouseListener {
 			button.addMouseListener(this);
 			add(button);
 		}
+		revalidate();
+		repaint();
 	}
 	
 	private void showTextBox() {
 		removeAll();
 		add(textBox);
+		revalidate();
+		repaint();
 	}
 	
 	private void fireEnterClicked() {
