@@ -153,7 +153,8 @@ public class StatBar extends JPanel {
 	 */
 	private void paintEdge(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.drawRect(0, 0, width, height);
+		// drawRect actually adds one to each dimension
+		g.drawRect(0, 0, width - 1, height - 1);
 	}
 	
 	/**
@@ -166,7 +167,7 @@ public class StatBar extends JPanel {
 		int progWidth = (int) Math.round((width - 2) * p);
 		int rectWidth = (width - 2) - progWidth;
 		g.setColor(BACKGROUND_COLOR);
-		g.fillRect(progWidth + 2, 1, rectWidth, height - 2);
+		g.fillRect(progWidth + 1, 1, rectWidth, height - 2);
 	}
 	
 	/**
