@@ -9,19 +9,12 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
-import yuuki.ui.screen.BattleScreen;
-import yuuki.ui.screen.CharacterCreationScreen;
-import yuuki.ui.screen.CharacterCreationScreenListener;
-import yuuki.ui.screen.IntroScreen;
-import yuuki.ui.screen.IntroScreenListener;
-import yuuki.ui.screen.OverworldScreen;
-import yuuki.ui.screen.OverworldScreenListener;
+import yuuki.ui.screen.*;
 
 /**
  * A user interface that uses the Swing framework.
@@ -61,7 +54,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	/**
 	 * The options screen.
 	 */
-	private JPanel optionsScreen;
+	private Screen optionsScreen;
 	
 	/**
 	 * The battle screen.
@@ -76,12 +69,12 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	/**
 	 * The pause screen.
 	 */
-	private JPanel pauseScreen;
+	private Screen pauseScreen;
 	
 	/**
 	 * The ending screen.
 	 */
-	private JPanel endingScreen;
+	private Screen endingScreen;
 	
 	/**
 	 * The object performing the actual work.
@@ -561,15 +554,16 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	}
 	
 	/**
-	 * Switches the window to the specified JPanel.
+	 * Switches the window to display the specified screen.
 	 * 
-	 * @param panel The JPanel to switch to.
+	 * @param screen The screen to switch to.
 	 */
-	private void switchWindow(JPanel panel) {
+	private void switchWindow(Screen screen) {
 		clearWindow();
-		mainWindow.add(panel, BorderLayout.CENTER);
+		mainWindow.add(screen, BorderLayout.CENTER);
 		mainWindow.add(messageBox, BorderLayout.SOUTH);
 		refreshWindow();
+		screen.setInitialFocus();
 	}
 	
 	/**
@@ -622,9 +616,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createPlayerCreationScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		charCreationScreen = new CharacterCreationScreen();
-		charCreationScreen.setPreferredSize(size);
+		charCreationScreen = new CharacterCreationScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -641,9 +633,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		introScreen = new IntroScreen();
-		introScreen.setPreferredSize(size);
+		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -651,9 +641,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createOptionsScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		optionsScreen = new JPanel();
-		optionsScreen.setPreferredSize(size);
+		optionsScreen = Screen.getInstance(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -661,9 +649,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createBattleScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		battleScreen = new BattleScreen();
-		battleScreen.setPreferredSize(size);
+		battleScreen = new BattleScreen(WINDOW_WIDTH, height);
 		battleScreen.setVisible(true);
 	}
 	
@@ -672,9 +658,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createOverworldScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		overworldScreen = new OverworldScreen();
-		overworldScreen.setPreferredSize(size);
+		overworldScreen = new OverworldScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -682,9 +666,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createPauseScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		pauseScreen = new JPanel();
-		pauseScreen.setPreferredSize(size);
+		pauseScreen = Screen.getInstance(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -692,9 +674,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createEndingScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Dimension size = new Dimension(WINDOW_WIDTH, height);
-		endingScreen = new JPanel();
-		endingScreen.setPreferredSize(size);
+		endingScreen = Screen.getInstance(WINDOW_WIDTH, height);
 	}
 
 	@Override
@@ -719,8 +699,8 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	
 	@Override
 	public void createCharacterClicked() {
-		String name = charCreationScreen.getName();
-		int level = charCreationScreen.getLevel();
+		String name = charCreationScreen.getEnteredName();
+		int level = charCreationScreen.getEnteredLevel();
 		if (!name.equals("")) {
 			mainProgram.requestCharacterCreation(name, level);
 		} else {

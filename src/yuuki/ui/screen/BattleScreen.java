@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 
 import java.util.ArrayList;
 
@@ -15,7 +14,7 @@ import yuuki.entity.Stat;
 import yuuki.ui.FighterSprite;
 
 @SuppressWarnings("serial")
-public class BattleScreen extends JPanel {
+public class BattleScreen extends Screen {
 	
 	public static final int BOTTOM_TEAM_INDEX = 0;
 	
@@ -26,7 +25,8 @@ public class BattleScreen extends JPanel {
 	/**
 	 * Creates this BattleScreen and makes it visible.
 	 */
-	public BattleScreen() {
+	public BattleScreen(int width, int height) {
+		super(width, height);
 		setLayout(new BorderLayout());
 	}
 	
@@ -38,6 +38,10 @@ public class BattleScreen extends JPanel {
 	public void initBattle(Character[][] fighters) {
 		createAllGraphics(fighters);
 		addCharacters();
+	}
+	
+	public void setInitialFocus() {
+		
 	}
 	
 	/**

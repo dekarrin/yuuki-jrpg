@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 
 @SuppressWarnings("serial")
-public class IntroScreen extends JPanel implements MouseListener {
+public class IntroScreen extends Screen implements MouseListener {
 	
 	private ArrayList<IntroScreenListener> listeners;
 	
@@ -24,7 +24,8 @@ public class IntroScreen extends JPanel implements MouseListener {
 	
 	private JButton exitButton;
 
-	public IntroScreen() {
+	public IntroScreen(int width, int height) {
+		super(width, height);
 		listeners = new ArrayList<IntroScreenListener>();
 		newGameButton = new JButton("New Game");
 		loadGameButton = new JButton("Load Game");
@@ -32,6 +33,10 @@ public class IntroScreen extends JPanel implements MouseListener {
 		exitButton = new JButton("Exit");
 		setButtonListeners();
 		build();
+	}
+	
+	public void setInitialFocus() {
+		
 	}
 	
 	public void addListener(IntroScreenListener l) {

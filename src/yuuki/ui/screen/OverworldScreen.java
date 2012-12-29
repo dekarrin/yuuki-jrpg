@@ -8,16 +8,16 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class OverworldScreen extends JPanel implements MouseListener {
+public class OverworldScreen extends Screen implements MouseListener {
 
 private ArrayList<OverworldScreenListener> listeners;
 	
 	private JButton startButton;
 
-	public OverworldScreen() {
+	public OverworldScreen(int width, int height) {
+		super(width, height);
 		setLayout(new FlowLayout());
 		listeners = new ArrayList<OverworldScreenListener>();
 		startButton = new JButton("Start");
@@ -26,6 +26,10 @@ private ArrayList<OverworldScreenListener> listeners;
 		add(new JLabel("There's nothing here yet."));
 		add(new JLabel("Hit the button to start a battle -->"));
 		add(startButton);
+	}
+	
+	public void setInitialFocus() {
+		
 	}
 	
 	public void addListener(OverworldScreenListener l) {
