@@ -2,6 +2,8 @@ package yuuki.ui.screen;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -29,6 +31,12 @@ public class CharacterCreationScreen extends JPanel implements MouseListener {
 		listeners = new ArrayList<CharacterCreationScreenListener>();
 		createCharacterButton = new JButton("Create Character");
 		nameField = new JTextField(40);
+		ActionListener enterListener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fireCreateCharacterClicked();
+			}
+		};
+		nameField.addActionListener(enterListener);
 		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
 		createCharacterButton.addMouseListener(this);
 		add(new JLabel("Name: "));
