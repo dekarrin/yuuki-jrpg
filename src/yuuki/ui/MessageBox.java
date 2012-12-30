@@ -34,6 +34,8 @@ public class MessageBox extends JPanel implements MouseListener {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
+		textBox.setEditable(false);
+		textBox.setFocusable(false);
 		input = new JTextField(30);
 		enterButton = new JButton("Enter");
 		showTextBox();
