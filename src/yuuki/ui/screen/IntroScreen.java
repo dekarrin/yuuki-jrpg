@@ -3,6 +3,7 @@ package yuuki.ui.screen;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -16,20 +17,13 @@ import javax.swing.OverlayLayout;
 @SuppressWarnings("serial")
 public class IntroScreen extends Screen implements MouseListener {
 	
-	private KeyListener enterListener = new KeyListener() {
-
+	private KeyListener enterListener = new KeyAdapter() {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				fireButtonClicked(e.getComponent());
 			}
 		}
-
-		@Override
-		public void keyReleased(KeyEvent e) {}
-
-		@Override
-		public void keyTyped(KeyEvent e) {}
 	};
 	
 	private ArrayList<IntroScreenListener> listeners;
