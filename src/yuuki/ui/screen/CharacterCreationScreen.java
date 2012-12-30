@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -31,14 +34,22 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		listeners = new ArrayList<CharacterCreationScreenListener>();
 		createCharacterButton = new JButton("Create Character");
 		nameField = new JTextField(40);
-		ActionListener enterListener = new ActionListener() {
+		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
+		ActionListener enterActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				fireCreateCharacterClicked();
 			}
 		};
-		nameField.addActionListener(enterListener);
-		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
+		KeyListener enterKeyListener = new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					fireCreateCharacterClicked();
+				}
+			}
+		};
+		nameField.addActionListener(enterActionListener);
 		createCharacterButton.addMouseListener(this);
+		createCharacterButton.addKeyListener(enterKeyListener);
 		add(new JLabel("Name: "));
 		add(nameField);
 		add(new JLabel("Level: "));
@@ -47,7 +58,7 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	}
 	
 	public void setInitialFocus() {
-		nameField.grabFocus();
+		nameField.requestFocus();
 	}
 	
 	public void addListener(CharacterCreationScreenListener l) {
