@@ -177,7 +177,7 @@ public abstract class Character {
 	public String toString() {
 		String strVer = getName() + " lv." + getLevel();
 		if (getFighterId() != -1) {
-			strVer += " on team " + getFighterId();
+			strVer += " on team " + getTeamId();
 		}
 		return strVer;
 	}
