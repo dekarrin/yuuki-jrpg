@@ -11,7 +11,7 @@ public class Flee extends Action {
     
     public Flee()
     {
-        super("Flee", 0.0, 0.0, null, null);
+        super("flee", 0.0, 0.0, null, null);
     }
     
     public Flee createInstance(String[] args) {
@@ -38,6 +38,12 @@ public class Flee extends Action {
     {
         
     }
+    
+    @Override
+    public void setOrigin(Character performer) {
+    	super.setOrigin(performer);
+    	super.addTarget(performer);
+    }
     /**
      * Using character and monster points, this method determines what the chance
      * that the character will be able to flee is.  It also returns whether the 
@@ -48,7 +54,7 @@ public class Flee extends Action {
      * @param playerLevel 
      * @return Boolean variable if character can escape.
      */
-    public boolean calculateFlee()
+    private boolean calculateFlee()
     {
         boolean flee = false;
         Random rand;

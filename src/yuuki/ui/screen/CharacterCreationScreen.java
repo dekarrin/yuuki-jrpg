@@ -28,7 +28,7 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	
 	private JSpinner levelField;
 	
-	private final String DEFAULT_NAME = "Dekky";
+	private final String DEFAULT_NAME = "Dekarrin";
 
 	public CharacterCreationScreen(int width, int height) {
 		super(width, height);
