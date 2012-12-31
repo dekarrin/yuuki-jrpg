@@ -27,6 +27,8 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	private JTextField nameField;
 	
 	private JSpinner levelField;
+	
+	private final String DEFAULT_NAME = "Dekky";
 
 	public CharacterCreationScreen(int width, int height) {
 		super(width, height);
@@ -48,6 +50,7 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 			}
 		};
 		nameField.addActionListener(enterActionListener);
+		nameField.setText(DEFAULT_NAME);
 		createCharacterButton.addMouseListener(this);
 		createCharacterButton.addKeyListener(enterKeyListener);
 		add(new JLabel("Name: "));

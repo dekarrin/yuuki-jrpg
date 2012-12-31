@@ -191,7 +191,7 @@ public class BattleScreen extends Screen {
 	 */
 	public void showCharacterRemoval(Character fighter) {
 		FighterSprite sprite =  (FighterSprite) fighter.getSprite();
-		// TODO: Search algo that runs in better than O(n) time
+		// TODO: Search that runs better than O(n) time
 		for (ArrayList<FighterSprite> teamGraphics: fighterGraphics) {
 			if (teamGraphics.remove(sprite)) {
 				break;

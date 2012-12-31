@@ -8,7 +8,6 @@ import yuuki.entity.VariableStat;
 import yuuki.action.*;
 import yuuki.buff.Buff;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -50,7 +49,6 @@ public class FighterSprite extends JPanel {
 	 */
 	public FighterSprite(Character fighter) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBorder(BorderFactory.createLineBorder(Color.RED));
 		createComponents();
 		initializeComponents(fighter);
 		addComponents();
@@ -65,6 +63,16 @@ public class FighterSprite extends JPanel {
 		int actualHeight = IMAGE_HEIGHT + N_SIZE;
 		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
 		return new Dimension(SPRITE_WIDTH, actualHeight);
+	}
+	
+	/**
+	 * Returns this FighterSprite's maximum size. This will be the same as its
+	 * preferred size.
+	 * 
+	 * @return A Dimension with this FighterSprite's size.
+	 */
+	public Dimension getMaximumSize() {
+		return getPreferredSize();
 	}
 	
 	/**
@@ -254,6 +262,7 @@ public class FighterSprite extends JPanel {
 	 */
 	private void initializeBuffPanel() {
 		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
+		buffPanel.setBackground(Color.RED);
 		buffPanel.setOpaque(true);
 		buffPanel.setVisible(true);
 	}
@@ -266,6 +275,6 @@ public class FighterSprite extends JPanel {
 		add(healthBar);
 		add(manaBar);
 		add(nameLabel);
-		add(buffPanel);
+		add(imagePanel);
 	}
 }
