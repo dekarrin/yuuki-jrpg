@@ -296,12 +296,12 @@ public class YuukiEngine implements Runnable, UiExecutor {
 
 	@Override
 	public void requestLoadGame() {
-		// TODO Auto-generated method stub
+		ui.display(null, "Loading hasn't yet been implemented.");
 	}
 
 	@Override
 	public void requestOptionsScreen() {
-		// TODO Auto-generated method stub
+		ui.display(null, "Options haven't yet been implemented.");
 	}
 
 	@Override
