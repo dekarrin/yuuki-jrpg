@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -18,7 +17,7 @@ import yuuki.entity.Character;
 @SuppressWarnings("serial")
 public class MessageBox extends JPanel implements MouseListener {
 	
-	private Thread clearThread;
+	private MessageBoxDisplayer messageDisplayer;
 
 	private JTextArea textBox;
 	
@@ -39,6 +38,8 @@ public class MessageBox extends JPanel implements MouseListener {
 		input = new JTextField(30);
 		enterButton = new JButton("Enter");
 		showTextBox();
+		messageDisplayer = new MessageBoxDisplayer(this);
+		(new Thread(messageDisplayer, "MessageDisplay")).start();
 	}
 	
 	public void addListener(MessageBoxInputListener l) {
@@ -50,54 +51,23 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	public void getString(String prompt) {
-		joinWithClearThread();
-		showTextPrompt(prompt);
+		messageDisplayer.queueStringPrompt(prompt);
 	}
 	
 	public void getChoice(String prompt, Object[] options) {
-		joinWithClearThread();
 		optionValues = new HashMap<JButton, Object>(options.length);
-		showChoicePrompt(prompt, options);
+		messageDisplayer.queueChoicePrompt(prompt, options);
 	}
 	
 	public void display(Character speaker, String message) {
-		class Pauser implements Runnable {
-			public Character speaker;
-			public String message;
-			public void run() {
-				String spkr = "";
-				if (speaker != null) {
-					spkr = speaker.getName() + ": ";
-				}
-				System.out.println(spkr + message);
-				textBox.setText(spkr + message);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {}
-				textBox.setText("");
-			}
-		}
-		Pauser p = new Pauser();
-		p.message = message;
-		p.speaker = speaker;
-		if (clearThread != null) {
-			clearThread.interrupt();
-		}
-		clearThread = new Thread(p, "MessageBoxCleanup");
-		clearThread.start();
+		messageDisplayer.queueMessage(speaker, message);
 	}
 	
-	private void joinWithClearThread() {
-		if (clearThread != null && clearThread.isAlive()) {
-			try {
-				clearThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	public void setText(String t) {
+		textBox.setText(t);
 	}
 	
-	private void showTextPrompt(String prompt) {
+	public void showTextPrompt(String prompt) {
 		removeAll();
 		add(new JLabel(prompt));
 		add(input);
@@ -106,7 +76,7 @@ public class MessageBox extends JPanel implements MouseListener {
 		repaint();
 	}
 	
-	private void showChoicePrompt(String prompt, Object[] options) {
+	public void showChoicePrompt(String prompt, Object[] options) {
 		removeAll();
 		add(new JLabel(prompt));
 		for (Object opt: options) {
@@ -119,7 +89,7 @@ public class MessageBox extends JPanel implements MouseListener {
 		repaint();
 	}
 	
-	private void showTextBox() {
+	public void showTextBox() {
 		removeAll();
 		add(textBox);
 		revalidate();
@@ -127,7 +97,7 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	private void fireEnterClicked() {
-		showTextBox();
+		messageDisplayer.resetPrompt();
 		String rawInput = input.getText();
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
@@ -138,7 +108,7 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	private void fireOptionClicked(JButton option) {
-		showTextBox();
+		messageDisplayer.resetPrompt();
 		Object optValue = optionValues.get(option);
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
