@@ -8,14 +8,14 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 
 public abstract class Skill extends Action implements Cloneable {
-
+	
 	/**
 	 * Creates a new Skill that costs the specified amount of mana.
 	 *
 	 * @inheritDoc
 	 */
 	public Skill(String name, double effect, double manaCost, Buff tBuff,
-					Buff oBuff) {
+			Buff oBuff) {
 		super(name, effect, manaCost, tBuff, oBuff);
 	}
 	
@@ -24,6 +24,7 @@ public abstract class Skill extends Action implements Cloneable {
 	 *
 	 * @return The clone.
 	 */
+	@Override
 	public Skill clone() {
 		return (Skill) super.clone();
 	}
@@ -32,6 +33,7 @@ public abstract class Skill extends Action implements Cloneable {
 	 * Attempts to apply the action by subtracting mana from the origin and
 	 * then applying the result.
 	 */
+	@Override
 	protected boolean applyCost() {
 		int manaCost = (int) cost;
 		if (origin.getMP() < manaCost) {

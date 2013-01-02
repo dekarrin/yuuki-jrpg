@@ -10,34 +10,6 @@ package yuuki.ui;
 public interface UiExecutor {
 	
 	/**
-	 * Requests that a new game be started.
-	 */
-	public void requestNewGame();
-	
-	/**
-	 * Requests that an old game be loaded.
-	 */
-	public void requestLoadGame();
-	
-	/**
-	 * Requests that the options screen be shown.
-	 */
-	public void requestOptionsScreen();
-	
-	/**
-	 * Requests that the game be exited.
-	 */
-	public void requestQuit();
-	
-	/**
-	 * Requests that a player character is created.
-	 * 
-	 * @param name The name of the player character.
-	 * @param level The level of the player character.
-	 */
-	public void requestCharacterCreation(String name, int level);
-	
-	/**
 	 * Requests that a battle be initialized and its intro shown if main. The
 	 * main battle is shown on screen, but there can only be one at a time.
 	 * Non-main battles are run through as fast as possible. Battles that
@@ -51,4 +23,32 @@ public interface UiExecutor {
 	 * Requests that the main battle be run through.
 	 */
 	public void requestBattleStart();
+	
+	/**
+	 * Requests that a player character is created.
+	 * 
+	 * @param name The name of the player character.
+	 * @param level The level of the player character.
+	 */
+	public void requestCharacterCreation(String name, int level);
+	
+	/**
+	 * Requests that an old game be loaded.
+	 */
+	public void requestLoadGame();
+	
+	/**
+	 * Requests that a new game be started.
+	 */
+	public void requestNewGame();
+	
+	/**
+	 * Requests that the options screen be shown.
+	 */
+	public void requestOptionsScreen();
+	
+	/**
+	 * Requests that the game be exited.
+	 */
+	public void requestQuit();
 }

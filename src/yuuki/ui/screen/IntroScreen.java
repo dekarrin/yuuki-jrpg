@@ -1,9 +1,9 @@
 package yuuki.ui.screen;
 
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -26,16 +26,16 @@ public class IntroScreen extends Screen implements MouseListener {
 		}
 	};
 	
-	private ArrayList<IntroScreenListener> listeners;
+	private JButton exitButton;
 	
-	private JButton newGameButton;
+	private ArrayList<IntroScreenListener> listeners;
 	
 	private JButton loadGameButton;
 	
+	private JButton newGameButton;
+	
 	private JButton optionsButton;
 	
-	private JButton exitButton;
-
 	public IntroScreen(int width, int height) {
 		super(width, height);
 		listeners = new ArrayList<IntroScreenListener>();
@@ -47,72 +47,31 @@ public class IntroScreen extends Screen implements MouseListener {
 		build();
 	}
 	
-	public void setInitialFocus() {
-		newGameButton.requestFocus();
-	}
-	
 	public void addListener(IntroScreenListener l) {
 		listeners.add(l);
 	}
 	
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
 		fireButtonClicked(c);
 	}
 	
-	public void mouseReleased(MouseEvent e) {}
-	
-	public void mousePressed(MouseEvent e) {}
-	
-	public void mouseExited(MouseEvent e) {}
-	
+	@Override
 	public void mouseEntered(MouseEvent e) {}
 	
-	private void fireButtonClicked(Component button) {
-		if (button == newGameButton) {
-			fireNewGameClicked();
-		} else if (button == loadGameButton) {
-			fireLoadGameClicked();
-		} else if (button == optionsButton) {
-			fireOptionsClicked();
-		} else if (button == exitButton) {
-			fireExitClicked();
-		}
-	}
+	@Override
+	public void mouseExited(MouseEvent e) {}
 	
-	private void fireNewGameClicked() {
-		for (IntroScreenListener l: listeners) {
-			l.newGameClicked();
-		}
-	}
+	@Override
+	public void mousePressed(MouseEvent e) {}
 	
-	private void fireLoadGameClicked() {
-		for (IntroScreenListener l: listeners) {
-			l.loadGameClicked();
-		}
-	}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 	
-	private void fireOptionsClicked() {
-		for (IntroScreenListener l: listeners) {
-			l.optionsClicked();
-		}
-	}
-	
-	private void fireExitClicked() {
-		for (IntroScreenListener l: listeners) {
-			l.exitClicked();
-		}
-	}
-	
-	private void setButtonListeners() {
-		newGameButton.addMouseListener(this);
-		loadGameButton.addMouseListener(this);
-		optionsButton.addMouseListener(this);
-		exitButton.addMouseListener(this);
-		newGameButton.addKeyListener(enterListener);
-		loadGameButton.addKeyListener(enterListener);
-		optionsButton.addKeyListener(enterListener);
-		exitButton.addKeyListener(enterListener);
+	@Override
+	public void setInitialFocus() {
+		newGameButton.requestFocus();
 	}
 	
 	private void build() {
@@ -126,5 +85,52 @@ public class IntroScreen extends Screen implements MouseListener {
 		buttonPanel.add(optionsButton);
 		buttonPanel.add(exitButton);
 		add(buttonPanel);
+	}
+	
+	private void fireButtonClicked(Component button) {
+		if (button == newGameButton) {
+			fireNewGameClicked();
+		} else if (button == loadGameButton) {
+			fireLoadGameClicked();
+		} else if (button == optionsButton) {
+			fireOptionsClicked();
+		} else if (button == exitButton) {
+			fireExitClicked();
+		}
+	}
+	
+	private void fireExitClicked() {
+		for (IntroScreenListener l: listeners) {
+			l.exitClicked();
+		}
+	}
+	
+	private void fireLoadGameClicked() {
+		for (IntroScreenListener l: listeners) {
+			l.loadGameClicked();
+		}
+	}
+	
+	private void fireNewGameClicked() {
+		for (IntroScreenListener l: listeners) {
+			l.newGameClicked();
+		}
+	}
+	
+	private void fireOptionsClicked() {
+		for (IntroScreenListener l: listeners) {
+			l.optionsClicked();
+		}
+	}
+	
+	private void setButtonListeners() {
+		newGameButton.addMouseListener(this);
+		loadGameButton.addMouseListener(this);
+		optionsButton.addMouseListener(this);
+		exitButton.addMouseListener(this);
+		newGameButton.addKeyListener(enterListener);
+		loadGameButton.addKeyListener(enterListener);
+		optionsButton.addKeyListener(enterListener);
+		exitButton.addKeyListener(enterListener);
 	}
 }

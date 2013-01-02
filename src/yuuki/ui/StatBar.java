@@ -15,22 +15,17 @@ import yuuki.entity.VariableStat;
  */
 public class StatBar extends JPanel {
 	
-	private static final long serialVersionUID = 8673785141956435286L;
-
 	/**
 	 * The color of the unfilled portion of all StatBar instances.
 	 */
 	public static final Color BACKGROUND_COLOR = new Color(79, 76, 0);
-
+	
+	private static final long serialVersionUID = 8673785141956435286L;
+	
 	/**
 	 * The color of the filled portion of this StatBar.
 	 */
 	private Color barColor;
-	
-	/**
-	 * The total width of this StatBar, including the border.
-	 */
-	private int width;
 	
 	/**
 	 * The total height of this StatBar, including the border.
@@ -38,19 +33,24 @@ public class StatBar extends JPanel {
 	private int height;
 	
 	/**
-	 * The VariableStat that this StatBar is showing.
-	 */
-	private VariableStat stat;
-	
-	/**
 	 * The level of the fighter who owns this StatBar's VariableStat.
 	 */
 	private int level;
 	
 	/**
+	 * The VariableStat that this StatBar is showing.
+	 */
+	private VariableStat stat;
+	
+	/**
 	 * The currently-displayed value of this StatBar.
 	 */
 	private int value;
+	
+	/**
+	 * The total width of this StatBar, including the border.
+	 */
+	private int width;
 	
 	/**
 	 * Creates a new StatBar with the given dimensions and whose filled portion
@@ -70,35 +70,22 @@ public class StatBar extends JPanel {
 	}
 	
 	/**
-	 * Sets this StatBar to be associated with a VariableStat. Subsequent calls
-	 * to update() will use this VaraibleStat to set values.
+	 * Gets the percent of this StatBar that is currently filled.
 	 * 
-	 * @param stat The VariableStat to associate with this StatBar.
+	 * @return The percent filled.
 	 */
-	public void setStat(VariableStat stat) {
-		this.stat = stat;
-		this.value = stat.getCurrent();
+	public double getPercent() {
+		return (double) stat.getCurrent() / stat.getMax(level);
 	}
 	
 	/**
-	 * Sets the level of the fighter that owns this StatBar's VariableStat.
+	 * Gets the preferred size of this component.
 	 * 
-	 * @param level The level.
+	 * @return A Dimension containing the preferred size.
 	 */
-	public void setLevel(int level) {
-		this.level = level;
-	}
-	
-	/**
-	 * Updates this StatBar to show the value of its associated VariableStat.
-	 * If it is a new value, this StatBar is repainted.
-	 */
-	public void update() {
-		if (stat.getCurrent() != this.value) {
-			repaint(1, 1, width - 2, height - 2);
-			this.value = stat.getCurrent();
-			repaint(1, 1, width - 2, height - 2);
-		}
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(width, height);
 	}
 	
 	/**
@@ -115,46 +102,35 @@ public class StatBar extends JPanel {
 	}
 	
 	/**
-	 * Gets the percent of this StatBar that is currently filled.
+	 * Sets the level of the fighter that owns this StatBar's VariableStat.
 	 * 
-	 * @return The percent filled.
+	 * @param level The level.
 	 */
-	public double getPercent() {
-		return (double) stat.getCurrent() / stat.getMax(level);
+	public void setLevel(int level) {
+		this.level = level;
 	}
 	
 	/**
-	 * Gets the preferred size of this component.
+	 * Sets this StatBar to be associated with a VariableStat. Subsequent calls
+	 * to update() will use this VaraibleStat to set values.
 	 * 
-	 * @return A Dimension containing the preferred size.
+	 * @param stat The VariableStat to associate with this StatBar.
 	 */
-	public Dimension getPreferredSize() {
-		return new Dimension(width, height);
+	public void setStat(VariableStat stat) {
+		this.stat = stat;
+		this.value = stat.getCurrent();
 	}
 	
 	/**
-	 * Paints this component on a graphical context.
-	 * 
-	 * @param g The graphical context to paint this component on.
+	 * Updates this StatBar to show the value of its associated VariableStat.
+	 * If it is a new value, this StatBar is repainted.
 	 */
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Color old = g.getColor();
-		paintEdge(g);
-		paintBackground(g);
-		paintProgress(g);
-		g.setColor(old);
-	}
-	
-	/**
-	 * Paints the border of this component on a graphical context.
-	 * 
-	 * @param g The graphical context to paint the border on.
-	 */
-	private void paintEdge(Graphics g) {
-		g.setColor(Color.BLACK);
-		// drawRect actually adds one to each dimension
-		g.drawRect(0, 0, width - 1, height - 1);
+	public void update() {
+		if (stat.getCurrent() != this.value) {
+			repaint(1, 1, width - 2, height - 2);
+			this.value = stat.getCurrent();
+			repaint(1, 1, width - 2, height - 2);
+		}
 	}
 	
 	/**
@@ -171,6 +147,17 @@ public class StatBar extends JPanel {
 	}
 	
 	/**
+	 * Paints the border of this component on a graphical context.
+	 * 
+	 * @param g The graphical context to paint the border on.
+	 */
+	private void paintEdge(Graphics g) {
+		g.setColor(Color.BLACK);
+		// drawRect actually adds one to each dimension
+		g.drawRect(0, 0, width - 1, height - 1);
+	}
+	
+	/**
 	 * Paints the filled foreground of this component on a graphical context.
 	 * 
 	 * @param g The graphical context to paint the foreground on.
@@ -180,6 +167,21 @@ public class StatBar extends JPanel {
 		int progWidth = (int) Math.round((width - 2) * p);
 		g.setColor(barColor);
 		g.fillRect(1, 1, progWidth, height - 2);
+	}
+	
+	/**
+	 * Paints this component on a graphical context.
+	 * 
+	 * @param g The graphical context to paint this component on.
+	 */
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Color old = g.getColor();
+		paintEdge(g);
+		paintBackground(g);
+		paintProgress(g);
+		g.setColor(old);
 	}
 	
 }

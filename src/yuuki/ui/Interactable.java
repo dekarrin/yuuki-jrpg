@@ -6,13 +6,150 @@ package yuuki.ui;
 
 import java.util.ArrayList;
 
+import yuuki.action.Action;
+import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
-import yuuki.buff.Buff;
-import yuuki.action.Action;
 
 public interface Interactable {
-
+	
+	/**
+	 * Gets a confirmation from the user.
+	 *
+	 * @param prompt The prompt to show the user.
+	 * @param yes The text for the true answer.
+	 * @param no The text for the false answer.
+	 *
+	 * @return True if the user chose the yes text; otherwise false.
+	 */
+	public boolean confirm(String prompt, String yes, String no);
+	
+	/**
+	 * Takes down the interface. This is the last method that should be called,
+	 * and implementers can use it to destroy any necessary supporting
+	 * instances.
+	 */
+	public void destroy();
+	
+	/**
+	 * Displays a message to the user.
+	 *
+	 * @param speaker The person doing the talking. Null for none.
+	 * @param message The message to display.
+	 */
+	public void display(Character speaker, String message);
+	
+	/**
+	 * Gets a choice from the user. The choice may be one of the given Objects
+	 * in the array. Each of the Objects should have a valid toString() method.
+	 *
+	 * @param options The Objects from which the user must choose.
+	 *
+	 * @return The user's choice.
+	 */
+	public Object getChoice(Object[] options);
+	
+	/**
+	 * Gets a choice from the user. The choice may be one of the given Objects
+	 * in the array. Each of the Objects should have a valid toString() method.
+	 *
+	 * @param prompt The prompt to show the user.
+	 * @param options The Objects from which the user must choose.
+	 *
+	 * @return The user's choice.
+	 */
+	public Object getChoice(String prompt, Object[] options);
+	
+	/**
+	 * Gets a double from the user.
+	 *
+	 * @return The entered double.
+	 */
+	public double getDouble();
+	
+	/**
+	 * Gets a double in a range from the user
+	 *
+	 * @param min The minimum that the input can be.
+	 * @param max The maximum that the input can be.
+	 *
+	 * @return A number in the given range.
+	 */
+	public double getDouble(double min, double max);
+	
+	/**
+	 * Gets a double from the user.
+	 *
+	 * @param prompt The prompt to show the user.
+	 *
+	 * @return The entered double.
+	 */
+	public double getDouble(String prompt);
+	
+	/**
+	 * Gets a double in a range from the user
+	 *
+	 * @param prompt The prompt to show the user.
+	 * @param min The minimum that the input can be.
+	 * @param max The maximum that the input can be.
+	 *
+	 * @return A number in the given range.
+	 */
+	public double getDouble(String prompt, double min, double max);
+	
+	/**
+	 * Gets an int from the user.
+	 *
+	 * @return The entered int.
+	 */
+	public int getInt();
+	
+	/**
+	 * Gets an int in a range from the user.
+	 *
+	 * @param min The minimum that the input can be.
+	 * @param max The maximum that the input can be.
+	 *
+	 * @return A number in the given range.
+	 */
+	public int getInt(int min, int max);
+	
+	/**
+	 * Gets an int from the user.
+	 *
+	 * @param prompt The prompt to show the user.
+	 *
+	 * @return The entered int.
+	 */
+	public int getInt(String prompt);
+	
+	/**
+	 * Gets an int in a range from the user.
+	 *
+	 * @param prompt The prompt to show the user.
+	 * @param min The minimum that the input can be.
+	 * @param max The maximum that the input can be.
+	 *
+	 * @return A number in the given range.
+	 */
+	public int getInt(String prompt, int min, int max);
+	
+	/**
+	 * Gets a String from the user.
+	 *
+	 * @return The entered String.
+	 */
+	public String getString();
+	
+	/**
+	 * Gets a String from the user.
+	 *
+	 * @param prompt The prompt to show the user.
+	 *
+	 * @return The entered String.
+	 */
+	public String getString(String prompt);
+	
 	/**
 	 * Sets up the interface. This is the first method that should be called,
 	 * and implementers can use it to create any necessary supporting classes
@@ -21,76 +158,36 @@ public interface Interactable {
 	public void initialize();
 	
 	/**
-	 * Takes down the interface. This is the last method that should be called,
-	 * and implementers can use it to destroy any necessary supporting
-	 * instances.
-	 */
-	public void destroy();
-        
-	/**
-	 * Shows the Player Name screen.
-	 */
-	public void switchToIntroScreen();
-        
-	/**
-	 * Shows the options screen.
-	 */
-	public void switchToOptionsScreen();
-        
-	/**
-	 * Shows the battle screen.
+	 * Plays a sound from an audio file.
 	 *
-	 * @param fighters The characters fighting.
+	 * @param path The file name of the sound.
 	 */
-	public void switchToBattleScreen(Character[][] fighters);
+	public void playSound(String path);
 	
 	/**
-	 * Shows the player creation screen.
+	 * Gets the action that a player wishes to do.
+	 *
+	 * @param moves The moves from which the player may select.
+	 *
+	 * @return The selected Action.
 	 */
-	public void switchToCharacterCreationScreen();
+	public Action selectAction(Action[] moves);
 	
 	/**
-	 * Updates the displayed stats of a character during a battle.
+	 * Gets the target of a move.
 	 *
-	 * @param fighter The Character to update.
+	 * @param fighters The characters to select from.
+	 *
+	 * @return The selected target.
 	 */
-	public void showStatUpdate(Character fighter);
+	public Character selectTarget(ArrayList<ArrayList<Character>> fighters);
 	
 	/**
-	 * Shows that damage occurred to a character.
+	 * Shows a character fail at an attack.
 	 *
-	 * @param fighter The affected character.
-	 * @param stat The affected stat
-	 * @param damage The amount of damage
+	 * @param action The move used.
 	 */
-	public void showDamage(Character fighter, Stat stat, int damage);
-	
-	/**
-	 * Shows that damage occurred to a character.
-	 *
-	 * @param fighter The affected character.
-	 * @param stat The affected stat
-	 * @param damage The amount of damage
-	 */
-	public void showDamage(Character fighter, Stat stat, double damage);
-	
-	/**
-	 * Shows that recovery occurred to a character.
-	 *
-	 * @param fighter The affected character.
-	 * @param stat The affected stat.
-	 * @param amount The amount of recovery.
-	 */
-	public void showRecovery(Character fighter, Stat stat, double amount);
-	
-	/**
-	 * Shows that recovery occurred to a character.
-	 *
-	 * @param fighter The affected character.
-	 * @param stat The affected stat.
-	 * @param amount The amount of recovery.
-	 */
-	public void showRecovery(Character fighter, Stat stat, int amount);
+	public void showActionFailure(Action action);
 	
 	/**
 	 * Shows that a character is preparing to use an attack.
@@ -105,13 +202,6 @@ public interface Interactable {
 	 * @param action The move used.
 	 */
 	public void showActionUse(Action action);
-	
-	/**
-	 * Shows a character fail at an attack.
-	 *
-	 * @param action The move used.
-	 */
-	public void showActionFailure(Action action);
 	
 	/**
 	 * Shows a buff activating.
@@ -149,6 +239,76 @@ public interface Interactable {
 	public void showCharacterVictory(Character[] fighters);
 	
 	/**
+	 * Shows that damage occurred to a character.
+	 *
+	 * @param fighter The affected character.
+	 * @param stat The affected stat
+	 * @param damage The amount of damage
+	 */
+	public void showDamage(Character fighter, Stat stat, double damage);
+	
+	/**
+	 * Shows that damage occurred to a character.
+	 *
+	 * @param fighter The affected character.
+	 * @param stat The affected stat
+	 * @param damage The amount of damage
+	 */
+	public void showDamage(Character fighter, Stat stat, int damage);
+	
+	/**
+	 * Shows that recovery occurred to a character.
+	 *
+	 * @param fighter The affected character.
+	 * @param stat The affected stat.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, double amount);
+	
+	/**
+	 * Shows that recovery occurred to a character.
+	 *
+	 * @param fighter The affected character.
+	 * @param stat The affected stat.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, int amount);
+	
+	/**
+	 * Updates the displayed stats of a character during a battle.
+	 *
+	 * @param fighter The Character to update.
+	 */
+	public void showStatUpdate(Character fighter);
+	
+	/**
+	 * Shows the battle screen.
+	 *
+	 * @param fighters The characters fighting.
+	 */
+	public void switchToBattleScreen(Character[][] fighters);
+	
+	/**
+	 * Shows the player creation screen.
+	 */
+	public void switchToCharacterCreationScreen();
+	
+	/**
+	 * Shows the ending screen.
+	 */
+	public void switchToEndingScreen();
+	
+	/**
+	 * Shows the Player Name screen.
+	 */
+	public void switchToIntroScreen();
+	
+	/**
+	 * Shows the options screen.
+	 */
+	public void switchToOptionsScreen();
+	
+	/**
 	 * Shows the overworld.
 	 */
 	public void switchToOverworldScreen();
@@ -157,164 +317,4 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
-	
-	/**
-	 * Shows the ending screen.
-	 */
-	public void switchToEndingScreen();
-	
-	/**
-	 * Gets a String from the user.
-	 *
-	 * @param prompt The prompt to show the user.
-	 *
-	 * @return The entered String.
-	 */
-	public String getString(String prompt);
-	
-	/**
-	 * Gets a String from the user.
-	 *
-	 * @return The entered String.
-	 */
-	public String getString();
-	
-	/**
-	 * Gets an int from the user.
-	 *
-	 * @param prompt The prompt to show the user.
-	 *
-	 * @return The entered int.
-	 */
-	public int getInt(String prompt);
-	
-	/**
-	 * Gets an int from the user.
-	 *
-	 * @return The entered int.
-	 */
-	public int getInt();
-	
-	/**
-	 * Gets an int in a range from the user.
-	 *
-	 * @param prompt The prompt to show the user.
-	 * @param min The minimum that the input can be.
-	 * @param max The maximum that the input can be.
-	 *
-	 * @return A number in the given range.
-	 */
-	public int getInt(String prompt, int min, int max);
-	
-	/**
-	 * Gets an int in a range from the user.
-	 *
-	 * @param min The minimum that the input can be.
-	 * @param max The maximum that the input can be.
-	 *
-	 * @return A number in the given range.
-	 */
-	public int getInt(int min, int max);
-	
-	/**
-	 * Gets a double from the user.
-	 *
-	 * @param prompt The prompt to show the user.
-	 *
-	 * @return The entered double.
-	 */
-	public double getDouble(String prompt);
-	
-	/**
-	 * Gets a double from the user.
-	 *
-	 * @return The entered double.
-	 */
-	public double getDouble();
-	
-	/**
-	 * Gets a double in a range from the user
-	 *
-	 * @param prompt The prompt to show the user.
-	 * @param min The minimum that the input can be.
-	 * @param max The maximum that the input can be.
-	 *
-	 * @return A number in the given range.
-	 */
-	public double getDouble(String prompt, double min, double max);
-	
-	/**
-	 * Gets a double in a range from the user
-	 *
-	 * @param min The minimum that the input can be.
-	 * @param max The maximum that the input can be.
-	 *
-	 * @return A number in the given range.
-	 */
-	public double getDouble(double min, double max);
-	
-	/**
-	 * Gets a choice from the user. The choice may be one of the given Objects
-	 * in the array. Each of the Objects should have a valid toString() method.
-	 *
-	 * @param prompt The prompt to show the user.
-	 * @param options The Objects from which the user must choose.
-	 *
-	 * @return The user's choice.
-	 */
-	public Object getChoice(String prompt, Object[] options);
-	
-	/**
-	 * Gets a choice from the user. The choice may be one of the given Objects
-	 * in the array. Each of the Objects should have a valid toString() method.
-	 *
-	 * @param options The Objects from which the user must choose.
-	 *
-	 * @return The user's choice.
-	 */
-	public Object getChoice(Object[] options);
-	
-	/**
-	 * Gets a confirmation from the user.
-	 *
-	 * @param prompt The prompt to show the user.
-	 * @param yes The text for the true answer.
-	 * @param no The text for the false answer.
-	 *
-	 * @return True if the user chose the yes text; otherwise false.
-	 */
-	public boolean confirm(String prompt, String yes, String no);
-	
-	/**
-	 * Gets the action that a player wishes to do.
-	 *
-	 * @param moves The moves from which the player may select.
-	 *
-	 * @return The selected Action.
-	 */
-	public Action selectAction(Action[] moves);
-	
-	/**
-	 * Gets the target of a move.
-	 *
-	 * @param fighters The characters to select from.
-	 *
-	 * @return The selected target.
-	 */
-	public Character selectTarget(ArrayList<ArrayList<Character>> fighters);
-	
-	/**
-	 * Plays a sound from an audio file.
-	 *
-	 * @param path The file name of the sound.
-	 */
-	public void playSound(String path);
-	
-	/**
-	 * Displays a message to the user.
-	 *
-	 * @param speaker The person doing the talking. Null for none.
-	 * @param message The message to display.
-	 */
-	public void display(Character speaker, String message);
 }

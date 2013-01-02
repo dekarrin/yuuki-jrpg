@@ -5,7 +5,7 @@
 package yuuki.buff;
 
 public class DefenseBuff extends PassiveBuff implements Cloneable {
-
+	
 	/**
 	 * Creates a new Buff for a Character.
 	 *
@@ -23,6 +23,7 @@ public class DefenseBuff extends PassiveBuff implements Cloneable {
 	 *
 	 * @return The clone.
 	 */
+	@Override
 	public DefenseBuff clone() {
 		return (DefenseBuff) super.clone();
 	}
@@ -30,6 +31,7 @@ public class DefenseBuff extends PassiveBuff implements Cloneable {
 	/**
 	 * @inheritDoc
 	 */
+	@Override
 	protected void applyActivationEffect() {
 		target.addDefenseMod(effect);
 	}
@@ -37,8 +39,9 @@ public class DefenseBuff extends PassiveBuff implements Cloneable {
 	/**
 	 * @inheritDoc
 	 */
+	@Override
 	protected void applyDeactivationEffect() {
 		target.removeDefenseMod(effect);
 	}
-
+	
 }

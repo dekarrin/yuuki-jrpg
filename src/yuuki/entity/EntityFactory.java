@@ -8,7 +8,11 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import yuuki.action.*;
+
+import yuuki.action.Action;
+import yuuki.action.BasicAttack;
+import yuuki.action.BasicDefense;
+import yuuki.action.Flee;
 import yuuki.ui.Interactable;
 
 /**
@@ -16,57 +20,57 @@ import yuuki.ui.Interactable;
  */
 public class EntityFactory {
 	
-	public static final String MONSTERS_FILE = "/yuuki/resource/monsters.csv";
-	
-	public static final String ACTIONS_FILE = "/yuuki/resource/actions.csv";
-	
 	private class ActionDefinition {
-		public String name;
-		public int id;
 		public String[] args;
+		public int id;
+		public String name;
 	}
-
+	
 	private class EntityDefinition {
+		public int acc = 0;
+		public int accg = 0;
+		public int agl = 0;
+		public int aglg = 0;
+		public int[] attacks;
+		public int def = 0;		// defense
+		public int defg = 0;	// defense gain
+		public int hp = 0;
+		public int hpg = 0;
+		public int luk = 0;
+		public int lukg = 0;
+		public int mag = 0;
+		public int magg = 0;
+		public int mp = 0;
+		public int mpg = 0;
 		public String name;
 		public int str = 0;		// strength
 		public int strg = 0;	// strength gain
-		public int def = 0;		// defense
-		public int defg = 0;	// defense gain
-		public int mag = 0;
-		public int magg = 0;
-		public int agl = 0;
-		public int aglg = 0;
-		public int acc = 0;
-		public int accg = 0;
-		public int luk = 0;
-		public int lukg = 0;
-		public int hp = 0;
-		public int hpg = 0;
-		public int mp = 0;
-		public int mpg = 0;
 		public int xp = 0;
-		public int[] attacks;
 	}
 	
 	private class StatModel {
-		public String name;
-		public VariableStat hp;
-		public VariableStat mp;
-		public Stat str;
-		public Stat def;
-		public Stat agl;
 		public Stat acc;
-		public Stat mag;
+		public Stat agl;
+		public Stat def;
+		public VariableStat hp;
 		public Stat luk;
+		public Stat mag;
 		public Action[] moves;
+		public VariableStat mp;
+		public String name;
+		public Stat str;
 		public int xp;
 	}
 	
-	private HashMap<String, EntityDefinition> entities;
+	public static final String ACTIONS_FILE = "/yuuki/resource/actions.csv";
+	
+	public static final String MONSTERS_FILE = "/yuuki/resource/monsters.csv";
+	
+	private HashMap<String, Action> actionBases;
 	
 	private HashMap<Integer, ActionDefinition> actions;
 	
-	private HashMap<String, Action> actionBases;
+	private HashMap<String, EntityDefinition> entities;
 	
 	public EntityFactory() {
 		entities = new HashMap<String, EntityDefinition>();
@@ -83,14 +87,13 @@ public class EntityFactory {
 		}
 	}
 	
-	/**
-	 * Returns an array containing the names of all defined entities.
-	 * 
-	 * @return The entities.
-	 */
-	public String[] getEntityNames() {
-		String[] names = entities.keySet().toArray(new String[0]);
-		return names;
+	public NonPlayerCharacter createNpc(String name, int level) {
+		StatModel sm = getStatModel(name);
+		NonPlayerCharacter m;
+		m = new NonPlayerCharacter(	sm.name, level, sm.moves, sm.hp, sm.mp,
+				sm.str, sm.def, sm.agl, sm.acc, sm.mag,
+				sm.luk, sm.xp);
+		return m;
 	}
 	
 	public PlayerCharacter createPlayer(String name, int level,
@@ -98,35 +101,9 @@ public class EntityFactory {
 		StatModel sm = getStatModel("__PLAYER");
 		PlayerCharacter m;
 		m = new PlayerCharacter(	name, level, sm.moves, sm.hp, sm.mp,
-									sm.str, sm.def, sm.agl, sm.acc, sm.mag,
-									sm.luk, ui);
+				sm.str, sm.def, sm.agl, sm.acc, sm.mag,
+				sm.luk, ui);
 		return m;
-	}
-	
-	public NonPlayerCharacter createNpc(String name, int level) {
-		StatModel sm = getStatModel(name);
-		NonPlayerCharacter m;
-		m = new NonPlayerCharacter(	sm.name, level, sm.moves, sm.hp, sm.mp,
-									sm.str, sm.def, sm.agl, sm.acc, sm.mag,
-									sm.luk, sm.xp);
-		return m;
-	}
-	
-	/**
-	 * 
-	 * @param size
-	 * @param levelMin
-	 * @param levelMax
-	 * @param names Leave null for any random entity.
-	 * @return
-	 */
-	public NonPlayerCharacter[] createRandomNpcTeam(int size, int levelMin,
-			int levelMax, String... names) {
-		NonPlayerCharacter[] entities = new NonPlayerCharacter[size];
-		for (int i = 0; i < size; i++) {
-			entities[i] = createRandomNpc(levelMin, levelMax, names);
-		}
-		return entities;
 	}
 	
 	/**
@@ -157,6 +134,39 @@ public class EntityFactory {
 		return entity;
 	}
 	
+	/**
+	 * 
+	 * @param size
+	 * @param levelMin
+	 * @param levelMax
+	 * @param names Leave null for any random entity.
+	 * @return
+	 */
+	public NonPlayerCharacter[] createRandomNpcTeam(int size, int levelMin,
+			int levelMax, String... names) {
+		NonPlayerCharacter[] entities = new NonPlayerCharacter[size];
+		for (int i = 0; i < size; i++) {
+			entities[i] = createRandomNpc(levelMin, levelMax, names);
+		}
+		return entities;
+	}
+	
+	/**
+	 * Returns an array containing the names of all defined entities.
+	 * 
+	 * @return The entities.
+	 */
+	public String[] getEntityNames() {
+		String[] names = entities.keySet().toArray(new String[0]);
+		return names;
+	}
+	
+	private void createBaseActions() {
+		actionBases.put("BasicAttack", new BasicAttack(0));
+		actionBases.put("BasicDefense", new BasicDefense(0));
+		actionBases.put("Flee", new Flee());
+	}
+	
 	private StatModel getStatModel(String name) {
 		StatModel sm = new StatModel();
 		EntityDefinition md = entities.get(name.toLowerCase());
@@ -178,65 +188,6 @@ public class EntityFactory {
 		}
 		sm.xp = md.xp;
 		return sm;
-	}
-	
-	private void createBaseActions() {
-		actionBases.put("BasicAttack", new BasicAttack(0));
-		actionBases.put("BasicDefense", new BasicDefense(0));
-		actionBases.put("Flee", new Flee());
-	}
-	
-	private void readMonsterDefinitions() throws FileNotFoundException,
-	IOException {
-		BufferedReader r = null;
-		InputStream file = getClass().getResourceAsStream(MONSTERS_FILE);
-		r = new BufferedReader(new InputStreamReader(file));
-		String line = null;
-		int num = 1;
-		while ((line = r.readLine()) != null) {
-			if (line.charAt(0) != '#') {
-				try {
-					// entity names are case-insensitive
-					EntityDefinition md = parseMonsterDefinition(line);
-					entities.put(md.name.toLowerCase(), md);
-				} catch(RuntimeException e) {
-					System.err.println("Error parsing line #" + num + " of " +
-							"monster definitions file.");
-				}
-			}
-			num++;
-		}
-		r.close();
-	}
-	
-	private void readActionDefinitions() throws FileNotFoundException,
-	IOException {
-		BufferedReader r = null;
-		InputStream file = getClass().getResourceAsStream(ACTIONS_FILE);
-		r = new BufferedReader(new InputStreamReader(file));
-		String line = null;
-		int num = 1;
-		while ((line = r.readLine()) != null) {
-			if (line.charAt(0) != '#') {
-				try {
-					ActionDefinition ad = parseActionDefinition(line);
-					actions.put(ad.id, ad);
-				} catch(RuntimeException e) {
-					System.err.println("Error parsing line #" + num + " of " +
-							"action definitions file.");
-				}
-			}
-			num++;
-		}
-		r.close();
-	}
-	
-	private int[] parseToInts(String[] toParse, int start) {
-		int[] parsed = new int[toParse.length-start];
-		for (int i = start; i < toParse.length; i++) {
-			parsed[i - start] = Integer.parseInt(toParse[i]);
-		}
-		return parsed;
 	}
 	
 	private ActionDefinition parseActionDefinition(String line) {
@@ -277,6 +228,36 @@ public class EntityFactory {
 		return md;
 	}
 	
+	private int[] parseToInts(String[] toParse, int start) {
+		int[] parsed = new int[toParse.length-start];
+		for (int i = start; i < toParse.length; i++) {
+			parsed[i - start] = Integer.parseInt(toParse[i]);
+		}
+		return parsed;
+	}
+	
+	private void readActionDefinitions() throws FileNotFoundException,
+	IOException {
+		BufferedReader r = null;
+		InputStream file = getClass().getResourceAsStream(ACTIONS_FILE);
+		r = new BufferedReader(new InputStreamReader(file));
+		String line = null;
+		int num = 1;
+		while ((line = r.readLine()) != null) {
+			if (line.charAt(0) != '#') {
+				try {
+					ActionDefinition ad = parseActionDefinition(line);
+					actions.put(ad.id, ad);
+				} catch(RuntimeException e) {
+					System.err.println("Error parsing line #" + num + " of " +
+							"action definitions file.");
+				}
+			}
+			num++;
+		}
+		r.close();
+	}
+	
 	private String[] readCsv(String line) {
 		String[] parts = line.split(",");
 		for (int i = 0; i < parts.length; i++) {
@@ -307,6 +288,29 @@ public class EntityFactory {
 			}
 		}
 		return parts;
+	}
+	
+	private void readMonsterDefinitions() throws FileNotFoundException,
+	IOException {
+		BufferedReader r = null;
+		InputStream file = getClass().getResourceAsStream(MONSTERS_FILE);
+		r = new BufferedReader(new InputStreamReader(file));
+		String line = null;
+		int num = 1;
+		while ((line = r.readLine()) != null) {
+			if (line.charAt(0) != '#') {
+				try {
+					// entity names are case-insensitive
+					EntityDefinition md = parseMonsterDefinition(line);
+					entities.put(md.name.toLowerCase(), md);
+				} catch(RuntimeException e) {
+					System.err.println("Error parsing line #" + num + " of " +
+							"monster definitions file.");
+				}
+			}
+			num++;
+		}
+		r.close();
 	}
 	
 }

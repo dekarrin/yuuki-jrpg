@@ -10,36 +10,22 @@ package yuuki.action;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
-import yuuki.buff.Buff;
 
 public abstract class Action implements Cloneable {
-
+	
 	/**
 	 * The teams that were affected by this Action.
 	 */
 	private HashSet<Integer> affectedTeams;
-
-	/**
-	 * The Buff that is applied to the target.
-	 */
-	protected Buff targetBuff;
 	
 	/**
-	 * The Buff that is applied to the origin.
+	 * The name of this Action; used for display purposes.
 	 */
-	protected Buff originBuff;
-	
-	/**
-	 * Where this Action came from; who is doing the Action.
-	 */
-	protected Character origin;
-	
-	/**
-	 * The targets to whom the Action is to be applied.
-	 */
-	protected ArrayList<Character> targets;
+	private String name;
 	
 	/**
 	 * The actual effects after application of this action.
@@ -47,19 +33,9 @@ public abstract class Action implements Cloneable {
 	protected int[] actualEffects;
 	
 	/**
-	 * The amount of effect of this Action.
-	 */
-	protected double effect;
-	
-	/**
 	 * The amount of cost of this Action.
 	 */
 	protected double cost;
-	
-	/**
-	 * Whether the last application of this Action was successful.
-	 */
-	protected boolean successful;
 	
 	/**
 	 * The stat that this Action applies cost to.
@@ -67,14 +43,39 @@ public abstract class Action implements Cloneable {
 	protected Stat costStat;
 	
 	/**
+	 * The amount of effect of this Action.
+	 */
+	protected double effect;
+	
+	/**
 	 * The stat that this Action applied the effect to.
 	 */
 	protected Stat effectStat;
 	
 	/**
-	 * The name of this Action; used for display purposes.
+	 * Where this Action came from; who is doing the Action.
 	 */
-	private String name;
+	protected Character origin;
+	
+	/**
+	 * The Buff that is applied to the origin.
+	 */
+	protected Buff originBuff;
+	
+	/**
+	 * Whether the last application of this Action was successful.
+	 */
+	protected boolean successful;
+	
+	/**
+	 * The Buff that is applied to the target.
+	 */
+	protected Buff targetBuff;
+	
+	/**
+	 * The targets to whom the Action is to be applied.
+	 */
+	protected ArrayList<Character> targets;
 	
 	/**
 	 * Creates a new Action.
@@ -86,7 +87,7 @@ public abstract class Action implements Cloneable {
 	 * @param originBuff The buff that is applied to the origin.
 	 */
 	public Action(String name, double effect, double cost, Buff targetBuff,
-					Buff originBuff) {
+			Buff originBuff) {
 		this.name = name;
 		this.effect = effect;
 		this.cost = cost;
@@ -99,41 +100,19 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
-	 * Allows the creation of an instance without knowing the arguments.
-	 * 
-	 * @param args The arguments to the creation of an instance.
-	 */
-	public abstract Action createInstance(String[] args);
-	
-	/**
-	 * Clones this Action.
+	 * Adds a target to the list.
 	 *
-	 * @return A clone of this Action.
+	 * @param t The fighter to add to the target list.
 	 */
-	@SuppressWarnings("unchecked")
-	public Action clone() {
-		Action a2 = null;
-		try {
-			a2 = (Action) super.clone();
-		} catch(CloneNotSupportedException e) {
-			e.printStackTrace();
-			System.exit(1);
+	public void addTarget(Character t) {
+		targets.add(t);
+		int[] newEffects = new int[actualEffects.length + 1];
+		for (int i = 0; i < actualEffects.length; i++) {
+			newEffects[i] = actualEffects[i];
 		}
-		if (this.targetBuff != null) {
-			a2.targetBuff = this.targetBuff.clone();
-		}
-		if (this.originBuff != null) {
-			a2.originBuff = this.originBuff.clone();
-		}
-		// targets contents shallow-copied
-		a2.targets = (ArrayList<Character>) this.targets.clone();
-		// origin shallow-copied
-		// name shallow-copied
-		a2.actualEffects = new int[this.actualEffects.length];
-		for (int i = 0; i < this.actualEffects.length; i++) {
-			a2.actualEffects[i] = this.actualEffects[i];
-		}
-		return a2;
+		newEffects[newEffects.length - 1] = 0;
+		actualEffects = newEffects;
+		setCostAndEffectStats(t);
 	}
 	
 	/**
@@ -167,85 +146,59 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
-	 * Gets the name of this Action.
-	 *
-	 * @return This Action's name.
+	 * Removes all current targets.
 	 */
-	public String getName() {
-		return name;
+	public void clearTargets() {
+		this.targets.clear();
 	}
 	
 	/**
-	 * Gets the string version of this Action. Its name is returned.
-	 * 
-	 * @return This Action's name.
-	 */
-	public String toString() {
-		return getName();
-	}
-	
-	/**
-	 * Gets the effect of this Action.
+	 * Clones this Action.
 	 *
-	 * @return The effect value of this Action.
+	 * @return A clone of this Action.
 	 */
-	public double getEffect() {
-		return effect;
-	}
-	
-	/**
-	 * Gets the cost of this Action.
-	 *
-	 * @return The amount that this Action costs.
-	 */
-	public double getCost() {
-		return cost;
-	}
-	
-	/**
-	 * Sets the performer of this Action.
-	 *
-	 * @param performer The Character performing the action.
-	 */
-	public void setOrigin(Character performer) {
-		origin = performer;
-		setCostAndEffectStats(performer);
-	}
-	
-	/**
-	 * Gets the performer of this Action.
-	 *
-	 * @return The Character performing this Action if origin was set;
-	 * otherwise, null.
-	 */
-	public Character getOrigin() {
-		return origin;
-	}
-	
-	/**
-	 * Adds a target to the list.
-	 *
-	 * @param t The fighter to add to the target list.
-	 */
-	public void addTarget(Character t) {
-		targets.add(t);
-		int[] newEffects = new int[actualEffects.length + 1];
-		for (int i = 0; i < actualEffects.length; i++) {
-			newEffects[i] = actualEffects[i];
+	@Override
+	@SuppressWarnings("unchecked")
+	public Action clone() {
+		Action a2 = null;
+		try {
+			a2 = (Action) super.clone();
+		} catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
-		newEffects[newEffects.length - 1] = 0;
-		actualEffects = newEffects;
-		setCostAndEffectStats(t);
+		if (this.targetBuff != null) {
+			a2.targetBuff = this.targetBuff.clone();
+		}
+		if (this.originBuff != null) {
+			a2.originBuff = this.originBuff.clone();
+		}
+		// targets contents shallow-copied
+		a2.targets = (ArrayList<Character>) this.targets.clone();
+		// origin shallow-copied
+		// name shallow-copied
+		a2.actualEffects = new int[this.actualEffects.length];
+		for (int i = 0; i < this.actualEffects.length; i++) {
+			a2.actualEffects[i] = this.actualEffects[i];
+		}
+		return a2;
 	}
 	
 	/**
-	 * Gets the targeted fighters.
-	 *
-	 * @return An array containing the targets, which will be empty if no
-	 * targets have been set.
+	 * Allows the creation of an instance without knowing the arguments.
+	 * 
+	 * @param args The arguments to the creation of an instance.
 	 */
-	public ArrayList<Character> getTargets() {
-		return targets;
+	public abstract Action createInstance(String[] args);
+	
+	/**
+	 * Gets the actual damage caused by this Action, in the order of the
+	 * targets.
+	 *
+	 * @return The actual caused damages.
+	 */
+	public int[] getActualEffects() {
+		return actualEffects;
 	}
 	
 	/**
@@ -264,29 +217,12 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
-	 * Checks whether the last application of this Action was successful.
+	 * Gets the cost of this Action.
 	 *
-	 * @return True if it was successful; false if it was not.
+	 * @return The amount that this Action costs.
 	 */
-	public boolean wasSuccessful() {
-		return successful;
-	}
-	
-	/**
-	 * Removes all current targets.
-	 */
-	public void clearTargets() {
-		this.targets.clear();
-	}
-	
-	/**
-	 * Gets the actual damage caused by this Action, in the order of the
-	 * targets.
-	 *
-	 * @return The actual caused damages.
-	 */
-	public int[] getActualEffects() {
-		return actualEffects;
+	public double getCost() {
+		return cost;
 	}
 	
 	/**
@@ -299,12 +235,40 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
+	 * Gets the effect of this Action.
+	 *
+	 * @return The effect value of this Action.
+	 */
+	public double getEffect() {
+		return effect;
+	}
+	
+	/**
 	 * Gets the stat that is affected by the effect.
 	 *
 	 * @return The effect stat.
 	 */
 	public Stat getEffectStat() {
 		return effectStat;
+	}
+	
+	/**
+	 * Gets the name of this Action.
+	 *
+	 * @return This Action's name.
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Gets the performer of this Action.
+	 *
+	 * @return The Character performing this Action if origin was set;
+	 * otherwise, null.
+	 */
+	public Character getOrigin() {
+		return origin;
 	}
 	
 	/**
@@ -315,7 +279,7 @@ public abstract class Action implements Cloneable {
 	public Buff getOriginBuff() {
 		return originBuff;
 	}
-	 
+	
 	/**
 	 * Gets the target buff.
 	 *
@@ -323,6 +287,69 @@ public abstract class Action implements Cloneable {
 	 */
 	public Buff getTargetBuff() {
 		return targetBuff;
+	}
+	
+	/**
+	 * Gets the targeted fighters.
+	 *
+	 * @return An array containing the targets, which will be empty if no
+	 * targets have been set.
+	 */
+	public ArrayList<Character> getTargets() {
+		return targets;
+	}
+	
+	/**
+	 * Sets the performer of this Action.
+	 *
+	 * @param performer The Character performing the action.
+	 */
+	public void setOrigin(Character performer) {
+		origin = performer;
+		setCostAndEffectStats(performer);
+	}
+	
+	/**
+	 * Gets the string version of this Action. Its name is returned.
+	 * 
+	 * @return This Action's name.
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
+	/**
+	 * Checks whether the last application of this Action was successful.
+	 *
+	 * @return True if it was successful; false if it was not.
+	 */
+	public boolean wasSuccessful() {
+		return successful;
+	}
+	
+	/**
+	 * Sets the teams affected by this action.
+	 */
+	private void setAffectedTeams() {
+		for (Character t: targets) {
+			affectedTeams.add(t.getTeamId());
+		}
+	}
+	
+	/**
+	 * Sets the cost stats if they are not set and sets the effect stats if
+	 * they are not set.
+	 *
+	 * @param c The character to set the stats from.
+	 */
+	private void setCostAndEffectStats(Character c) {
+		if (costStat == null) {
+			setCostStat(c);
+		}
+		if (effectStat == null) {
+			setEffectStat(c);
+		}
 	}
 	
 	/**
@@ -359,28 +386,4 @@ public abstract class Action implements Cloneable {
 	 */
 	protected abstract void setEffectStat(Character c);
 	
-	/**
-	 * Sets the cost stats if they are not set and sets the effect stats if
-	 * they are not set.
-	 *
-	 * @param c The character to set the stats from.
-	 */
-	private void setCostAndEffectStats(Character c) {
-		if (costStat == null) {
-			setCostStat(c);
-		}
-		if (effectStat == null) {
-			setEffectStat(c);
-		}
-	}
-	
-	/**
-	 * Sets the teams affected by this action.
-	 */
-	private void setAffectedTeams() {
-		for (Character t: targets) {
-			affectedTeams.add(t.getTeamId());
-		}
-	}
-
 }

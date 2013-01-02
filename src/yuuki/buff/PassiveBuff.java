@@ -5,7 +5,7 @@
 package yuuki.buff;
 
 public abstract class PassiveBuff extends Buff implements Cloneable {
-
+	
 	/**
 	 * Creates a new PassiveBuff for a Character.
 	 *
@@ -22,6 +22,7 @@ public abstract class PassiveBuff extends Buff implements Cloneable {
 	 *
 	 * @return The clone.
 	 */
+	@Override
 	public PassiveBuff clone() {
 		return (PassiveBuff) super.clone();
 	}
@@ -30,6 +31,7 @@ public abstract class PassiveBuff extends Buff implements Cloneable {
 	 * Has no effect. PassiveBuff and derived classes do not apply any effects
 	 * on a per-turn basis.
 	 */
+	@Override
 	protected void applyEffect() {}
-
+	
 }

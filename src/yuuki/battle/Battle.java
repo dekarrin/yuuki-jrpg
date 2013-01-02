@@ -8,48 +8,37 @@
 
 package yuuki.battle;
 import java.util.ArrayList;
+
 import yuuki.action.Action;
 import yuuki.entity.Character;
 
 public class Battle {
-
+	
 	/**
 	 * The potential states of a Battle.
 	 */
 	public static enum State {
-		STARTING_TURN,
-		GETTING_ACTION,
 		APPLYING_ACTION,
 		APPLYING_BUFFS,
 		CHECKING_DEATH,
-		ENDING_TURN,
 		CHECKING_VICTORY,
+		ENDING,
+		ENDING_TURN,
+		GETTING_ACTION,
 		LOOTING,
-		ENDING;
+		STARTING_TURN;
 	}
-
+	
 	/**
 	 * The percent of total mana gained in a turn.
 	 */
 	private static final double MANA_GEN = 0.05;
-
-	/**
-	 * The current state of this Battle. This determines what action is
-	 * taken the next time advance() is called.
-	 */
-	private State state;
 	
 	/**
-	 * The last state of this Battle. This is the state that it was last in.
-	 * This is useful for users to know what was last done.
+	 * The player whose turn it currently is.
 	 */
-	private State lastState;
-
-	/**
-	 * The last Action that a Character selected.
-	 */
-	private Action lastAction;
-
+	private int currentFighter;
+	
 	/**
 	 * The currently active fighters. The first array is the list of teams and
 	 * the second array is the fighter on that team. For example, you would use
@@ -57,21 +46,22 @@ public class Battle {
 	 * second team.
 	 */
 	private ArrayList<ArrayList<Character>> fighters;
-
-	/**
-	 * The player whose turn it currently is.
-	 */
-	private int currentFighter;
 	
 	/**
-	 * The fighters that are to be removed.
+	 * Whether the current fighter has fled.
 	 */
-	private ArrayList<Character> removedFighters;
+	private boolean fled = false;
 	
 	/**
-	 * The Characters arranged in the order that they take their turns.
+	 * The last Action that a Character selected.
 	 */
-	private ArrayList<Character> turnOrder;
+	private Action lastAction;
+	
+	/**
+	 * The last state of this Battle. This is the state that it was last in.
+	 * This is useful for users to know what was last done.
+	 */
+	private State lastState;
 	
 	/**
 	 * Amount of mana last regenerated.
@@ -79,10 +69,21 @@ public class Battle {
 	private int regeneratedMana;
 	
 	/**
-	 * Whether the current fighter has fled.
+	 * The fighters that are to be removed.
 	 */
-	private boolean fled = false;
-
+	private ArrayList<Character> removedFighters;
+	
+	/**
+	 * The current state of this Battle. This determines what action is
+	 * taken the next time advance() is called.
+	 */
+	private State state;
+	
+	/**
+	 * The Characters arranged in the order that they take their turns.
+	 */
+	private ArrayList<Character> turnOrder;
+	
 	/**
 	 * Begins a new battle with the given participants.
 	 *
@@ -98,19 +99,6 @@ public class Battle {
 		state = State.STARTING_TURN;
 	}
 	
-	/**
-	 * Converts this Battle to a String.
-	 *
-	 * @return The String version.
-	 */
-	public String toString() {
-		String str = "";
-		str += state + "/" + lastState + ":" + lastAction + " - \n";
-		str += currentFighter + " - " + turnOrder + "\n";
-		str += fighters;
-		return str;
-	}
-
 	/**
 	 * Advances battle through the current execution state. Each state
 	 * consists of only a few operations that are carried out before the
@@ -129,18 +117,18 @@ public class Battle {
 				regenerateMana();
 				state = State.GETTING_ACTION;
 				break;
-
+				
 			case GETTING_ACTION:
 				getCurrentFighter().emptyExpiredBuffs();
 				lastAction = getCurrentFighter().getNextAction(fighters);
 				state = State.APPLYING_ACTION;
 				break;
-
+				
 			case APPLYING_ACTION:
 				lastAction.apply();
 				state = State.APPLYING_BUFFS;
 				break;
-
+				
 			case APPLYING_BUFFS:
 				checkFlee();
 				if (!fled) {
@@ -148,18 +136,18 @@ public class Battle {
 				}
 				state = State.CHECKING_DEATH;
 				break;
-
+				
 			case CHECKING_DEATH:
 				checkDeath();
 				state = State.ENDING_TURN;
 				break;
-
+				
 			case ENDING_TURN:
 				emptyRemovedFighters();
 				checkTeamStatus();
 				state = State.CHECKING_VICTORY;
 				break;
-
+				
 			case CHECKING_VICTORY:
 				if (battleIsOver()) {
 					state = State.LOOTING;
@@ -168,12 +156,12 @@ public class Battle {
 					state = State.STARTING_TURN;
 				}
 				break;
-
+				
 			case LOOTING:
 				calculateLoot();
 				state = State.ENDING;
 				break;
-
+				
 			case ENDING:
 				moreCallsNeeded = false;
 				break;
@@ -182,12 +170,21 @@ public class Battle {
 	}
 	
 	/**
-	 * Gets the amount of mana last regenerated.
-	 *
-	 * @param The amount of mana.
+	 * Checks if the last move was a flee.
+	 * 
+	 * @return Whether it was a flee.
 	 */
-	public int getRegeneratedMana() {
-		return regeneratedMana;
+	public boolean fleeOccured() {
+		return fled;
+	}
+	
+	/**
+	 * Gets the fighter whose turn it currently is.
+	 *
+	 * @return The current fighter.
+	 */
+	public Character getCurrentFighter() {
+		return turnOrder.get(currentFighter);
 	}
 	
 	/**
@@ -202,24 +199,6 @@ public class Battle {
 	}
 	
 	/**
-	 * Gets the removed fighters.
-	 *
-	 * @return The fighters removed during the last advancement.
-	 */
-	public ArrayList<Character> getRemovedFighters() {
-		return removedFighters;
-	}
-	
-	/**
-	 * Gets the fighter whose turn it currently is.
-	 *
-	 * @return The current fighter.
-	 */
-	public Character getCurrentFighter() {
-		return turnOrder.get(currentFighter);
-	}
-	
-	/**
 	 * Gets the last action that a Character chose. This will be null if the
 	 * last advancement did not produce an Action.
 	 *
@@ -228,15 +207,6 @@ public class Battle {
 	 */
 	public Action getLastAction() {
 		return lastAction;
-	}
-	
-	/**
-	 * Gets where in the battle process this Battle currently is.
-	 *
-	 * @return The state of the battle.
-	 */
-	public State getState() {
-		return state;
 	}
 	
 	/**
@@ -249,6 +219,33 @@ public class Battle {
 	}
 	
 	/**
+	 * Gets the amount of mana last regenerated.
+	 *
+	 * @param The amount of mana.
+	 */
+	public int getRegeneratedMana() {
+		return regeneratedMana;
+	}
+	
+	/**
+	 * Gets the removed fighters.
+	 *
+	 * @return The fighters removed during the last advancement.
+	 */
+	public ArrayList<Character> getRemovedFighters() {
+		return removedFighters;
+	}
+	
+	/**
+	 * Gets where in the battle process this Battle currently is.
+	 *
+	 * @return The state of the battle.
+	 */
+	public State getState() {
+		return state;
+	}
+	
+	/**
 	 * Gets the number of teams in this Battle.
 	 *
 	 * @return The number of teams.
@@ -258,91 +255,19 @@ public class Battle {
 	}
 	
 	/**
-	 * Checks if the last move was a flee.
-	 * 
-	 * @return Whether it was a flee.
+	 * Converts this Battle to a String.
+	 *
+	 * @return The String version.
 	 */
-	public boolean fleeOccured() {
-		return fled;
-	}
-
-	/**
-	 * Regenerates the mana of the current Character.
-	 */
-	private void regenerateMana() {
-		Character c = getCurrentFighter();
-		int oldMana = c.getMP();
-		int manaMax = c.getMaxMP();
-		int amount = (int) Math.floor(manaMax * MANA_GEN);
-		c.gainMP(amount);
-		regeneratedMana = c.getMP() - oldMana;
+	@Override
+	public String toString() {
+		String str = "";
+		str += state + "/" + lastState + ":" + lastAction + " - \n";
+		str += currentFighter + " - " + turnOrder + "\n";
+		str += fighters;
+		return str;
 	}
 	
-	/**
-	 * Removes the origin fighter if he has fled.
-	 */
-	private void checkFlee() {
-		if (lastAction instanceof yuuki.action.Flee) {
-			if (lastAction.wasSuccessful()) {
-				fled = true;
-				removeFighter(lastAction.getOrigin());
-			}
-		}
-	}
-
-	/**
-	 * Removes the targeted fighter if he is now dead.
-	 */
-	private void checkDeath() {
-		ArrayList<Character> targets = lastAction.getTargets();
-		for (Character c: targets) {
-			if (!c.isAlive()) {
-				removeFighter(c);
-			}
-		}
-	}
-
-	/**
-	 * Removes the targeted fighter's team if there is no longer anyone on
-	 * it.
-	 */
-	private void checkTeamStatus() {
-		int[] affectedTeams = lastAction.getAffectedTeams();
-		for (int t: affectedTeams) {
-			if (fighters.get(t).size() == 0) {
-				removeTeam(t);
-			}
-		}
-	}
-
-	/**
-	 * Checks whether the battle is over.
- 	 *
-	 * @return True if only one team remains in active play; otherwise false.
-	 */
-	private boolean battleIsOver() {
-		return (fighters.size() == 1);
-	}
-
-	/**
-	 * Sets the current player to the player whose turn is next.
-	 */
-	private void setNextPlayer() {
-		fled = false;
-		currentFighter++;
-		if (currentFighter >= turnOrder.size()) {
-			currentFighter = 0;
-		}
-	}
-
-	/**
-	 * Calculates the loot for the battle. The result is kept in this
-	 * Battle's state.
-	 */
-	private void calculateLoot() {
-		// TODO: loot calculation
-	}
-
 	/**
 	 * Assigns characters to the fighters list. Each character's fighter ID and
 	 * team ID is set and they are added to the internal array. The team ID is
@@ -363,34 +288,57 @@ public class Battle {
 	}
 	
 	/**
-	 * Sets the play order for the battle.
+	 * Checks whether the battle is over.
+	 *
+	 * @return True if only one team remains in active play; otherwise false.
 	 */
-	private void orderFighters() {
-		turnOrder = new ArrayList<Character>();
-		for (ArrayList<Character> team: fighters) {
-			for (Character c: team) {
-				turnOrder.add(c);
+	private boolean battleIsOver() {
+		return (fighters.size() == 1);
+	}
+	
+	/**
+	 * Calculates the loot for the battle. The result is kept in this
+	 * Battle's state.
+	 */
+	private void calculateLoot() {
+		// TODO: loot calculation
+	}
+	
+	/**
+	 * Removes the targeted fighter if he is now dead.
+	 */
+	private void checkDeath() {
+		ArrayList<Character> targets = lastAction.getTargets();
+		for (Character c: targets) {
+			if (!c.isAlive()) {
+				removeFighter(c);
 			}
 		}
 	}
 	
 	/**
-	 * Removes a fighter from the field. All of the Character's battle params
-	 * are reset and it is removed from the list of fighters.
-	 *
-	 * @param f The fighter to remove.
+	 * Removes the origin fighter if he has fled.
 	 */
-	private void removeFighter(Character f) {
-		int team = f.getTeamId();
-		int id = f.getFighterId();
-		int turnId = turnOrder.indexOf(f);
-		turnOrder.remove(turnId);
-		if (currentFighter > turnId) {
-			currentFighter--;
+	private void checkFlee() {
+		if (lastAction instanceof yuuki.action.Flee) {
+			if (lastAction.wasSuccessful()) {
+				fled = true;
+				removeFighter(lastAction.getOrigin());
+			}
 		}
-		fighters.get(team).remove(id);
-		reassignIds(team, id);
-		removedFighters.add(f);
+	}
+	
+	/**
+	 * Removes the targeted fighter's team if there is no longer anyone on
+	 * it.
+	 */
+	private void checkTeamStatus() {
+		int[] affectedTeams = lastAction.getAffectedTeams();
+		for (int t: affectedTeams) {
+			if (fighters.get(t).size() == 0) {
+				removeTeam(t);
+			}
+		}
 	}
 	
 	/**
@@ -405,13 +353,15 @@ public class Battle {
 	}
 	
 	/**
-	 * Removes a team from the field.
-	 *
-	 * @param teamId The id of the team to remove.
+	 * Sets the play order for the battle.
 	 */
-	private void removeTeam(int teamId) {
-		fighters.remove(teamId);
-		reassignTeams(teamId);
+	private void orderFighters() {
+		turnOrder = new ArrayList<Character>();
+		for (ArrayList<Character> team: fighters) {
+			for (Character c: team) {
+				turnOrder.add(c);
+			}
+		}
 	}
 	
 	/**
@@ -442,6 +392,58 @@ public class Battle {
 			for (Character c: team) {
 				c.setTeamId(i);
 			}
+		}
+	}
+	
+	/**
+	 * Regenerates the mana of the current Character.
+	 */
+	private void regenerateMana() {
+		Character c = getCurrentFighter();
+		int oldMana = c.getMP();
+		int manaMax = c.getMaxMP();
+		int amount = (int) Math.floor(manaMax * MANA_GEN);
+		c.gainMP(amount);
+		regeneratedMana = c.getMP() - oldMana;
+	}
+	
+	/**
+	 * Removes a fighter from the field. All of the Character's battle params
+	 * are reset and it is removed from the list of fighters.
+	 *
+	 * @param f The fighter to remove.
+	 */
+	private void removeFighter(Character f) {
+		int team = f.getTeamId();
+		int id = f.getFighterId();
+		int turnId = turnOrder.indexOf(f);
+		turnOrder.remove(turnId);
+		if (currentFighter > turnId) {
+			currentFighter--;
+		}
+		fighters.get(team).remove(id);
+		reassignIds(team, id);
+		removedFighters.add(f);
+	}
+	
+	/**
+	 * Removes a team from the field.
+	 *
+	 * @param teamId The id of the team to remove.
+	 */
+	private void removeTeam(int teamId) {
+		fighters.remove(teamId);
+		reassignTeams(teamId);
+	}
+	
+	/**
+	 * Sets the current player to the player whose turn is next.
+	 */
+	private void setNextPlayer() {
+		fled = false;
+		currentFighter++;
+		if (currentFighter >= turnOrder.size()) {
+			currentFighter = 0;
 		}
 	}
 }

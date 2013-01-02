@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import yuuki.action.Action;
 
 public class NonPlayerCharacter extends Character {
-
+	
 	/**
 	 * Used in calculating experience given on death.
 	 */
 	protected static final int DEATH_XP_BASE = 2;
-
+	
 	/**
 	 * Used to calculate experience given on death.
 	 */
 	private int xpBase;
-
+	
 	/**
 	 * Allocates a new NonPlayerCharacter.
 	 *
@@ -40,9 +40,9 @@ public class NonPlayerCharacter extends Character {
 	 * @param xpBase Used for calculating given XP on death.
 	 */
 	public NonPlayerCharacter(String name, int level, Action[] moves,
-							VariableStat hp, VariableStat mp, Stat strength,
-							Stat defense, Stat agility, Stat accuracy,
-							Stat magic, Stat luck, int xpBase) {
+			VariableStat hp, VariableStat mp, Stat strength,
+			Stat defense, Stat agility, Stat accuracy,
+			Stat magic, Stat luck, int xpBase) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
 				magic, luck);
 		this.xpBase = xpBase;
@@ -70,37 +70,37 @@ public class NonPlayerCharacter extends Character {
 		for (int i = 0; i < points; i++) {
 			int stat = (int) Math.floor(Math.random() * 8);
 			switch (stat) {
-			case 0:
-				hp++;
-				break;
-				
-			case 1:
-				mp++;
-				break;
-				
-			case 2:
-				str++;
-				break;
-				
-			case 3:
-				def++;
-				break;
-				
-			case 4:
-				agt++;
-				break;
-				
-			case 5:
-				acc++;
-				break;
-				
-			case 6:
-				mag++;
-				break;
-				
-			case 7:
-				luck++;
-				break;
+				case 0:
+					hp++;
+					break;
+					
+				case 1:
+					mp++;
+					break;
+					
+				case 2:
+					str++;
+					break;
+					
+				case 3:
+					def++;
+					break;
+					
+				case 4:
+					agt++;
+					break;
+					
+				case 5:
+					acc++;
+					break;
+					
+				case 6:
+					mag++;
+					break;
+					
+				case 7:
+					luck++;
+					break;
 			}
 		}
 		levelUp(hp, mp, str, def, agt, acc, mag, luck);
@@ -114,6 +114,7 @@ public class NonPlayerCharacter extends Character {
 	 *
 	 * @return The selected Action without a target.
 	 */
+	@Override
 	protected Action selectAction(ArrayList<ArrayList<Character>> fighters) {
 		// TODO: Make intelligent choices based on the battle state
 		int choice = (int) Math.floor(Math.random() * moves.length);
@@ -127,8 +128,9 @@ public class NonPlayerCharacter extends Character {
 	 *
 	 * @return The target.
 	 */
+	@Override
 	protected Character selectTarget(
-				ArrayList<ArrayList<Character>> fighters) {
+			ArrayList<ArrayList<Character>> fighters) {
 		int teamId = (int) Math.floor(Math.random() * (fighters.size() - 1));
 		teamId += (teamId >= getTeamId()) ? 1 : 0;
 		ArrayList<Character> team = fighters.get(teamId);

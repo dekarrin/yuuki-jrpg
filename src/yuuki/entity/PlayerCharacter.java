@@ -10,12 +10,12 @@ import yuuki.action.Action;
 import yuuki.ui.Interactable;
 
 public class PlayerCharacter extends Character {
-
+	
 	/**
 	 * A reference to the user interface for this PC to get its moves from.
 	 */
 	private Interactable ui;
-
+	
 	/**
 	 * Allocates a new Character. Most stats are set manually, but experience
 	 * is automatically calculated from the starting level. All stats are the
@@ -36,9 +36,9 @@ public class PlayerCharacter extends Character {
 	 * @param ui The interface that this Character should get input from.
 	 */
 	public PlayerCharacter(String name, int level, Action[] moves,
-					VariableStat hp, VariableStat mp, Stat strength,
-					Stat defense, Stat agility, Stat accuracy, Stat magic,
-					Stat luck, Interactable ui) {
+			VariableStat hp, VariableStat mp, Stat strength,
+			Stat defense, Stat agility, Stat accuracy, Stat magic,
+			Stat luck, Interactable ui) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
 				magic, luck);
 		this.ui = ui;
@@ -51,6 +51,7 @@ public class PlayerCharacter extends Character {
 	 *
 	 * @return The move that was selected by the player.
 	 */
+	@Override
 	protected Action selectAction(ArrayList<ArrayList<Character>> fighters) {
 		Action m = ui.selectAction(moves);
 		return m.clone();
@@ -63,9 +64,10 @@ public class PlayerCharacter extends Character {
 	 *
 	 * @return The target.
 	 */
+	@Override
 	protected Character selectTarget(
-				ArrayList<ArrayList<Character>> fighters) {
+			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
 	}
-
+	
 }

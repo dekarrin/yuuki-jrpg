@@ -8,7 +8,7 @@ import yuuki.buff.DefenseBuff;
 import yuuki.entity.Character;
 
 public class BasicDefense extends Action implements Cloneable {
-
+	
 	/**
 	 * Creates a new BasicDefense.
 	 *
@@ -20,44 +20,30 @@ public class BasicDefense extends Action implements Cloneable {
 	}
 	
 	/**
-	 * Creates a BasicDefense from an existing one.
-	 * 
-	 * @param args Must contain a single int that is the duration.
+	 * Has no effect, as adding a target makes no sense.
 	 */
-	public BasicDefense createInstance(String[] args) {
-		int d = Integer.parseInt(args[0]);
-		return new BasicDefense(d);
-	}
+	@Override
+	public void addTarget(Character t) {}
 	
 	/**
 	 * Creates a clone of this BasicDefense.
 	 *
 	 * @return The clone.
 	 */
+	@Override
 	public BasicDefense clone() {
 		return (BasicDefense) super.clone();
 	}
 	
 	/**
-	 * Applies the cost to the origin. The origin does not need to spend
-	 * anything to use this Action, so this method always returns true.
-	 *
-	 * @return True unconditionally.
+	 * Creates a BasicDefense from an existing one.
+	 * 
+	 * @param args Must contain a single int that is the duration.
 	 */
-	protected boolean applyCost() {
-		return true;
-	}
-	
-	/**
-	 * Has no effect.
-	 */
-	protected void applyEffect() {}
-	
-	/**
-	 * Applies the defense buff to the origin.
-	 */
-	protected void applyBuffs() {
-		origin.addBuff(originBuff);
+	@Override
+	public BasicDefense createInstance(String[] args) {
+		int d = Integer.parseInt(args[0]);
+		return new BasicDefense(d);
 	}
 	
 	/**
@@ -72,10 +58,29 @@ public class BasicDefense extends Action implements Cloneable {
 	}
 	
 	/**
-	 * Has no effect, as adding a target makes no sense.
+	 * Applies the defense buff to the origin.
 	 */
 	@Override
-	public void addTarget(Character t) {}
+	protected void applyBuffs() {
+		origin.addBuff(originBuff);
+	}
+	
+	/**
+	 * Applies the cost to the origin. The origin does not need to spend
+	 * anything to use this Action, so this method always returns true.
+	 *
+	 * @return True unconditionally.
+	 */
+	@Override
+	protected boolean applyCost() {
+		return true;
+	}
+	
+	/**
+	 * Has no effect.
+	 */
+	@Override
+	protected void applyEffect() {}
 	
 	/**
 	 * Has no effect, as BasicDefense does not cost anything.
@@ -88,5 +93,5 @@ public class BasicDefense extends Action implements Cloneable {
 	 */
 	@Override
 	protected void setEffectStat(Character c) {}
-
+	
 }

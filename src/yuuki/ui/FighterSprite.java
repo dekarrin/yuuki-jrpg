@@ -1,17 +1,18 @@
 package yuuki.ui;
 
-import java.awt.*;
-
-import yuuki.entity.Character;
-import yuuki.entity.Stat;
-import yuuki.entity.VariableStat;
-import yuuki.action.*;
-import yuuki.buff.Buff;
+import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import yuuki.action.Action;
+import yuuki.buff.Buff;
+import yuuki.entity.Character;
+import yuuki.entity.Stat;
+import yuuki.entity.VariableStat;
 
 /**
  * The graphic used to display the character on the battle screen.
@@ -20,28 +21,28 @@ import javax.swing.JPanel;
  */
 public class FighterSprite extends JPanel {
 	
-	private static final long serialVersionUID = 5004775256726541372L;
-
-	public static final int SPRITE_WIDTH = 80;
-	
-	public static final int IMAGE_HEIGHT = 120;
+	public static final int BAR_HEIGHT = 10;
 	
 	public static final int BUFF_HEIGHT = 30;
 	
-	public static final int BAR_HEIGHT = 10;
+	public static final int IMAGE_HEIGHT = 120;
 	
 	public static final int N_SIZE = 10;
 	
-	private StatBar healthBar;
+	public static final int SPRITE_WIDTH = 80;
 	
-	private StatBar manaBar;
+	private static final long serialVersionUID = 5004775256726541372L;
+	
+	private JComponent buffPanel;
+	
+	private StatBar healthBar;
 	
 	private JComponent imagePanel;
 	
+	private StatBar manaBar;
+	
 	private JLabel nameLabel;
 	
-	private JComponent buffPanel;
-
 	/**
 	 * Creates a new FighterSprite from a Character.
 	 * 
@@ -55,73 +56,26 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
-	 * Returns this FighterSprite's preferred size.
-	 * 
-	 * @return A Dimension with this FighterSprite's size.
-	 */
-	public Dimension getPreferredSize() {
-		int actualHeight = IMAGE_HEIGHT + N_SIZE;
-		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
-		return new Dimension(SPRITE_WIDTH, actualHeight);
-	}
-	
-	/**
 	 * Returns this FighterSprite's maximum size. This will be the same as its
 	 * preferred size.
 	 * 
 	 * @return A Dimension with this FighterSprite's size.
 	 */
+	@Override
 	public Dimension getMaximumSize() {
 		return getPreferredSize();
 	}
 	
 	/**
-	 * Updates this FighterSprite to show that a stat took damage.
+	 * Returns this FighterSprite's preferred size.
 	 * 
-	 * @param stat The stat that took damage.
-	 * @param damage The amount of damage taken.
+	 * @return A Dimension with this FighterSprite's size.
 	 */
-	public void showDamage(Stat stat, int damage) {
-		updateStat(stat);
-	}
-	
-	/**
-	 * Updates this FighterSprite to show that a stat took damage.
-	 * 
-	 * @param stat The stat that took damage.
-	 * @param damage The amount of damage taken.
-	 */
-	public void showDamage(Stat stat, double damage) {
-		updateStat(stat);
-	}
-	
-	/**
-	 * Updates this FighterSprite to show that a stat recovered.
-	 * 
-	 * @param stat The stat that recovered.
-	 * @param amount The amount of recovery.
-	 */
-	public void showRecovery(Stat stat, int amount) {
-		updateStat(stat);
-	}
-	
-	/**
-	 * Updates this FighterSprite to show that a stat recovered.
-	 * 
-	 * @param stat The stat that recovered.
-	 * @param amount The amount of recovery.
-	 */
-	public void showRecovery(Stat stat, double amount) {
-		updateStat(stat);
-	}
-	
-	/**
-	 * Shows this sprite preparing to do an action.
-	 * 
-	 * @param action The action to show.
-	 */
-	public void showActionPreparation(Action action) {
-		// TODO: actually do something
+	@Override
+	public Dimension getPreferredSize() {
+		int actualHeight = IMAGE_HEIGHT + N_SIZE;
+		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
+		return new Dimension(SPRITE_WIDTH, actualHeight);
 	}
 	
 	/**
@@ -130,6 +84,15 @@ public class FighterSprite extends JPanel {
 	 * @param action The action to show.
 	 */
 	public void showActionFailure(Action action) {
+		// TODO: actually do something
+	}
+	
+	/**
+	 * Shows this sprite preparing to do an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionPreparation(Action action) {
 		// TODO: actually do something
 	}
 	
@@ -168,24 +131,60 @@ public class FighterSprite extends JPanel {
 	public void showBuffDeactivation(Buff buff) {
 		// TODO: actually do something
 	}
-
+	
 	public void showCharacterVictory() {
 		// TODO: actually do something
 	}
 	
 	/**
-	 * Updates this FighterSprite with new stat values.
+	 * Updates this FighterSprite to show that a stat took damage.
 	 * 
-	 * @param stat The stat to update.
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage taken.
 	 */
-	private void updateStat(Stat stat) {
-		if (healthBar.isWatching(stat)) {
-			healthBar.update();
-		} else if (manaBar.isWatching(stat)) {
-			manaBar.update();
-		}
-		revalidate();
-		repaint();
+	public void showDamage(Stat stat, double damage) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat took damage.
+	 * 
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage taken.
+	 */
+	public void showDamage(Stat stat, int damage) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat recovered.
+	 * 
+	 * @param stat The stat that recovered.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Stat stat, double amount) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Updates this FighterSprite to show that a stat recovered.
+	 * 
+	 * @param stat The stat that recovered.
+	 * @param amount The amount of recovery.
+	 */
+	public void showRecovery(Stat stat, int amount) {
+		updateStat(stat);
+	}
+	
+	/**
+	 * Adds this FighterSprite's components to its content pane.
+	 */
+	private void addComponents() {
+		add(buffPanel);
+		add(healthBar);
+		add(manaBar);
+		add(nameLabel);
+		add(imagePanel);
 	}
 	
 	/**
@@ -197,6 +196,16 @@ public class FighterSprite extends JPanel {
 		manaBar = new StatBar(SPRITE_WIDTH, BAR_HEIGHT, Color.BLUE);
 		nameLabel = new JLabel();
 		imagePanel = new JPanel();
+	}
+	
+	/**
+	 * Initializes the buff panel of this FighterSprite.
+	 */
+	private void initializeBuffPanel() {
+		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
+		buffPanel.setBackground(Color.RED);
+		buffPanel.setOpaque(true);
+		buffPanel.setVisible(true);
 	}
 	
 	/**
@@ -214,13 +223,15 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
-	 * Initializes the name label of this FighterSprite.
+	 * Initializes the health bar component of this FighterSprite.
 	 * 
-	 * @param name The name of the fighter to initialize the label for.
+	 * @param hpStat The HP Stat of this FighterSprite's fighter.
+	 * @param level The level of this FighterSprite's fighter.
 	 */
-	private void initializeNameLabel(String name) {
-		nameLabel.setText(name);
-		nameLabel.setVisible(true);
+	private void initializeHealthBar(VariableStat hpStat, int level) {
+		healthBar.setStat(hpStat);
+		healthBar.setLevel(level);
+		healthBar.setVisible(true);
 	}
 	
 	/**
@@ -231,18 +242,6 @@ public class FighterSprite extends JPanel {
 		imagePanel.setBackground(Color.GREEN);
 		imagePanel.setOpaque(true);
 		imagePanel.setVisible(true);
-	}
-	
-	/**
-	 * Initializes the health bar component of this FighterSprite.
-	 * 
-	 * @param hpStat The HP Stat of this FighterSprite's fighter.
-	 * @param level The level of this FighterSprite's fighter.
-	 */
-	private void initializeHealthBar(VariableStat hpStat, int level) {
-		healthBar.setStat(hpStat);
-		healthBar.setLevel(level);
-		healthBar.setVisible(true);
 	}
 	
 	/**
@@ -258,23 +257,27 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
-	 * Initializes the buff panel of this FighterSprite.
+	 * Initializes the name label of this FighterSprite.
+	 * 
+	 * @param name The name of the fighter to initialize the label for.
 	 */
-	private void initializeBuffPanel() {
-		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
-		buffPanel.setBackground(Color.RED);
-		buffPanel.setOpaque(true);
-		buffPanel.setVisible(true);
+	private void initializeNameLabel(String name) {
+		nameLabel.setText(name);
+		nameLabel.setVisible(true);
 	}
 	
 	/**
-	 * Adds this FighterSprite's components to its content pane.
+	 * Updates this FighterSprite with new stat values.
+	 * 
+	 * @param stat The stat to update.
 	 */
-	private void addComponents() {
-		add(buffPanel);
-		add(healthBar);
-		add(manaBar);
-		add(nameLabel);
-		add(imagePanel);
+	private void updateStat(Stat stat) {
+		if (healthBar.isWatching(stat)) {
+			healthBar.update();
+		} else if (manaBar.isWatching(stat)) {
+			manaBar.update();
+		}
+		revalidate();
+		repaint();
 	}
 }

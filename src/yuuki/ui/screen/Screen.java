@@ -10,14 +10,19 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel {
 	
-	private final Dimension size;
-	
 	private static class GenericScreen extends Screen {
 		public GenericScreen(int w, int h) {
 			super(w, h);
 		}
+		@Override
 		public void setInitialFocus() {}
 	}
+	
+	public static Screen getInstance(int w, int h) {
+		return new GenericScreen(w, h);
+	}
+	
+	private final Dimension size;
 	
 	/**
 	 * Creates a new Screen with the given dimensions.
@@ -29,10 +34,7 @@ public abstract class Screen extends JPanel {
 		size = new Dimension(width, height);
 	}
 	
-	public static Screen getInstance(int w, int h) {
-		return new GenericScreen(w, h);
-	}
-	
+	@Override
 	public Dimension getPreferredSize() {
 		return size;
 	}
@@ -41,5 +43,5 @@ public abstract class Screen extends JPanel {
 	 * Sets focus on the primary element in this screen.
 	 */
 	public abstract void setInitialFocus();
-
+	
 }

@@ -1,8 +1,8 @@
 package yuuki.ui.screen;
 
 public interface IntroScreenListener {
-	public void newGameClicked();
-	public void loadGameClicked();
-	public void optionsClicked();
 	public void exitClicked();
+	public void loadGameClicked();
+	public void newGameClicked();
+	public void optionsClicked();
 }

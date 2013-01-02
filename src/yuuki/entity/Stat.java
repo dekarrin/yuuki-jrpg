@@ -6,7 +6,7 @@
 package yuuki.entity;
 
 public class Stat implements Cloneable {
-
+	
 	/**
 	 * The base value for calculating this Stat's effective value.
 	 */
@@ -42,12 +42,29 @@ public class Stat implements Cloneable {
 	}
 	
 	/**
-	 * Checks whether this Stat has a modifier.
-	 * 
-	 * @return True if the modifier multiplier is anything but 1.
+	 * Adds a modifier to this Stat. Modifiers change the final effective
+	 * value.
+	 *
+	 * @param mod The amount of the modifier to add.
 	 */
-	public synchronized boolean hasModifier() {
-		return (modifier != 1.0);
+	public synchronized void addModifier(double mod) {
+		modifier *= mod;
+	}
+	
+	/**
+	 * Creates a clone of this Stat.
+	 *
+	 * @return The clone.
+	 */
+	@Override
+	public synchronized Stat clone() {
+		Stat clone = null;
+		try {
+			clone = (Stat) super.clone();
+		} catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return clone;
 	}
 	
 	/**
@@ -66,69 +83,12 @@ public class Stat implements Cloneable {
 	}
 	
 	/**
-	 * Creates a clone of this Stat.
-	 *
-	 * @return The clone.
-	 */
-	public synchronized Stat clone() {
-		Stat clone = null;
-		try {
-			clone = (Stat) super.clone();
-		} catch(CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return clone;
-	}
-	
-	/**
-	 * Adds a modifier to this Stat. Modifiers change the final effective
-	 * value.
-	 *
-	 * @param mod The amount of the modifier to add.
-	 */
-	public synchronized void addModifier(double mod) {
-		modifier *= mod;
-	}
-	
-	/**
-	 * Removes a modifier from this Stat. This method has the exact same effect
-	 * as addModifier(-mod).
-	 *
-	 * @param mod The amount of the modifier to remove.
-	 */
-	public synchronized void removeModifier(double mod) {
-		modifier /= mod;
-		if (Math.abs(1.0 - modifier) <= 0.1) { // fix precision issues
-			modifier = 1.0;
-		}
-	}
-	
-	/**
-	 * Gets the total modifier for this Stat.
-	 * 
-	 * The total modifier.
-	 */
-	public synchronized double getModifier() {
-		return modifier;
-	}
-	
-	
-	/**
 	 * Gets this Stat's base value.
 	 *
 	 * @return The base value.
 	 */
 	public synchronized int getBaseValue() {
 		return base;
-	}
-	
-	/**
-	 * Increases this Stat's base value.
-	 *
-	 * @param amount The amount to increase the base value by.
-	 */
-	public synchronized void increaseBase(int amount) {
-		base += amount;
 	}
 	
 	/**
@@ -154,6 +114,16 @@ public class Stat implements Cloneable {
 		return gain;
 	}
 	
+	
+	/**
+	 * Gets the total modifier for this Stat.
+	 * 
+	 * The total modifier.
+	 */
+	public synchronized double getModifier() {
+		return modifier;
+	}
+	
 	/**
 	 * Gets the name of this stat.
 	 *
@@ -161,5 +131,36 @@ public class Stat implements Cloneable {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Checks whether this Stat has a modifier.
+	 * 
+	 * @return True if the modifier multiplier is anything but 1.
+	 */
+	public synchronized boolean hasModifier() {
+		return (modifier != 1.0);
+	}
+	
+	/**
+	 * Increases this Stat's base value.
+	 *
+	 * @param amount The amount to increase the base value by.
+	 */
+	public synchronized void increaseBase(int amount) {
+		base += amount;
+	}
+	
+	/**
+	 * Removes a modifier from this Stat. This method has the exact same effect
+	 * as addModifier(-mod).
+	 *
+	 * @param mod The amount of the modifier to remove.
+	 */
+	public synchronized void removeModifier(double mod) {
+		modifier /= mod;
+		if (Math.abs(1.0 - modifier) <= 0.1) { // fix precision issues
+			modifier = 1.0;
+		}
 	}
 }

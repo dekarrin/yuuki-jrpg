@@ -14,11 +14,11 @@ import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class OverworldScreen extends Screen implements MouseListener {
-
+	
 	private ArrayList<OverworldScreenListener> listeners;
 	
 	private JButton startButton;
-
+	
 	public OverworldScreen(int width, int height) {
 		super(width, height);
 		KeyListener enterListener = new KeyAdapter() {
@@ -40,14 +40,11 @@ public class OverworldScreen extends Screen implements MouseListener {
 		add(startButton);
 	}
 	
-	public void setInitialFocus() {
-		startButton.requestFocus();
-	}
-	
 	public void addListener(OverworldScreenListener l) {
 		listeners.add(l);
 	}
 	
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
 		if (c == startButton) {
@@ -55,13 +52,22 @@ public class OverworldScreen extends Screen implements MouseListener {
 		}
 	}
 	
-	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
 	
-	public void mousePressed(MouseEvent e) {}
-	
+	@Override
 	public void mouseExited(MouseEvent e) {}
 	
-	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mousePressed(MouseEvent e) {}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+	
+	@Override
+	public void setInitialFocus() {
+		startButton.requestFocus();
+	}
 	
 	private void fireStartClicked() {
 		for (OverworldScreenListener l: listeners) {

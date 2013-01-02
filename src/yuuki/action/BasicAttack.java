@@ -8,7 +8,7 @@ package yuuki.action;
 import yuuki.entity.Character;
 
 public class BasicAttack extends Skill implements Cloneable {
-
+	
 	/**
 	 * Creates a new BasicAttack.
 	 *
@@ -16,16 +16,6 @@ public class BasicAttack extends Skill implements Cloneable {
 	 */
 	public BasicAttack(double damage) {
 		super("attack", damage, 0.0, null, null);
-	}
-	
-	/**
-	 * Creates a BasicAttack from an existing one.
-	 * 
-	 * @param args Must contain a single double that is damage.
-	 */
-	public BasicAttack createInstance(String[] args) {
-		double d = Double.parseDouble(args[0]);
-		return new BasicAttack(d);
 	}
 	
 	/**
@@ -37,6 +27,23 @@ public class BasicAttack extends Skill implements Cloneable {
 	public BasicAttack clone() {
 		return (BasicAttack) super.clone();
 	}
+	
+	/**
+	 * Creates a BasicAttack from an existing one.
+	 * 
+	 * @param args Must contain a single double that is damage.
+	 */
+	@Override
+	public BasicAttack createInstance(String[] args) {
+		double d = Double.parseDouble(args[0]);
+		return new BasicAttack(d);
+	}
+	
+	/**
+	 * Has no effect.
+	 */
+	@Override
+	protected void applyBuffs() {}
 	
 	/**
 	 * Applies damage to the first target.
@@ -53,18 +60,13 @@ public class BasicAttack extends Skill implements Cloneable {
 	}
 	
 	/**
-	 * Has no effect.
-	 */
-	@Override
-	protected void applyBuffs() {}
-	
-	/**
 	 * Sets the effect stat from a character.
 	 *
 	 * @param c The character to set it from.
 	 */
+	@Override
 	protected void setEffectStat(Character c) {
 		effectStat = c.getHPStat().clone();
 	}
-
+	
 }

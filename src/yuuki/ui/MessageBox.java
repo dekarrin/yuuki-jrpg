@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,17 +18,17 @@ import yuuki.entity.Character;
 @SuppressWarnings("serial")
 public class MessageBox extends JPanel implements MouseListener {
 	
-	private MessageBoxDisplayer messageDisplayer;
-
-	private JTextArea textBox;
+	private JButton enterButton;
 	
 	private JTextField input;
 	
-	private JButton enterButton;
-	
 	private ArrayList<MessageBoxInputListener> listeners;
 	
+	private MessageBoxDisplayer messageDisplayer;
+	
 	private HashMap<JButton, Object> optionValues;
+	
+	private JTextArea textBox;
 	
 	public MessageBox() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -46,12 +47,8 @@ public class MessageBox extends JPanel implements MouseListener {
 		listeners.add(l);
 	}
 	
-	public void removeListener(MessageBoxInputListener l) {
-		listeners.remove(l);
-	}
-	
-	public void getString(String prompt) {
-		messageDisplayer.queueStringPrompt(prompt);
+	public void display(Character speaker, String message) {
+		messageDisplayer.queueMessage(speaker, message);
 	}
 	
 	public void getChoice(String prompt, Object[] options) {
@@ -59,21 +56,39 @@ public class MessageBox extends JPanel implements MouseListener {
 		messageDisplayer.queueChoicePrompt(prompt, options);
 	}
 	
-	public void display(Character speaker, String message) {
-		messageDisplayer.queueMessage(speaker, message);
+	public void getString(String prompt) {
+		messageDisplayer.queueStringPrompt(prompt);
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (e.getComponent() == enterButton) {
+			fireEnterClicked();
+		} else {
+			JButton hitButton = (JButton) e.getComponent();
+			fireOptionClicked(hitButton);
+		}
+		
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+	
+	@Override
+	public void mousePressed(MouseEvent arg0) {}
+	
+	@Override
+	public void mouseReleased(MouseEvent arg0) {}
+	
+	public void removeListener(MessageBoxInputListener l) {
+		listeners.remove(l);
 	}
 	
 	public void setText(String t) {
 		textBox.setText(t);
-	}
-	
-	public void showTextPrompt(String prompt) {
-		removeAll();
-		add(new JLabel(prompt));
-		add(input);
-		add(enterButton);
-		revalidate();
-		repaint();
 	}
 	
 	public void showChoicePrompt(String prompt, Object[] options) {
@@ -92,6 +107,15 @@ public class MessageBox extends JPanel implements MouseListener {
 	public void showTextBox() {
 		removeAll();
 		add(textBox);
+		revalidate();
+		repaint();
+	}
+	
+	public void showTextPrompt(String prompt) {
+		removeAll();
+		add(new JLabel(prompt));
+		add(input);
+		add(enterButton);
 		revalidate();
 		repaint();
 	}
@@ -117,28 +141,5 @@ public class MessageBox extends JPanel implements MouseListener {
 			l.optionClicked(optValue);
 		}
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (e.getComponent() == enterButton) {
-			fireEnterClicked();
-		} else {
-			JButton hitButton = (JButton) e.getComponent();
-			fireOptionClicked(hitButton);
-		}
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {}
 	
 }

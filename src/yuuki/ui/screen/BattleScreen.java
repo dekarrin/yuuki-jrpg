@@ -1,11 +1,10 @@
 package yuuki.ui.screen;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-
-import java.util.ArrayList;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
@@ -40,8 +39,151 @@ public class BattleScreen extends Screen {
 		addCharacters();
 	}
 	
+	@Override
 	public void setInitialFocus() {
 		
+	}
+	
+	/**
+	 * Shows a sprite failing at an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionFailure(Action action) {
+		Character fighter = action.getOrigin();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showActionFailure(action);
+	}
+	
+	/**
+	 * Shows a sprite preparing to do an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionPreparation(Action action) {
+		Character fighter = action.getOrigin();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showActionPreparation(action);
+	}
+	
+	/**
+	 * Shows a sprite using an action.
+	 * 
+	 * @param action The action to show.
+	 */
+	public void showActionUse(Action action) {
+		Character fighter = action.getOrigin();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showActionUse(action);
+	}
+	
+	/**
+	 * Shows a buff being activated on a sprite.
+	 * 
+	 * @param buff The buff to show the activation of.
+	 */
+	public void showBuffActivation(Buff buff) {
+		Character fighter = buff.getTarget();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showBuffActivation(buff);
+	}
+	
+	/**
+	 * Shows a buff being applied to a sprite.
+	 * 
+	 * @param buff The buff to the activation of.
+	 */
+	public void showBuffApplication(Buff buff) {
+		Character fighter = buff.getTarget();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showBuffApplication(buff);
+	}
+	
+	/**
+	 * Shows a buff being deactivated on a sprite.
+	 * 
+	 * @param buff The buff to show the deactivation of.
+	 */
+	public void showBuffDeactivation(Buff buff) {
+		Character fighter = buff.getTarget();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showBuffDeactivation(buff);
+	}
+	
+	/**
+	 * Removes a sprite from the screen.
+	 * 
+	 * @param fighter The fighter whose sprite to remove.
+	 */
+	public void showCharacterRemoval(Character fighter) {
+		FighterSprite sprite =  (FighterSprite) fighter.getSprite();
+		// TODO: Search that runs better than O(n) time
+		for (ArrayList<FighterSprite> teamGraphics: fighterGraphics) {
+			if (teamGraphics.remove(sprite)) {
+				break;
+			}
+		}
+		refreshSprites();
+	}
+	
+	/**
+	 * Shows the victory animation for the given characters.
+	 * 
+	 * @param cs The characters to show the animation for.
+	 */
+	public void showCharacterVictory(Character[] cs) {
+		for (Character element: cs) {
+			FighterSprite sprite = (FighterSprite) element.getSprite();
+			sprite.showCharacterVictory();
+		}
+	}
+	
+	/**
+	 * Shows that a fighter took damage.
+	 * 
+	 * @param fighter The fighter that took damage.
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage.
+	 */
+	public void showDamage(Character fighter, Stat stat, double damage) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showDamage(stat, damage);
+	}
+	
+	/**
+	 * Shows that a fighter took damage.
+	 * 
+	 * @param fighter The fighter that took damage.
+	 * @param stat The stat that took damage.
+	 * @param damage The amount of damage.
+	 */
+	public void showDamage(Character fighter, Stat stat, int damage) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showDamage(stat, damage);
+	}
+	
+	/**
+	 * Shows that a fighter recovered.
+	 * 
+	 * @param fighter The fighter that recovered.
+	 * @param stat The stat that was recovered.
+	 * @param damage The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, double amount) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showRecovery(stat, amount);
+	}
+	
+	/**
+	 * Shows that a fighter recovered.
+	 * 
+	 * @param fighter The fighter that recovered.
+	 * @param stat The stat that was recovered.
+	 * @param damage The amount of recovery.
+	 */
+	public void showRecovery(Character fighter, Stat stat, int amount) {
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
+		sprite.showRecovery(stat, amount);
 	}
 	
 	/**
@@ -71,161 +213,14 @@ public class BattleScreen extends Screen {
 	}
 	
 	/**
-	 * Shows that a fighter took damage.
-	 * 
-	 * @param fighter The fighter that took damage.
-	 * @param stat The stat that took damage.
-	 * @param damage The amount of damage.
+	 * Adds a team to the bottom row.
 	 */
-	public void showDamage(Character fighter, Stat stat, int damage) {
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showDamage(stat, damage);
-	}
-	
-	/**
-	 * Shows that a fighter took damage.
-	 * 
-	 * @param fighter The fighter that took damage.
-	 * @param stat The stat that took damage.
-	 * @param damage The amount of damage.
-	 */
-	public void showDamage(Character fighter, Stat stat, double damage) {
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showDamage(stat, damage);
-	}
-	
-	/**
-	 * Shows that a fighter recovered.
-	 * 
-	 * @param fighter The fighter that recovered.
-	 * @param stat The stat that was recovered.
-	 * @param damage The amount of recovery.
-	 */
-	public void showRecovery(Character fighter, Stat stat, int amount) {
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showRecovery(stat, amount);
-	}
-	
-	/**
-	 * Shows that a fighter recovered.
-	 * 
-	 * @param fighter The fighter that recovered.
-	 * @param stat The stat that was recovered.
-	 * @param damage The amount of recovery.
-	 */
-	public void showRecovery(Character fighter, Stat stat, double amount) {
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showRecovery(stat, amount);
-	}
-	
-	/**
-	 * Shows a sprite preparing to do an action.
-	 * 
-	 * @param action The action to show.
-	 */
-	public void showActionPreparation(Action action) {
-		Character fighter = action.getOrigin();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showActionPreparation(action);
-	}
-	
-	/**
-	 * Shows a sprite failing at an action.
-	 * 
-	 * @param action The action to show.
-	 */
-	public void showActionFailure(Action action) {
-		Character fighter = action.getOrigin();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showActionFailure(action);
-	}
-	
-	/**
-	 * Shows a sprite using an action.
-	 * 
-	 * @param action The action to show.
-	 */
-	public void showActionUse(Action action) {
-		Character fighter = action.getOrigin();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showActionUse(action);
-	}
-	
-	/**
-	 * Shows a buff being activated on a sprite.
-	 * 
-	 * @param buff The buff to show the activation of.
-	 */
-	public void showBuffActivation(Buff buff) {
-		Character fighter = buff.getTarget();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showBuffActivation(buff);
-	}
-	
-	/**
-	 * Shows a buff being deactivated on a sprite.
-	 * 
-	 * @param buff The buff to show the deactivation of.
-	 */
-	public void showBuffDeactivation(Buff buff) {
-		Character fighter = buff.getTarget();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showBuffDeactivation(buff);
-	}
-	
-	/**
-	 * Shows a buff being applied to a sprite.
-	 * 
-	 * @param buff The buff to the activation of.
-	 */
-	public void showBuffApplication(Buff buff) {
-		Character fighter = buff.getTarget();
-		FighterSprite sprite = (FighterSprite) fighter.getSprite();
-		sprite.showBuffApplication(buff);
-	}
-	
-	/**
-	 * Removes a sprite from the screen.
-	 * 
-	 * @param fighter The fighter whose sprite to remove.
-	 */
-	public void showCharacterRemoval(Character fighter) {
-		FighterSprite sprite =  (FighterSprite) fighter.getSprite();
-		// TODO: Search that runs better than O(n) time
-		for (ArrayList<FighterSprite> teamGraphics: fighterGraphics) {
-			if (teamGraphics.remove(sprite)) {
-				break;
-			}
+	private void addBottomTeam() {
+		Box team = new Box(BoxLayout.X_AXIS);
+		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
+			team.add(fs);
 		}
-		refreshSprites();
-	}
-
-	/**
-	 * Shows the victory animation for the given characters.
-	 * 
-	 * @param cs The characters to show the animation for.
-	 */
-	public void showCharacterVictory(Character[] cs) {
-		for (int i = 0; i < cs.length; i++) {
-			FighterSprite sprite = (FighterSprite) cs[i].getSprite();
-			sprite.showCharacterVictory();
-		}
-	}
-	
-	/**
-	 * Removes all sprites on the screen and adds the ones in this
-	 * BattleScreen's list.
-	 */
-	private void refreshSprites() {
-		removeCharacters();
-		addCharacters();
-	}
-	
-	/**
-	 * Removes all sprites from the screen.
-	 */
-	private void removeCharacters() {
-		removeAll();
+		add(team, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -235,6 +230,17 @@ public class BattleScreen extends Screen {
 		// TODO: optimize for more than one team
 		addBottomTeam();
 		addTopTeam();
+	}
+	
+	/**
+	 * Adds a team to the top row.
+	 */
+	private void addTopTeam() {
+		Box team = new Box(BoxLayout.X_AXIS);
+		for (FighterSprite fs: fighterGraphics.get(TOP_TEAM_INDEX)) {
+			team.add(fs);
+		}
+		add(team, BorderLayout.NORTH);
 	}
 	
 	/**
@@ -259,24 +265,18 @@ public class BattleScreen extends Screen {
 	}
 	
 	/**
-	 * Adds a team to the bottom row.
+	 * Removes all sprites on the screen and adds the ones in this
+	 * BattleScreen's list.
 	 */
-	private void addBottomTeam() {
-		Box team = new Box(BoxLayout.X_AXIS);
-		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
-			team.add(fs);
-		}
-		add(team, BorderLayout.SOUTH);
+	private void refreshSprites() {
+		removeCharacters();
+		addCharacters();
 	}
 	
 	/**
-	 * Adds a team to the top row.
+	 * Removes all sprites from the screen.
 	 */
-	private void addTopTeam() {
-		Box team = new Box(BoxLayout.X_AXIS);
-		for (FighterSprite fs: fighterGraphics.get(TOP_TEAM_INDEX)) {
-			team.add(fs);
-		}
-		add(team, BorderLayout.NORTH);
+	private void removeCharacters() {
+		removeAll();
 	}
 }

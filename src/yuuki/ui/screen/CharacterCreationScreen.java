@@ -20,16 +20,16 @@ import javax.swing.SpinnerNumberModel;
 @SuppressWarnings("serial")
 public class CharacterCreationScreen extends Screen implements MouseListener {
 	
-	private ArrayList<CharacterCreationScreenListener> listeners;
-	
 	private JButton createCharacterButton;
 	
-	private JTextField nameField;
+	private final String DEFAULT_NAME = "Dekarrin";
 	
 	private JSpinner levelField;
 	
-	private final String DEFAULT_NAME = "Dekarrin";
-
+	private ArrayList<CharacterCreationScreenListener> listeners;
+	
+	private JTextField nameField;
+	
 	public CharacterCreationScreen(int width, int height) {
 		super(width, height);
 		setLayout(new FlowLayout());
@@ -38,11 +38,13 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		nameField = new JTextField(40);
 		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
 		ActionListener enterActionListener = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				fireCreateCharacterClicked();
 			}
 		};
 		KeyListener enterKeyListener = new KeyAdapter() {
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					fireCreateCharacterClicked();
@@ -60,16 +62,8 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		add(createCharacterButton);
 	}
 	
-	public void setInitialFocus() {
-		nameField.requestFocus();
-	}
-	
 	public void addListener(CharacterCreationScreenListener l) {
 		listeners.add(l);
-	}
-	
-	public String getEnteredName() {
-		return nameField.getText();
 	}
 	
 	public int getEnteredLevel() {
@@ -77,6 +71,11 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		return obj.intValue();
 	}
 	
+	public String getEnteredName() {
+		return nameField.getText();
+	}
+	
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
 		if (c == createCharacterButton) {
@@ -84,13 +83,22 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		}
 	}
 	
-	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
 	
-	public void mousePressed(MouseEvent e) {}
-	
+	@Override
 	public void mouseExited(MouseEvent e) {}
 	
-	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mousePressed(MouseEvent e) {}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+	
+	@Override
+	public void setInitialFocus() {
+		nameField.requestFocus();
+	}
 	
 	private void fireCreateCharacterClicked() {
 		for (CharacterCreationScreenListener l: listeners) {

@@ -9,7 +9,17 @@ package yuuki.buff;
 import yuuki.entity.Character;
 
 public abstract class Buff implements Cloneable {
-
+	
+	/**
+	 * Whether or not this Buff has been activated.
+	 */
+	private boolean active;
+	
+	/**
+	 * The name of this Buff. Used for display purposes.
+	 */
+	private String name;
+	
 	/**
 	 * The amount of effect that this buff applies. This could be a multiplier
 	 * or a discrete number.
@@ -27,16 +37,6 @@ public abstract class Buff implements Cloneable {
 	protected int turnsLeft;
 	
 	/**
-	 * Whether or not this Buff has been activated.
-	 */
-	private boolean active;
-	
-	/**
-	 * The name of this Buff. Used for display purposes.
-	 */
-	private String name;
-	
-	/**
 	 * Creates a new Buff for a Character.
 	 *
 	 * @param name The display name of this Buff.
@@ -48,38 +48,6 @@ public abstract class Buff implements Cloneable {
 		this.effect = effect;
 		this.turnsLeft = turns;
 		this.active = false;
-	}
-	
-	/**
-	 * Creates a clone of this Buff.
-	 *
-	 * @return The clone.
-	 */
-	public Buff clone() {
-		Buff b = null;
-		try {
-			b = (Buff) super.clone();
-		} catch(CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		// no deep-clone required
-		return b;
-	}
-	
-	/**
-	 * Sets the target.
-	 */
-	public void setTarget(Character target) {
-		this.target = target;
-	}
-	
-	/**
-	 * Gets the target.
-	 *
-	 * @return The target.
-	 */
-	public Character getTarget() {
-		return this.target;
 	}
 	
 	/**
@@ -103,6 +71,59 @@ public abstract class Buff implements Cloneable {
 	}
 	
 	/**
+	 * Creates a clone of this Buff.
+	 *
+	 * @return The clone.
+	 */
+	@Override
+	public Buff clone() {
+		Buff b = null;
+		try {
+			b = (Buff) super.clone();
+		} catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		// no deep-clone required
+		return b;
+	}
+	
+	/**
+	 * Gets the amount of effect that this Buff has.
+	 *
+	 * @return The amount of effect.
+	 */
+	public double getEffect() {
+		return effect;
+	}
+	
+	/**
+	 * Gets this Buff's name.
+	 *
+	 * @return This Buff's name.
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Gets the target.
+	 *
+	 * @return The target.
+	 */
+	public Character getTarget() {
+		return this.target;
+	}
+	
+	/**
+	 * Checks how many turns are left.
+	 *
+	 * @return The number of turns remaining for this Buff.
+	 */
+	public int getTurns() {
+		return turnsLeft;
+	}
+	
+	/**
 	 * Checks whether this buff has been activated.
 	 *
 	 * @return True if this Buff has been activated; false otherwise.
@@ -122,62 +143,17 @@ public abstract class Buff implements Cloneable {
 	}
 	
 	/**
-	 * Gets the amount of effect that this Buff has.
-	 *
-	 * @return The amount of effect.
+	 * Sets the target.
 	 */
-	public double getEffect() {
-		return effect;
+	public void setTarget(Character target) {
+		this.target = target;
 	}
-	
-	/**
-	 * Checks how many turns are left.
-	 *
-	 * @return The number of turns remaining for this Buff.
-	 */
-	public int getTurns() {
-		return turnsLeft;
-	}
-	
-	/**
-	 * Gets this Buff's name.
-	 *
-	 * @return This Buff's name.
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Applies the per-turn effect of this Buff. Called every time this Buff is
-	 * applied to its target and has turns left.
-	 */
-	protected abstract void applyEffect();
-	
-	/**
-	 * Applies the initial effects of this Buff. Called when this Buff is
-	 * applied for the first time.
-	 */
-	protected abstract void applyActivationEffect();
-	
-	/**
-	 * Applies the final effects of this Buff. Called when this Buff is applied
-	 * for the last time.
-	 */
-	protected abstract void applyDeactivationEffect();
 	
 	/**
 	 * Called the first time this Buff is applied. Sets its state to active.
 	 */
 	private void activate() {
 		active = true;
-	}
-	
-	/**
-	 * Called the last time this Buff is applied. Sets its state to inactive.
-	 */
-	private void deactivate() {
-		active = false;
 	}
 	
 	/**
@@ -213,5 +189,30 @@ public abstract class Buff implements Cloneable {
 			applyDeactivationEffect();
 		}
 	}
-
+	
+	/**
+	 * Called the last time this Buff is applied. Sets its state to inactive.
+	 */
+	private void deactivate() {
+		active = false;
+	}
+	
+	/**
+	 * Applies the initial effects of this Buff. Called when this Buff is
+	 * applied for the first time.
+	 */
+	protected abstract void applyActivationEffect();
+	
+	/**
+	 * Applies the final effects of this Buff. Called when this Buff is applied
+	 * for the last time.
+	 */
+	protected abstract void applyDeactivationEffect();
+	
+	/**
+	 * Applies the per-turn effect of this Buff. Called every time this Buff is
+	 * applied to its target and has turns left.
+	 */
+	protected abstract void applyEffect();
+	
 }
