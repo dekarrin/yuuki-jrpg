@@ -156,7 +156,8 @@ public abstract class Action implements Cloneable {
 	 * otherwise, false.
 	 */
 	public boolean apply() {
-		setAffectedTeams(); // only now can we be sure that the fighter id was set
+		setAffectedTeams();
+		// only now can we be sure that the fighter id was set
 		successful = applyCost();
 		if (successful) {
 			applyEffect();
