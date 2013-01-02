@@ -684,12 +684,12 @@ CharacterCreationScreenListener, OverworldScreenListener {
 
 	@Override
 	public void loadGameClicked() {
-		showUnimpMsg();
+		mainProgram.requestLoadGame();
 	}
 
 	@Override
 	public void optionsClicked() {
-		showUnimpMsg();
+		mainProgram.requestOptionsScreen();
 	}
 
 	@Override
