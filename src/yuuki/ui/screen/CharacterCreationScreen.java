@@ -17,19 +17,44 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * The screen displayed during character creation.
+ */
 @SuppressWarnings("serial")
 public class CharacterCreationScreen extends Screen implements MouseListener {
 	
+	/**
+	 * The string that the text in the name field is initially set to.
+	 */
+	private static final String DEFAULT_NAME = "Dekarrin";
+	
+	/**
+	 * The button that creates the character and advances to the next screen.
+	 */
 	private JButton createCharacterButton;
 	
-	private final String DEFAULT_NAME = "Dekarrin";
-	
+	/**
+	 * The field for selecting character level in.
+	 */
 	private JSpinner levelField;
 	
+	/**
+	 * The list of objects listening for events from this screen.
+	 */
 	private ArrayList<CharacterCreationScreenListener> listeners;
 	
+	/**
+	 * The field to enter the character's name into.
+	 */
 	private JTextField nameField;
 	
+	/**
+	 * Creates a new CharacterCreationScreen. The child components are created
+	 * and added to this screen.
+	 * 
+	 * @param width The width of the screen.
+	 * @param height The height of the screen.
+	 */
 	public CharacterCreationScreen(int width, int height) {
 		super(width, height);
 		setLayout(new FlowLayout());
@@ -62,19 +87,38 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		add(createCharacterButton);
 	}
 	
+	/**
+	 * Adds a listener for events fired from this CharacterCreationScreen.
+	 * 
+	 * @param l The listener to add.
+	 */
 	public void addListener(CharacterCreationScreenListener l) {
 		listeners.add(l);
 	}
 	
+	/**
+	 * Gets the level entered by the user.
+	 * 
+	 * @return The level.
+	 */
 	public int getEnteredLevel() {
 		Integer obj = (Integer) levelField.getValue();
 		return obj.intValue();
 	}
 	
+	/**
+	 * Gets the name entered by the user.
+	 * 
+	 * @return The name.
+	 */
 	public String getEnteredName() {
 		return nameField.getText();
 	}
 	
+	/**
+	 * Calls createCharacterClicked() on each of the listeners. This method is
+	 * called when the user clicks the create character button.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
@@ -83,23 +127,42 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		}
 	}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	
+	/**
+	 * Sets the initial focus of this screen to the name field.
+	 */
 	@Override
 	public void setInitialFocus() {
 		nameField.requestFocus();
 	}
 	
+	/**
+	 * Calls createCharacterClicked() on each of the listeners registered to
+	 * this screen.
+	 */
 	private void fireCreateCharacterClicked() {
 		for (CharacterCreationScreenListener l: listeners) {
 			l.createCharacterClicked();

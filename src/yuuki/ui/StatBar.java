@@ -9,19 +9,16 @@ import javax.swing.JPanel;
 import yuuki.entity.VariableStat;
 
 /**
- * A bar for displaying a stat.
- * 
- * @author TF Nelson
+ * Displays a VariableStat in a bar.
  */
+@SuppressWarnings("serial")
 public class StatBar extends JPanel {
 	
 	/**
 	 * The color of the unfilled portion of all StatBar instances.
 	 */
 	public static final Color BACKGROUND_COLOR = new Color(79, 76, 0);
-	
-	private static final long serialVersionUID = 8673785141956435286L;
-	
+		
 	/**
 	 * The color of the filled portion of this StatBar.
 	 */

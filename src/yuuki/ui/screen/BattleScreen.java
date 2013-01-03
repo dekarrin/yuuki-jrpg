@@ -12,13 +12,25 @@ import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.ui.FighterSprite;
 
+/**
+ * The screen shown for a battle.
+ */
 @SuppressWarnings("serial")
 public class BattleScreen extends Screen {
 	
+	/**
+	 * The index of the team that should be shown on the bottom of the screen.
+	 */
 	public static final int BOTTOM_TEAM_INDEX = 0;
 	
+	/**
+	 * The index of the team that should be shown on the top of the team.
+	 */
 	public static final int TOP_TEAM_INDEX = 1;
 	
+	/**
+	 * The graphics displayed on the screen.
+	 */
 	private ArrayList<ArrayList<FighterSprite>> fighterGraphics;
 	
 	/**
@@ -39,10 +51,11 @@ public class BattleScreen extends Screen {
 		addCharacters();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
-	public void setInitialFocus() {
-		
-	}
+	public void setInitialFocus() {}
 	
 	/**
 	 * Shows a sprite failing at an action.
@@ -279,4 +292,5 @@ public class BattleScreen extends Screen {
 	private void removeCharacters() {
 		removeAll();
 	}
+	
 }

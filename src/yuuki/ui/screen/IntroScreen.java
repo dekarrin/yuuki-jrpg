@@ -14,9 +14,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 
+/**
+ * The screen shown at the introduction. This is the starting screen.
+ */
 @SuppressWarnings("serial")
 public class IntroScreen extends Screen implements MouseListener {
 	
+	/**
+	 * The listener assigned to each of this screen's buttons to see if the
+	 * enter key is pressed while the button has focus.
+	 */
 	private KeyListener enterListener = new KeyAdapter() {
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -26,16 +33,38 @@ public class IntroScreen extends Screen implements MouseListener {
 		}
 	};
 	
+	/**
+	 * The button to quit the game with.
+	 */
 	private JButton exitButton;
 	
+	/**
+	 * The listeners registered to this screen.
+	 */
 	private ArrayList<IntroScreenListener> listeners;
 	
+	/**
+	 * The button to load a new game with.
+	 */
 	private JButton loadGameButton;
 	
+	/**
+	 * The button to start a new game with.
+	 */
 	private JButton newGameButton;
 	
+	/**
+	 * The button to go into the options screen with.
+	 */
 	private JButton optionsButton;
 	
+	/**
+	 * Creates a new IntroScreen. The child components are created and added to
+	 * this screen.
+	 * 
+	 * @param width The width of the screen.
+	 * @param height The height of the screen.
+	 */
 	public IntroScreen(int width, int height) {
 		super(width, height);
 		listeners = new ArrayList<IntroScreenListener>();
@@ -47,33 +76,61 @@ public class IntroScreen extends Screen implements MouseListener {
 		build();
 	}
 	
+	/**
+	 * Registers a listener for events fired from this screen.
+	 * 
+	 * @param l The listener to add.
+	 */
 	public void addListener(IntroScreenListener l) {
 		listeners.add(l);
 	}
 	
+	/**
+	 * Called when the mouse is clicked on a button.
+	 * 
+	 * @param e The event that triggered the event firing.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
 		fireButtonClicked(c);
 	}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	
+	/**
+	 * Sets the initial focus of this screen to the new game button.
+	 */
 	@Override
 	public void setInitialFocus() {
 		newGameButton.requestFocus();
 	}
 	
+	/**
+	 * Adds the child components of this screen to itself.
+	 */
 	private void build() {
 		setLayout(new OverlayLayout(this));
 		JPanel buttonPanel = new JPanel();
@@ -87,6 +144,11 @@ public class IntroScreen extends Screen implements MouseListener {
 		add(buttonPanel);
 	}
 	
+	/**
+	 * Fires the appropriate event depending on which button the user clicked.
+	 * 
+	 * @param button The button that the user clicked.
+	 */
 	private void fireButtonClicked(Component button) {
 		if (button == newGameButton) {
 			fireNewGameClicked();
@@ -99,30 +161,45 @@ public class IntroScreen extends Screen implements MouseListener {
 		}
 	}
 	
+	/**
+	 * Calls the exitClicked() method on all listeners.
+	 */
 	private void fireExitClicked() {
 		for (IntroScreenListener l: listeners) {
 			l.exitClicked();
 		}
 	}
 	
+	/**
+	 * Calls the loadGameClicked() method on all listeners.
+	 */
 	private void fireLoadGameClicked() {
 		for (IntroScreenListener l: listeners) {
 			l.loadGameClicked();
 		}
 	}
 	
+	/**
+	 * Calls the newGameClicked() method on all listeners.
+	 */
 	private void fireNewGameClicked() {
 		for (IntroScreenListener l: listeners) {
 			l.newGameClicked();
 		}
 	}
 	
+	/**
+	 * Calls the optionsClicked() method on all listeners.
+	 */
 	private void fireOptionsClicked() {
 		for (IntroScreenListener l: listeners) {
 			l.optionsClicked();
 		}
 	}
 	
+	/**
+	 * Adds the appropriate listeners to child UI components.
+	 */
 	private void setButtonListeners() {
 		newGameButton.addMouseListener(this);
 		loadGameButton.addMouseListener(this);
@@ -133,4 +210,5 @@ public class IntroScreen extends Screen implements MouseListener {
 		optionsButton.addKeyListener(enterListener);
 		exitButton.addKeyListener(enterListener);
 	}
+	
 }
