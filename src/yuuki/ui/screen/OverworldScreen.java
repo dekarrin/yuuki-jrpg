@@ -13,15 +13,28 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 /**
- * 
+ * The screen displayed when at the overworld.
  */
 @SuppressWarnings("serial")
 public class OverworldScreen extends Screen implements MouseListener {
 	
+	/**
+	 * The listeners registered to this screen.
+	 */
 	private ArrayList<OverworldScreenListener> listeners;
 	
+	/**
+	 * The button that advances to the battle screen.
+	 */
 	private JButton startButton;
 	
+	/**
+	 * Creates a new OverworldScreen. The child components are created and
+	 * added to the screen.
+	 * 
+	 * @param width The width of the screen.
+	 * @param height The height of the screen.
+	 */
 	public OverworldScreen(int width, int height) {
 		super(width, height);
 		KeyListener enterListener = new KeyAdapter() {
@@ -43,10 +56,19 @@ public class OverworldScreen extends Screen implements MouseListener {
 		add(startButton);
 	}
 	
+	/**
+	 * Adds a listener to this screen.
+	 * 
+	 * @param l The listener to add.
+	 */
 	public void addListener(OverworldScreenListener l) {
 		listeners.add(l);
 	}
 	
+	/**
+	 * Fires the start clicked event on all registered listeners. This method
+	 * is called when the start button is clicked.
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Component c = e.getComponent();
@@ -55,26 +77,45 @@ public class OverworldScreen extends Screen implements MouseListener {
 		}
 	}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseExited(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {}
 	
+	/**
+	 * Not used.
+	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	
+	/**
+	 * Sets the initial focus of this screen to the start button.
+	 */
 	@Override
 	public void setInitialFocus() {
 		startButton.requestFocus();
 	}
 	
+	/**
+	 * Calls the startBattleClicked() method on all listeners.
+	 */
 	private void fireStartClicked() {
 		for (OverworldScreenListener l: listeners) {
 			l.startBattleClicked();
 		}
 	}
+	
 }

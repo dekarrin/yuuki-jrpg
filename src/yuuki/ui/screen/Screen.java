@@ -10,18 +10,46 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public abstract class Screen extends JPanel {
 	
+	/**
+	 * A default concrete derived class of Screen. Obtainable through the
+	 * getInstance() method of Screen.
+	 */
 	private static class GenericScreen extends Screen {
+		
+		/**
+		 * Creates a new GenericScreen.
+		 * 
+		 * @param w The width of the screen.
+		 * @param h The height of the screen.
+		 */
 		public GenericScreen(int w, int h) {
 			super(w, h);
 		}
+		
+		/**
+		 * Empty implementation.
+		 */
 		@Override
 		public void setInitialFocus() {}
 	}
 	
+	/**
+	 * Gets an instance of Screen. The actual type will be some concrete
+	 * subclass of Screen.
+	 * 
+	 * @param w The width of the screen.
+	 * @param h The height of the screen.
+	 * 
+	 * @return A concrete subclass of Screen with generic implementations of
+	 * abstract methods.
+	 */
 	public static Screen getInstance(int w, int h) {
 		return new GenericScreen(w, h);
 	}
 	
+	/**
+	 * The size of this Screen.
+	 */
 	private final Dimension size;
 	
 	/**
@@ -34,6 +62,9 @@ public abstract class Screen extends JPanel {
 		size = new Dimension(width, height);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return size;
