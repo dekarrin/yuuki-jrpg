@@ -1,12 +1,11 @@
-/**
- * An Action that costs mana to apply some effect to the targets.
- */
-
 package yuuki.action;
 
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 
+/**
+ * An Action that costs mana to apply some effect to the targets.
+ */
 public abstract class Skill extends Action implements Cloneable {
 	
 	/**
@@ -32,6 +31,8 @@ public abstract class Skill extends Action implements Cloneable {
 	/**
 	 * Attempts to apply the action by subtracting mana from the origin and
 	 * then applying the result.
+	 * 
+	 * @return True if the character has enough mana; false otherwise.
 	 */
 	@Override
 	protected boolean applyCost() {

@@ -1,7 +1,3 @@
-/**
- * Shows program input and output.
- */
-
 package yuuki.ui;
 
 import java.util.ArrayList;
@@ -11,6 +7,9 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 
+/**
+ * Shows program input and output.
+ */
 public interface Interactable {
 	
 	/**
@@ -317,4 +316,5 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
+	
 }

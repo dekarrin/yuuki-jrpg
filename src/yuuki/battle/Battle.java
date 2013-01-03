@@ -1,17 +1,15 @@
-/**
- * The battle engine for all fights in the Yuuki system. It is not
- * independently-driven. It must be explicitly instructed to advance its
- * execution. This allows it to be decoupled from any interfaces.
- *
- * @version 10/20/12
- */
-
 package yuuki.battle;
+
 import java.util.ArrayList;
 
 import yuuki.action.Action;
 import yuuki.entity.Character;
 
+/**
+ * The battle engine for all fights in the Yuuki system. It is not
+ * independently-driven. It must be explicitly instructed to advance its
+ * execution. This allows it to be decoupled from any interfaces.
+ */
 public class Battle {
 	
 	/**
@@ -446,4 +444,5 @@ public class Battle {
 			currentFighter = 0;
 		}
 	}
+	
 }

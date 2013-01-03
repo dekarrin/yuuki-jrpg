@@ -15,32 +15,59 @@ import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
 
 /**
- * The graphic used to display the character on the battle screen.
- * 
- * @author TF Nelson
+ * The graphic used to display characters on the battle screen.
  */
+@SuppressWarnings("serial")
 public class FighterSprite extends JPanel {
 	
+	/**
+	 * The height, in pixels, of each stat bar.
+	 */
 	public static final int BAR_HEIGHT = 10;
 	
+	/**
+	 * The height, in pixels, of the buff icon panel.
+	 */
 	public static final int BUFF_HEIGHT = 30;
 	
+	/**
+	 * The height, in pixels, of the fighter image.
+	 */
 	public static final int IMAGE_HEIGHT = 120;
 	
+	/**
+	 * The size, in points, of the font used for the fighter name.
+	 */
 	public static final int N_SIZE = 10;
 	
+	/**
+	 * The width, in pixels, of the entire sprite.
+	 */
 	public static final int SPRITE_WIDTH = 80;
 	
-	private static final long serialVersionUID = 5004775256726541372L;
-	
+	/**
+	 * The area where active buff icons are displayed.
+	 */
 	private JComponent buffPanel;
 	
+	/**
+	 * The bar showing the fighter's current and total hit points.
+	 */
 	private StatBar healthBar;
 	
+	/**
+	 * The area where the fighter's image is displayed.
+	 */
 	private JComponent imagePanel;
 	
+	/**
+	 * The bar showing the fighter's current and total mana points.
+	 */
 	private StatBar manaBar;
 	
+	/**
+	 * The label displaying the fighter's name.
+	 */
 	private JLabel nameLabel;
 	
 	/**
@@ -132,6 +159,9 @@ public class FighterSprite extends JPanel {
 		// TODO: actually do something
 	}
 	
+	/**
+	 * Shows the animation for character victory.
+	 */
 	public void showCharacterVictory() {
 		// TODO: actually do something
 	}
@@ -280,4 +310,5 @@ public class FighterSprite extends JPanel {
 		revalidate();
 		repaint();
 	}
+	
 }

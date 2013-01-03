@@ -1,9 +1,8 @@
+package yuuki.buff;
+
 /**
  * A Buff that only has an effect upon activation and deactivation.
  */
-
-package yuuki.buff;
-
 public abstract class PassiveBuff extends Buff implements Cloneable {
 	
 	/**

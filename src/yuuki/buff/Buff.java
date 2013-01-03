@@ -1,13 +1,12 @@
+package yuuki.buff;
+
+import yuuki.entity.Character;
+
 /**
  * An effect that either boosts or reduces stats. Effects can either be passive
  * or active. Passive effects are applied during stat calculation, while active
  * effects are applied every time a player's turn comes up.
  */
-
-package yuuki.buff;
-
-import yuuki.entity.Character;
-
 public abstract class Buff implements Cloneable {
 	
 	/**

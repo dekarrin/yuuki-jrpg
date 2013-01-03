@@ -1,12 +1,11 @@
-/**
- * Buffs the Character's defense for a bit.
- */
-
 package yuuki.action;
 
 import yuuki.buff.DefenseBuff;
 import yuuki.entity.Character;
 
+/**
+ * Buffs the Character's defense for a bit.
+ */
 public class BasicDefense extends Action implements Cloneable {
 	
 	/**

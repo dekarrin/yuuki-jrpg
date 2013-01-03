@@ -1,10 +1,9 @@
-/**
- * A stat used by a Character. Fully thread-safe to enable the GUI to establish
- * change listeners on a Stat.
- */
-
 package yuuki.entity;
 
+/**
+ * A stat used by a Character. Fully thread-safe to enable the UI to establish
+ * change listeners on a Stat.
+ */
 public class Stat implements Cloneable {
 	
 	/**
@@ -159,8 +158,9 @@ public class Stat implements Cloneable {
 	 */
 	public synchronized void removeModifier(double mod) {
 		modifier /= mod;
-		if (Math.abs(1.0 - modifier) <= 0.1) { // fix precision issues
+		if (Math.abs(1.0 - modifier) <= 0.1) { // fixes precision issues
 			modifier = 1.0;
 		}
 	}
+	
 }

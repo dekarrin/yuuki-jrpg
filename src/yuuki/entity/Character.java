@@ -1,7 +1,3 @@
-/**
- * The Character class provides stats for all characters and monsters.
- */
-
 package yuuki.entity;
 
 import java.util.ArrayList;
@@ -10,6 +6,9 @@ import java.util.Iterator;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 
+/**
+ * Provides stats for characters.
+ */
 public abstract class Character {
 	
 	/**
@@ -869,4 +868,5 @@ public abstract class Character {
 	 */
 	protected abstract Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters);
+	
 }

@@ -1,14 +1,13 @@
-/**
- * The NPC class provides methods for battle AI and leveling up for non-player
- * characters, such as team mates and monsters.
- */
-
 package yuuki.entity;
 
 import java.util.ArrayList;
 
 import yuuki.action.Action;
 
+/**
+ * The NPC class provides methods for battle AI and leveling up for non-player
+ * characters, such as team-mates and monsters.
+ */
 public class NonPlayerCharacter extends Character {
 	
 	/**
@@ -137,4 +136,5 @@ public class NonPlayerCharacter extends Character {
 		int fighterId = (int) Math.floor(Math.random() * team.size());
 		return team.get(fighterId);
 	}
+	
 }

@@ -1,7 +1,3 @@
-/**
- * A Character that can be controlled by the interface.
- */
-
 package yuuki.entity;
 
 import java.util.ArrayList;
@@ -9,6 +5,9 @@ import java.util.ArrayList;
 import yuuki.action.Action;
 import yuuki.ui.Interactable;
 
+/**
+ * A Character that can be controlled by the interface.
+ */
 public class PlayerCharacter extends Character {
 	
 	/**

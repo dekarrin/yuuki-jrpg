@@ -1,11 +1,10 @@
+package yuuki.entity;
+
 /**
  * A Stat that has a variable current value. The total effective value is used
  * as the maximum value for the current value. Thread-safe to allow access by
  * UI threads.
  */
-
-package yuuki.entity;
-
 public class VariableStat extends Stat implements Cloneable {
 	
 	/**
@@ -148,4 +147,5 @@ public class VariableStat extends Stat implements Cloneable {
 	public synchronized void restore(int level) {
 		currentValue = getMax(level);
 	}
+	
 }

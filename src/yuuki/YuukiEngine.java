@@ -1,8 +1,3 @@
-/**
- * The game engine for the Yuuki JRPG project. This class may be executed
- * directly to run Yuuki.
- */
-
 package yuuki;
 
 import java.util.ArrayList;
@@ -20,10 +15,14 @@ import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
 
+/**
+ * The game engine for the Yuuki JRPG project. This class may be executed
+ * directly to run Yuuki.
+ */
 public class YuukiEngine implements Runnable, UiExecutor {
 	
 	/**
-	 * Handles the execution of a battle.
+	 * Handles the execution of a battle in its own thread.
 	 */
 	private class BattleRunner implements Runnable {
 		private Battle battle;
@@ -39,8 +38,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Program execution hook. Creates a new thread in which to execute the
-	 * game engine in and then starts the thread.
+	 * Program execution hook. Creates a new instance of YuukiEngine and then
+	 * runs it.
 	 *
 	 * @param args Command line arguments. Not used.
 	 */
@@ -50,7 +49,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The creator of all entities.
+	 * Creates all entities.
 	 */
 	private EntityFactory entityMaker;
 	
@@ -77,6 +76,9 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		entityMaker = new EntityFactory();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestBattle(boolean display) {
 		NonPlayerCharacter slime = entityMaker.createNpc("slime", 2);
@@ -88,32 +90,50 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestBattleStart() {
 		spawnBattleThread(mainBattle, true);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
 		ui.switchToOverworldScreen();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestLoadGame() {
 		ui.display(null, "Loading hasn't yet been implemented.");
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestNewGame() {
 		ui.switchToCharacterCreationScreen();
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestOptionsScreen() {
 		ui.display(null, "Options haven't yet been implemented.");
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestQuit() {
 		int quit = JOptionPane.showConfirmDialog(null,
@@ -126,19 +146,12 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Runs the engine.
+	 * Initializes the engine. The UI is started and the intro screen is shown.
 	 */
 	@Override
 	public void run() {
 		ui.initialize();
 		ui.switchToIntroScreen();
-		/*
-		while (stillFighting) {
-			battleOneOnOne(player, createJill());
-			stillFighting = ui.confirm("Battle again?", "Yes", "No");
-		}
-		ui.switchToEndingScreen();
-		ui.destroy();*/
 	}
 	
 	/**
@@ -340,4 +353,5 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		Thread t = new Thread(r, "MainBattle");
 		t.start();
 	}
+	
 }

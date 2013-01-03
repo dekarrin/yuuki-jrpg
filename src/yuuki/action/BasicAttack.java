@@ -1,12 +1,11 @@
-/**
- * The basic attack. This is a zero-cost skill action that does some damage to
- * a single target. This Action is only applied to the first target.
- */
-
 package yuuki.action;
 
 import yuuki.entity.Character;
 
+/**
+ * The basic attack. This is a zero-cost skill action that does some damage to
+ * a single target. This Action is only applied to the first target.
+ */
 public class BasicAttack extends Skill implements Cloneable {
 	
 	/**

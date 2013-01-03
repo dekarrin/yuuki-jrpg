@@ -1,9 +1,8 @@
+package yuuki.buff;
+
 /**
  * A Buff on the Character's defense. A simple multiplying buff.
  */
-
-package yuuki.buff;
-
 public class DefenseBuff extends PassiveBuff implements Cloneable {
 	
 	/**

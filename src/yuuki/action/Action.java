@@ -1,11 +1,3 @@
-/**
- * A character's action during the fight. This gives information on what type
- * of effect it has and who its target is.
- *
- * Derived classes should set the actual effects, as well as the cost stat and
- * the effect stat.
- */
-
 package yuuki.action;
 
 import java.util.ArrayList;
@@ -15,6 +7,13 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 
+/**
+ * A character's action during the fight. This gives information on what type
+ * of effect it has and who its target is.
+ * 
+ * Derived classes have several responsibilities. They must set their actual
+ * effects, as well as their cost and effect stats.
+ */
 public abstract class Action implements Cloneable {
 	
 	/**
@@ -329,7 +328,9 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
-	 * Sets the teams affected by this action.
+	 * Sets the teams affected by this action. The teams are set by iterating
+	 * over the target list and adding each fighter's team ID to the affected
+	 * teams if it isn't there already.
 	 */
 	private void setAffectedTeams() {
 		for (Character t: targets) {
