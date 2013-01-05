@@ -8,6 +8,7 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -24,6 +25,7 @@ import yuuki.ui.screen.IntroScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
+import yuuki.ui.menu.GameMenuBar;
 
 /**
  * A graphical user interface that uses the Swing framework.
@@ -74,6 +76,11 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * The main window of the program.
 	 */
 	private JFrame mainWindow;
+	
+	/**
+	 * The game's menu bar.
+	 */
+	private JMenuBar menuBar;
 	
 	/**
 	 * The message box for the game.
@@ -793,6 +800,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	private void createComponents() {
 		createMainWindow();
 		createMessageBox();
+		createMenuBar();
 		createIntroScreen();
 		createOptionsScreen();
 		createBattleScreen();
@@ -832,6 +840,13 @@ CharacterCreationScreenListener, OverworldScreenListener {
 		mainWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
+	}
+	
+	/**
+	 * Creates the menu bar.
+	 */
+	private void createMenuBar() {
+		menuBar = new GameMenuBar();
 	}
 	
 	/**
@@ -889,6 +904,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void switchWindow(Screen screen) {
 		clearWindow();
+		mainWindow.add(menuBar, BorderLayout.NORTH);
 		mainWindow.add(screen, BorderLayout.CENTER);
 		mainWindow.add(messageBox, BorderLayout.SOUTH);
 		refreshWindow();
