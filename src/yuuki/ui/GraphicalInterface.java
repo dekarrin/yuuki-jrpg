@@ -24,6 +24,7 @@ import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
 import yuuki.ui.screen.OptionsScreen;
+import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
@@ -33,7 +34,8 @@ import yuuki.ui.menu.GameMenuBar;
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OverworldScreenListener {
+CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
+{
 	
 	/**
 	 * The height of the message box within the window.
@@ -103,6 +105,16 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * The pause screen.
 	 */
 	private Screen pauseScreen;
+	
+	/**
+	 * The screen that the interface was previously on.
+	 */
+	private Screen formerScreen;
+	
+	/**
+	 * The screen that the interface is currently on.
+	 */
+	private Screen currentScreen;
 
 	/**
 	 * The options of the game.
@@ -118,6 +130,8 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	public GraphicalInterface(UiExecutor mainProgram, GameOptions options) {
 		this.options = options;
 		this.mainProgram = mainProgram;
+		currentScreen = null;
+		formerScreen = null;
 		createComponents();
 	}
 	
@@ -745,6 +759,8 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	@Override
 	public void switchToOptionsScreen() {
+		formerScreen = currentScreen;
+		optionsScreen.addListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -914,12 +930,28 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * @param screen The screen to switch to.
 	 */
 	private void switchWindow(Screen screen) {
+		currentScreen = screen;
 		clearWindow();
 		mainWindow.add(menuBar, BorderLayout.NORTH);
 		mainWindow.add(screen, BorderLayout.CENTER);
 		mainWindow.add(messageBox, BorderLayout.SOUTH);
 		refreshWindow();
 		screen.setInitialFocus();
+	}
+
+	@Override
+	public void bgmVolumeChanged(int volume) {
+		options.bgmVolume = volume;
+	}
+
+	@Override
+	public void sfxVolumeChanged(int volume) {
+		options.sfxVolume = volume;
+	}
+
+	@Override
+	public void optionsSubmitted() {
+		optionsScreen.removeListener(this);
 	}
 	
 }
