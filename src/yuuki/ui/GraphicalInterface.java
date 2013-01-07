@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import yuuki.GameOptions;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
@@ -22,6 +23,7 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.OptionsScreen;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
@@ -90,7 +92,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	/**
 	 * The options screen.
 	 */
-	private Screen optionsScreen;
+	private OptionsScreen optionsScreen;
 	
 	/**
 	 * The overworld screen.
@@ -101,11 +103,20 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 * The pause screen.
 	 */
 	private Screen pauseScreen;
+
+	/**
+	 * The options of the game.
+	 */
+	private GameOptions options;
 	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
+	 * 
+	 * @param mainProgram The class that executes requests made by the GUI.
+	 * @param options The options of the program.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram) {
+	public GraphicalInterface(UiExecutor mainProgram, GameOptions options) {
+		this.options = options;
 		this.mainProgram = mainProgram;
 		createComponents();
 	}
@@ -863,7 +874,7 @@ CharacterCreationScreenListener, OverworldScreenListener {
 	 */
 	private void createOptionsScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		optionsScreen = Screen.getInstance(WINDOW_WIDTH, height);
+		optionsScreen = new OptionsScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**

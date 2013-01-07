@@ -49,6 +49,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The options for the game.
+	 */
+	private GameOptions options;
+	
+	/**
 	 * Creates all entities.
 	 */
 	private EntityFactory entityMaker;
@@ -72,7 +77,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
-		ui = new GraphicalInterface(this);
+		options = new GameOptions();
+		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
 	}
 	
