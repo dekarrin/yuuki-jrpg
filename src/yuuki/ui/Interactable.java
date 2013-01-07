@@ -31,6 +31,11 @@ public interface Interactable {
 	public void destroy();
 	
 	/**
+	 * Switches to the previous screen.
+	 */
+	public void switchToLastScreen();
+	
+	/**
 	 * Displays a message to the user.
 	 *
 	 * @param speaker The person doing the talking. Null for none.

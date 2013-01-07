@@ -66,6 +66,7 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 */
 	public OptionsScreen(int width, int height) {
 		super(width, height);
+		listeners = new ArrayList<OptionsScreenListener>();
 		MouseListener ma = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

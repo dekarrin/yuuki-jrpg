@@ -753,13 +753,25 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 			}
 		});
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void switchToLastScreen() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				switchWindow(formerScreen);
+			}
+		});
+	}
 
 	/**
 	 * @inheritDoc
 	 */
 	@Override
 	public void switchToOptionsScreen() {
-		formerScreen = currentScreen;
 		optionsScreen.addListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -864,7 +876,8 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 			}
 		};
 		mainWindow = new JFrame("Yuuki - A JRPG");
-		mainWindow.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		mainWindow.setDefaultCloseOperation(
+				WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
 	}
@@ -930,6 +943,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	 * @param screen The screen to switch to.
 	 */
 	private void switchWindow(Screen screen) {
+		formerScreen = currentScreen;
 		currentScreen = screen;
 		clearWindow();
 		mainWindow.add(menuBar, BorderLayout.NORTH);
@@ -952,6 +966,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	@Override
 	public void optionsSubmitted() {
 		optionsScreen.removeListener(this);
+		mainProgram.requestOptionsSubmission();
 	}
 	
 }

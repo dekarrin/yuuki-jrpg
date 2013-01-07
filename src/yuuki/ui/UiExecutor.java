@@ -33,6 +33,11 @@ public interface UiExecutor {
 	public void requestCharacterCreation(String name, int level);
 	
 	/**
+	 * Called when the options have been submitted.
+	 */
+	public void requestOptionsSubmission();
+	
+	/**
 	 * Requests that an old game be loaded.
 	 */
 	public void requestLoadGame();

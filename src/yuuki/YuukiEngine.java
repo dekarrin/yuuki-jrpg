@@ -132,9 +132,17 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * @inheritDoc
 	 */
+	public void requestOptionsSubmission() {
+		// TODO: do not depend on Interactable to set options
+		ui.switchToLastScreen();
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void requestOptionsScreen() {
-		ui.display(null, "Options haven't yet been implemented.");
+		ui.switchToOptionsScreen();
 	}
 	
 	/**
