@@ -935,6 +935,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	 */
 	private void refreshWindow() {
 		mainWindow.pack();
+		mainWindow.revalidate();
 	}
 	
 	/**
