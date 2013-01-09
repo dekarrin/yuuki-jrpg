@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * Loads and plays audio files.
  */
-public class AudioEngine {
+public class AudioEngine implements ThreadCounter {
 	
 	/**
 	 * The number of AudioEngine instances. Needed for thread naming.
@@ -39,14 +39,14 @@ public class AudioEngine {
 	/**
 	 * Decreases the number of threads by one.
 	 */
-	private synchronized void decreaseThreadCount() {
+	public synchronized void decreaseThreadCount() {
 		threads--;
 	}
 	
 	/**
 	 * Increases the number of threads by one.
 	 */
-	private synchronized void increaseThreadCount() {
+	public synchronized void increaseThreadCount() {
 		threads++;
 	}
 	
