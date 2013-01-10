@@ -1,30 +1,12 @@
 package yuuki.sound;
 
-import javax.sound.sampled.*;
 import java.io.*;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  * Loads and plays audio files.
  */
-public class AudioEngine implements ThreadCounter {
-	
-	/**
-	 * The number of AudioEngine instances. Needed for thread naming.
-	 */
-	private static int instances = 0;
-	
-	/**
-	 * This particular instance ID.
-	 */
-	private int instanceId;
-	
-	/**
-	 * The number of spawned threads for SoundPlayers. Needed for thread
-	 * naming.
-	 */
-	private int threads = 0;
+public abstract class AudioEngine {
 	
 	/**
 	 * The location of sound resource files.
@@ -34,29 +16,37 @@ public class AudioEngine implements ThreadCounter {
 	/**
 	 * Audio data loaded from disk.
 	 */
-	private HashMap<String, byte[]> sounds;
+	protected HashMap<String, byte[]> sounds;
 	
 	/**
-	 * Decreases the number of threads by one.
+	 * The volume percentage of the sounds.
 	 */
-	public synchronized void decreaseThreadCount() {
-		threads--;
-	}
-	
-	/**
-	 * Increases the number of threads by one.
-	 */
-	public synchronized void increaseThreadCount() {
-		threads++;
-	}
+	private int volume;
 	
 	/**
 	 * Creates a new AudioEngine.
 	 */
 	public AudioEngine() {
 		sounds = new HashMap<String, byte[]>();
-		instanceId = AudioEngine.instances;
-		AudioEngine.instances++;
+		volume = 100;
+	}
+	
+	/**
+	 * Sets the volume.
+	 * 
+	 * @param volume The new volume.
+	 */
+	public void setVolume(int volume) {
+		this.volume = volume;
+	}
+	
+	/**
+	 * Gets the volume.
+	 * 
+	 * @return The volume.
+	 */
+	public int getVolume() {
+		return volume;
 	}
 	
 	/**
@@ -125,12 +115,6 @@ public class AudioEngine implements ThreadCounter {
 	 * 
 	 * @param soundFile the file to make the player thread for.
 	 */
-	protected void spawnPlayerThread(String soundFile) {
-		byte[] data = sounds.get(soundFile);
-		SoundPlayer player = new SoundPlayer(data);
-		increaseThreadCount();
-		String threadName = "SoundPlayer-" + instanceId + "-" + threads;
-		(new Thread(player, threadName)).start();
-	}
+	protected abstract void spawnPlayerThread(String soundFile);
 	
 }
