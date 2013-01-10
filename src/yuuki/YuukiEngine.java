@@ -11,6 +11,8 @@ import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.sound.MusicEngine;
+import yuuki.sound.SoundEffectEngine;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
@@ -74,12 +76,25 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private Interactable ui;
 	
 	/**
+	 * The sound effects engine.
+	 */
+	private SoundEffectEngine sfxEngine;
+	
+	/**
+	 * The music engine.
+	 */
+	private MusicEngine bgmEngine;
+	
+	/**
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
 		options = new GameOptions();
 		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
+		sfxEngine = new SoundEffectEngine();
+		bgmEngine = new MusicEngine();
+		applyOptions();
 	}
 	
 	/**
@@ -366,6 +381,15 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		BattleRunner r = new BattleRunner(battle, display);
 		Thread t = new Thread(r, "MainBattle");
 		t.start();
+	}
+	
+	/**
+	 * Applies each of the options in the game options object to obtain their
+	 * respective effects.
+	 */
+	private void applyOptions() {
+		sfxEngine.setVolume(options.sfxVolume);
+		bgmEngine.setVolume(options.bgmVolume);
 	}
 	
 }
