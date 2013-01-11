@@ -3,7 +3,7 @@ package yuuki.ui.screen;
 /**
  * A listener for events fired from an IntroScreen.
  */
-public interface IntroScreenListener {
+public interface IntroScreenListener extends ScreenListener {
 	
 	/**
 	 * Fired when the exit button is clicked.

@@ -1,20 +1,26 @@
 package yuuki.ui.screen;
 
 import java.awt.Dimension;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
 /**
  * Base class for the screens that appear in the GUI.
+ * 
+ * @param <L> The type of the listener that this screen uses.
  */
 @SuppressWarnings("serial")
-public abstract class Screen extends JPanel {
+public abstract class Screen<L extends ScreenListener> extends JPanel {
 	
 	/**
 	 * A default concrete derived class of Screen. Obtainable through the
 	 * getInstance() method of Screen.
 	 */
-	private static class GenericScreen extends Screen {
+	private static class GenericScreen extends Screen<ScreenListener> {
 		
 		/**
 		 * Creates a new GenericScreen.
@@ -43,9 +49,14 @@ public abstract class Screen extends JPanel {
 	 * @return A concrete subclass of Screen with generic implementations of
 	 * abstract methods.
 	 */
-	public static Screen getInstance(int w, int h) {
+	public static Screen<? extends ScreenListener> getInstance(int w, int h) {
 		return new GenericScreen(w, h);
 	}
+	
+	/**
+	 * Keeps track of all registered listeners.
+	 */
+	private Set<L> listeners;
 	
 	/**
 	 * The size of this Screen.
@@ -60,6 +71,38 @@ public abstract class Screen extends JPanel {
 	 */
 	public Screen(int width, int height) {
 		size = new Dimension(width, height);
+	}
+	
+	/**
+	 * Registers a listener for events fired from this screen. The listener is
+	 * registered if and only if it has not already been registered.
+	 * 
+	 * @param listener The listener to add.
+	 */
+	public void addListener(L listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Removes a listener from the list of registered listeners.
+	 * 
+	 * @param listener The listener to remove.
+	 */
+	public void removeListener(Object listener) {
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * Gets the listeners as a list. The actual list of listeners is copied,
+	 * and so it may be modified while iterating over the array returned by
+	 * this method.
+	 */
+	protected List<L> getListeners() {
+		List<L> listenersList = new LinkedList<L>();
+		for (L listener: listeners) {
+			listenersList.add(listener);
+		}
+		return listenersList;
 	}
 	
 	/**

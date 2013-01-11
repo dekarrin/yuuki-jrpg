@@ -3,7 +3,7 @@ package yuuki.ui.screen;
 /**
  * A listener for events fired from an OptionsScreen.
  */
-public interface OptionsScreenListener {
+public interface OptionsScreenListener extends ScreenListener {
 	
 	/**
 	 * Fired when the background music volume is changed.

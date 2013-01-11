@@ -3,7 +3,7 @@ package yuuki.ui.screen;
 /**
  * A listener for events fired from a CharacterCreationScreen.
  */
-public interface CharacterCreationScreenListener {
+public interface CharacterCreationScreenListener extends ScreenListener {
 	
 	/**
 	 * Fired when the user clicks the create character button in a character
