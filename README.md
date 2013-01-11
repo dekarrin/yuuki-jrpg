@@ -7,7 +7,7 @@ smoothly as they should have, and so, yuuki-right was born out of yuuki-jrpg.
 
 Testing
 -------
-The fastest way to test Yuuki is to go the (project website)[http://dekarrin.github.com/yuuki-right] and
+The fastest way to test Yuuki is to go the project website at http://dekarrin.github.com/yuuki-right and
 download one of the binaries.
 
 To build a stable commit manually, you can execute `ant dist-jar` at the project root. All tags in this
