@@ -212,16 +212,21 @@ public class EntityFactory {
 	}
 	
 	/**
+	 * The location of entity data files in the package structure.
+	 */
+	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
+	
+	/**
 	 * The location of the file containing the action definitions. The location
 	 * is relative to the package structure.
 	 */
-	public static final String ACTIONS_FILE = "/yuuki/resource/actions.csv";
+	public static final String ACTIONS_FILE = "actions.csv";
 	
 	/**
 	 * The location of the file containing the monster definitions. The
 	 * location is relative to the package structure.
 	 */
-	public static final String MONSTERS_FILE = "/yuuki/resource/monsters.csv";
+	public static final String MONSTERS_FILE = "monsters.csv";
 	
 	/**
 	 * The bases for creating instances of Action. Used to get an instance
@@ -483,7 +488,8 @@ public class EntityFactory {
 	private void readActionDefinitions() throws FileNotFoundException,
 	IOException {
 		BufferedReader r = null;
-		InputStream file = getClass().getResourceAsStream(ACTIONS_FILE);
+		String actionsFile = RESOURCE_LOCATION + ACTIONS_FILE;
+		InputStream file = getClass().getResourceAsStream(actionsFile);
 		r = new BufferedReader(new InputStreamReader(file));
 		String line = null;
 		int num = 1;
@@ -555,7 +561,8 @@ public class EntityFactory {
 	private void readMonsterDefinitions() throws FileNotFoundException,
 	IOException {
 		BufferedReader r = null;
-		InputStream file = getClass().getResourceAsStream(MONSTERS_FILE);
+		String monstersFile = RESOURCE_LOCATION + MONSTERS_FILE;
+		InputStream file = getClass().getResourceAsStream(monstersFile);
 		r = new BufferedReader(new InputStreamReader(file));
 		String line = null;
 		int num = 1;

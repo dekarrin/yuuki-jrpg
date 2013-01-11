@@ -84,7 +84,7 @@ class SoundPlayer implements Runnable {
 		openAudioClip();
 		try {
 			clip.open(stream);
-			FloatControl.Type controlType = FloatControl.Type.VOLUME;
+			FloatControl.Type controlType = FloatControl.Type.MASTER_GAIN;
 			volumeControl = (FloatControl) clip.getControl(controlType);
 			adjustClipVolume();
 			clip.start();

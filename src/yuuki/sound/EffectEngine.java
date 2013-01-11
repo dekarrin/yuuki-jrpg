@@ -4,7 +4,7 @@ package yuuki.sound;
  * An AudioEngine specifically intended for playing sound effects one time
  * each.
  */
-public class SoundEffectEngine extends AudioEngine {
+class EffectEngine extends AudioEngine {
 	
 	/**
 	 * @inheritDoc

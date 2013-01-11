@@ -6,12 +6,7 @@ import java.util.HashMap;
 /**
  * Loads and plays audio files.
  */
-public abstract class AudioEngine {
-	
-	/**
-	 * The location of sound resource files.
-	 */
-	private static final String RESOURCE_LOCATION = "/yuuki/resource/";
+abstract class AudioEngine {
 	
 	/**
 	 * Audio data loaded from disk.
@@ -28,7 +23,7 @@ public abstract class AudioEngine {
 	 */
 	public AudioEngine() {
 		sounds = new HashMap<String, byte[]>();
-		volume = 100;
+		volume = 50;
 	}
 	
 	/**
@@ -54,7 +49,7 @@ public abstract class AudioEngine {
 	 * been cached.
 	 * 
 	 * @param soundFile The name of the sound resource, relative to the
-	 * resource package.
+	 * package structure.
 	 */
 	public void preload(String soundFile) {
 		if (!isLoaded(soundFile)) {
@@ -71,7 +66,7 @@ public abstract class AudioEngine {
 	 * from disk and cached.
 	 * 
 	 * @param soundFile The name of the sound resource, relative to the
-	 * resource package.
+	 * package structure.
 	 */
 	public void playSound(String soundFile) {
 		preload(soundFile);
@@ -97,8 +92,7 @@ public abstract class AudioEngine {
 	 * @throws IOException If an IOException occurs.
 	 */
 	private void loadSound(String soundFile) throws IOException {
-		String actualLocation = RESOURCE_LOCATION + soundFile;
-		InputStream s = getClass().getResourceAsStream(actualLocation);
+		InputStream s = getClass().getResourceAsStream(soundFile);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		int n = 0;
 		while ((n = s.read()) != -1) {

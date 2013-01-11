@@ -4,7 +4,7 @@ package yuuki.sound;
  * An AudioEngine intended for playing long tracks that loop. Only one track
  * at a time is allowed.
  */
-public class MusicEngine extends AudioEngine {
+class MusicEngine extends AudioEngine {
 	
 	/**
 	 * The currently playing music.
@@ -25,6 +25,9 @@ public class MusicEngine extends AudioEngine {
 	 * Stops the current sound immediately.
 	 */
 	public void stopSound() {
-		musicPlayer.stop();
+		if (musicPlayer != null) {
+			musicPlayer.stop();
+		}
 	}
+	
 }
