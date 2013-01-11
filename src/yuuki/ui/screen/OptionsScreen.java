@@ -89,7 +89,7 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 * Sets the initial focus to the primary element in the options screen.
 	 */
 	public void setInitialFocus() {
-		
+		submitButton.requestFocus();
 	}
 	
 	/**
