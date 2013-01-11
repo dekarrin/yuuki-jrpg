@@ -174,6 +174,9 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		Character winner = mainBattle.getFighters(0).get(0);
 		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
 		ui.switchToOverworldScreen();
+		ui.display(null, "Your health has been restored.");
+		player.restoreHP();
+		player.restoreMP();
 	}
 	
 	/**
