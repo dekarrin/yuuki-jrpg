@@ -22,6 +22,19 @@ class MusicEngine extends AudioEngine {
 	}
 	
 	/**
+	 * Change the volume of the currently playing music.
+	 * 
+	 * @param volume The new volume.
+	 */
+	@Override
+	public void setVolume(int volume) {
+		super.setVolume(volume);
+		if (musicPlayer != null) {
+			musicPlayer.setVolume(volume);
+		}
+	}
+	
+	/**
 	 * Stops the current sound immediately.
 	 */
 	public void stopSound() {
