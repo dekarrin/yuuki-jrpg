@@ -62,4 +62,16 @@ public interface UiExecutor {
 	 * Requests that the game be exited.
 	 */
 	public void requestQuit();
+	
+	/**
+	 * Requests that all sounds be updated to the current volumes.
+	 */
+	public void requestVolumeUpdate();
+	
+	/**
+	 * Requests that a sound be played.
+	 * 
+	 * @param soundIndex The index of the sound to be played.
+	 */
+	public void requestSoundEffect(String soundIndex);
 }

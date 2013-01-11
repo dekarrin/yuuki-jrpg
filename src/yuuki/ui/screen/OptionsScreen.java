@@ -33,7 +33,11 @@ public class OptionsScreen extends Screen implements ChangeListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				fireEnterClicked();
+				if (e.getSource() == submitButton) {
+					fireEnterClicked();
+				} else if (e.getSource() == sfxTestButton) {
+					fireSfxClicked();
+				}
 			}
 		}
 	};
@@ -54,6 +58,11 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	private JButton submitButton;
 	
 	/**
+	 * Button for testing SFX.
+	 */
+	private JButton sfxTestButton;
+	
+	/**
 	 * The listeners registered to this OptionsScreen.
 	 */
 	private ArrayList<OptionsScreenListener> listeners;
@@ -70,17 +79,25 @@ public class OptionsScreen extends Screen implements ChangeListener {
 		MouseListener ma = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				fireEnterClicked();
+				if (e.getSource() == submitButton) {
+					fireEnterClicked();
+				} else if (e.getSource() == sfxTestButton) {
+					fireSfxClicked();
+				}
 			}
 		};
 		Box form = new Box(BoxLayout.Y_AXIS);
 		bgmVolumeSlider = createPercentSlider();
 		sfxVolumeSlider = createPercentSlider();
+		sfxTestButton = new JButton("SFX Test");
+		sfxTestButton.addMouseListener(ma);
+		sfxTestButton.addKeyListener(enterListener);
 		submitButton = new JButton("OK");
 		submitButton.addMouseListener(ma);
 		submitButton.addKeyListener(enterListener);
 		form.add(createLabeledComponent("BGM: ", bgmVolumeSlider));
 		form.add(createLabeledComponent("SFX: ", sfxVolumeSlider));
+		form.add(sfxTestButton);
 		form.add(submitButton);
 		add(form);
 	}
@@ -163,6 +180,16 @@ public class OptionsScreen extends Screen implements ChangeListener {
 		OptionsScreenListener[] listenersList = getListenersArray();
 		for (OptionsScreenListener l: listenersList) {
 			l.optionsSubmitted();
+		}
+	}
+	
+	/**
+	 * Calls sfxTestClicked() on all listeners.
+	 */
+	private void fireSfxClicked() {
+		OptionsScreenListener[] listenersList = getListenersArray();
+		for (OptionsScreenListener l: listenersList) {
+			l.sfxTestClicked();
 		}
 	}
 	

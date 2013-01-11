@@ -959,17 +959,24 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	@Override
 	public void bgmVolumeChanged(int volume) {
 		options.bgmVolume = volume;
+		mainProgram.requestVolumeUpdate();
 	}
 
 	@Override
 	public void sfxVolumeChanged(int volume) {
 		options.sfxVolume = volume;
+		mainProgram.requestVolumeUpdate();
 	}
 
 	@Override
 	public void optionsSubmitted() {
 		optionsScreen.removeListener(this);
 		mainProgram.requestOptionsSubmission();
+	}
+	
+	@Override
+	public void sfxTestClicked() {
+		mainProgram.requestSoundEffect("BUTTON_PUSH");
 	}
 	
 }

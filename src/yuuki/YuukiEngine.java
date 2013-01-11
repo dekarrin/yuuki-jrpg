@@ -393,6 +393,22 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private void applyOptions() {
 		soundEngine.setEffectVolume(options.sfxVolume);
 		soundEngine.setMusicVolume(options.bgmVolume);
+		System.out.println("dummy");
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void requestVolumeUpdate() {
+		applyOptions();
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void requestSoundEffect(String soundIndex) {
+		soundEngine.playEffect(soundIndex);
+	}
 }

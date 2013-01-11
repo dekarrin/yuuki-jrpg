@@ -24,4 +24,9 @@ public interface OptionsScreenListener {
 	 */
 	public void optionsSubmitted();
 	
+	/**
+	 * Fired when the test button is pushed on the options screen.
+	 */
+	public void sfxTestClicked();
+	
 }
