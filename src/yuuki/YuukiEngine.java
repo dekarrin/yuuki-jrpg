@@ -35,6 +35,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		@Override
 		public void run() {
 			runBattle(battle, display);
+			requestBattleEnd();
 		}
 	}
 	
@@ -164,6 +165,15 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			ui.destroy();
 			System.exit(0);
 		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public void requestBattleEnd() {
+		Character winner = mainBattle.getFighters(0).get(0);
+		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
+		ui.switchToOverworldScreen();
 	}
 	
 	/**

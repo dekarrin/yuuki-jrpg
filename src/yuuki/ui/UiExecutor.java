@@ -25,6 +25,12 @@ public interface UiExecutor {
 	public void requestBattleStart();
 	
 	/**
+	 * Requests that the battle be finished and the game return to the
+	 * overworld.
+	 */
+	public void requestBattleEnd();
+	
+	/**
 	 * Requests that a player character is created.
 	 * 
 	 * @param name The name of the player character.
