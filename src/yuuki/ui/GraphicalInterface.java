@@ -64,7 +64,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	/**
 	 * The ending screen.
 	 */
-	private Screen endingScreen;
+	private Screen<?> endingScreen;
 	
 	/**
 	 * The intro screen.
@@ -104,17 +104,17 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	/**
 	 * The pause screen.
 	 */
-	private Screen pauseScreen;
+	private Screen<?> pauseScreen;
 	
 	/**
 	 * The screen that the interface was previously on.
 	 */
-	private Screen formerScreen;
+	private Screen<?> formerScreen;
 	
 	/**
 	 * The screen that the interface is currently on.
 	 */
-	private Screen currentScreen;
+	private Screen<?> currentScreen;
 
 	/**
 	 * The options of the game.
@@ -945,7 +945,10 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	 * 
 	 * @param screen The screen to switch to.
 	 */
-	private void switchWindow(Screen screen) {
+	private void switchWindow(Screen<?> screen) {
+		if (currentScreen != null) {
+			currentScreen.removeListener(this);
+		}
 		formerScreen = currentScreen;
 		currentScreen = screen;
 		clearWindow();
