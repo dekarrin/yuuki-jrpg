@@ -17,7 +17,7 @@ class MusicEngine extends AudioEngine {
 	protected void spawnPlayerThread(String soundFile) {
 		byte[] data = sounds.get(soundFile);
 		stopSound();
-		musicPlayer = new SoundPlayer(data, getVolume());
+		musicPlayer = new SoundPlayer(data, getVolume(), true);
 		(new Thread(musicPlayer, "MusicPlayer")).start();
 	}
 	

@@ -55,15 +55,22 @@ class SoundPlayer implements Runnable {
 	private Thread playerThread;
 	
 	/**
+	 * Whether the sound clip will loop continuously.
+	 */
+	private boolean looping;
+	
+	/**
 	 * Allocates a new SoundPlayer with given data. The data is copied from
 	 * the given array to negate access issues.
 	 * 
 	 * @param soundData The sound data that is to be played.
 	 * @param volume The volume to play the sound data at.
+	 * @param loop Whether to loop play back until stopped.
 	 */
-	public SoundPlayer(byte[] soundData, int volume) {
+	public SoundPlayer(byte[] soundData, int volume, boolean loop) {
 		data = Arrays.copyOf(soundData, soundData.length);
 		this.volume = volume;
+		this.looping = loop;
 	}
 	
 	/**
@@ -87,7 +94,11 @@ class SoundPlayer implements Runnable {
 			FloatControl.Type controlType = FloatControl.Type.MASTER_GAIN;
 			volumeControl = (FloatControl) clip.getControl(controlType);
 			adjustClipVolume();
-			clip.start();
+			if (looping) {
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
+			} else {
+				clip.start();
+			}
 			while (!clip.isRunning()) {
 				Thread.sleep(AUDIO_THREAD_SLEEP_TIME);
 				adjustClipVolume();
