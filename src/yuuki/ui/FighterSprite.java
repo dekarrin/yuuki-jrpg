@@ -355,7 +355,16 @@ public class FighterSprite extends JPanel {
 	 * @param fighter The fighter to show the stats for.
 	 */
 	public void showStatUpdate(Character fighter) {
-		
+		statPanel.setHpMax(fighter.getMaxHP());
+		statPanel.setHp(fighter.getHP());
+		statPanel.setMpMax(fighter.getMaxMP());
+		statPanel.setMp(fighter.getMP());
+		statPanel.setStrength(fighter.getStrength());
+		statPanel.setDefense(fighter.getDefense());
+		statPanel.setAgility(fighter.getAgility());
+		statPanel.setAccuracy(fighter.getAccuracy());
+		statPanel.setMagic(fighter.getMagic());
+		statPanel.setLuck(fighter.getLuck());
 	}
 	
 }

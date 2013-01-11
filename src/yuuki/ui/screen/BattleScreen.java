@@ -212,17 +212,8 @@ public class BattleScreen extends Screen {
 	 * @param fighter The fighter to show the stat change for.
 	 */
 	public void showStatUpdate(Character fighter) {
-		Character f = fighter;
-		System.out.println(f.getName());
-		System.out.println("HP: " + f.getHP() + "/" + f.getMaxHP());
-		System.out.println("MP: " + f.getMP() + "/" + f.getMaxMP());
-		System.out.println("STR: " + f.getStrength());
-		System.out.println("DEF: " + f.getDefense());
-		System.out.println("AGT: " + f.getAgility());
-		System.out.println("ACC: " + f.getAccuracy());
-		System.out.println("MAG: " + f.getMagic());
-		System.out.println("LUK: " + f.getLuck());
-		System.out.println();
+		FighterSprite fs = (FighterSprite) fighter.getSprite();
+		fs.showStatUpdate(fighter);
 	}
 	
 	/**

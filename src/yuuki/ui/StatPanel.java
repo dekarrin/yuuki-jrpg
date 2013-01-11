@@ -17,7 +17,7 @@ public class StatPanel extends JPanel {
 	/**
 	 * The size of the font used by this panel's labels.
 	 */
-	public static final float FONT_SIZE = 9.0f;
+	public static final float FONT_SIZE = 10.0f;
 	
 	/**
 	 * The max health.
