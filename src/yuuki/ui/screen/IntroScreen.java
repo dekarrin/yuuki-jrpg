@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -18,7 +17,8 @@ import javax.swing.OverlayLayout;
  * The screen shown at the introduction. This is the starting screen.
  */
 @SuppressWarnings("serial")
-public class IntroScreen extends Screen implements MouseListener {
+public class IntroScreen extends Screen<IntroScreenListener> implements
+MouseListener {
 	
 	/**
 	 * The listener assigned to each of this screen's buttons to see if the
@@ -37,11 +37,6 @@ public class IntroScreen extends Screen implements MouseListener {
 	 * The button to quit the game with.
 	 */
 	private JButton exitButton;
-	
-	/**
-	 * The listeners registered to this screen.
-	 */
-	private ArrayList<IntroScreenListener> listeners;
 	
 	/**
 	 * The button to load a new game with.
@@ -67,22 +62,12 @@ public class IntroScreen extends Screen implements MouseListener {
 	 */
 	public IntroScreen(int width, int height) {
 		super(width, height);
-		listeners = new ArrayList<IntroScreenListener>();
 		newGameButton = new JButton("New Game");
 		loadGameButton = new JButton("Load Game");
 		optionsButton = new JButton("Options");
 		exitButton = new JButton("Exit");
 		setButtonListeners();
 		build();
-	}
-	
-	/**
-	 * Registers a listener for events fired from this screen.
-	 * 
-	 * @param l The listener to add.
-	 */
-	public void addListener(IntroScreenListener l) {
-		listeners.add(l);
 	}
 	
 	/**
@@ -165,7 +150,7 @@ public class IntroScreen extends Screen implements MouseListener {
 	 * Calls the exitClicked() method on all listeners.
 	 */
 	private void fireExitClicked() {
-		for (IntroScreenListener l: listeners) {
+		for (IntroScreenListener l: getScreenListeners()) {
 			l.exitClicked();
 		}
 	}
@@ -174,7 +159,7 @@ public class IntroScreen extends Screen implements MouseListener {
 	 * Calls the loadGameClicked() method on all listeners.
 	 */
 	private void fireLoadGameClicked() {
-		for (IntroScreenListener l: listeners) {
+		for (IntroScreenListener l: getScreenListeners()) {
 			l.loadGameClicked();
 		}
 	}
@@ -183,7 +168,7 @@ public class IntroScreen extends Screen implements MouseListener {
 	 * Calls the newGameClicked() method on all listeners.
 	 */
 	private void fireNewGameClicked() {
-		for (IntroScreenListener l: listeners) {
+		for (IntroScreenListener l: getScreenListeners()) {
 			l.newGameClicked();
 		}
 	}
@@ -192,7 +177,7 @@ public class IntroScreen extends Screen implements MouseListener {
 	 * Calls the optionsClicked() method on all listeners.
 	 */
 	private void fireOptionsClicked() {
-		for (IntroScreenListener l: listeners) {
+		for (IntroScreenListener l: getScreenListeners()) {
 			l.optionsClicked();
 		}
 	}

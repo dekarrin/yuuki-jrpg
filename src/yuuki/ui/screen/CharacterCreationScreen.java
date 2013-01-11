@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +20,8 @@ import javax.swing.SpinnerNumberModel;
  * The screen displayed during character creation.
  */
 @SuppressWarnings("serial")
-public class CharacterCreationScreen extends Screen implements MouseListener {
+public class CharacterCreationScreen extends
+Screen<CharacterCreationScreenListener> implements MouseListener {
 	
 	/**
 	 * The string that the text in the name field is initially set to.
@@ -39,11 +39,6 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	private JSpinner levelField;
 	
 	/**
-	 * The list of objects listening for events from this screen.
-	 */
-	private ArrayList<CharacterCreationScreenListener> listeners;
-	
-	/**
 	 * The field to enter the character's name into.
 	 */
 	private JTextField nameField;
@@ -58,7 +53,6 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	public CharacterCreationScreen(int width, int height) {
 		super(width, height);
 		setLayout(new FlowLayout());
-		listeners = new ArrayList<CharacterCreationScreenListener>();
 		createCharacterButton = new JButton("Create Character");
 		nameField = new JTextField(40);
 		levelField = new JSpinner(new SpinnerNumberModel(10, 1, 50, 1));
@@ -85,15 +79,6 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 		add(new JLabel("Level: "));
 		add(levelField);
 		add(createCharacterButton);
-	}
-	
-	/**
-	 * Adds a listener for events fired from this CharacterCreationScreen.
-	 * 
-	 * @param l The listener to add.
-	 */
-	public void addListener(CharacterCreationScreenListener l) {
-		listeners.add(l);
 	}
 	
 	/**
@@ -164,7 +149,7 @@ public class CharacterCreationScreen extends Screen implements MouseListener {
 	 * this screen.
 	 */
 	private void fireCreateCharacterClicked() {
-		for (CharacterCreationScreenListener l: listeners) {
+		for (CharacterCreationScreenListener l: getScreenListeners()) {
 			l.createCharacterClicked();
 		}
 	}

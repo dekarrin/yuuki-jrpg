@@ -6,7 +6,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,7 +23,8 @@ import yuuki.GameOptions;
  * The screen containing the options for the game.
  */
 @SuppressWarnings("serial")
-public class OptionsScreen extends Screen implements ChangeListener {
+public class OptionsScreen extends Screen<OptionsScreenListener> implements
+ChangeListener {
 	
 	/**
 	 * Listens for enter presses.
@@ -60,13 +60,7 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	/**
 	 * Button for testing SFX.
 	 */
-	private JButton sfxTestButton;
-	
-	/**
-	 * The listeners registered to this OptionsScreen.
-	 */
-	private ArrayList<OptionsScreenListener> listeners;
-	
+	private JButton sfxTestButton;	
 	/**
 	 * Creates a new OptionsScreen. The child components are created and added.
 	 * 
@@ -75,7 +69,6 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 */
 	public OptionsScreen(int width, int height) {
 		super(width, height);
-		listeners = new ArrayList<OptionsScreenListener>();
 		MouseListener ma = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -110,24 +103,6 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	}
 	
 	/**
-	 * Registers a listener for option screen events.
-	 * 
-	 * @param l The listener to register.
-	 */
-	public void addListener(OptionsScreenListener l) {
-		listeners.add(l);
-	}
-	
-	/**
-	 * Removes a listener from the list.
-	 * 
-	 * @param l The listener to remove.
-	 */
-	public void removeListener(OptionsScreenListener l) {
-		listeners.remove(l);
-	}
-	
-	/**
 	 * Sets all fields to their current values.
 	 * 
 	 * @param options The options object.
@@ -155,9 +130,8 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 * Calls bgmVolumeChanged() on all listeners.
 	 */
 	private void fireBgmLevelChanged() {
-		OptionsScreenListener[] listenersList = getListenersArray();
 		int volume = bgmVolumeSlider.getValue();
-		for (OptionsScreenListener l: listenersList) {
+		for (OptionsScreenListener l: getScreenListeners()) {
 			l.bgmVolumeChanged(volume);
 		}
 	}
@@ -166,9 +140,8 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 * Calls sfxVolumeChanged() on all listeners.
 	 */
 	private void fireSfxLevelChanged() {
-		OptionsScreenListener[] listenersList = getListenersArray();
 		int volume = sfxVolumeSlider.getValue();
-		for (OptionsScreenListener l: listenersList) {
+		for (OptionsScreenListener l: getScreenListeners()) {
 			l.sfxVolumeChanged(volume);
 		}
 	}
@@ -177,8 +150,7 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 * Calls optionsSubmitted() on all listeners.
 	 */
 	private void fireEnterClicked() {
-		OptionsScreenListener[] listenersList = getListenersArray();
-		for (OptionsScreenListener l: listenersList) {
+		for (OptionsScreenListener l: getScreenListeners()) {
 			l.optionsSubmitted();
 		}
 	}
@@ -187,21 +159,9 @@ public class OptionsScreen extends Screen implements ChangeListener {
 	 * Calls sfxTestClicked() on all listeners.
 	 */
 	private void fireSfxClicked() {
-		OptionsScreenListener[] listenersList = getListenersArray();
-		for (OptionsScreenListener l: listenersList) {
+		for (OptionsScreenListener l: getScreenListeners()) {
 			l.sfxTestClicked();
 		}
-	}
-	
-	/**
-	 * Gets an array version of the list of listeners.
-	 * 
-	 * @return The array version of listeners.
-	 */
-	private OptionsScreenListener[] getListenersArray() {
-		OptionsScreenListener[] ls = new OptionsScreenListener[0];
-		OptionsScreenListener[] listenersList = listeners.toArray(ls);
-		return listenersList;
 	}
 	
 	/**

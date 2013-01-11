@@ -16,7 +16,7 @@ import yuuki.ui.FighterSprite;
  * The screen shown for a battle.
  */
 @SuppressWarnings("serial")
-public class BattleScreen extends Screen {
+public class BattleScreen extends Screen<ScreenListener> {
 	
 	/**
 	 * The index of the team that should be shown on the bottom of the screen.

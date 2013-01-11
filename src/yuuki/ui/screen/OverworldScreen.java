@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,12 +15,8 @@ import javax.swing.JLabel;
  * The screen displayed when at the overworld.
  */
 @SuppressWarnings("serial")
-public class OverworldScreen extends Screen implements MouseListener {
-	
-	/**
-	 * The listeners registered to this screen.
-	 */
-	private ArrayList<OverworldScreenListener> listeners;
+public class OverworldScreen extends Screen<OverworldScreenListener> implements
+MouseListener {
 	
 	/**
 	 * The button that advances to the battle screen.
@@ -46,7 +41,6 @@ public class OverworldScreen extends Screen implements MouseListener {
 			}
 		};
 		setLayout(new FlowLayout());
-		listeners = new ArrayList<OverworldScreenListener>();
 		startButton = new JButton("Start");
 		startButton.addMouseListener(this);
 		startButton.addKeyListener(enterListener);
@@ -54,15 +48,6 @@ public class OverworldScreen extends Screen implements MouseListener {
 		add(new JLabel("There's nothing here yet."));
 		add(new JLabel("Hit the button to start a battle -->"));
 		add(startButton);
-	}
-	
-	/**
-	 * Adds a listener to this screen.
-	 * 
-	 * @param l The listener to add.
-	 */
-	public void addListener(OverworldScreenListener l) {
-		listeners.add(l);
 	}
 	
 	/**
@@ -113,7 +98,7 @@ public class OverworldScreen extends Screen implements MouseListener {
 	 * Calls the startBattleClicked() method on all listeners.
 	 */
 	private void fireStartClicked() {
-		for (OverworldScreenListener l: listeners) {
+		for (OverworldScreenListener l: getScreenListeners()) {
 			l.startBattleClicked();
 		}
 	}

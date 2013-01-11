@@ -71,6 +71,7 @@ public abstract class Screen<L extends ScreenListener> extends JPanel {
 	 */
 	public Screen(int width, int height) {
 		size = new Dimension(width, height);
+		listeners = new HashSet<L>();
 	}
 	
 	/**
@@ -97,7 +98,7 @@ public abstract class Screen<L extends ScreenListener> extends JPanel {
 	 * and so it may be modified while iterating over the array returned by
 	 * this method.
 	 */
-	protected List<L> getListeners() {
+	protected List<L> getScreenListeners() {
 		List<L> listenersList = new LinkedList<L>();
 		for (L listener: listeners) {
 			listenersList.add(listener);
