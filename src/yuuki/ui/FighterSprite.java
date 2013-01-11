@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import yuuki.action.Action;
@@ -59,6 +60,16 @@ public class FighterSprite extends JPanel {
 	 * The area where the fighter's image is displayed.
 	 */
 	private JComponent imagePanel;
+	
+	/**
+	 * The area where the fighter's stats are displayed.
+	 */
+	private StatPanel statPanel;
+	
+	/**
+	 * The area where both stats and the image are displayed.
+	 */
+	private JLayeredPane imageStatHolder;
 	
 	/**
 	 * The bar showing the fighter's current and total mana points.
@@ -210,11 +221,13 @@ public class FighterSprite extends JPanel {
 	 * Adds this FighterSprite's components to its content pane.
 	 */
 	private void addComponents() {
+		imageStatHolder.add(imagePanel, new Integer(0));
+		imageStatHolder.add(statPanel, new Integer(1));
 		add(buffPanel);
 		add(healthBar);
 		add(manaBar);
 		add(nameLabel);
-		add(imagePanel);
+		add(imageStatHolder);
 	}
 	
 	/**
@@ -226,6 +239,8 @@ public class FighterSprite extends JPanel {
 		manaBar = new StatBar(SPRITE_WIDTH, BAR_HEIGHT, Color.BLUE);
 		nameLabel = new JLabel();
 		imagePanel = new JPanel();
+		statPanel = new StatPanel();
+		imageStatHolder = new JLayeredPane();
 	}
 	
 	/**
@@ -250,6 +265,28 @@ public class FighterSprite extends JPanel {
 		initializeManaBar(fighter.getMPStat(), fighter.getLevel());
 		initializeNameLabel(fighter.getName());
 		initializeImagePanel();
+		initializeImageStatHolder();
+		initializeStatPanel(fighter);
+	}
+	
+	/**
+	 * Initializes the stat and image component of this FighterSprite.
+	 */
+	private void initializeImageStatHolder() {
+		Dimension size = new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT);
+		imageStatHolder.setPreferredSize(size);
+	}
+	
+	/**
+	 * Initializes the stat panel of this FighterSprite.
+	 * 
+	 * @param fighter The fighter to make the stat panel show the stats of.
+	 */
+	private void initializeStatPanel(Character fighter) {
+		statPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT));
+		statPanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
+		statPanel.setOpaque(false);
+		showStatUpdate(fighter);
 	}
 	
 	/**
@@ -272,6 +309,7 @@ public class FighterSprite extends JPanel {
 		imagePanel.setBackground(Color.GREEN);
 		imagePanel.setOpaque(true);
 		imagePanel.setVisible(true);
+		imagePanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
 	}
 	
 	/**
@@ -309,6 +347,15 @@ public class FighterSprite extends JPanel {
 		}
 		revalidate();
 		repaint();
+	}
+	
+	/**
+	 * Updates the the stat panel to reflect the current stats.
+	 * 
+	 * @param fighter The fighter to show the stats for.
+	 */
+	public void showStatUpdate(Character fighter) {
+		
 	}
 	
 }
