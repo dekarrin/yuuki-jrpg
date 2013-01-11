@@ -773,6 +773,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	@Override
 	public void switchToOptionsScreen() {
 		optionsScreen.addListener(this);
+		optionsScreen.setValues(options);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
