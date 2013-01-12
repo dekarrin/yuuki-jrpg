@@ -79,6 +79,11 @@ public interface UiExecutor {
 	 * Requests that the current game be closed and that the user be returned
 	 * to the main menu.
 	 */
-	public void requestGameClose();
+	public void requestCloseGame();
+	
+	/**
+	 * Requests that the game be saved.
+	 */
+	public void requestSaveGame();
 	
 }

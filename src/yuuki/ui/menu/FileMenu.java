@@ -77,6 +77,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	 */
 	public FileMenu() {
 		super("File", "The File menu", KeyEvent.VK_F);
+		setListeners();
 	}
 	
 	/**
@@ -180,6 +181,18 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		for (MenuListener l: getElementListeners()) {
 			l.menuItemTriggered(this, id);
 		}
+	}
+	
+	/**
+	 * Adds this menu as a listener to its items.
+	 */
+	private void setListeners() {
+		closeItem.addActionListener(this);
+		loadItem.addActionListener(this);
+		newItem.addActionListener(this);
+		saveItem.addActionListener(this);
+		optionsItem.addActionListener(this);
+		exitItem.addActionListener(this);
 	}
 	
 }

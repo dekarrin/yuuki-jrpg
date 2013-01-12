@@ -27,14 +27,16 @@ import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
+import yuuki.ui.menu.FileMenu;
 import yuuki.ui.menu.MenuBar;
+import yuuki.ui.menu.MenuBarListener;
 
 /**
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
 CharacterCreationScreenListener, OverworldScreenListener,
-OptionsScreenListener {
+OptionsScreenListener, MenuBarListener {
 	
 	/**
 	 * The height of the message box within the window.
@@ -887,6 +889,7 @@ OptionsScreenListener {
 	 */
 	private void createMenuBar() {
 		menuBar = new MenuBar();
+		menuBar.addListener(this);
 	}
 	
 	/**
@@ -979,6 +982,39 @@ OptionsScreenListener {
 	@Override
 	public void sfxTestClicked() {
 		mainProgram.requestSoundEffect("BUTTON_PUSH");
+	}
+
+	@Override
+	public void menuItemTriggered(int menuId, int itemId) {
+		switch (menuId) {
+			case MenuBar.FILE_MENU_ID:
+				switch (itemId) {
+					case FileMenu.NEW_ITEM_ID:
+						mainProgram.requestNewGame();
+						break;
+						
+					case FileMenu.LOAD_ITEM_ID:
+						mainProgram.requestLoadGame();
+						break;
+						
+					case FileMenu.SAVE_ITEM_ID:
+						mainProgram.requestSaveGame();
+						break;
+						
+					case FileMenu.CLOSE_ITEM_ID:
+						mainProgram.requestCloseGame();
+						break;
+						
+					case FileMenu.OPTIONS_ITEM_ID:
+						mainProgram.requestOptionsScreen();
+						break;
+						
+					case FileMenu.EXIT_ITEM_ID:
+						mainProgram.requestQuit();
+						break;
+				}
+				break;
+		}
 	}
 	
 }

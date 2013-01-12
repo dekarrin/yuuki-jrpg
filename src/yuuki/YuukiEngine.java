@@ -133,6 +133,14 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * @inheritDoc
 	 */
 	@Override
+	public void requestSaveGame() {
+		ui.display(null, "Saving hasn't yet been implemented.");
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
 	public void requestNewGame() {
 		ui.switchToCharacterCreationScreen();
 	}
@@ -418,7 +426,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * @inheritDoc
 	 */
 	@Override
-	public void requestGameClose() {
+	public void requestCloseGame() {
 		ui.switchToIntroScreen();
 	}
 	
