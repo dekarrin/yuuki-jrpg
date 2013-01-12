@@ -126,7 +126,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestLoadGame() {
-		ui.display(null, "Loading hasn't yet been implemented.");
+		ui.display(null, "Loading hasn't yet been implemented");
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestSaveGame() {
-		ui.display(null, "Saving hasn't yet been implemented.");
+		ui.display(null, "Saving hasn't yet been implemented");
 	}
 	
 	/**
