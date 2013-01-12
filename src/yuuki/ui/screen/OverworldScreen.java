@@ -98,7 +98,7 @@ MouseListener {
 	 * Calls the startBattleClicked() method on all listeners.
 	 */
 	private void fireStartClicked() {
-		for (OverworldScreenListener l: getScreenListeners()) {
+		for (OverworldScreenListener l: getElementListeners()) {
 			l.startBattleClicked();
 		}
 	}

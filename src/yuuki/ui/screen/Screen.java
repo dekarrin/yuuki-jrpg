@@ -14,7 +14,8 @@ import javax.swing.JPanel;
  * @param <L> The type of the listener that this screen uses.
  */
 @SuppressWarnings("serial")
-public abstract class Screen<L extends ScreenListener> extends JPanel {
+public abstract class Screen<L extends ScreenListener> extends
+JPanel implements yuuki.ui.Listenable<L> {
 	
 	/**
 	 * A default concrete derived class of Screen. Obtainable through the
@@ -75,30 +76,26 @@ public abstract class Screen<L extends ScreenListener> extends JPanel {
 	}
 	
 	/**
-	 * Registers a listener for events fired from this screen. The listener is
-	 * registered if and only if it has not already been registered.
-	 * 
-	 * @param listener The listener to add.
+	 * @inheritDoc
 	 */
-	public void addListener(L listener) {
-		listeners.add(listener);
+	@Override
+	public boolean addListener(L listener) {
+		return listeners.add(listener);
 	}
 	
 	/**
-	 * Removes a listener from the list of registered listeners.
-	 * 
-	 * @param listener The listener to remove.
+	 * @inheritDoc
 	 */
-	public void removeListener(Object listener) {
-		listeners.remove(listener);
+	@Override
+	public boolean removeListener(Object listener) {
+		return listeners.remove(listener);
 	}
 	
 	/**
-	 * Gets the listeners as a list. The actual list of listeners is copied,
-	 * and so it may be modified while iterating over the array returned by
-	 * this method.
+	 * @inheritDoc
 	 */
-	protected List<L> getScreenListeners() {
+	@Override
+	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
 		for (L listener: listeners) {
 			listenersList.add(listener);

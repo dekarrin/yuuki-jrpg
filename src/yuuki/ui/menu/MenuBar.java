@@ -6,17 +6,17 @@ import javax.swing.JMenuBar;
  * The menu bar used by the game.
  */
 @SuppressWarnings("serial")
-public class GameMenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar {
 	
 	/**
 	 * The File menu. Contains main menu operations.
 	 */
-	private GameMenu fileMenu;
+	private FileMenu fileMenu;
 	
 	/**
 	 * Creates a new GameMenuBar. The child components are created and added.
 	 */
-	public GameMenuBar() {
+	public MenuBar() {
 		createMenus();
 		addMenus();
 	}

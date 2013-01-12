@@ -150,7 +150,7 @@ MouseListener {
 	 * Calls the exitClicked() method on all listeners.
 	 */
 	private void fireExitClicked() {
-		for (IntroScreenListener l: getScreenListeners()) {
+		for (IntroScreenListener l: getElementListeners()) {
 			l.exitClicked();
 		}
 	}
@@ -159,7 +159,7 @@ MouseListener {
 	 * Calls the loadGameClicked() method on all listeners.
 	 */
 	private void fireLoadGameClicked() {
-		for (IntroScreenListener l: getScreenListeners()) {
+		for (IntroScreenListener l: getElementListeners()) {
 			l.loadGameClicked();
 		}
 	}
@@ -168,7 +168,7 @@ MouseListener {
 	 * Calls the newGameClicked() method on all listeners.
 	 */
 	private void fireNewGameClicked() {
-		for (IntroScreenListener l: getScreenListeners()) {
+		for (IntroScreenListener l: getElementListeners()) {
 			l.newGameClicked();
 		}
 	}
@@ -177,7 +177,7 @@ MouseListener {
 	 * Calls the optionsClicked() method on all listeners.
 	 */
 	private void fireOptionsClicked() {
-		for (IntroScreenListener l: getScreenListeners()) {
+		for (IntroScreenListener l: getElementListeners()) {
 			l.optionsClicked();
 		}
 	}

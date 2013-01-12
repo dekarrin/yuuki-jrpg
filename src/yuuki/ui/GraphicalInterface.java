@@ -28,7 +28,7 @@ import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
-import yuuki.ui.menu.GameMenuBar;
+import yuuki.ui.menu.MenuBar;
 
 /**
  * A graphical user interface that uses the Swing framework.
@@ -887,7 +887,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	 * Creates the menu bar.
 	 */
 	private void createMenuBar() {
-		menuBar = new GameMenuBar();
+		menuBar = new MenuBar();
 	}
 	
 	/**

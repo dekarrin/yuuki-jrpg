@@ -1,5 +1,7 @@
 package yuuki.ui.menu;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JMenuItem;
@@ -8,7 +10,7 @@ import javax.swing.JMenuItem;
  * The file menu for the game.
  */
 @SuppressWarnings("serial")
-public class FileMenu extends GameMenu {
+public class FileMenu extends Menu<FileMenuListener> implements ActionListener {
 	
 	/**
 	 * Closes the current game when selected.
@@ -113,6 +115,60 @@ public class FileMenu extends GameMenu {
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		optionsItem.setMnemonic(KeyEvent.VK_O);
 		exitItem.setMnemonic(KeyEvent.VK_X);
+	}
+
+	/**
+	 * Called when a menu item is selected.
+	 * 
+	 * @param e The source event.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == exitItem) {
+			fireExitItemClicked();
+		} else if (e.getSource() == newItem) {
+			fireNewItemClicked();
+		} else if (e.getSource() == optionsItem) {
+			fireOptionsItemClicked();
+		} else if (e.getSource() == closeItem) {
+			fireCloseItemClicked();
+		}
+	}
+	
+	/**
+	 * Calls exitItemTriggered() on all listeners.
+	 */
+	public void fireExitItemClicked() {
+		for (FileMenuListener l: getElementListeners()) {
+			l.exitItemTriggered();
+		}
+	}
+	
+	/**
+	 * Calls newItemTriggered() on all listeners.
+	 */
+	public void fireNewItemClicked() {
+		for (FileMenuListener l: getElementListeners()) {
+			l.newItemTriggered();
+		}
+	}
+	
+	/**
+	 * Calls optionsItemTriggered() on all listeners.
+	 */
+	public void fireOptionsItemClicked() {
+		for (FileMenuListener l: getElementListeners()) {
+			l.optionsItemTriggered();
+		}
+	}
+	
+	/**
+	 * Calls closeItemTriggered() on all listeners.
+	 */
+	public void fireCloseItemClicked() {
+		for (FileMenuListener l: getElementListeners()) {
+			l.closeItemTriggered();
+		}
 	}
 	
 }
