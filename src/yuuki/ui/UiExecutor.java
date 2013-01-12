@@ -74,4 +74,11 @@ public interface UiExecutor {
 	 * @param soundIndex The index of the sound to be played.
 	 */
 	public void requestSoundEffect(String soundIndex);
+	
+	/**
+	 * Requests that the current game be closed and that the user be returned
+	 * to the main menu.
+	 */
+	public void requestGameClose();
+	
 }

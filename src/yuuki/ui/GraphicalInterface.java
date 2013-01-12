@@ -8,7 +8,6 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -34,8 +33,8 @@ import yuuki.ui.menu.MenuBar;
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
-{
+CharacterCreationScreenListener, OverworldScreenListener,
+OptionsScreenListener {
 	
 	/**
 	 * The height of the message box within the window.
@@ -84,7 +83,7 @@ CharacterCreationScreenListener, OverworldScreenListener, OptionsScreenListener
 	/**
 	 * The game's menu bar.
 	 */
-	private JMenuBar menuBar;
+	private MenuBar menuBar;
 	
 	/**
 	 * The message box for the game.

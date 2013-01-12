@@ -1,5 +1,6 @@
 package yuuki.ui.menu;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ yuuki.ui.Listenable<L> {
 	 */
 	public Menu(String name, String description, int mnemonic) {
 		super(name);
+		listeners = new HashSet<L>();
 		setMnemonic(mnemonic);
 		getAccessibleContext().setAccessibleDescription(description);
 		buildItems();

@@ -413,4 +413,13 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	public void requestSoundEffect(String soundIndex) {
 		soundEngine.playEffect(soundIndex);
 	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void requestGameClose() {
+		ui.switchToIntroScreen();
+	}
+	
 }

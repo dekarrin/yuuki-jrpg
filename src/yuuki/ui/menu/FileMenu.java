@@ -10,7 +10,37 @@ import javax.swing.JMenuItem;
  * The file menu for the game.
  */
 @SuppressWarnings("serial")
-public class FileMenu extends Menu<FileMenuListener> implements ActionListener {
+public class FileMenu extends Menu<MenuListener> implements ActionListener {
+	
+	/**
+	 * The ID of the 'New' item.
+	 */
+	public static final int NEW_ITEM_ID = 0;
+	
+	/**
+	 * The ID of the 'Close' item.
+	 */
+	public static final int CLOSE_ITEM_ID = 1;
+	
+	/**
+	 * The ID of the 'Save' item.
+	 */
+	public static final int SAVE_ITEM_ID = 2;
+	
+	/**
+	 * The ID of the 'Load' item.
+	 */
+	public static final int LOAD_ITEM_ID = 3;
+	
+	/**
+	 * The ID of the 'Options' item.
+	 */
+	public static final int OPTIONS_ITEM_ID = 4;
+	
+	/**
+	 * The ID of the 'Exit' item.
+	 */
+	public static final int EXIT_ITEM_ID = 5;
 	
 	/**
 	 * Closes the current game when selected.
@@ -124,50 +154,31 @@ public class FileMenu extends Menu<FileMenuListener> implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		int selectedId = -1;
 		if (e.getSource() == exitItem) {
-			fireExitItemClicked();
+			selectedId = EXIT_ITEM_ID;
 		} else if (e.getSource() == newItem) {
-			fireNewItemClicked();
+			selectedId = NEW_ITEM_ID;
 		} else if (e.getSource() == optionsItem) {
-			fireOptionsItemClicked();
+			selectedId = OPTIONS_ITEM_ID;
 		} else if (e.getSource() == closeItem) {
-			fireCloseItemClicked();
+			selectedId = CLOSE_ITEM_ID;
+		} else if (e.getSource() == loadItem) {
+			selectedId = LOAD_ITEM_ID;
+		} else if (e.getSource() == saveItem) {
+			selectedId = SAVE_ITEM_ID;
 		}
+		fireItemTriggered(selectedId);
 	}
 	
 	/**
-	 * Calls exitItemTriggered() on all listeners.
+	 * Calls menuItemTriggered() on all listeners.
+	 * 
+	 * @param id The ID of the item that was selected.
 	 */
-	public void fireExitItemClicked() {
-		for (FileMenuListener l: getElementListeners()) {
-			l.exitItemTriggered();
-		}
-	}
-	
-	/**
-	 * Calls newItemTriggered() on all listeners.
-	 */
-	public void fireNewItemClicked() {
-		for (FileMenuListener l: getElementListeners()) {
-			l.newItemTriggered();
-		}
-	}
-	
-	/**
-	 * Calls optionsItemTriggered() on all listeners.
-	 */
-	public void fireOptionsItemClicked() {
-		for (FileMenuListener l: getElementListeners()) {
-			l.optionsItemTriggered();
-		}
-	}
-	
-	/**
-	 * Calls closeItemTriggered() on all listeners.
-	 */
-	public void fireCloseItemClicked() {
-		for (FileMenuListener l: getElementListeners()) {
-			l.closeItemTriggered();
+	public void fireItemTriggered(int id) {
+		for (MenuListener l: getElementListeners()) {
+			l.menuItemTriggered(this, id);
 		}
 	}
 	
