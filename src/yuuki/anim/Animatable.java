@@ -1,7 +1,9 @@
 package yuuki.anim;
 
 /**
- * Provides methods for animating an object.
+ * Provides methods for animating an object. Animatable instances are added to
+ * Animators to have their animation driven. Animatable instances may only have
+ * one owner Animator.
  */
 public interface Animatable {
 	
@@ -13,5 +15,20 @@ public interface Animatable {
 	 * speed does not depend on FPS.
 	 */
 	public void advanceFrame(int fps);
+	
+	/**
+	 * Checks whether this Animatable is being driven by another object.
+	 * 
+	 * @return True if this Animatable is already being animated by some
+	 * object; otherwise, false.
+	 */
+	public boolean isControlled();
+	
+	/**
+	 * Sets whether this Animatable is being driven by another object.
+	 * 
+	 * @param controlled Whether this Animatable is being animated.
+	 */
+	public void setControlled(boolean controlled);
 	
 }
