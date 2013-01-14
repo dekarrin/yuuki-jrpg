@@ -15,4 +15,5 @@ project should be suitable for testing in this manner. If, for some reason, a ta
 manner, you may have to attempt to manually build the code and debug any problems you find.
 
 To build the project code into a directory rather than a JAR file, execute `ant all` at the project's root.
-The code will be compiled to ../dist/bin. Execute the main class yuuki.YuukiEngine to run the program.
+The code will be compiled to dist/bin. Execute the main class yuuki.YuukiEngine to run the program. You must
+include dist/lib/ and dist/bin/ in your classpath when executing the main class manually.

@@ -1,5 +1,8 @@
 *.class
 
+# Exclude ant build dir
+dist/
+
 # Package Files #
 *.jar
 *.war

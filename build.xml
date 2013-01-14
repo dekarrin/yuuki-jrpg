@@ -6,7 +6,7 @@
 
 	<!-- dir definitions -->
 	<property name="SOURCE_ROOT" value="src" />
-	<property name="DIST_ROOT" value="../dist"/>
+	<property name="DIST_ROOT" value="dist"/>
 	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
 	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
 	<property name="BATTLE" value="yuuki/battle" />
@@ -18,6 +18,8 @@
 	<property name="RESOURCE" value="yuuki/resource" />
 	<property name="SOUND" value="yuuki/sound" />
 	
+	<property name="LIB" value="lib" />
+	
 	<!-- other properties -->
 	<property name="warnings" value="all" />
 	
@@ -28,12 +30,24 @@
 	
 	<!-- PUBLIC TARGETS -->
 	
-	<target name="dist-jar" depends="clean,all">
-		<jar destfile="${DIST_ROOT}/yuuki.jar">
+	<target name="dist-jar" depends="clean,dep-jar,all">
+		<jar destfile="${DIST_ROOT}/yuuki.jar" filesetmanifest="mergewithoutmain">
 			<fileset dir="${BUILD_ROOT}" />
+			<zipfileset src="${DIST_ROOT}/dependencies.jar">
+				<exclude name="META-INF/*.SF" />
+			</zipfileset>
 			<manifest>
 				<attribute name="Main-Class" value="yuuki.YuukiEngine" />
 			</manifest>
+		</jar>
+		<delete file="${DIST_ROOT}/dependencies.jar" />
+	</target>
+	
+	<target name="dep-jar">
+		<jar destfile="${DIST_ROOT}/dependencies.jar" filesetmanifest="mergewithoutmain">
+			<zipgroupfileset dir="${LIB}">
+				<include name="*.jar" />
+			</zipgroupfileset>
 		</jar>
 	</target>
 	
@@ -57,7 +71,7 @@
 		<delete dir="${DIST_ROOT}" />
 	</target>
 	
-	<target name="all" depends="main,resource"></target>
+	<target name="all" depends="main,resource,lib"></target>
 
 	<target name="main" depends="battle,ui,sound">
 		<antcall target="-build">
@@ -111,7 +125,15 @@
 	<target name="doc-all" depends="doc-battle"></target>
 	
 	<target name="resource">
-		<copydir src="${SOURCE_ROOT}/${RESOURCE}" dest="${BUILD_ROOT}/${RESOURCE}"/>
+		<copy todir="${BUILD_ROOT}/${RESOURCE}">
+			<fileset dir="${SOURCE_ROOT}/${RESOURCE}" />
+		</copy>
+	</target>
+	
+	<target name="lib">
+		<copy todir="${DIST_ROOT}/${LIB}">
+			<fileset dir="${LIB}" />
+		</copy>
 	</target>
 	
 	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">
