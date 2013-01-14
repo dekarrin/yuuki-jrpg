@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -25,6 +26,11 @@ import yuuki.GameOptions;
 @SuppressWarnings("serial")
 public class OptionsScreen extends Screen<OptionsScreenListener> implements
 ChangeListener {
+	
+	/**
+	 * The slider for background music volume.
+	 */
+	private JSlider bgmVolumeSlider;
 	
 	/**
 	 * Listens for enter presses.
@@ -43,9 +49,9 @@ ChangeListener {
 	};
 	
 	/**
-	 * The slider for background music volume.
+	 * Button for testing SFX.
 	 */
-	private JSlider bgmVolumeSlider;
+	private JButton sfxTestButton;
 	
 	/**
 	 * The slider for sound effects volume.
@@ -56,11 +62,6 @@ ChangeListener {
 	 * The form submission button.
 	 */
 	private JButton submitButton;
-	
-	/**
-	 * Button for testing SFX.
-	 */
-	private JButton sfxTestButton;	
 	/**
 	 * Creates a new OptionsScreen. The child components are created and added.
 	 * 
@@ -98,6 +99,7 @@ ChangeListener {
 	/**
 	 * Sets the initial focus to the primary element in the options screen.
 	 */
+	@Override
 	public void setInitialFocus() {
 		submitButton.requestFocus();
 	}
@@ -115,6 +117,7 @@ ChangeListener {
 	/**
 	 * Called when a slider is moved.
 	 */
+	@Override
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		if (!source.getValueIsAdjusting()) {
@@ -127,22 +130,39 @@ ChangeListener {
 	}
 	
 	/**
+	 * Creates a panel containing a label and a component.
+	 * 
+	 * @param label The String that the label should contain.
+	 * @param component The component that is to be labeled.
+	 * 
+	 * @return The panel.
+	 */
+	private JPanel createLabeledComponent(String label, JComponent component) {
+		JPanel panel = new JPanel();
+		panel.add(new JLabel(label));
+		panel.add(component);
+		return panel;
+	}
+	
+	/**
+	 * Creates a slider for discrete values in the range [0, 100].
+	 * 
+	 * @return The slider.
+	 */
+	private JSlider createPercentSlider() {
+		JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 0);
+		slider.addChangeListener(this);
+		slider.addKeyListener(enterListener);
+		return slider;
+	}
+	
+	/**
 	 * Calls bgmVolumeChanged() on all listeners.
 	 */
 	private void fireBgmLevelChanged() {
 		int volume = bgmVolumeSlider.getValue();
 		for (OptionsScreenListener l: getElementListeners()) {
 			l.bgmVolumeChanged(volume);
-		}
-	}
-	
-	/**
-	 * Calls sfxVolumeChanged() on all listeners.
-	 */
-	private void fireSfxLevelChanged() {
-		int volume = sfxVolumeSlider.getValue();
-		for (OptionsScreenListener l: getElementListeners()) {
-			l.sfxVolumeChanged(volume);
 		}
 	}
 	
@@ -165,30 +185,13 @@ ChangeListener {
 	}
 	
 	/**
-	 * Creates a slider for discrete values in the range [0, 100].
-	 * 
-	 * @return The slider.
+	 * Calls sfxVolumeChanged() on all listeners.
 	 */
-	private JSlider createPercentSlider() {
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
-		slider.addChangeListener(this);
-		slider.addKeyListener(enterListener);
-		return slider;
-	}
-	
-	/**
-	 * Creates a panel containing a label and a component.
-	 * 
-	 * @param label The String that the label should contain.
-	 * @param component The component that is to be labeled.
-	 * 
-	 * @return The panel.
-	 */
-	private JPanel createLabeledComponent(String label, JComponent component) {
-		JPanel panel = new JPanel();
-		panel.add(new JLabel(label));
-		panel.add(component);
-		return panel;
+	private void fireSfxLevelChanged() {
+		int volume = sfxVolumeSlider.getValue();
+		for (OptionsScreenListener l: getElementListeners()) {
+			l.sfxVolumeChanged(volume);
+		}
 	}
 	
 }

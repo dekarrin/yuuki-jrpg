@@ -14,14 +14,14 @@ import yuuki.file.CsvParser;
 class SoundDatabase {
 	
 	/**
-	 * The location of the sound data file in the package structure.
-	 */
-	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
-	
-	/**
 	 * The name of the sound data file.
 	 */
 	public static final String DATA_FILE = "sounds.csv";
+	
+	/**
+	 * The location of the sound data file in the package structure.
+	 */
+	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
 	
 	/**
 	 * The map containing sound event indexes and sound file names.

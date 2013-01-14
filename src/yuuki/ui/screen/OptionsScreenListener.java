@@ -13,13 +13,6 @@ public interface OptionsScreenListener extends ScreenListener {
 	public void bgmVolumeChanged(int volume);
 	
 	/**
-	 * Fired when the sound effects volume is changed.
-	 * 
-	 * @param volume The new percent volume of the sound effects.
-	 */
-	public void sfxVolumeChanged(int volume);
-	
-	/**
 	 * Fired when the OK button is pushed on the options screen.
 	 */
 	public void optionsSubmitted();
@@ -28,5 +21,12 @@ public interface OptionsScreenListener extends ScreenListener {
 	 * Fired when the test button is pushed on the options screen.
 	 */
 	public void sfxTestClicked();
+	
+	/**
+	 * Fired when the sound effects volume is changed.
+	 * 
+	 * @param volume The new percent volume of the sound effects.
+	 */
+	public void sfxVolumeChanged(int volume);
 	
 }

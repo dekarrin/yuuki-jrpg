@@ -212,11 +212,6 @@ public class EntityFactory {
 	}
 	
 	/**
-	 * The location of entity data files in the package structure.
-	 */
-	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
-	
-	/**
 	 * The location of the file containing the action definitions. The location
 	 * is relative to the package structure.
 	 */
@@ -227,6 +222,11 @@ public class EntityFactory {
 	 * location is relative to the package structure.
 	 */
 	public static final String MONSTERS_FILE = "monsters.csv";
+	
+	/**
+	 * The location of entity data files in the package structure.
+	 */
+	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
 	
 	/**
 	 * The bases for creating instances of Action. Used to get an instance

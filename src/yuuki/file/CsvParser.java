@@ -1,22 +1,20 @@
 package yuuki.file;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * Reads a CSV file.
  */
 public class CsvParser {
-
-	/**
-	 * The stream being read for CSV data.
-	 */
-	private BufferedReader stream;
 	
 	/**
-	 * The character that separates records.
+	 * The character that delimits field.
 	 */
-	private char recordSeparator;
+	private char fieldDelimiter;
 	
 	/**
 	 * The character that separates fields.
@@ -24,9 +22,14 @@ public class CsvParser {
 	private char fieldSeparator;
 	
 	/**
-	 * The character that delimits field.
+	 * The character that separates records.
 	 */
-	private char fieldDelimiter;
+	private char recordSeparator;
+	
+	/**
+	 * The stream being read for CSV data.
+	 */
+	private BufferedReader stream;
 	
 	/**
 	 * Creates a new CsvParser.
@@ -45,6 +48,17 @@ public class CsvParser {
 	}
 	
 	/**
+	 * Closes the stream.
+	 */
+	public void close() {
+		try {
+			stream.close();
+		} catch (IOException e) {
+			System.err.println("Stream couldn't close");
+		}
+	}
+	
+	/**
 	 * Parses all the CSV data at once.
 	 * 
 	 * @return A two-dimensional array containing all records.
@@ -58,22 +72,6 @@ public class CsvParser {
 			}
 		}
 		return records.toArray(new String[0][]);
-	}
-	
-	/**
-	 * Parses a record line into a series of fields.
-	 * 
-	 * @param line The String containing the record.
-	 * 
-	 * @return The fields from the record.
-	 */
-	private String[] parseLine(String line) {
-		ArrayList<String> fields = new ArrayList<String>();
-		String[] rawFields = line.split("" + fieldSeparator);
-		for (String rf: rawFields) {
-			fields.add(parseField(rf));
-		}
-		return fields.toArray(new String[0]);
 	}
 	
 	/**
@@ -102,6 +100,22 @@ public class CsvParser {
 	}
 	
 	/**
+	 * Parses a record line into a series of fields.
+	 * 
+	 * @param line The String containing the record.
+	 * 
+	 * @return The fields from the record.
+	 */
+	private String[] parseLine(String line) {
+		ArrayList<String> fields = new ArrayList<String>();
+		String[] rawFields = line.split("" + fieldSeparator);
+		for (String rf: rawFields) {
+			fields.add(parseField(rf));
+		}
+		return fields.toArray(new String[0]);
+	}
+	
+	/**
 	 * Reads the next record. The stream is read until either the record
 	 * separator character or the end of the stream is reached.
 	 * 
@@ -124,17 +138,6 @@ public class CsvParser {
 			}
 		} while (nextByte != -1 && nextChar != recordSeparator);
 		return (buffer != null) ? buffer.toString() : null;
-	}
-	
-	/**
-	 * Closes the stream.
-	 */
-	public void close() {
-		try {
-			stream.close();
-		} catch (IOException e) {
-			System.err.println("Stream couldn't close");
-		}
 	}
 	
 }

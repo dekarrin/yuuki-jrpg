@@ -82,7 +82,7 @@ public class Flee extends Action implements Cloneable {
 		} else {
 			double escapeChance = rand.nextDouble();
 			flee = (escapeChance <= advantageLevel);
-		}	
+		}
 		return flee;
 	}
 	

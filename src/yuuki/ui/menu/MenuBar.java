@@ -53,14 +53,6 @@ MenuListener {
 	 * @inheritDoc
 	 */
 	@Override
-	public boolean removeListener(Object listener) {
-		return listeners.remove(listener);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
 	public List<MenuBarListener> getElementListeners() {
 		List<MenuBarListener> listenersList =
 				new LinkedList<MenuBarListener>();
@@ -68,6 +60,26 @@ MenuListener {
 			listenersList.add(listener);
 		}
 		return listenersList;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void menuItemTriggered(Menu<?> source, int itemId) {
+		int menuId = -1;
+		if (source == fileMenu) {
+			menuId = FILE_MENU_ID;
+		}
+		fireMenuItemTriggered(menuId, itemId);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean removeListener(Object listener) {
+		return listeners.remove(listener);
 	}
 	
 	/**
@@ -85,25 +97,6 @@ MenuListener {
 	}
 	
 	/**
-	 * Sets this menu bar as a listener to all menus.
-	 */
-	private void setListeners() {
-		fileMenu.addListener(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void menuItemTriggered(Menu<?> source, int itemId) {
-		int menuId = -1;
-		if (source == fileMenu) {
-			menuId = FILE_MENU_ID;
-		}
-		fireMenuItemTriggered(menuId, itemId);
-	}
-	
-	/**
 	 * Calls menuItemTriggered() on all listeners.
 	 * 
 	 * @param menuId The ID of the menu that the item is in.
@@ -113,6 +106,13 @@ MenuListener {
 		for (MenuBarListener l: getElementListeners()) {
 			l.menuItemTriggered(menuId, itemId);
 		}
+	}
+	
+	/**
+	 * Sets this menu bar as a listener to all menus.
+	 */
+	private void setListeners() {
+		fileMenu.addListener(this);
 	}
 	
 }

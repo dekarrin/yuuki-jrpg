@@ -13,19 +13,14 @@ import javax.swing.JMenuItem;
 public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	
 	/**
-	 * The ID of the 'New' item.
-	 */
-	public static final int NEW_ITEM_ID = 0;
-	
-	/**
 	 * The ID of the 'Close' item.
 	 */
 	public static final int CLOSE_ITEM_ID = 1;
 	
 	/**
-	 * The ID of the 'Save' item.
+	 * The ID of the 'Exit' item.
 	 */
-	public static final int SAVE_ITEM_ID = 2;
+	public static final int EXIT_ITEM_ID = 5;
 	
 	/**
 	 * The ID of the 'Load' item.
@@ -33,14 +28,19 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	public static final int LOAD_ITEM_ID = 3;
 	
 	/**
+	 * The ID of the 'New' item.
+	 */
+	public static final int NEW_ITEM_ID = 0;
+	
+	/**
 	 * The ID of the 'Options' item.
 	 */
 	public static final int OPTIONS_ITEM_ID = 4;
 	
 	/**
-	 * The ID of the 'Exit' item.
+	 * The ID of the 'Save' item.
 	 */
-	public static final int EXIT_ITEM_ID = 5;
+	public static final int SAVE_ITEM_ID = 2;
 	
 	/**
 	 * Closes the current game when selected.
@@ -78,6 +78,53 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	public FileMenu() {
 		super("File", "The File menu", KeyEvent.VK_F);
 		setListeners();
+	}
+	
+	/**
+	 * Called when a menu item is selected.
+	 * 
+	 * @param e The source event.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		int selectedId = -1;
+		if (e.getSource() == exitItem) {
+			selectedId = EXIT_ITEM_ID;
+		} else if (e.getSource() == newItem) {
+			selectedId = NEW_ITEM_ID;
+		} else if (e.getSource() == optionsItem) {
+			selectedId = OPTIONS_ITEM_ID;
+		} else if (e.getSource() == closeItem) {
+			selectedId = CLOSE_ITEM_ID;
+		} else if (e.getSource() == loadItem) {
+			selectedId = LOAD_ITEM_ID;
+		} else if (e.getSource() == saveItem) {
+			selectedId = SAVE_ITEM_ID;
+		}
+		fireItemTriggered(selectedId);
+	}
+	
+	/**
+	 * Calls menuItemTriggered() on all listeners.
+	 * 
+	 * @param id The ID of the item that was selected.
+	 */
+	public void fireItemTriggered(int id) {
+		for (MenuListener l: getElementListeners()) {
+			l.menuItemTriggered(this, id);
+		}
+	}
+	
+	/**
+	 * Adds this menu as a listener to its items.
+	 */
+	private void setListeners() {
+		closeItem.addActionListener(this);
+		loadItem.addActionListener(this);
+		newItem.addActionListener(this);
+		saveItem.addActionListener(this);
+		optionsItem.addActionListener(this);
+		exitItem.addActionListener(this);
 	}
 	
 	/**
@@ -146,53 +193,6 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		saveItem.setMnemonic(KeyEvent.VK_S);
 		optionsItem.setMnemonic(KeyEvent.VK_O);
 		exitItem.setMnemonic(KeyEvent.VK_X);
-	}
-
-	/**
-	 * Called when a menu item is selected.
-	 * 
-	 * @param e The source event.
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		int selectedId = -1;
-		if (e.getSource() == exitItem) {
-			selectedId = EXIT_ITEM_ID;
-		} else if (e.getSource() == newItem) {
-			selectedId = NEW_ITEM_ID;
-		} else if (e.getSource() == optionsItem) {
-			selectedId = OPTIONS_ITEM_ID;
-		} else if (e.getSource() == closeItem) {
-			selectedId = CLOSE_ITEM_ID;
-		} else if (e.getSource() == loadItem) {
-			selectedId = LOAD_ITEM_ID;
-		} else if (e.getSource() == saveItem) {
-			selectedId = SAVE_ITEM_ID;
-		}
-		fireItemTriggered(selectedId);
-	}
-	
-	/**
-	 * Calls menuItemTriggered() on all listeners.
-	 * 
-	 * @param id The ID of the item that was selected.
-	 */
-	public void fireItemTriggered(int id) {
-		for (MenuListener l: getElementListeners()) {
-			l.menuItemTriggered(this, id);
-		}
-	}
-	
-	/**
-	 * Adds this menu as a listener to its items.
-	 */
-	private void setListeners() {
-		closeItem.addActionListener(this);
-		loadItem.addActionListener(this);
-		newItem.addActionListener(this);
-		saveItem.addActionListener(this);
-		optionsItem.addActionListener(this);
-		exitItem.addActionListener(this);
 	}
 	
 }

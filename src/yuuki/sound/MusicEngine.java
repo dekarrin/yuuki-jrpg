@@ -12,16 +12,6 @@ class MusicEngine extends AudioEngine {
 	private SoundPlayer musicPlayer;
 	
 	/**
-	 * @inheritDoc
-	 */
-	protected void spawnPlayerThread(String soundFile) {
-		byte[] data = sounds.get(soundFile);
-		stopSound();
-		musicPlayer = new SoundPlayer(data, getVolume(), true);
-		(new Thread(musicPlayer, "MusicPlayer")).start();
-	}
-	
-	/**
 	 * Change the volume of the currently playing music.
 	 * 
 	 * @param volume The new volume.
@@ -41,6 +31,17 @@ class MusicEngine extends AudioEngine {
 		if (musicPlayer != null) {
 			musicPlayer.stop();
 		}
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	protected void spawnPlayerThread(String soundFile) {
+		byte[] data = sounds.get(soundFile);
+		stopSound();
+		musicPlayer = new SoundPlayer(data, getVolume(), true);
+		(new Thread(musicPlayer, "MusicPlayer")).start();
 	}
 	
 }

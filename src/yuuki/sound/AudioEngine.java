@@ -1,6 +1,8 @@
 package yuuki.sound;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -9,14 +11,14 @@ import java.util.HashMap;
 abstract class AudioEngine {
 	
 	/**
-	 * Audio data loaded from disk.
-	 */
-	protected HashMap<String, byte[]> sounds;
-	
-	/**
 	 * The volume percentage of the sounds.
 	 */
 	private int volume;
+	
+	/**
+	 * Audio data loaded from disk.
+	 */
+	protected HashMap<String, byte[]> sounds;
 	
 	/**
 	 * Creates a new AudioEngine.
@@ -27,21 +29,24 @@ abstract class AudioEngine {
 	}
 	
 	/**
-	 * Sets the volume.
-	 * 
-	 * @param volume The new volume.
-	 */
-	public void setVolume(int volume) {
-		this.volume = volume;
-	}
-	
-	/**
 	 * Gets the volume.
 	 * 
 	 * @return The volume.
 	 */
 	public int getVolume() {
 		return volume;
+	}
+	
+	/**
+	 * Plays a sound file. If it hasn't yet been loaded, its data will be read
+	 * from disk and cached.
+	 * 
+	 * @param soundFile The name of the sound resource, relative to the
+	 * package structure.
+	 */
+	public void playSound(String soundFile) {
+		preload(soundFile);
+		spawnPlayerThread(soundFile);
 	}
 	
 	/**
@@ -62,15 +67,12 @@ abstract class AudioEngine {
 	}
 	
 	/**
-	 * Plays a sound file. If it hasn't yet been loaded, its data will be read
-	 * from disk and cached.
+	 * Sets the volume.
 	 * 
-	 * @param soundFile The name of the sound resource, relative to the
-	 * package structure.
+	 * @param volume The new volume.
 	 */
-	public void playSound(String soundFile) {
-		preload(soundFile);
-		spawnPlayerThread(soundFile);
+	public void setVolume(int volume) {
+		this.volume = volume;
 	}
 	
 	/**

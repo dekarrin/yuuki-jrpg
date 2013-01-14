@@ -20,15 +20,15 @@ public interface UiExecutor {
 	public void requestBattle(boolean isMain);
 	
 	/**
-	 * Requests that the main battle be run through.
-	 */
-	public void requestBattleStart();
-	
-	/**
 	 * Requests that the battle be finished and the game return to the
 	 * overworld.
 	 */
 	public void requestBattleEnd();
+	
+	/**
+	 * Requests that the main battle be run through.
+	 */
+	public void requestBattleStart();
 	
 	/**
 	 * Requests that a player character is created.
@@ -39,9 +39,10 @@ public interface UiExecutor {
 	public void requestCharacterCreation(String name, int level);
 	
 	/**
-	 * Called when the options have been submitted.
+	 * Requests that the current game be closed and that the user be returned
+	 * to the main menu.
 	 */
-	public void requestOptionsSubmission();
+	public void requestCloseGame();
 	
 	/**
 	 * Requests that an old game be loaded.
@@ -59,14 +60,19 @@ public interface UiExecutor {
 	public void requestOptionsScreen();
 	
 	/**
+	 * Called when the options have been submitted.
+	 */
+	public void requestOptionsSubmission();
+	
+	/**
 	 * Requests that the game be exited.
 	 */
 	public void requestQuit();
 	
 	/**
-	 * Requests that all sounds be updated to the current volumes.
+	 * Requests that the game be saved.
 	 */
-	public void requestVolumeUpdate();
+	public void requestSaveGame();
 	
 	/**
 	 * Requests that a sound be played.
@@ -76,14 +82,8 @@ public interface UiExecutor {
 	public void requestSoundEffect(String soundIndex);
 	
 	/**
-	 * Requests that the current game be closed and that the user be returned
-	 * to the main menu.
+	 * Requests that all sounds be updated to the current volumes.
 	 */
-	public void requestCloseGame();
-	
-	/**
-	 * Requests that the game be saved.
-	 */
-	public void requestSaveGame();
+	public void requestVolumeUpdate();
 	
 }

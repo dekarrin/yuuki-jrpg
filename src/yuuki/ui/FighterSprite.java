@@ -62,11 +62,6 @@ public class FighterSprite extends JPanel {
 	private JComponent imagePanel;
 	
 	/**
-	 * The area where the fighter's stats are displayed.
-	 */
-	private StatPanel statPanel;
-	
-	/**
 	 * The area where both stats and the image are displayed.
 	 */
 	private JLayeredPane imageStatHolder;
@@ -80,6 +75,11 @@ public class FighterSprite extends JPanel {
 	 * The label displaying the fighter's name.
 	 */
 	private JLabel nameLabel;
+	
+	/**
+	 * The area where the fighter's stats are displayed.
+	 */
+	private StatPanel statPanel;
 	
 	/**
 	 * Creates a new FighterSprite from a Character.
@@ -218,6 +218,24 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
+	 * Updates the the stat panel to reflect the current stats.
+	 * 
+	 * @param fighter The fighter to show the stats for.
+	 */
+	public void showStatUpdate(Character fighter) {
+		statPanel.setHpMax(fighter.getMaxHP());
+		statPanel.setHp(fighter.getHP());
+		statPanel.setMpMax(fighter.getMaxMP());
+		statPanel.setMp(fighter.getMP());
+		statPanel.setStrength(fighter.getStrength());
+		statPanel.setDefense(fighter.getDefense());
+		statPanel.setAgility(fighter.getAgility());
+		statPanel.setAccuracy(fighter.getAccuracy());
+		statPanel.setMagic(fighter.getMagic());
+		statPanel.setLuck(fighter.getLuck());
+	}
+	
+	/**
 	 * Adds this FighterSprite's components to its content pane.
 	 */
 	private void addComponents() {
@@ -270,26 +288,6 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
-	 * Initializes the stat and image component of this FighterSprite.
-	 */
-	private void initializeImageStatHolder() {
-		Dimension size = new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT);
-		imageStatHolder.setPreferredSize(size);
-	}
-	
-	/**
-	 * Initializes the stat panel of this FighterSprite.
-	 * 
-	 * @param fighter The fighter to make the stat panel show the stats of.
-	 */
-	private void initializeStatPanel(Character fighter) {
-		statPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT));
-		statPanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
-		statPanel.setOpaque(false);
-		showStatUpdate(fighter);
-	}
-	
-	/**
 	 * Initializes the health bar component of this FighterSprite.
 	 * 
 	 * @param hpStat The HP Stat of this FighterSprite's fighter.
@@ -310,6 +308,14 @@ public class FighterSprite extends JPanel {
 		imagePanel.setOpaque(true);
 		imagePanel.setVisible(true);
 		imagePanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
+	}
+	
+	/**
+	 * Initializes the stat and image component of this FighterSprite.
+	 */
+	private void initializeImageStatHolder() {
+		Dimension size = new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT);
+		imageStatHolder.setPreferredSize(size);
 	}
 	
 	/**
@@ -335,6 +341,18 @@ public class FighterSprite extends JPanel {
 	}
 	
 	/**
+	 * Initializes the stat panel of this FighterSprite.
+	 * 
+	 * @param fighter The fighter to make the stat panel show the stats of.
+	 */
+	private void initializeStatPanel(Character fighter) {
+		statPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT));
+		statPanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
+		statPanel.setOpaque(false);
+		showStatUpdate(fighter);
+	}
+	
+	/**
 	 * Updates this FighterSprite with new stat values.
 	 * 
 	 * @param stat The stat to update.
@@ -347,24 +365,6 @@ public class FighterSprite extends JPanel {
 		}
 		revalidate();
 		repaint();
-	}
-	
-	/**
-	 * Updates the the stat panel to reflect the current stats.
-	 * 
-	 * @param fighter The fighter to show the stats for.
-	 */
-	public void showStatUpdate(Character fighter) {
-		statPanel.setHpMax(fighter.getMaxHP());
-		statPanel.setHp(fighter.getHP());
-		statPanel.setMpMax(fighter.getMaxMP());
-		statPanel.setMp(fighter.getMP());
-		statPanel.setStrength(fighter.getStrength());
-		statPanel.setDefense(fighter.getDefense());
-		statPanel.setAgility(fighter.getAgility());
-		statPanel.setAccuracy(fighter.getAccuracy());
-		statPanel.setMagic(fighter.getMagic());
-		statPanel.setLuck(fighter.getLuck());
 	}
 	
 }

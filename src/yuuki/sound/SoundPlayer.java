@@ -40,24 +40,14 @@ class SoundPlayer implements Runnable {
 	private Clip clip;
 	
 	/**
-	 * The control for changing the clip volume.
-	 */
-	private FloatControl volumeControl;
-	
-	/**
-	 * The audio stream for playing the audio data.
-	 */
-	private AudioInputStream stream;
-	
-	/**
 	 * The audio data that is to be played.
 	 */
 	private byte[] data;
 	
 	/**
-	 * The volume to play the data at.
+	 * Whether the sound clip will loop continuously.
 	 */
-	private int volume;
+	private boolean looping;
 	
 	/**
 	 * The thread playing the audio clip.
@@ -65,9 +55,19 @@ class SoundPlayer implements Runnable {
 	private Thread playerThread;
 	
 	/**
-	 * Whether the sound clip will loop continuously.
+	 * The audio stream for playing the audio data.
 	 */
-	private boolean looping;
+	private AudioInputStream stream;
+	
+	/**
+	 * The volume to play the data at.
+	 */
+	private int volume;
+	
+	/**
+	 * The control for changing the clip volume.
+	 */
+	private FloatControl volumeControl;
 	
 	/**
 	 * Allocates a new SoundPlayer with given data. The data is copied from
@@ -84,17 +84,9 @@ class SoundPlayer implements Runnable {
 	}
 	
 	/**
-	 * Sets the volume of the playing clip.
-	 * 
-	 * @param volume The new volume.
-	 */
-	public void setVolume(int volume) {
-		this.volume = volume;
-	}
-	
-	/**
 	 * Plays the audio data.
 	 */
+	@Override
 	public void run() {
 		playerThread = Thread.currentThread();
 		openAudioStream();
@@ -124,8 +116,17 @@ class SoundPlayer implements Runnable {
 		} catch (InterruptedException e) {
 			// do nothing; interruption is expected
 		} finally {
-			clip.close();	
+			clip.close();
 		}
+	}
+	
+	/**
+	 * Sets the volume of the playing clip.
+	 * 
+	 * @param volume The new volume.
+	 */
+	public void setVolume(int volume) {
+		this.volume = volume;
 	}
 	
 	/**
@@ -151,6 +152,19 @@ class SoundPlayer implements Runnable {
 	}
 	
 	/**
+	 * Opens the Clip for playing the audio data with the audio stream.
+	 */
+	private void openAudioClip() {
+		try {
+			AudioFormat format = stream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip) AudioSystem.getLine(info);
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Opens the audio stream on the audio data.
 	 */
 	private void openAudioStream() {
@@ -162,19 +176,6 @@ class SoundPlayer implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Opens the Clip for playing the audio data with the audio stream.
-	 */
-	private void openAudioClip() {
-		try {
-			AudioFormat format = stream.getFormat();
-			DataLine.Info info = new DataLine.Info(Clip.class, format);
-			clip = (Clip) AudioSystem.getLine(info);
-		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
 	}

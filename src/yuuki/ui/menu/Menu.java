@@ -41,6 +41,34 @@ yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean addListener(L listener) {
+		return listeners.add(listener);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public List<L> getElementListeners() {
+		List<L> listenersList = new LinkedList<L>();
+		for (L listener: listeners) {
+			listenersList.add(listener);
+		}
+		return listenersList;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean removeListener(Object listener) {
+		return listeners.remove(listener);
+	}
+	
+	/**
 	 * Adds the child components to this menu.
 	 */
 	protected abstract void addItems();
@@ -64,33 +92,5 @@ yuuki.ui.Listenable<L> {
 	 * Sets the mnemonics for this menu's items.
 	 */
 	protected abstract void setItemMnemonics();
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public boolean addListener(L listener) {
-		return listeners.add(listener);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public boolean removeListener(Object listener) {
-		return listeners.remove(listener);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public List<L> getElementListeners() {
-		List<L> listenersList = new LinkedList<L>();
-		for (L listener: listeners) {
-			listenersList.add(listener);
-		}
-		return listenersList;
-	}
 	
 }

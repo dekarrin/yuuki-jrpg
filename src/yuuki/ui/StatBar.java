@@ -18,7 +18,7 @@ public class StatBar extends JPanel {
 	 * The color of the unfilled portion of all StatBar instances.
 	 */
 	public static final Color BACKGROUND_COLOR = new Color(79, 76, 0);
-		
+	
 	/**
 	 * The color of the filled portion of this StatBar.
 	 */

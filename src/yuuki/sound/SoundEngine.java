@@ -7,9 +7,9 @@ package yuuki.sound;
 public class SoundEngine {
 	
 	/**
-	 * The location of sound resource files.
+	 * The location of sound effect files.
 	 */
-	public static final String RESOURCE_LOCATION = "/yuuki/resource/audio/";
+	public static final String EFFECT_LOCATION = "sfx/";
 	
 	/**
 	 * The location of music resource files.
@@ -17,14 +17,14 @@ public class SoundEngine {
 	public static final String MUSIC_LOCATION = "bgm/";
 	
 	/**
-	 * The location of sound effect files.
+	 * The location of sound resource files.
 	 */
-	public static final String EFFECT_LOCATION = "sfx/";
+	public static final String RESOURCE_LOCATION = "/yuuki/resource/audio/";
 	
 	/**
-	 * Handles background music.
+	 * Keeps track of sound index to sound file mappings.
 	 */
-	private MusicEngine musicEngine;
+	private SoundDatabase database;
 	
 	/**
 	 * Handles sound effects.
@@ -32,9 +32,9 @@ public class SoundEngine {
 	private EffectEngine effectEngine;
 	
 	/**
-	 * Keeps track of sound index to sound file mappings.
+	 * Handles background music.
 	 */
-	private SoundDatabase database;
+	private MusicEngine musicEngine;
 	
 	/**
 	 * Creates a new SoundEngine.
@@ -43,33 +43,6 @@ public class SoundEngine {
 		musicEngine = new MusicEngine();
 		effectEngine = new EffectEngine();
 		database = new SoundDatabase();
-	}
-	
-	/**
-	 * Sets the music volume.
-	 * 
-	 * @param volume The new volume for music.
-	 */
-	public void setMusicVolume(int volume) {
-		musicEngine.setVolume(volume);
-	}
-	
-	/**
-	 * Sets the sound effect volume.
-	 * 
-	 * @param volume The new volume for sound effects.
-	 */
-	public void setEffectVolume(int volume) {
-		effectEngine.setVolume(volume);
-	}
-	
-	/**
-	 * Gets the music volume.
-	 * 
-	 * @return The current volume of music.
-	 */
-	public int getMusicVolume() {
-		return musicEngine.getVolume();
 	}
 	
 	/**
@@ -82,57 +55,23 @@ public class SoundEngine {
 	}
 	
 	/**
-	 * Stops the currently playing music.
+	 * Gets the music volume.
+	 * 
+	 * @return The current volume of music.
 	 */
-	public void stopMusic() {
-		musicEngine.stopSound();
+	public int getMusicVolume() {
+		return musicEngine.getVolume();
 	}
 	
 	/**
-	 * Preloads the music file associated with a music index. If the music file
-	 * has already been loaded, this method has no effect.
+	 * Plays the sound effect file associated with a music index. The file is
+	 * loaded if it hasn't yet been loaded, and then it is played.
 	 * 
-	 * @param musicIndex The index of the music file.
+	 * @param musicIndex The index of the sound effect file.
 	 */
-	public void preloadMusic(String musicIndex) {
-		String file = database.getSound(musicIndex);
-		preloadMusicFile(file);
-	}
-	
-	/**
-	 * Preloads a music file. If the music file has already been loaded, this
-	 * method has no effect.
-	 * 
-	 * @param musicFile The location of the music file, relative to the sound
-	 * resource location.
-	 */
-	private void preloadMusicFile(String musicFile) {
-		String actualLocation = getMusicLocation(musicFile);
-		musicEngine.preload(actualLocation);
-	}
-	
-	/**
-	 * Preloads the sound effect file associated with a sound effect index. If
-	 * the sound effect file has already been loaded, this method has no
-	 * effect.
-	 * 
-	 * @param effectIndex The index of the sound effect file.
-	 */
-	public void preloadEffect(String effectIndex) {
+	public void playEffect(String effectIndex) {
 		String file = database.getSound(effectIndex);
-		preloadEffectFile(file);
-	}
-	
-	/**
-	 * Preloads a sound effect file. If the sound effect file has already been
-	 * loaded, this method has no effect.
-	 * 
-	 * @param soundFile The location of the sound effect file, relative to the
-	 * sound resource location.
-	 */
-	private void preloadEffectFile(String soundFile) {
-		String actualLocation = getEffectLocation(soundFile);
-		effectEngine.preload(actualLocation);
+		playEffectFile(file);
 	}
 	
 	/**
@@ -148,39 +87,64 @@ public class SoundEngine {
 	}
 	
 	/**
-	 * Plays a music effect. The file is loaded if it hasn't yet been loaded,
-	 * and then it is played. If a music file is already playing when this
-	 * method is called, it is stopped.
+	 * Preloads the sound effect file associated with a sound effect index. If
+	 * the sound effect file has already been loaded, this method has no
+	 * effect.
 	 * 
-	 * @param musicFile The location of the music file, relative to the sound
-	 * resource location.
+	 * @param effectIndex The index of the sound effect file.
 	 */
-	private void playMusicFile(String musicFile) {
-		String actualLocation = getMusicLocation(musicFile);
-		musicEngine.playSound(actualLocation);
-	}
-	
-	/**
-	 * Plays the sound effect file associated with a music index. The file is
-	 * loaded if it hasn't yet been loaded, and then it is played.
-	 * 
-	 * @param musicIndex The index of the sound effect file.
-	 */
-	public void playEffect(String effectIndex) {
+	public void preloadEffect(String effectIndex) {
 		String file = database.getSound(effectIndex);
-		playEffectFile(file);
+		preloadEffectFile(file);
 	}
 	
 	/**
-	 * Plays a sound effect. The file is loaded if it hasn't yet been loaded,
-	 * and then it is played.
+	 * Preloads the music file associated with a music index. If the music file
+	 * has already been loaded, this method has no effect.
 	 * 
-	 * @param soundFile The location of the sound effect file, relative to the
-	 * sound resource location.
+	 * @param musicIndex The index of the music file.
 	 */
-	private void playEffectFile(String soundFile) {
-		String actualLocation = getEffectLocation(soundFile);
-		effectEngine.playSound(actualLocation);
+	public void preloadMusic(String musicIndex) {
+		String file = database.getSound(musicIndex);
+		preloadMusicFile(file);
+	}
+	
+	/**
+	 * Sets the sound effect volume.
+	 * 
+	 * @param volume The new volume for sound effects.
+	 */
+	public void setEffectVolume(int volume) {
+		effectEngine.setVolume(volume);
+	}
+	
+	/**
+	 * Sets the music volume.
+	 * 
+	 * @param volume The new volume for music.
+	 */
+	public void setMusicVolume(int volume) {
+		musicEngine.setVolume(volume);
+	}
+	
+	/**
+	 * Stops the currently playing music.
+	 */
+	public void stopMusic() {
+		musicEngine.stopSound();
+	}
+	
+	/**
+	 * Gets the package path of an effect file.
+	 * 
+	 * @param soundFile The name of the effect file.
+	 * 
+	 * @return The actual location of the file.
+	 */
+	private String getEffectLocation(String soundFile) {
+		String directory = RESOURCE_LOCATION + EFFECT_LOCATION;
+		String actualLocation = directory + soundFile;
+		return actualLocation;
 	}
 	
 	/**
@@ -197,16 +161,52 @@ public class SoundEngine {
 	}
 	
 	/**
-	 * Gets the package path of an effect file.
+	 * Plays a sound effect. The file is loaded if it hasn't yet been loaded,
+	 * and then it is played.
 	 * 
-	 * @param soundFile The name of the effect file.
-	 * 
-	 * @return The actual location of the file.
+	 * @param soundFile The location of the sound effect file, relative to the
+	 * sound resource location.
 	 */
-	private String getEffectLocation(String soundFile) {
-		String directory = RESOURCE_LOCATION + EFFECT_LOCATION;
-		String actualLocation = directory + soundFile;
-		return actualLocation;
+	private void playEffectFile(String soundFile) {
+		String actualLocation = getEffectLocation(soundFile);
+		effectEngine.playSound(actualLocation);
+	}
+	
+	/**
+	 * Plays a music effect. The file is loaded if it hasn't yet been loaded,
+	 * and then it is played. If a music file is already playing when this
+	 * method is called, it is stopped.
+	 * 
+	 * @param musicFile The location of the music file, relative to the sound
+	 * resource location.
+	 */
+	private void playMusicFile(String musicFile) {
+		String actualLocation = getMusicLocation(musicFile);
+		musicEngine.playSound(actualLocation);
+	}
+	
+	/**
+	 * Preloads a sound effect file. If the sound effect file has already been
+	 * loaded, this method has no effect.
+	 * 
+	 * @param soundFile The location of the sound effect file, relative to the
+	 * sound resource location.
+	 */
+	private void preloadEffectFile(String soundFile) {
+		String actualLocation = getEffectLocation(soundFile);
+		effectEngine.preload(actualLocation);
+	}
+	
+	/**
+	 * Preloads a music file. If the music file has already been loaded, this
+	 * method has no effect.
+	 * 
+	 * @param musicFile The location of the music file, relative to the sound
+	 * resource location.
+	 */
+	private void preloadMusicFile(String musicFile) {
+		String actualLocation = getMusicLocation(musicFile);
+		musicEngine.preload(actualLocation);
 	}
 	
 }

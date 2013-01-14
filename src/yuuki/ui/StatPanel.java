@@ -20,14 +20,39 @@ public class StatPanel extends JPanel {
 	public static final float FONT_SIZE = 10.0f;
 	
 	/**
-	 * The max health.
+	 * The current accuracy.
 	 */
-	private JLabel maxHpDisplay;
+	private JLabel accuracyDisplay;
+	
+	/**
+	 * The current agility.
+	 */
+	private JLabel agilityDisplay;
+	
+	/**
+	 * The current defense.
+	 */
+	private JLabel defenseDisplay;
 	
 	/**
 	 * The current health.
 	 */
 	private JLabel hpDisplay;
+	
+	/**
+	 * The current luck.
+	 */
+	private JLabel luckDisplay;
+	
+	/**
+	 * The current magic.
+	 */
+	private JLabel magicDisplay;
+	
+	/**
+	 * The max health.
+	 */
+	private JLabel maxHpDisplay;
 	
 	/**
 	 * The max mana.
@@ -45,31 +70,6 @@ public class StatPanel extends JPanel {
 	private JLabel strengthDisplay;
 	
 	/**
-	 * The current agility.
-	 */
-	private JLabel agilityDisplay;
-	
-	/**
-	 * The current defense.
-	 */
-	private JLabel defenseDisplay;
-	
-	/**
-	 * The current accuracy.
-	 */
-	private JLabel accuracyDisplay;
-	
-	/**
-	 * The current magic.
-	 */
-	private JLabel magicDisplay;
-	
-	/**
-	 * The current luck.
-	 */
-	private JLabel luckDisplay;
-	
-	/**
 	 * Allocates a new StatPanel. The child components are created and added to
 	 * this panel. All stat values are initialized to 0.
 	 */
@@ -77,69 +77,6 @@ public class StatPanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		createComponents();
 		addComponents();
-	}
-	
-	/**
-	 * Sets the HP max stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setHpMax(int stat) {
-		maxHpDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the HP stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setHp(int stat) {
-		hpDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the mana max stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setMpMax(int stat) {
-		maxMpDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the mana stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setMp(int stat) {
-		mpDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the strength stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setStrength(int stat) {
-		strengthDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the defense stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setDefense(int stat) {
-		defenseDisplay.setText("" + stat);
-	}
-	
-	/**
-	 * Sets the agility stat.
-	 * 
-	 * @param stat The new stat.
-	 */
-	public void setAgility(int stat) {
-		agilityDisplay.setText("" + stat);
 	}
 	
 	/**
@@ -152,12 +89,39 @@ public class StatPanel extends JPanel {
 	}
 	
 	/**
-	 * Sets the magic stat.
+	 * Sets the agility stat.
 	 * 
 	 * @param stat The new stat.
 	 */
-	public void setMagic(int stat) {
-		magicDisplay.setText("" + stat);
+	public void setAgility(int stat) {
+		agilityDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the defense stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setDefense(int stat) {
+		defenseDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the HP stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setHp(int stat) {
+		hpDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the HP max stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setHpMax(int stat) {
+		maxHpDisplay.setText("" + stat);
 	}
 	
 	/**
@@ -170,22 +134,39 @@ public class StatPanel extends JPanel {
 	}
 	
 	/**
-	 * Creates the primary components of this StatPanel. This does not include
-	 * helper components such as labels for the stats; these must be created
-	 * when the primary components are added, as there is no way to keep track
-	 * of them after they are created.
+	 * Sets the magic stat.
+	 * 
+	 * @param stat The new stat.
 	 */
-	private void createComponents() {
-		hpDisplay		= new JLabel("0");
-		maxHpDisplay	= new JLabel("0");
-		mpDisplay		= new JLabel("0");
-		maxMpDisplay	= new JLabel("0");
-		strengthDisplay	= new JLabel("0");
-		defenseDisplay	= new JLabel("0");
-		agilityDisplay	= new JLabel("0");
-		accuracyDisplay	= new JLabel("0");
-		magicDisplay	= new JLabel("0");
-		luckDisplay		= new JLabel("0");
+	public void setMagic(int stat) {
+		magicDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the mana stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setMp(int stat) {
+		mpDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the mana max stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setMpMax(int stat) {
+		maxMpDisplay.setText("" + stat);
+	}
+	
+	/**
+	 * Sets the strength stat.
+	 * 
+	 * @param stat The new stat.
+	 */
+	public void setStrength(int stat) {
+		strengthDisplay.setText("" + stat);
 	}
 	
 	/**
@@ -254,6 +235,25 @@ public class StatPanel extends JPanel {
 		display.setAlignmentX(Component.LEFT_ALIGNMENT);
 		display.setOpaque(false);
 		return display;
+	}
+	
+	/**
+	 * Creates the primary components of this StatPanel. This does not include
+	 * helper components such as labels for the stats; these must be created
+	 * when the primary components are added, as there is no way to keep track
+	 * of them after they are created.
+	 */
+	private void createComponents() {
+		hpDisplay		= new JLabel("0");
+		maxHpDisplay	= new JLabel("0");
+		mpDisplay		= new JLabel("0");
+		maxMpDisplay	= new JLabel("0");
+		strengthDisplay	= new JLabel("0");
+		defenseDisplay	= new JLabel("0");
+		agilityDisplay	= new JLabel("0");
+		accuracyDisplay	= new JLabel("0");
+		magicDisplay	= new JLabel("0");
+		luckDisplay		= new JLabel("0");
 	}
 	
 }

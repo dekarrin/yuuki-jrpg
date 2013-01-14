@@ -20,6 +20,13 @@ public interface Listenable<L extends ElementListener> {
 	public boolean addListener(L listener);
 	
 	/**
+	 * Gets the listeners as a list. The list returned must be modifiable.
+	 * 
+	 * @return A modifiable version of the list of listeners.
+	 */
+	public List<L> getElementListeners();
+	
+	/**
 	 * Removes a listener from the list of registered listeners.
 	 * 
 	 * @param listener The listener to remove.
@@ -28,12 +35,5 @@ public interface Listenable<L extends ElementListener> {
 	 * listener will only fail it was not in the list of listeners.
 	 */
 	public boolean removeListener(Object listener);
-	
-	/**
-	 * Gets the listeners as a list. The list returned must be modifiable.
-	 * 
-	 * @return A modifiable version of the list of listeners.
-	 */
-	public List<L> getElementListeners();
 	
 }

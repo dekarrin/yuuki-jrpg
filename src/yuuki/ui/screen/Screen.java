@@ -87,14 +87,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 	 * @inheritDoc
 	 */
 	@Override
-	public boolean removeListener(Object listener) {
-		return listeners.remove(listener);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
 	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
 		for (L listener: listeners) {
@@ -109,6 +101,14 @@ JPanel implements yuuki.ui.Listenable<L> {
 	@Override
 	public Dimension getPreferredSize() {
 		return size;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public boolean removeListener(Object listener) {
+		return listeners.remove(listener);
 	}
 	
 	/**

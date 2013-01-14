@@ -51,11 +51,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The options for the game.
-	 */
-	private GameOptions options;
-	
-	/**
 	 * Creates all entities.
 	 */
 	private EntityFactory entityMaker;
@@ -66,19 +61,24 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private Battle mainBattle;
 	
 	/**
+	 * The options for the game.
+	 */
+	private GameOptions options;
+	
+	/**
 	 * The player character.
 	 */
 	private PlayerCharacter player;;
 	
 	/**
+	 * The sound engine.
+	 */
+	private SoundEngine soundEngine;
+	
+	/**
 	 * The user interface.
 	 */
 	private Interactable ui;
-	
-	/**
-	 * The sound engine.
-	 */
-	private SoundEngine soundEngine;	
 	/**
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
@@ -108,6 +108,19 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * @inheritDoc
 	 */
 	@Override
+	public void requestBattleEnd() {
+		Character winner = mainBattle.getFighters(0).get(0);
+		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
+		ui.switchToOverworldScreen();
+		ui.display(null, "Your health has been restored.");
+		player.restoreHP();
+		player.restoreMP();
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
 	public void requestBattleStart() {
 		spawnBattleThread(mainBattle, true);
 	}
@@ -125,16 +138,16 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * @inheritDoc
 	 */
 	@Override
-	public void requestLoadGame() {
-		ui.display(null, "Loading hasn't yet been implemented");
+	public void requestCloseGame() {
+		ui.switchToIntroScreen();
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	@Override
-	public void requestSaveGame() {
-		ui.display(null, "Saving hasn't yet been implemented");
+	public void requestLoadGame() {
+		ui.display(null, "Loading hasn't yet been implemented");
 	}
 	
 	/**
@@ -148,17 +161,18 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * @inheritDoc
 	 */
-	public void requestOptionsSubmission() {
-		// TODO: do not depend on Interactable to set options
-		ui.switchToLastScreen();
+	@Override
+	public void requestOptionsScreen() {
+		ui.switchToOptionsScreen();
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	@Override
-	public void requestOptionsScreen() {
-		ui.switchToOptionsScreen();
+	public void requestOptionsSubmission() {
+		// TODO: do not depend on Interactable to set options
+		ui.switchToLastScreen();
 	}
 	
 	/**
@@ -178,13 +192,25 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * @inheritDoc
 	 */
-	public void requestBattleEnd() {
-		Character winner = mainBattle.getFighters(0).get(0);
-		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
-		ui.switchToOverworldScreen();
-		ui.display(null, "Your health has been restored.");
-		player.restoreHP();
-		player.restoreMP();
+	@Override
+	public void requestSaveGame() {
+		ui.display(null, "Saving hasn't yet been implemented");
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void requestSoundEffect(String soundIndex) {
+		soundEngine.playEffect(soundIndex);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	@Override
+	public void requestVolumeUpdate() {
+		applyOptions();
 	}
 	
 	/**
@@ -195,6 +221,15 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		ui.initialize();
 		ui.switchToIntroScreen();
 		soundEngine.playMusic("BGM_MAIN_MENU");
+	}
+	
+	/**
+	 * Applies each of the options in the game options object to obtain their
+	 * respective effects.
+	 */
+	private void applyOptions() {
+		soundEngine.setEffectVolume(options.sfxVolume);
+		soundEngine.setMusicVolume(options.bgmVolume);
 	}
 	
 	/**
@@ -395,39 +430,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		BattleRunner r = new BattleRunner(battle, display);
 		Thread t = new Thread(r, "MainBattle");
 		t.start();
-	}
-	
-	/**
-	 * Applies each of the options in the game options object to obtain their
-	 * respective effects.
-	 */
-	private void applyOptions() {
-		soundEngine.setEffectVolume(options.sfxVolume);
-		soundEngine.setMusicVolume(options.bgmVolume);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public void requestVolumeUpdate() {
-		applyOptions();
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public void requestSoundEffect(String soundIndex) {
-		soundEngine.playEffect(soundIndex);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	@Override
-	public void requestCloseGame() {
-		ui.switchToIntroScreen();
 	}
 	
 }

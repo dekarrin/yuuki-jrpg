@@ -17,6 +17,9 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.ui.menu.FileMenu;
+import yuuki.ui.menu.MenuBar;
+import yuuki.ui.menu.MenuBarListener;
 import yuuki.ui.screen.BattleScreen;
 import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
@@ -27,9 +30,6 @@ import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
-import yuuki.ui.menu.FileMenu;
-import yuuki.ui.menu.MenuBar;
-import yuuki.ui.menu.MenuBarListener;
 
 /**
  * A graphical user interface that uses the Swing framework.
@@ -63,9 +63,19 @@ OptionsScreenListener, MenuBarListener {
 	private CharacterCreationScreen charCreationScreen;
 	
 	/**
+	 * The screen that the interface is currently on.
+	 */
+	private Screen<?> currentScreen;
+	
+	/**
 	 * The ending screen.
 	 */
 	private Screen<?> endingScreen;
+	
+	/**
+	 * The screen that the interface was previously on.
+	 */
+	private Screen<?> formerScreen;
 	
 	/**
 	 * The intro screen.
@@ -93,6 +103,11 @@ OptionsScreenListener, MenuBarListener {
 	private MessageBox messageBox;
 	
 	/**
+	 * The options of the game.
+	 */
+	private GameOptions options;
+	
+	/**
 	 * The options screen.
 	 */
 	private OptionsScreen optionsScreen;
@@ -108,21 +123,6 @@ OptionsScreenListener, MenuBarListener {
 	private Screen<?> pauseScreen;
 	
 	/**
-	 * The screen that the interface was previously on.
-	 */
-	private Screen<?> formerScreen;
-	
-	/**
-	 * The screen that the interface is currently on.
-	 */
-	private Screen<?> currentScreen;
-
-	/**
-	 * The options of the game.
-	 */
-	private GameOptions options;
-	
-	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
@@ -134,6 +134,12 @@ OptionsScreenListener, MenuBarListener {
 		currentScreen = null;
 		formerScreen = null;
 		createComponents();
+	}
+	
+	@Override
+	public void bgmVolumeChanged(int volume) {
+		options.bgmVolume = volume;
+		mainProgram.requestVolumeUpdate();
 	}
 	
 	/**
@@ -167,7 +173,7 @@ OptionsScreenListener, MenuBarListener {
 	public void destroy() {
 		mainWindow.dispose();
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -186,7 +192,7 @@ OptionsScreenListener, MenuBarListener {
 		runner.message = message;
 		SwingUtilities.invokeLater(runner);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -194,7 +200,7 @@ OptionsScreenListener, MenuBarListener {
 	public void exitClicked() {
 		mainProgram.requestQuit();
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -202,7 +208,7 @@ OptionsScreenListener, MenuBarListener {
 	public Object getChoice(Object[] options) {
 		return getChoice("Select an option", options);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -238,7 +244,7 @@ OptionsScreenListener, MenuBarListener {
 		}
 		return runner.value;
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -246,7 +252,7 @@ OptionsScreenListener, MenuBarListener {
 	public double getDouble() {
 		return getDouble("Enter an integer");
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -254,7 +260,7 @@ OptionsScreenListener, MenuBarListener {
 	public double getDouble(double min, double max) {
 		return getDouble("Enter an integer", min, max);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -266,7 +272,7 @@ OptionsScreenListener, MenuBarListener {
 		}
 		return answer.doubleValue();
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -282,7 +288,7 @@ OptionsScreenListener, MenuBarListener {
 		}
 		return answer;
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -290,7 +296,7 @@ OptionsScreenListener, MenuBarListener {
 	public int getInt() {
 		return getInt("Enter an integer");
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -298,7 +304,7 @@ OptionsScreenListener, MenuBarListener {
 	public int getInt(int min, int max) {
 		return getInt("Enter an integer", min, max);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -310,7 +316,7 @@ OptionsScreenListener, MenuBarListener {
 		}
 		return answer.intValue();
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -326,7 +332,7 @@ OptionsScreenListener, MenuBarListener {
 		}
 		return answer;
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -334,7 +340,7 @@ OptionsScreenListener, MenuBarListener {
 	public String getString() {
 		return getString("Enter a value");
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -383,7 +389,7 @@ OptionsScreenListener, MenuBarListener {
 			}
 		});
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -391,7 +397,40 @@ OptionsScreenListener, MenuBarListener {
 	public void loadGameClicked() {
 		mainProgram.requestLoadGame();
 	}
-
+	
+	@Override
+	public void menuItemTriggered(int menuId, int itemId) {
+		switch (menuId) {
+			case MenuBar.FILE_MENU_ID:
+				switch (itemId) {
+					case FileMenu.NEW_ITEM_ID:
+						mainProgram.requestNewGame();
+						break;
+						
+					case FileMenu.LOAD_ITEM_ID:
+						mainProgram.requestLoadGame();
+						break;
+						
+					case FileMenu.SAVE_ITEM_ID:
+						mainProgram.requestSaveGame();
+						break;
+						
+					case FileMenu.CLOSE_ITEM_ID:
+						mainProgram.requestCloseGame();
+						break;
+						
+					case FileMenu.OPTIONS_ITEM_ID:
+						mainProgram.requestOptionsScreen();
+						break;
+						
+					case FileMenu.EXIT_ITEM_ID:
+						mainProgram.requestQuit();
+						break;
+				}
+				break;
+		}
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -399,7 +438,7 @@ OptionsScreenListener, MenuBarListener {
 	public void newGameClicked() {
 		mainProgram.requestNewGame();
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -407,7 +446,12 @@ OptionsScreenListener, MenuBarListener {
 	public void optionsClicked() {
 		mainProgram.requestOptionsScreen();
 	}
-
+	
+	@Override
+	public void optionsSubmitted() {
+		mainProgram.requestOptionsSubmission();
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -415,7 +459,7 @@ OptionsScreenListener, MenuBarListener {
 	public void playSound(String path) {
 		
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -423,7 +467,7 @@ OptionsScreenListener, MenuBarListener {
 	public Action selectAction(Action[] actions) {
 		return (Action) getChoice("Select an action", actions);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -439,7 +483,18 @@ OptionsScreenListener, MenuBarListener {
 		Character[] charsArr = chars.toArray(new Character[0]);
 		return (Character) getChoice("Select a target", charsArr);
 	}
-
+	
+	@Override
+	public void sfxTestClicked() {
+		mainProgram.requestSoundEffect("BUTTON_PUSH");
+	}
+	
+	@Override
+	public void sfxVolumeChanged(int volume) {
+		options.sfxVolume = volume;
+		mainProgram.requestVolumeUpdate();
+	}
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -456,7 +511,7 @@ OptionsScreenListener, MenuBarListener {
 		r.action = action;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -473,7 +528,7 @@ OptionsScreenListener, MenuBarListener {
 		r.action = action;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -490,7 +545,7 @@ OptionsScreenListener, MenuBarListener {
 		r.action = action;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -507,7 +562,7 @@ OptionsScreenListener, MenuBarListener {
 		r.buff = buff;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -524,7 +579,7 @@ OptionsScreenListener, MenuBarListener {
 		r.buff = buff;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -541,7 +596,7 @@ OptionsScreenListener, MenuBarListener {
 		r.buff = buff;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -558,7 +613,7 @@ OptionsScreenListener, MenuBarListener {
 		r.c = c;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -575,7 +630,7 @@ OptionsScreenListener, MenuBarListener {
 		r.cs = cs;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -596,7 +651,7 @@ OptionsScreenListener, MenuBarListener {
 		r.damage = damage;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -617,7 +672,7 @@ OptionsScreenListener, MenuBarListener {
 		r.damage = damage;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -638,7 +693,7 @@ OptionsScreenListener, MenuBarListener {
 		r.amount = amount;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -659,7 +714,7 @@ OptionsScreenListener, MenuBarListener {
 		r.amount = amount;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -683,7 +738,7 @@ OptionsScreenListener, MenuBarListener {
 	public void showUnimpMsg() {
 		display(null, "That feature has not yet been implemented.");
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -691,7 +746,7 @@ OptionsScreenListener, MenuBarListener {
 	public void startBattleClicked() {
 		mainProgram.requestBattle(true);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -711,7 +766,7 @@ OptionsScreenListener, MenuBarListener {
 		r.fighters = fighters;
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -727,7 +782,7 @@ OptionsScreenListener, MenuBarListener {
 		Runner r = new Runner();
 		SwingUtilities.invokeLater(r);
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -740,7 +795,7 @@ OptionsScreenListener, MenuBarListener {
 			}
 		});
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -767,7 +822,7 @@ OptionsScreenListener, MenuBarListener {
 			}
 		});
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -782,7 +837,7 @@ OptionsScreenListener, MenuBarListener {
 			}
 		});
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -796,7 +851,7 @@ OptionsScreenListener, MenuBarListener {
 			}
 		});
 	}
-
+	
 	/**
 	 * @inheritDoc
 	 */
@@ -956,61 +1011,6 @@ OptionsScreenListener, MenuBarListener {
 		mainWindow.add(messageBox, BorderLayout.SOUTH);
 		refreshWindow();
 		screen.setInitialFocus();
-	}
-
-	@Override
-	public void bgmVolumeChanged(int volume) {
-		options.bgmVolume = volume;
-		mainProgram.requestVolumeUpdate();
-	}
-
-	@Override
-	public void sfxVolumeChanged(int volume) {
-		options.sfxVolume = volume;
-		mainProgram.requestVolumeUpdate();
-	}
-
-	@Override
-	public void optionsSubmitted() {
-		mainProgram.requestOptionsSubmission();
-	}
-	
-	@Override
-	public void sfxTestClicked() {
-		mainProgram.requestSoundEffect("BUTTON_PUSH");
-	}
-
-	@Override
-	public void menuItemTriggered(int menuId, int itemId) {
-		switch (menuId) {
-			case MenuBar.FILE_MENU_ID:
-				switch (itemId) {
-					case FileMenu.NEW_ITEM_ID:
-						mainProgram.requestNewGame();
-						break;
-						
-					case FileMenu.LOAD_ITEM_ID:
-						mainProgram.requestLoadGame();
-						break;
-						
-					case FileMenu.SAVE_ITEM_ID:
-						mainProgram.requestSaveGame();
-						break;
-						
-					case FileMenu.CLOSE_ITEM_ID:
-						mainProgram.requestCloseGame();
-						break;
-						
-					case FileMenu.OPTIONS_ITEM_ID:
-						mainProgram.requestOptionsScreen();
-						break;
-						
-					case FileMenu.EXIT_ITEM_ID:
-						mainProgram.requestQuit();
-						break;
-				}
-				break;
-		}
 	}
 	
 }
