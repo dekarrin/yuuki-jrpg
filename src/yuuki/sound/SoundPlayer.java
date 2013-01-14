@@ -146,7 +146,9 @@ class SoundPlayer implements Runnable {
 	private void openAudioStream() {
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		try {
-			stream = AudioSystem.getAudioInputStream(input);
+			AudioInputStream raw = AudioSystem.getAudioInputStream(input);
+			AudioFormat.Encoding enc = AudioFormat.Encoding.PCM_SIGNED;
+			stream = AudioSystem.getAudioInputStream(enc, raw);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (UnsupportedAudioFileException e) {
