@@ -23,7 +23,7 @@ public class NonPlayerCharacter extends Character {
 	/**
 	 * Allocates a new NonPlayerCharacter.
 	 *
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 *
 	 * @param name The name of the Character
 	 * @param level The level of the new Character. XP is set to match this.

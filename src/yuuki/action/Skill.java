@@ -11,7 +11,7 @@ public abstract class Skill extends Action implements Cloneable {
 	/**
 	 * Creates a new Skill that costs the specified amount of mana.
 	 *
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public Skill(String name, double effect, double manaCost, Buff tBuff,
 			Buff oBuff) {

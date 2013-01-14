@@ -128,7 +128,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void addItems() {
@@ -143,7 +143,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void buildItems() {
@@ -156,7 +156,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void setItemAccelerators() {
@@ -164,7 +164,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void setItemDescriptions() {
@@ -183,7 +183,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void setItemMnemonics() {

@@ -115,7 +115,7 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -129,25 +129,25 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {}

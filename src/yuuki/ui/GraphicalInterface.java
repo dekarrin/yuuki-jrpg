@@ -143,7 +143,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean confirm(String prompt, String yes, String no) {
@@ -153,7 +153,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void createCharacterClicked() {
@@ -167,7 +167,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void destroy() {
@@ -175,7 +175,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void display(Character speaker, String message) {
@@ -194,7 +194,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void exitClicked() {
@@ -202,7 +202,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Object getChoice(Object[] options) {
@@ -210,7 +210,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Object getChoice(String prompt, Object[] options) {
@@ -246,7 +246,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getDouble() {
@@ -254,7 +254,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getDouble(double min, double max) {
@@ -262,7 +262,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getDouble(String prompt) {
@@ -274,7 +274,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public double getDouble(String prompt, double min, double max) {
@@ -290,7 +290,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInt() {
@@ -298,7 +298,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInt(int min, int max) {
@@ -306,7 +306,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInt(String prompt) {
@@ -318,7 +318,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInt(String prompt, int min, int max) {
@@ -334,7 +334,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getString() {
@@ -342,7 +342,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getString(String prompt) {
@@ -391,7 +391,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void loadGameClicked() {
@@ -432,7 +432,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void newGameClicked() {
@@ -440,7 +440,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void optionsClicked() {
@@ -453,7 +453,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void playSound(String path) {
@@ -461,7 +461,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Action selectAction(Action[] actions) {
@@ -469,7 +469,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
@@ -496,7 +496,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showActionFailure(Action action) {
@@ -513,7 +513,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showActionPreperation(Action action) {
@@ -530,7 +530,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showActionUse(Action action) {
@@ -547,7 +547,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showBuffActivation(Buff buff) {
@@ -564,7 +564,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showBuffApplication(Buff buff) {
@@ -581,7 +581,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showBuffDeactivation(Buff buff) {
@@ -598,7 +598,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showCharacterRemoval(Character c) {
@@ -615,7 +615,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showCharacterVictory(Character[] cs) {
@@ -632,7 +632,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, double damage) {
@@ -653,7 +653,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, int damage) {
@@ -674,7 +674,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, double amount) {
@@ -695,7 +695,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, int amount) {
@@ -716,7 +716,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void showStatUpdate(Character fighter) {
@@ -740,7 +740,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void startBattleClicked() {
@@ -748,7 +748,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToBattleScreen(Character[][] fighters) {
@@ -768,7 +768,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToCharacterCreationScreen() {
@@ -784,7 +784,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToEndingScreen() {
@@ -797,7 +797,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToIntroScreen() {
@@ -811,7 +811,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToLastScreen() {
@@ -824,7 +824,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToOptionsScreen() {
@@ -839,7 +839,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToOverworldScreen() {
@@ -853,7 +853,7 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void switchToPauseScreen() {

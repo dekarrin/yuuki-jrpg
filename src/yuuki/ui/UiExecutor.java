@@ -6,7 +6,6 @@ package yuuki.ui;
  * these methods, so if thread safety is desired, the implementation must
  * handle it.
  */
-
 public interface UiExecutor {
 	
 	/**

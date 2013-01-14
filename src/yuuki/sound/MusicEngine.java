@@ -34,7 +34,7 @@ class MusicEngine extends AudioEngine {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void spawnPlayerThread(String soundFile) {

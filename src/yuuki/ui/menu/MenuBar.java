@@ -42,7 +42,7 @@ MenuListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean addListener(MenuBarListener listener) {
@@ -50,7 +50,7 @@ MenuListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<MenuBarListener> getElementListeners() {
@@ -63,7 +63,7 @@ MenuListener {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * {{@inheritDoc}}
 	 */
 	@Override
 	public void menuItemTriggered(Menu<?> source, int itemId) {
@@ -75,7 +75,7 @@ MenuListener {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeListener(Object listener) {

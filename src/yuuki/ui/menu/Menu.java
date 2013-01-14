@@ -41,7 +41,7 @@ yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean addListener(L listener) {
@@ -49,7 +49,7 @@ yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<L> getElementListeners() {
@@ -61,7 +61,7 @@ yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeListener(Object listener) {

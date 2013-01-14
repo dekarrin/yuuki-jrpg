@@ -7,7 +7,7 @@ package yuuki.sound;
 class EffectEngine extends AudioEngine {
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
@@ -15,4 +15,5 @@ class EffectEngine extends AudioEngine {
 		SoundPlayer player = new SoundPlayer(data, getVolume(), false);
 		(new Thread(player, "SFXPlayer")).start();
 	}
+	
 }

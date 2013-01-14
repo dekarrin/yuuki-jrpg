@@ -52,7 +52,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setInitialFocus() {}

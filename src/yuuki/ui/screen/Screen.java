@@ -76,7 +76,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean addListener(L listener) {
@@ -84,7 +84,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<L> getElementListeners() {
@@ -96,7 +96,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Dimension getPreferredSize() {
@@ -104,7 +104,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeListener(Object listener) {

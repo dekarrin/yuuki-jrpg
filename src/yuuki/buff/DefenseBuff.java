@@ -28,7 +28,7 @@ public class DefenseBuff extends PassiveBuff implements Cloneable {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void applyActivationEffect() {
@@ -36,7 +36,7 @@ public class DefenseBuff extends PassiveBuff implements Cloneable {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void applyDeactivationEffect() {

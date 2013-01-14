@@ -91,7 +91,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestBattle(boolean display) {
@@ -102,10 +102,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			mainBattle = battle;
 			ui.switchToBattleScreen(fighters);
 		}
+		soundEngine.playMusic("BGM_BATTLE");
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestBattleEnd() {
@@ -115,10 +116,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		ui.display(null, "Your health has been restored.");
 		player.restoreHP();
 		player.restoreMP();
+		soundEngine.playMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestBattleStart() {
@@ -126,7 +128,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestCharacterCreation(String name, int level) {
@@ -135,7 +137,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestCloseGame() {
@@ -143,7 +145,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestLoadGame() {
@@ -151,7 +153,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestNewGame() {
@@ -159,7 +161,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestOptionsScreen() {
@@ -167,7 +169,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestOptionsSubmission() {
@@ -176,7 +178,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestQuit() {
@@ -190,7 +192,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestSaveGame() {
@@ -198,7 +200,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestSoundEffect(String soundIndex) {
@@ -206,7 +208,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestVolumeUpdate() {
