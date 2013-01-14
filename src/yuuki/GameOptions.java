@@ -8,12 +8,12 @@ public class GameOptions {
 	/**
 	 * The volume of in-game background music.
 	 */
-	public int bgmVolume = 50;
+	public int bgmVolume = 100;
 	
 	/**
 	 * The volume of in-game sound effects.
 	 */
-	public int sfxVolume = 50;
+	public int sfxVolume = 100;
 	
 	/**
 	 * Checks whether background music is enabled.

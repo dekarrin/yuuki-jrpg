@@ -948,9 +948,6 @@ OptionsScreenListener, MenuBarListener {
 	 * @param screen The screen to switch to.
 	 */
 	private void switchWindow(Screen<?> screen) {
-		if (currentScreen != null) {
-			currentScreen.removeListener(this);
-		}
 		formerScreen = currentScreen;
 		currentScreen = screen;
 		clearWindow();
@@ -975,7 +972,6 @@ OptionsScreenListener, MenuBarListener {
 
 	@Override
 	public void optionsSubmitted() {
-		optionsScreen.removeListener(this);
 		mainProgram.requestOptionsSubmission();
 	}
 	

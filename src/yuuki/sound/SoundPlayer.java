@@ -25,6 +25,16 @@ class SoundPlayer implements Runnable {
 	private static final int AUDIO_THREAD_SLEEP_TIME = 10;
 	
 	/**
+	 * The maximum volume in dBs.
+	 */
+	private static final float MAXIMUM_VOLUME = 0.0f;
+	
+	/**
+	 * The minimum volume in dBs.
+	 */
+	private static final float MINIMUM_VOLUME = -40f;
+	
+	/**
 	 * The Clip that plays the audio data.
 	 */
 	private Clip clip;
@@ -130,12 +140,12 @@ class SoundPlayer implements Runnable {
 	 * desired volume.
 	 */
 	private void adjustClipVolume() {
-		float max = volumeControl.getMaximum();
-		float min = volumeControl.getMinimum();
+		float max = Math.min(volumeControl.getMaximum(), MAXIMUM_VOLUME);
+		float min = Math.max(volumeControl.getMinimum(), MINIMUM_VOLUME);
 		float range = max - min;
 		float desiredOffset = ((float) volume / 100) * range;
 		float desired = min + desiredOffset;
-		if (volumeControl.getValue() != desired) {
+		if (Math.abs(volumeControl.getValue() - desired) >= 0.0001) {
 			volumeControl.setValue(desired);
 		}
 	}
