@@ -1,5 +1,6 @@
 package yuuki.sprite;
 
+import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -38,11 +39,18 @@ AnimationOwner {
 	
 	/**
 	 * Allocates a new Sprite.
+	 * 
+	 * @param width The width of the Sprite
+	 * @param height The height of the Sprite.
 	 */
-	public Sprite() {
+	public Sprite(int width, int height) {
+		x = 0;
+		y = 0;
+		setSize(width, height);
 		controlled = false;
 		ownedAnims = new ArrayList<Animatable>();
 		setLayout(null);
+		updateBounds();
 	}
 	
 	/**
@@ -160,6 +168,14 @@ AnimationOwner {
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;
+	}
+	
+	/**
+	 * Also adds the component to the list of anims.
+	 */
+	public Component add(Sprite c) {
+		addAnim(c);
+		return super.add(c);
 	}
 	
 	/**

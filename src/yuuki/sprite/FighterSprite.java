@@ -3,7 +3,6 @@ package yuuki.sprite;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -39,9 +38,9 @@ public class FighterSprite extends Sprite {
 	public static final int IMAGE_HEIGHT = 120;
 	
 	/**
-	 * The size, in points, of the font used for the fighter name.
+	 * The height, in pixels, of the fighter name area.
 	 */
-	public static final int N_SIZE = 10;
+	public static final int N_SIZE = 14;
 	
 	/**
 	 * The width, in pixels, of the entire sprite.
@@ -89,7 +88,8 @@ public class FighterSprite extends Sprite {
 	 * @param fighter The Character to make the sprite for.
 	 */
 	public FighterSprite(Character fighter) {
-		setLayout(null);
+		super(SPRITE_WIDTH,
+				BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE + IMAGE_HEIGHT);
 		createComponents();
 		initializeComponents(fighter);
 		addComponents();
@@ -260,15 +260,13 @@ public class FighterSprite extends Sprite {
 	 * Adds this FighterSprite's components to its content pane.
 	 */
 	private void addComponents() {
-//		imageStatHolder.add(imagePanel, new Integer(0));
-//		imageStatHolder.add(statPanel, new Integer(1));
+		imageStatHolder.add(imagePanel, new Integer(0));
+		imageStatHolder.add(statPanel, new Integer(1));
 		add(buffPanel);
 		add(healthBar);
 		add(manaBar);
 		add(nameLabel);
-		add(imagePanel);
-		add(statPanel);
-//		add(imageStatHolder);
+		add(imageStatHolder);
 	}
 	
 	/**
@@ -327,8 +325,7 @@ public class FighterSprite extends Sprite {
 	 * Initializes the image component of this FighterSprite.
 	 */
 	private void initializeImagePanel() {
-		int y = BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE;
-		imagePanel.setBounds(0, y, SPRITE_WIDTH, IMAGE_HEIGHT);
+		imagePanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
 		imagePanel.setBackground(Color.GREEN);
 		imagePanel.setOpaque(true);
 		imagePanel.setVisible(true);
@@ -340,6 +337,8 @@ public class FighterSprite extends Sprite {
 	private void initializeImageStatHolder() {
 		Dimension size = new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT);
 		imageStatHolder.setPreferredSize(size);
+		int y = BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE;
+		imageStatHolder.setBounds(0, y, SPRITE_WIDTH, IMAGE_HEIGHT);
 	}
 	
 	/**
