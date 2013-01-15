@@ -14,6 +14,34 @@ public class Animator implements Runnable, AnimationListener {
 	private static final int ANIMATOR_SLEEP_TIME = 10;
 	
 	/**
+	 * Starts an animation and blocks until the animation is complete.
+	 * 
+	 * @param animator The animator to use for animation.
+	 * @param animation The animation to run.
+	 * 
+	 * @throws InterruptedException If the thread is interrupted while
+	 * blocking.
+	 */
+	public static void animateAndWait(Animator animator, Animation animation)
+			throws InterruptedException {
+		class AnimationRunner implements AnimationListener {
+			public boolean complete = false;
+			public void animationComplete(Animation animation) {
+				this.complete = true;
+			}
+		};
+		AnimationRunner l = new AnimationRunner();
+		animation.addListener(l);
+		animator.addAnimation(animation);
+		while (true) {
+			if (l.complete) {
+				break;
+			}
+			Thread.sleep(ANIMATOR_SLEEP_TIME);
+		}
+	}
+	
+	/**
 	 * Drives the actual animations.
 	 */
 	private AnimationDriver driver;
