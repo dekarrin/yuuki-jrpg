@@ -11,11 +11,21 @@ import yuuki.sprite.Sprite;
  * some other AnimationOwner.
  */
 public abstract class Animation implements Animatable {
+	
+	/**
+	 * Whether the animation ended event has been fired.
+	 */
+	private boolean endEventFired;
 
 	/**
 	 * Whether this Animation has a driver.
 	 */
-	private boolean controlled = true;
+	private boolean controlled;
+	
+	/**
+	 * Whether this Animation is being forced to end.
+	 */
+	private boolean forcedComplete;
 	
 	/**
 	 * The sprite that this Animation has the parameters for animating.
@@ -35,6 +45,17 @@ public abstract class Animation implements Animatable {
 	public Animation(Sprite sprite) {
 		this.sprite = sprite;
 		this.listeners = new HashSet<AnimationListener>();
+		this.controlled = false;
+		this.forcedComplete = false;
+		this.endEventFired = false;
+	}
+	
+	/**
+	 * Forces the animation to halt. The next time animation is attempted to be
+	 * driven on this Animation, it will immediately complete.
+	 */
+	public void halt() {
+		forcedComplete = true;
 	}
 	
 	/**
@@ -60,10 +81,12 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @return True if the animation is complete; otherwise, false.
 	 */
-	public abstract boolean isComplete();
+	protected abstract boolean isComplete();
 	
 	/**
-	 * Advances the animation by one frame.
+	 * Advances the animation by one frame. The method isComplete() is checked
+	 * before advance() is called, and if isComplete() returns true, advance()
+	 * will not be called.
 	 * 
 	 * @param fps The speed of animation.
 	 */
@@ -93,11 +116,12 @@ public abstract class Animation implements Animatable {
 	 */
 	@Override
 	public void advanceFrame(int fps) {
-		if (!isComplete()) {
+		if (!isComplete() && !forcedComplete) {
 			advance(fps);
-			if (isComplete()) {
-				fireAnimationComplete();
-			}
+		}
+		if ((isComplete() || forcedComplete) && !endEventFired) {
+			fireAnimationComplete();
+			endEventFired = true;
 		}
 	}
 	
