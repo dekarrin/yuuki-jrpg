@@ -1,142 +1,74 @@
 package yuuki.anim;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
- * Animates a number of objects.
+ * Continuously runs animations.
  */
-public class Animator implements Runnable {
+public class Animator implements Runnable, AnimationListener {
 	
 	/**
-	 * The speed that animation is occurring at.
+	 * The amount of time, in milliseconds, that the animator thread sleeps
+	 * for in between each check for additional animations.
 	 */
-	private int fps;
+	private static final int ANIMATOR_SLEEP_TIME = 10;
 	
 	/**
-	 * The list of objects to animate.
+	 * Drives the actual animations.
 	 */
-	private List<Animatable> anims;
+	private AnimationDriver driver;
 	
 	/**
-	 * The thread running the animation.
+	 * The list of animations that are to be run.
 	 */
-	private Thread animationThread;
+	private LinkedList<Animation> animations;
 	
 	/**
-	 * Allocates a new Animator.
+	 * Creates a new Animator.
 	 * 
-	 * @param fps The speed that the Animator is to animate at.
+	 * @param fps The speed to run animation at.
 	 */
 	public Animator(int fps) {
-		anims = Collections.synchronizedList(new ArrayList<Animatable>());
-		this.fps = fps;
-		animationThread = null;
+		driver = new AnimationDriver(fps);
+		animations = new LinkedList<Animation>();
+		(new Thread(this, "MasterAnimator")).start();
 	}
 	
 	/**
-	 * Animates each of the items on the animation list, then sleeps for
-	 * an appropriate amount of time depending on the parent's FPS.
+	 * Adds an animation to the queue.
+	 * 
+	 * @param a The Animation to add.
+	 */
+	public void addAnimation(Animation a) {
+		animations.offer(a);
+	}
+	
+	/**
+	 * Processes animations added to the queue.
 	 */
 	public void run() {
-		while (fps != 0) {
-			int ms = (int) Math.round((double) 1 / fps);
+		while (true) {
+			if (!animations.isEmpty()) {
+				Animation a = animations.poll();
+				a.addListener(this);
+				driver.addAnim(a);
+			}
 			try {
-				Thread.sleep(ms);
+				Thread.sleep(ANIMATOR_SLEEP_TIME);
 			} catch (InterruptedException e) {
-				break;
-			}
-			advanceAnimation();
-		}
-	}
-	
-	/**
-	 * Gets the speed of animation in frames per second.
-	 * 
-	 * @return The speed of animation.
-	 */
-	public int getFps() {
-		return fps;
-	}
-	
-	/**
-	 * Sets the speed of animation in frames per second. It is not gaurenteed
-	 * that animation speed will change immediately if the FPS is changed
-	 * during animation.
-	 * 
-	 * @param fps The new speed of animation.
-	 */
-	public void setFps(int fps) {
-		this.fps = fps;
-	}
-	
-	/**
-	 * Adds an Animatable to the list of animated objects.
-	 * 
-	 * @param a The animatable to add.
-	 * 
-	 * @throws IllegalArgumentException If the Animatable already has an owner.
-	 */
-	public void addAnimatable(Animatable a) {
-		if (a.isControlled()) {
-			String error = "Animatable is already controlled!";
-			throw new IllegalArgumentException(error);
-		}
-		a.setControlled(true);
-		anims.add(a);
-	}
-	
-	/**
-	 * Removes an Animatable from the list of animated objects.
-	 * 
-	 * @param a The animatable to remove.
-	 */
-	public void removeAnimatable(Animatable a) {
-		if (anims.remove(a)) {
-			a.setControlled(false);
-		}
-	}
-	
-	/**
-	 * Starts animating the objects that this Animator controls. They are
-	 * animated at a speed determined by this Animator's FPS.
-	 */
-	public void start() {
-		if (!isAnimating()) {
-			animationThread = new Thread(this, "Animator");
-			animationThread.start();
-		}
-	}
-	
-	/**
-	 * Checks whether animation is currently occurring.
-	 * 
-	 * @return True if animation is occurring; false otherwise.
-	 */
-	public boolean isAnimating() {
-		return (animationThread != null);
-	}
-	
-	/**
-	 * Stops animating objects.
-	 */
-	public void stop() {
-		if (isAnimating()) {
-			animationThread.interrupt();
-			animationThread = null;
-		}
-	}
-	
-	/**
-	 * Animates all objects in the animation list.
-	 */
-	private void advanceAnimation() {
-		synchronized (anims) {
-			for (Animatable a: anims) {
-				a.advanceFrame(fps);
+				e.printStackTrace();
 			}
 		}
 	}
-
+	
+	/**
+	 * Removes an Animation from the driver once its animation is complete.
+	 * 
+	 * @param a the animation that is complete.
+	 */
+	public void animationComplete(Animation a) {
+		a.removeListener(this);
+		driver.removeAnim(a);
+	}
+	
 }

@@ -18,6 +18,7 @@
 	<property name="RESOURCE" value="yuuki/resource" />
 	<property name="SOUND" value="yuuki/sound" />
 	<property name="ANIMATION" value="yuuki/anim" />
+	<property name="SPRITE" value="yuuki/sprite" />
 	
 	<property name="LIB" value="lib" />
 	
@@ -74,10 +75,16 @@
 	
 	<target name="all" depends="main,resource,lib"></target>
 
-	<target name="main" depends="battle,ui,sound,animation">
+	<target name="main" depends="battle,ui,sound,animationm,sprite">
 		<antcall target="-build">
 			<param name="PACKAGE" value="yuuki" />
 			<param name="NAME" value="YuukiEngine" />
+		</antcall>
+	</target>
+	
+	<target name="sprite">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${SPRITE}" />
 		</antcall>
 	</target>
 	

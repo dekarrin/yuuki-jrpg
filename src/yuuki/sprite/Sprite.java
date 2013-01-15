@@ -1,0 +1,196 @@
+package yuuki.sprite;
+
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
+
+import yuuki.anim.Animatable;
+import yuuki.anim.AnimationOwner;
+
+/**
+ * A graphical object that can be animated. A Sprite may have other Animatable
+ * instances contained within it, which are advanced every time the owner
+ * Sprite is.
+ */
+@SuppressWarnings("serial")
+public abstract class Sprite extends JPanel implements Animatable,
+AnimationOwner {
+	
+	/**
+	 * Whether this Sprite has an animation controller.
+	 */
+	private boolean controlled;
+	
+	/**
+	 * The X-coordinate of this Sprite.
+	 */
+	private int x;
+	
+	/**
+	 * The Y-coordinate of this Sprite.
+	 */
+	private int y;
+	
+	/**
+	 * The Animatable instances that are child components of this Sprite.
+	 */
+	private ArrayList<Animatable> ownedAnims;
+	
+	/**
+	 * Allocates a new Sprite.
+	 */
+	public Sprite() {
+		controlled = false;
+		ownedAnims = new ArrayList<Animatable>();
+		setLayout(null);
+	}
+	
+	/**
+	 * Gets the x-coordinate of this sprite.
+	 * 
+	 * @return The x-coordinate of the location of this sprite.
+	 */
+	public int getX() {
+		return x;
+	}
+	
+	/**
+	 * Gets the y-coordinate of this sprite.
+	 * 
+	 * @return The y-coordinate of the location of this sprite.
+	 */
+	public int getY() {
+		return y;
+	}
+	
+	/**
+	 * Sets the x-coordinate of this sprite.
+	 * 
+	 * @param x The new x-coordinate.
+	 */
+	public void setX(int x) {
+		this.x = x;
+		updateBounds();
+	}
+	
+	/**
+	 * Sets the y-coordinate of this sprite.
+	 * 
+	 * @param y The new y-coordinate.
+	 */
+	public void setY(int y) {
+		this.y = y;
+		updateBounds();
+	}
+	
+	/**
+	 * Sets the height of this sprite.
+	 * 
+	 * @param height The new height.
+	 */
+	public void setHeight(int height) {
+		setSize(getWidth(), height);
+		updateBounds();
+	}
+	
+	/**
+	 * Sets the width of this sprite.
+	 * 
+	 * @param width The new width.
+	 */
+	public void setWidth(int width) {
+		setSize(width, getHeight());
+		updateBounds();
+	}
+	
+	/**
+	 * Moves this sprite by a specific amount.
+	 * 
+	 * @param dx The amount to move it along the x-axis.
+	 * @param dy The amount to move it along the y-axis.
+	 */
+	public void move(int dx, int dy) {
+		this.x += dx;
+		this.y += dy;
+		updateBounds();
+	}
+	
+	/**
+	 * Moves this sprite to a specific point.
+	 * 
+	 * @param x The x-coordinate of the point to move it to.
+	 * @param y The y-coordinate of the point to move it to.
+	 */
+	public void moveTo(int x, int y) {
+		this.x = x;
+		this.y = y;
+		updateBounds();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void advanceFrame(int fps) {
+		for (Animatable a: ownedAnims) {
+			a.advanceFrame(fps);
+		}
+		advance(fps);
+		repaint();
+	}
+	
+	/**
+	 * Advances the animation by one frame.
+	 * 
+	 * @param fps The speed that animation is occurring at.
+	 */
+	protected abstract void advance(int fps);
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isControlled() {
+		return controlled;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setControlled(boolean controlled) {
+		this.controlled = controlled;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAnim(Animatable a) {
+		if (a.isControlled()) {
+			String error = "Animatable is already controlled!";
+			throw new IllegalArgumentException(error);
+		}
+		a.setControlled(true);
+		ownedAnims.add(a);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void removeAnim(Animatable a) {
+		if (ownedAnims.remove(a)) {
+			a.setControlled(false);
+		}
+	}
+	
+	/**
+	 * Updates the bounds of this sprite and repaints.
+	 */
+	private void updateBounds() {
+		setBounds(x, y, getWidth(), getHeight());
+		repaint();
+	}
+	
+}

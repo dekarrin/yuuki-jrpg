@@ -10,7 +10,7 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
-import yuuki.ui.FighterSprite;
+import yuuki.sprite.FighterSprite;
 
 /**
  * The screen shown for a battle.

@@ -1,4 +1,4 @@
-package yuuki.ui;
+package yuuki.sprite;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,12 +14,14 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
+import yuuki.sprite.Sprite;
+import yuuki.ui.*;
 
 /**
  * The graphic used to display characters on the battle screen.
  */
 @SuppressWarnings("serial")
-public class FighterSprite extends JPanel {
+public class FighterSprite extends Sprite {
 	
 	/**
 	 * The height, in pixels, of each stat bar.
@@ -87,10 +89,18 @@ public class FighterSprite extends JPanel {
 	 * @param fighter The Character to make the sprite for.
 	 */
 	public FighterSprite(Character fighter) {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(null);
 		createComponents();
 		initializeComponents(fighter);
 		addComponents();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void advance(int fps) {
+		
 	}
 	
 	/**
@@ -114,6 +124,17 @@ public class FighterSprite extends JPanel {
 		int actualHeight = IMAGE_HEIGHT + N_SIZE;
 		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
 		return new Dimension(SPRITE_WIDTH, actualHeight);
+	}
+	
+	/**
+	 * Returns this FighterSprite's minimum size. This will be the same as its
+	 * preferred size.
+	 * 
+	 * @return A Dimension with this FighterSprit's size.
+	 */
+	@Override
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
 	}
 	
 	/**
@@ -239,13 +260,15 @@ public class FighterSprite extends JPanel {
 	 * Adds this FighterSprite's components to its content pane.
 	 */
 	private void addComponents() {
-		imageStatHolder.add(imagePanel, new Integer(0));
-		imageStatHolder.add(statPanel, new Integer(1));
+//		imageStatHolder.add(imagePanel, new Integer(0));
+//		imageStatHolder.add(statPanel, new Integer(1));
 		add(buffPanel);
 		add(healthBar);
 		add(manaBar);
 		add(nameLabel);
-		add(imageStatHolder);
+		add(imagePanel);
+		add(statPanel);
+//		add(imageStatHolder);
 	}
 	
 	/**
@@ -265,7 +288,7 @@ public class FighterSprite extends JPanel {
 	 * Initializes the buff panel of this FighterSprite.
 	 */
 	private void initializeBuffPanel() {
-		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
+		buffPanel.setBounds(0, 0, SPRITE_WIDTH, BUFF_HEIGHT);
 		buffPanel.setBackground(Color.RED);
 		buffPanel.setOpaque(true);
 		buffPanel.setVisible(true);
@@ -294,6 +317,7 @@ public class FighterSprite extends JPanel {
 	 * @param level The level of this FighterSprite's fighter.
 	 */
 	private void initializeHealthBar(VariableStat hpStat, int level) {
+		healthBar.setBounds(0, BUFF_HEIGHT, SPRITE_WIDTH, BAR_HEIGHT);
 		healthBar.setStat(hpStat);
 		healthBar.setLevel(level);
 		healthBar.setVisible(true);
@@ -303,11 +327,11 @@ public class FighterSprite extends JPanel {
 	 * Initializes the image component of this FighterSprite.
 	 */
 	private void initializeImagePanel() {
-		imagePanel.setPreferredSize(new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT));
+		int y = BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE;
+		imagePanel.setBounds(0, y, SPRITE_WIDTH, IMAGE_HEIGHT);
 		imagePanel.setBackground(Color.GREEN);
 		imagePanel.setOpaque(true);
 		imagePanel.setVisible(true);
-		imagePanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
 	}
 	
 	/**
@@ -325,6 +349,8 @@ public class FighterSprite extends JPanel {
 	 * @param level The level of this FighterSprite's fighter.
 	 */
 	private void initializeManaBar(VariableStat mpStat, int level) {
+		int y = BUFF_HEIGHT + BAR_HEIGHT;
+		manaBar.setBounds(0, y, SPRITE_WIDTH, BAR_HEIGHT);
 		manaBar.setStat(mpStat);
 		manaBar.setLevel(level);
 		manaBar.setVisible(true);
@@ -336,6 +362,8 @@ public class FighterSprite extends JPanel {
 	 * @param name The name of the fighter to initialize the label for.
 	 */
 	private void initializeNameLabel(String name) {
+		int y = BUFF_HEIGHT + 2*BAR_HEIGHT;
+		nameLabel.setBounds(0, y, SPRITE_WIDTH, N_SIZE);
 		nameLabel.setText(name);
 		nameLabel.setVisible(true);
 	}
