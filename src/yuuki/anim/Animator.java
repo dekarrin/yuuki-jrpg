@@ -60,6 +60,7 @@ public class Animator implements Runnable, AnimationListener {
 		driver = new AnimationDriver(fps);
 		animations = new LinkedList<Animation>();
 		(new Thread(this, "MasterAnimator")).start();
+		driver.start();
 	}
 	
 	/**

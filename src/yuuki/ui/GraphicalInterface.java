@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 
 import yuuki.GameOptions;
 import yuuki.action.Action;
+import yuuki.anim.Animator;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -123,16 +124,24 @@ OptionsScreenListener, MenuBarListener {
 	private Screen<?> pauseScreen;
 	
 	/**
+	 * The animation engine.
+	 */
+	private Animator animationEngine;
+	
+	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
 	 * @param options The options of the program.
+	 * @param animationEngine The Animator for animating different objects.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram, GameOptions options) {
+	public GraphicalInterface(UiExecutor mainProgram, GameOptions options,
+			Animator animationEngine) {
 		this.options = options;
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
+		this.animationEngine = animationEngine;
 		createComponents();
 	}
 	
@@ -886,7 +895,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	private void createBattleScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		battleScreen = new BattleScreen(WINDOW_WIDTH, height);
+		battleScreen = new BattleScreen(WINDOW_WIDTH, height, animationEngine);
 		battleScreen.setVisible(true);
 	}
 	

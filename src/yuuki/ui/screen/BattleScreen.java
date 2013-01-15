@@ -7,6 +7,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 import yuuki.action.Action;
+import yuuki.anim.AdvancementLoop;
+import yuuki.anim.Animator;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -17,6 +19,11 @@ import yuuki.sprite.FighterSprite;
  */
 @SuppressWarnings("serial")
 public class BattleScreen extends Screen<ScreenListener> {
+	
+	/**
+	 * The animation engine for the game.
+	 */
+	private Animator animationEngine;
 	
 	/**
 	 * The index of the team that should be shown on the bottom of the screen.
@@ -36,9 +43,10 @@ public class BattleScreen extends Screen<ScreenListener> {
 	/**
 	 * Creates this BattleScreen and makes it visible.
 	 */
-	public BattleScreen(int width, int height) {
+	public BattleScreen(int width, int height, Animator animationEngine) {
 		super(width, height);
 		setLayout(new BorderLayout());
+		this.animationEngine = animationEngine;
 	}
 	
 	/**
@@ -223,6 +231,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
 			team.add(fs);
+			animationEngine.addAnimation(new AdvancementLoop(fs));
 		}
 		add(team, BorderLayout.SOUTH);
 	}

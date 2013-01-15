@@ -41,7 +41,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 */
 	public void run() {
 		while (fps != 0) {
-			int ms = (int) Math.round((double) 1 / fps);
+			int ms = (int) Math.round((double) 1000 / fps);
 			try {
 				Thread.sleep(ms);
 			} catch (InterruptedException e) {
