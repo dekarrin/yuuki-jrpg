@@ -46,7 +46,7 @@ public class AnimationSequence extends Animation {
 	@Override
 	protected void resetProperties() {
 		for (int i = 0; i <= position; i++) {
-			sequence.get(position).reset();
+			sequence.get(i).reset();
 		}
 		position = 0;
 	}
