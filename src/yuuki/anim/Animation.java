@@ -129,6 +129,23 @@ public abstract class Animation implements Animatable {
 	}
 	
 	/**
+	 * Restores this animation to its beginning so it is ready to play again.
+	 * This will not restore the original properties of the animated sprite.
+	 */
+	public void reset() {
+		forcedComplete = false;
+		endEventFired = false;
+		firstPulse = true;
+		resetProperties();
+	}
+	
+	/**
+	 * Resets the properties of this animation back to their original values so
+	 * that the animation can be run again.
+	 */
+	protected abstract void resetProperties();
+	
+	/**
 	 * Gets this Animation's Sprite.
 	 * 
 	 * @return The sprite.

@@ -8,14 +8,24 @@ import yuuki.sprite.Sprite;
 public class MotionTween extends Tween {
 	
 	/**
-	 * The amount to move along the x-axis each step.
+	 * The amount left to move along the x-axis.
 	 */
-	private int xDistance;
+	private int xRemain;
 	
 	/**
-	 * The amount to move along the y-axis each step.
+	 * The amount left to move along the y-axis.
 	 */
-	private int yDistance;
+	private int yRemain;
+	
+	/**
+	 * The total amount of movement along the x-axis.
+	 */
+	private int xTotal;
+	
+	/**
+	 * The total amount of movement along the y-axis.
+	 */
+	private int yTotal;
 
 	/**
 	 * Creates a new MotionTween.
@@ -27,8 +37,8 @@ public class MotionTween extends Tween {
 	 */
 	public MotionTween(Sprite sprite, long time, int dx, int dy) {
 		super(sprite, time);
-		xDistance = dx;
-		yDistance = dy;
+		xTotal = xRemain = dx;
+		yTotal = yRemain = dy;
 	}
 	
 	/**
@@ -36,7 +46,7 @@ public class MotionTween extends Tween {
 	 */
 	@Override
 	protected boolean propertiesAtTargets() {
-		return (xDistance == 0 && yDistance == 0);
+		return (xRemain == 0 && yRemain == 0);
 	}
 
 	/**
@@ -49,13 +59,22 @@ public class MotionTween extends Tween {
 	protected void advanceTween(int fps) {
 		double fpms = (double) fps / 1000;
 		long remaining = getRemainingTime();
-		int dx = (int) Math.round(xDistance / (fpms * remaining));
-		int dy = (int) Math.round(yDistance / (fpms * remaining));
-		dx = Math.min(dx, xDistance);
-		dy = Math.min(dy, yDistance);
-		xDistance -= dx;
-		yDistance -= dy;
+		int dx = (int) Math.round(xRemain / (fpms * remaining));
+		int dy = (int) Math.round(yRemain / (fpms * remaining));
+		dx = (xRemain >= 0) ? Math.min(dx, xRemain) : Math.max(dx, xRemain);
+		dy = (yRemain >= 0) ? Math.min(dy, yRemain) : Math.max(dy, yRemain);
+		xRemain -= dx;
+		yRemain -= dy;
 		sprite.move(dx, dy);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void resetProperties() {
+		xRemain = xTotal;
+		yRemain = yTotal;
 	}
 	
 }
