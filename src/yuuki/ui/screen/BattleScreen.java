@@ -8,10 +8,6 @@ import javax.swing.BoxLayout;
 
 import yuuki.action.Action;
 import yuuki.anim.Animator;
-import yuuki.anim.Bounce;
-import yuuki.anim.Loop;
-import yuuki.anim.MotionTween;
-import yuuki.anim.SizeTween;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -234,7 +230,6 @@ public class BattleScreen extends Screen<ScreenListener> {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
 			team.add(fs);
-			animationEngine.addAnimation(new SizeTween(fs, 4000, -50, 0));
 		}
 		add(team, BorderLayout.SOUTH);
 	}
@@ -271,7 +266,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 			ArrayList<FighterSprite> teamGraphics =
 					new ArrayList<FighterSprite>(fighters[i].length);
 			for (int j = 0; j < fighters[i].length; j++) {
-				FighterSprite fs = new FighterSprite(fighters[i][j]);
+				Animator a = animationEngine;
+				FighterSprite fs = new FighterSprite(fighters[i][j], a);
 				fs.setVisible(true);
 				teamGraphics.add(fs);
 				fighters[i][j].setSprite(fs);

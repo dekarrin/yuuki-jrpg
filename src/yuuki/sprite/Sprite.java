@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import yuuki.anim.Animatable;
 import yuuki.anim.AnimationOwner;
+import yuuki.anim.Animator;
 
 /**
  * A graphical object that can be animated. A Sprite may have other Animatable
@@ -17,6 +18,11 @@ import yuuki.anim.AnimationOwner;
 @SuppressWarnings("serial")
 public abstract class Sprite extends JPanel implements Animatable,
 AnimationOwner {
+	
+	/**
+	 * The animation engine that is driving the animation of this Sprite.
+	 */
+	protected Animator animator;
 	
 	/**
 	 * Whether this Sprite has an animation controller.
@@ -43,10 +49,12 @@ AnimationOwner {
 	 * 
 	 * @param width The width of the Sprite
 	 * @param height The height of the Sprite.
+	 * @param animator The animation engine that will drive this sprite.
 	 */
-	public Sprite(int width, int height) {
+	public Sprite(int width, int height, Animator animator) {
 		x = 0;
 		y = 0;
+		this.animator = animator;
 		setSize(width, height);
 		controlled = false;
 		ownedAnims = new ArrayList<Animatable>();
