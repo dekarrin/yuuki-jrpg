@@ -1,6 +1,7 @@
 package yuuki.sprite;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -168,6 +169,38 @@ AnimationOwner {
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;
+	}
+	
+	/**
+	 * Returns this Sprite's maximum size. This will be the same as its
+	 * preferred size.
+	 * 
+	 * @return A Dimension with this Sprite's size.
+	 */
+	@Override
+	public Dimension getMaximumSize() {
+		return getPreferredSize();
+	}
+	
+	/**
+	 * Returns this Sprite's preferred size.
+	 * 
+	 * @return A Dimension with this Sprite's size.
+	 */
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(getWidth(), getHeight());
+	}
+	
+	/**
+	 * Returns this Sprite's minimum size. This will be the same as its
+	 * preferred size.
+	 * 
+	 * @return A Dimension with this Sprite's size.
+	 */
+	@Override
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
 	}
 	
 	/**

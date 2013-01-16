@@ -102,40 +102,6 @@ public class FighterSprite extends Sprite {
 	protected void advance(int fps) {}
 	
 	/**
-	 * Returns this FighterSprite's maximum size. This will be the same as its
-	 * preferred size.
-	 * 
-	 * @return A Dimension with this FighterSprite's size.
-	 */
-	@Override
-	public Dimension getMaximumSize() {
-		return getPreferredSize();
-	}
-	
-	/**
-	 * Returns this FighterSprite's preferred size.
-	 * 
-	 * @return A Dimension with this FighterSprite's size.
-	 */
-	@Override
-	public Dimension getPreferredSize() {
-		int actualHeight = IMAGE_HEIGHT + N_SIZE;
-		actualHeight += 2*BAR_HEIGHT + BUFF_HEIGHT;
-		return new Dimension(SPRITE_WIDTH, actualHeight);
-	}
-	
-	/**
-	 * Returns this FighterSprite's minimum size. This will be the same as its
-	 * preferred size.
-	 * 
-	 * @return A Dimension with this FighterSprit's size.
-	 */
-	@Override
-	public Dimension getMinimumSize() {
-		return getPreferredSize();
-	}
-	
-	/**
 	 * Shows this sprite failing at an action.
 	 * 
 	 * @param action The action to show.

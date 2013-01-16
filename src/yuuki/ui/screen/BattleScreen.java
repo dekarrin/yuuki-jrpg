@@ -11,6 +11,7 @@ import yuuki.anim.Animator;
 import yuuki.anim.Bounce;
 import yuuki.anim.Loop;
 import yuuki.anim.MotionTween;
+import yuuki.anim.SizeTween;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -233,8 +234,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
 			team.add(fs);
-			animationEngine.addAnimation(
-					new Loop(new Bounce(fs, 4000, 0, 100)));
+			animationEngine.addAnimation(new SizeTween(fs, 4000, -50, 0));
 		}
 		add(team, BorderLayout.SOUTH);
 	}
