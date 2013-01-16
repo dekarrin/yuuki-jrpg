@@ -1,8 +1,7 @@
 package yuuki.anim;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Animates a number of objects.
@@ -30,7 +29,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 * @param fps The speed that the Animator is to animate at.
 	 */
 	public AnimationDriver(int fps) {
-		anims = Collections.synchronizedList(new ArrayList<Animatable>());
+		anims = new CopyOnWriteArrayList<Animatable>();
 		this.fps = fps;
 		animationThread = null;
 	}
@@ -128,10 +127,8 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 * Animates all objects in the animation list.
 	 */
 	private void advanceAnimation() {
-		synchronized (anims) {
-			for (Animatable a: anims) {
-				a.advanceFrame(fps);
-			}
+		for (Animatable a: anims) {
+			a.advanceFrame(fps);
 		}
 	}
 
