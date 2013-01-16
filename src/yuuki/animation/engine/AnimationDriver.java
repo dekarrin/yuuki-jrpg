@@ -3,17 +3,15 @@ package yuuki.animation.engine;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import yuuki.animation.engine.Animatable;
-
 /**
  * Animates a number of objects.
  */
 public class AnimationDriver implements Runnable, AnimationOwner {
 	
 	/**
-	 * The speed that animation is occurring at.
+	 * The thread running the animation.
 	 */
-	private int fps;
+	private Thread animationThread;
 	
 	/**
 	 * The list of objects to animate.
@@ -21,9 +19,9 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	private List<Animatable> anims;
 	
 	/**
-	 * The thread running the animation.
+	 * The speed that animation is occurring at.
 	 */
-	private Thread animationThread;
+	private int fps;
 	
 	/**
 	 * Allocates a new Animator.
@@ -34,42 +32,6 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		anims = new CopyOnWriteArrayList<Animatable>();
 		this.fps = fps;
 		animationThread = null;
-	}
-	
-	/**
-	 * Animates each of the items on the animation list, then sleeps for
-	 * an appropriate amount of time depending on the parent's FPS.
-	 */
-	public void run() {
-		while (fps != 0) {
-			int ms = (int) Math.round((double) 1000 / fps);
-			try {
-				Thread.sleep(ms);
-			} catch (InterruptedException e) {
-				break;
-			}
-			advanceAnimation();
-		}
-	}
-	
-	/**
-	 * Gets the speed of animation in frames per second.
-	 * 
-	 * @return The speed of animation.
-	 */
-	public int getFps() {
-		return fps;
-	}
-	
-	/**
-	 * Sets the speed of animation in frames per second. It is not guaranteed
-	 * that animation speed will change immediately if the FPS is changed
-	 * during animation.
-	 * 
-	 * @param fps The new speed of animation.
-	 */
-	public void setFps(int fps) {
-		this.fps = fps;
 	}
 	
 	/**
@@ -86,6 +48,24 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	}
 	
 	/**
+	 * Gets the speed of animation in frames per second.
+	 * 
+	 * @return The speed of animation.
+	 */
+	public int getFps() {
+		return fps;
+	}
+	
+	/**
+	 * Checks whether animation is currently occurring.
+	 * 
+	 * @return True if animation is occurring; false otherwise.
+	 */
+	public boolean isAnimating() {
+		return (animationThread != null);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -93,6 +73,34 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		if (anims.remove(a)) {
 			a.setControlled(false);
 		}
+	}
+	
+	/**
+	 * Animates each of the items on the animation list, then sleeps for
+	 * an appropriate amount of time depending on the parent's FPS.
+	 */
+	@Override
+	public void run() {
+		while (fps != 0) {
+			int ms = (int) Math.round((double) 1000 / fps);
+			try {
+				Thread.sleep(ms);
+			} catch (InterruptedException e) {
+				break;
+			}
+			advanceAnimation();
+		}
+	}
+	
+	/**
+	 * Sets the speed of animation in frames per second. It is not guaranteed
+	 * that animation speed will change immediately if the FPS is changed
+	 * during animation.
+	 * 
+	 * @param fps The new speed of animation.
+	 */
+	public void setFps(int fps) {
+		this.fps = fps;
 	}
 	
 	/**
@@ -104,15 +112,6 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			animationThread = new Thread(this, "AnimationDriver");
 			animationThread.start();
 		}
-	}
-	
-	/**
-	 * Checks whether animation is currently occurring.
-	 * 
-	 * @return True if animation is occurring; false otherwise.
-	 */
-	public boolean isAnimating() {
-		return (animationThread != null);
 	}
 	
 	/**
@@ -133,5 +132,5 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			a.advanceFrame(fps);
 		}
 	}
-
+	
 }

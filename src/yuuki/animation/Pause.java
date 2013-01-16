@@ -17,7 +17,7 @@ public class Pause extends TimedAnimation {
 	public Pause(Sprite sprite, long time) {
 		super(sprite, time);
 	}
-
+	
 	/**
 	 * Has no effect, as a pause does not do anything.
 	 */

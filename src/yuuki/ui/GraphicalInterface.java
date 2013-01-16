@@ -55,9 +55,14 @@ OptionsScreenListener, MenuBarListener {
 	public static final int WINDOW_WIDTH = 800;
 	
 	/**
+	 * The animation engine.
+	 */
+	private Animator animationEngine;
+	/**
 	 * The battle screen.
 	 */
 	private BattleScreen battleScreen;
+	
 	/**
 	 * The screen where character creation is done.
 	 */
@@ -122,11 +127,6 @@ OptionsScreenListener, MenuBarListener {
 	 * The pause screen.
 	 */
 	private Screen<?> pauseScreen;
-	
-	/**
-	 * The animation engine.
-	 */
-	private Animator animationEngine;
 	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.

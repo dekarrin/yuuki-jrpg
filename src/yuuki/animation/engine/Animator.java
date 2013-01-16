@@ -28,6 +28,7 @@ public class Animator implements Runnable, AnimationListener {
 			throws InterruptedException {
 		class AnimationRunner implements AnimationListener {
 			public boolean complete = false;
+			@Override
 			public void animationComplete(Animation animation) {
 				this.complete = true;
 			}
@@ -44,14 +45,14 @@ public class Animator implements Runnable, AnimationListener {
 	}
 	
 	/**
-	 * Drives the actual animations.
-	 */
-	private AnimationDriver driver;
-	
-	/**
 	 * The list of animations that are to be run.
 	 */
 	private LinkedList<Animation> animations;
+	
+	/**
+	 * Drives the actual animations.
+	 */
+	private AnimationDriver driver;
 	
 	/**
 	 * Creates a new Animator.
@@ -75,8 +76,20 @@ public class Animator implements Runnable, AnimationListener {
 	}
 	
 	/**
+	 * Removes an Animation from the driver once its animation is complete.
+	 * 
+	 * @param a the animation that is complete.
+	 */
+	@Override
+	public void animationComplete(Animation a) {
+		a.removeListener(this);
+		driver.removeAnim(a);
+	}
+	
+	/**
 	 * Processes animations added to the queue.
 	 */
+	@Override
 	public void run() {
 		while (true) {
 			if (!animations.isEmpty()) {
@@ -90,16 +103,6 @@ public class Animator implements Runnable, AnimationListener {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	/**
-	 * Removes an Animation from the driver once its animation is complete.
-	 * 
-	 * @param a the animation that is complete.
-	 */
-	public void animationComplete(Animation a) {
-		a.removeListener(this);
-		driver.removeAnim(a);
 	}
 	
 }

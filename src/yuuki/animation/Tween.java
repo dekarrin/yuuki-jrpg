@@ -42,6 +42,36 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
+	 * Gets the amount that a property should change.
+	 * 
+	 * @param prop The amount of property remaining.
+	 * @param fpms The number of frames per millisecond.
+	 * @param time The amount of time remaining.
+	 */
+	private int getPropertyDifference(int prop, double fpms, long time) {
+		int dp = (int) Math.round(prop / (fpms * time));
+		dp = (prop >= 0) ? Math.min(dp, prop) : Math.max(dp, prop);
+		return dp;
+	}
+	
+	/**
+	 * Checks whether the tween is complete.
+	 * 
+	 * @return True if the tweened properties are at their target values;
+	 * otherwise, false.
+	 */
+	private boolean propertiesAtTargets() {
+		boolean atTargets = true;
+		for (Integer p: propertyRemainings) {
+			if (p.intValue() != 0) {
+				atTargets = false;
+				break;
+			}
+		}
+		return atTargets;
+	}
+	
+	/**
 	 * Adds a property to this tween.
 	 * 
 	 * @param total The total amount that this property is to change by.
@@ -50,25 +80,6 @@ public abstract class Tween extends TimedAnimation {
 		propertyTotals.add(total);
 		propertyRemainings.add(total);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void resetProperties() {
-		for (int i = 0; i < propertyTotals.size(); i++) {
-			int prop = propertyTotals.get(i);
-			propertyRemainings.set(i, prop);
-		}
-	}
-	
-	/**
-	 * Animates the owned sprite with the values calculated by advancing the
-	 * tween.
-	 * 
-	 * @param properties The values of the properties.
-	 */
-	protected abstract void animateSprite(ArrayList<Integer> properties);
 	
 	/**
 	 * Advances the animation by as much as has been requested.
@@ -91,17 +102,12 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
-	 * Gets the amount that a property should change.
+	 * Animates the owned sprite with the values calculated by advancing the
+	 * tween.
 	 * 
-	 * @param prop The amount of property remaining.
-	 * @param fpms The number of frames per millisecond.
-	 * @param time The amount of time remaining.
+	 * @param properties The values of the properties.
 	 */
-	private int getPropertyDifference(int prop, double fpms, long time) {
-		int dp = (int) Math.round(prop / (fpms * time));
-		dp = (prop >= 0) ? Math.min(dp, prop) : Math.max(dp, prop);
-		return dp;
-	}
+	protected abstract void animateSprite(ArrayList<Integer> properties);
 	
 	/**
 	 * Checks whether there is any more time left in this animation and
@@ -116,20 +122,14 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
-	 * Checks whether the tween is complete.
-	 * 
-	 * @return True if the tweened properties are at their target values;
-	 * otherwise, false.
+	 * {@inheritDoc}
 	 */
-	private boolean propertiesAtTargets() {
-		boolean atTargets = true;
-		for (Integer p: propertyRemainings) {
-			if (p.intValue() != 0) {
-				atTargets = false;
-				break;
-			}
+	@Override
+	protected void resetProperties() {
+		for (int i = 0; i < propertyTotals.size(); i++) {
+			int prop = propertyTotals.get(i);
+			propertyRemainings.set(i, prop);
 		}
-		return atTargets;
 	}
 	
 }

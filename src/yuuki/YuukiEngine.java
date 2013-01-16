@@ -41,6 +41,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The speed of game animation.
+	 */
+	public static final int ANIMATION_FPS = 30;
+	
+	/**
 	 * Program execution hook. Creates a new instance of YuukiEngine and then
 	 * runs it.
 	 *
@@ -52,9 +57,9 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The speed of game animation.
+	 * Drives animation.
 	 */
-	public static final int ANIMATION_FPS = 30;
+	private Animator animationEngine;
 	
 	/**
 	 * Creates all entities.
@@ -69,12 +74,12 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * The options for the game.
 	 */
-	private GameOptions options;
+	private GameOptions options;;
 	
 	/**
 	 * The player character.
 	 */
-	private PlayerCharacter player;;
+	private PlayerCharacter player;
 	
 	/**
 	 * The sound engine.
@@ -85,11 +90,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * The user interface.
 	 */
 	private Interactable ui;
-	
-	/**
-	 * Drives animation.
-	 */
-	private Animator animationEngine;
 	
 	/**
 	 * Creates a new YuukiEngine with a Swing-based GUI.

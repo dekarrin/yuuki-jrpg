@@ -30,21 +30,22 @@ public abstract class TimedAnimation extends Animation {
 	}
 	
 	/**
-	 * Advances animation by one frame.
-	 * 
-	 * @param fps The speed of animation in frames per second.
-	 */
-	protected abstract void advanceAnimation(int fps);
-	
-	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void advance(int fps) {
 		if (isOnFirstPulse()) {
 			startTime = System.currentTimeMillis();
 		}
 		advanceAnimation(fps);
 	}
+	
+	/**
+	 * Advances animation by one frame.
+	 * 
+	 * @param fps The speed of animation in frames per second.
+	 */
+	protected abstract void advanceAnimation(int fps);
 	
 	/**
 	 * Gets the amount of time remaining in this animation.

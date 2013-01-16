@@ -23,15 +23,13 @@ public class Loop extends Animation {
 	}
 	
 	/**
-	 * Always returns false, because a Loop is never complete.
-	 * 
-	 * @return False.
+	 * {@inheritDoc}
 	 */
 	@Override
-	protected boolean isAtEnd() {
-		return false;
+	public void resetProperties() {
+		loopedAnimation.reset();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -44,11 +42,13 @@ public class Loop extends Animation {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Always returns false, because a Loop is never complete.
+	 * 
+	 * @return False.
 	 */
 	@Override
-	public void resetProperties() {
-		loopedAnimation.reset();
+	protected boolean isAtEnd() {
+		return false;
 	}
 	
 }

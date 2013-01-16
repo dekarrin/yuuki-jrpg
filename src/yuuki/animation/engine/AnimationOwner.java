@@ -1,6 +1,5 @@
 package yuuki.animation.engine;
 
-import yuuki.animation.engine.Animatable;
 
 /**
  * Owns Animatable instances.

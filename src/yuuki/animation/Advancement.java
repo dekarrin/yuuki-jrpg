@@ -31,7 +31,7 @@ public class Advancement extends Animation {
 		sprite.advanceFrame(fps);
 		hasAdvanced = true;
 	}
-
+	
 	/**
 	 * Always returns false, because advancement is never complete.
 	 */
@@ -39,7 +39,7 @@ public class Advancement extends Animation {
 	protected boolean isAtEnd() {
 		return hasAdvanced;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

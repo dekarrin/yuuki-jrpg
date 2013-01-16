@@ -14,8 +14,8 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
-import yuuki.sprite.Sprite;
-import yuuki.ui.*;
+import yuuki.ui.StatBar;
+import yuuki.ui.StatPanel;
 
 /**
  * The graphic used to display characters on the battle screen.
@@ -97,12 +97,6 @@ public class FighterSprite extends Sprite {
 		initializeComponents(fighter);
 		addComponents();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void advance(int fps) {}
 	
 	/**
 	 * Shows this sprite failing at an action.
@@ -360,5 +354,11 @@ public class FighterSprite extends Sprite {
 		revalidate();
 		repaint();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void advance(int fps) {}
 	
 }

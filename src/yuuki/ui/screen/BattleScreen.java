@@ -20,11 +20,6 @@ import yuuki.sprite.FighterSprite;
 public class BattleScreen extends Screen<ScreenListener> {
 	
 	/**
-	 * The animation engine for the game.
-	 */
-	private Animator animationEngine;
-	
-	/**
 	 * The index of the team that should be shown on the bottom of the screen.
 	 */
 	public static final int BOTTOM_TEAM_INDEX = 0;
@@ -33,6 +28,11 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * The index of the team that should be shown on the top of the team.
 	 */
 	public static final int TOP_TEAM_INDEX = 1;
+	
+	/**
+	 * The animation engine for the game.
+	 */
+	private Animator animationEngine;
 	
 	/**
 	 * The graphics displayed on the screen.

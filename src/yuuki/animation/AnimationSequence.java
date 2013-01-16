@@ -11,14 +11,14 @@ import yuuki.sprite.Sprite;
 public class AnimationSequence extends Animation {
 	
 	/**
-	 * The animations to run.
-	 */
-	private ArrayList<Animation> sequence;
-	
-	/**
 	 * The index of the currently running animation.
 	 */
 	private int position;
+	
+	/**
+	 * The animations to run.
+	 */
+	private ArrayList<Animation> sequence;
 	
 	/**
 	 * Allocates a new AnimationSequence.
@@ -44,16 +44,20 @@ public class AnimationSequence extends Animation {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void resetProperties() {
-		for (int i = 0; i <= position; i++) {
-			sequence.get(i).reset();
+	protected void advance(int fps) {
+		Animation current = sequence.get(position);
+		if (!current.isComplete()) {
+			current.advanceFrame(fps);
 		}
-		position = 0;
+		if (current.isComplete() && position < sequence.size() - 1) {
+			position++;
+		}
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected boolean isAtEnd() {
 		boolean atLastAnimation = (position == (sequence.size() - 1));
 		boolean currentIsComplete = sequence.get(position).isComplete();
@@ -63,14 +67,12 @@ public class AnimationSequence extends Animation {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void advance(int fps) {
-		Animation current = sequence.get(position);
-		if (!current.isComplete()) {
-			current.advanceFrame(fps);
+	@Override
+	protected void resetProperties() {
+		for (int i = 0; i <= position; i++) {
+			sequence.get(i).reset();
 		}
-		if (current.isComplete() && position < sequence.size() - 1) {
-			position++;
-		}
+		position = 0;
 	}
 	
 }

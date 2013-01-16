@@ -8,7 +8,7 @@ import yuuki.sprite.Sprite;
  * Animates movement from one value to another.
  */
 public class MotionTween extends Tween {
-
+	
 	/**
 	 * Creates a new MotionTween.
 	 * 
@@ -22,7 +22,7 @@ public class MotionTween extends Tween {
 		addTweenedProperty(dx);
 		addTweenedProperty(dy);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
