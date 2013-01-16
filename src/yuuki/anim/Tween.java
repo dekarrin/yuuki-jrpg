@@ -16,17 +16,7 @@ import yuuki.sprite.Sprite;
  * specified time. If the time is up, and the tween still hasn't completed, it
  * will jump the remaining amount on the next pulse after time is up.
  */
-public abstract class Tween extends Animation {
-
-	/**
-	 * The amount of time that this Tween takes to complete its animation.
-	 */
-	private long duration;
-	
-	/**
-	 * The time that animation started at.
-	 */
-	private long startTime;
+public abstract class Tween extends TimedAnimation {
 	
 	/**
 	 * The amount left to change each property by.
@@ -46,9 +36,7 @@ public abstract class Tween extends Animation {
 	 * last.
 	 */
 	public Tween(Sprite sprite, long time) {
-		super(sprite);
-		this.duration = time;
-		this.startTime = 0;
+		super(sprite, time);
 		propertyRemainings = new ArrayList<Integer>();
 		propertyTotals = new ArrayList<Integer>();
 	}
@@ -87,7 +75,8 @@ public abstract class Tween extends Animation {
 	 * 
 	 * @param fps The speed of animation, in frames per second.
 	 */
-	private void advanceTween(int fps) {
+	@Override
+	protected void advanceAnimation(int fps) {
 		double fpms = (double) fps / 1000;
 		long remaining = getRemainingTime();
 		ArrayList<Integer> propValues = new ArrayList<Integer>();
@@ -115,16 +104,6 @@ public abstract class Tween extends Animation {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	protected void advance(int fps) {
-		if (isOnFirstPulse()) {
-			startTime = System.currentTimeMillis();
-		}
-		advanceTween(fps);
-	}
-	
-	/**
 	 * Checks whether there is any more time left in this animation and
 	 * whether the tween is complete.
 	 * 
@@ -133,7 +112,7 @@ public abstract class Tween extends Animation {
 	 */
 	@Override
 	protected boolean isAtEnd() {
-		return (getRemainingTime() <= 0 && propertiesAtTargets());
+		return (super.isAtEnd() && propertiesAtTargets());
 	}
 	
 	/**
@@ -151,15 +130,6 @@ public abstract class Tween extends Animation {
 			}
 		}
 		return atTargets;
-	}
-	
-	/**
-	 * Gets the amount of time remaining in this Tween.
-	 * 
-	 * @return The number of milliseconds until this Tween is done.
-	 */
-	protected long getRemainingTime() {
-		return (duration - (System.currentTimeMillis() - startTime));
 	}
 	
 }
