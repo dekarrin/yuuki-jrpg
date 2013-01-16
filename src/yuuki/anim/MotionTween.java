@@ -21,12 +21,12 @@ public class MotionTween extends Tween {
 	 * Creates a new MotionTween.
 	 * 
 	 * @param sprite The Sprite to create the animation for.
-	 * @param steps The number of steps to complete the tween in.
+	 * @param time The duration of the tween, in milliseconds.
 	 * @param dx The total amount of movement along the x-axis.
 	 * @param dy The total amount of movement along the y-axis.
 	 */
-	public MotionTween(Sprite sprite, int steps, int dx, int dy) {
-		super(sprite, steps);
+	public MotionTween(Sprite sprite, long time, int dx, int dy) {
+		super(sprite, time);
 		xDistance = dx;
 		yDistance = dy;
 	}

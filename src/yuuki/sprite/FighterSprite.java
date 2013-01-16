@@ -99,14 +99,7 @@ public class FighterSprite extends Sprite {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void advance(int fps) {
-		setX(getX() + 1);
-		if (getX() == 801) {
-			setX(-SPRITE_WIDTH);
-		}
-	}
-	
-	private boolean movingUp = true;
+	protected void advance(int fps) {}
 	
 	/**
 	 * Returns this FighterSprite's maximum size. This will be the same as its

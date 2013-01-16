@@ -7,8 +7,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 import yuuki.action.Action;
-import yuuki.anim.AdvancementLoop;
 import yuuki.anim.Animator;
+import yuuki.anim.BounceLoop;
+import yuuki.anim.MotionTween;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -231,7 +232,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
 			team.add(fs);
-			animationEngine.addAnimation(new AdvancementLoop(fs));
+			animationEngine.addAnimation(new BounceLoop(fs, 4000, 0, 100));
 		}
 		add(team, BorderLayout.SOUTH);
 	}

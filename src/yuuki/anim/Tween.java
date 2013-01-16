@@ -50,6 +50,9 @@ public abstract class Tween extends Animation {
 	 * {@inheritDoc}
 	 */
 	protected void advance(int fps) {
+		if (isOnFirstPulse()) {
+			startTime = System.currentTimeMillis();
+		}
 		advanceTween(fps);
 	}
 	
@@ -61,7 +64,7 @@ public abstract class Tween extends Animation {
 	 * tween is over.
 	 */
 	@Override
-	public boolean isComplete() {
+	protected boolean isAtEnd() {
 		return (getRemainingTime() <= 0 && propertiesAtTargets());
 	}
 	

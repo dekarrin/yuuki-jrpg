@@ -68,10 +68,10 @@ public abstract class Animation implements Animatable {
 	 * Whether animation has started.
 	 * 
 	 * @return True if advanceFrame() has already been called on this Animation
-	 * at least once; otherwise, false.
+	 * at least once and if the animation is not complete; otherwise, false.
 	 */
 	public boolean isRunning() {
-		return !firstPulse;
+		return !(isOnFirstPulse() || isComplete());
 	}
 	
 	/**
@@ -103,11 +103,11 @@ public abstract class Animation implements Animatable {
 	}
 	
 	/**
-	 * Checks whether this animation is complete.
+	 * Checks whether this animation has reached the end.
 	 * 
-	 * @return True if the animation is complete; otherwise, false.
+	 * @return True if the animation has run to the end; otherwise, false.
 	 */
-	public abstract boolean isComplete();
+	protected abstract boolean isAtEnd();
 	
 	/**
 	 * Advances the animation by one frame. The method isComplete() is checked
@@ -142,15 +142,24 @@ public abstract class Animation implements Animatable {
 	 */
 	@Override
 	public void advanceFrame(int fps) {
-		if (!isComplete() && !forcedComplete) {
+		if (!isComplete()) {
 			advance(fps);
 			firstPulse = false;
-		}
-		if ((isComplete() || forcedComplete) && !endEventFired) {
+		} else if (!endEventFired) {
 			fireAnimationComplete();
 			endEventFired = true;
 		}
 	}
+	
+	/**
+	 * Checks whether this animation is done running.
+	 * 
+	 * @param True if the animation is no longer running; false otherwise.
+	 */
+	public boolean isComplete() {
+		return (isAtEnd() || forcedComplete);
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -166,7 +175,6 @@ public abstract class Animation implements Animatable {
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;
-	}
-	
+	}	
 	
 }

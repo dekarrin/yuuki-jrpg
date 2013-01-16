@@ -7,7 +7,7 @@ import yuuki.sprite.Sprite;
  * essentially delegates the task of animation to the Sprite itself. It runs
  * continuously until it is explicitly told to halt.
  */
-public class AdvancementLoop extends Animation {
+public class AdvancementLoop extends Loop {
 	
 	/**
 	 * Creates a new AdvancementLoop that animates the specified Sprite.
@@ -16,16 +16,6 @@ public class AdvancementLoop extends Animation {
 	 */
 	public AdvancementLoop(Sprite sprite) {
 		super(sprite);
-	}
-	
-	/**
-	 * Always returns false, because an AdvancementLoop is never complete.
-	 * 
-	 * @return False.
-	 */
-	@Override
-	public boolean isComplete() {
-		return false;
 	}
 	
 	/**
