@@ -1,5 +1,7 @@
 package yuuki.anim;
 
+import java.util.ArrayList;
+
 import yuuki.sprite.Sprite;
 
 /**
@@ -27,6 +29,16 @@ public abstract class Tween extends Animation {
 	private long startTime;
 	
 	/**
+	 * The amount left to change each property by.
+	 */
+	private ArrayList<Integer> propertyRemainings;
+	
+	/**
+	 * The total amount to change each property by.
+	 */
+	private ArrayList<Integer> propertyTotals;
+	
+	/**
 	 * Creates a new Tween.
 	 * 
 	 * @param sprite The Sprite to create the animation for.
@@ -37,14 +49,70 @@ public abstract class Tween extends Animation {
 		super(sprite);
 		this.duration = time;
 		this.startTime = 0;
+		propertyRemainings = new ArrayList<Integer>();
+		propertyTotals = new ArrayList<Integer>();
 	}
+	
+	/**
+	 * Adds a property to this tween.
+	 * 
+	 * @param total The total amount that this property is to change by.
+	 */
+	protected void addTweenedProperty(int total) {
+		propertyTotals.add(total);
+		propertyRemainings.add(total);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void resetProperties() {
+		for (int i = 0; i < propertyTotals.size(); i++) {
+			int prop = propertyTotals.get(i);
+			propertyRemainings.set(i, prop);
+		}
+	}
+	
+	/**
+	 * Animates the owned sprite with the values calculated by advancing the
+	 * tween.
+	 * 
+	 * @param properties The values of the properties.
+	 */
+	protected abstract void animateSprite(ArrayList<Integer> properties);
 	
 	/**
 	 * Advances the animation by as much as has been requested.
 	 * 
 	 * @param fps The speed of animation, in frames per second.
 	 */
-	protected abstract void advanceTween(int fps);
+	private void advanceTween(int fps) {
+		double fpms = (double) fps / 1000;
+		long remaining = getRemainingTime();
+		ArrayList<Integer> propValues = new ArrayList<Integer>();
+		for (int i = 0; i < propertyTotals.size(); i++) {
+			int pRemain = propertyRemainings.get(i);
+			int dp = getPropertyDifference(pRemain, fpms, remaining);
+			pRemain -= dp;
+			propertyRemainings.set(i, pRemain);
+			propValues.add(dp);
+		}
+		animateSprite(propValues);
+	}
+	
+	/**
+	 * Gets the amount that a property should change.
+	 * 
+	 * @param prop The amount of property remaining.
+	 * @param fpms The number of frames per millisecond.
+	 * @param time The amount of time remaining.
+	 */
+	private int getPropertyDifference(int prop, double fpms, long time) {
+		int dp = (int) Math.round(prop / (fpms * time));
+		dp = (prop >= 0) ? Math.min(dp, prop) : Math.max(dp, prop);
+		return dp;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -74,7 +142,16 @@ public abstract class Tween extends Animation {
 	 * @return True if the tweened properties are at their target values;
 	 * otherwise, false.
 	 */
-	protected abstract boolean propertiesAtTargets();
+	private boolean propertiesAtTargets() {
+		boolean atTargets = true;
+		for (Integer p: propertyRemainings) {
+			if (p.intValue() != 0) {
+				atTargets = false;
+				break;
+			}
+		}
+		return atTargets;
+	}
 	
 	/**
 	 * Gets the amount of time remaining in this Tween.
