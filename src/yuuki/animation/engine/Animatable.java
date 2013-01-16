@@ -1,4 +1,4 @@
-package yuuki.anim;
+package yuuki.animation.engine;
 
 /**
  * Provides methods for animating an object. Animatable instances are added to

@@ -1,4 +1,6 @@
-package yuuki.anim;
+package yuuki.animation.engine;
+
+import yuuki.animation.Animation;
 
 /**
  * A listener for animation to be complete.

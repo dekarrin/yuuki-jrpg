@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import yuuki.action.Action;
-import yuuki.anim.Animator;
+import yuuki.animation.engine.Animator;
 import yuuki.battle.Battle;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;

@@ -1,4 +1,4 @@
-package yuuki.anim;
+package yuuki.animation;
 
 import yuuki.sprite.Sprite;
 

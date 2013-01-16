@@ -1,7 +1,9 @@
-package yuuki.anim;
+package yuuki.animation.engine;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import yuuki.animation.engine.Animatable;
 
 /**
  * Animates a number of objects.

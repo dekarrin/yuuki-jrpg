@@ -1,8 +1,10 @@
-package yuuki.anim;
+package yuuki.animation;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import yuuki.animation.engine.Animatable;
+import yuuki.animation.engine.AnimationListener;
 import yuuki.sprite.Sprite;
 
 /**

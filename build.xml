@@ -17,7 +17,7 @@
 	<property name="SCREEN" value="yuuki/ui/screen" />
 	<property name="RESOURCE" value="yuuki/resource" />
 	<property name="SOUND" value="yuuki/sound" />
-	<property name="ANIMATION" value="yuuki/anim" />
+	<property name="ANIMATION" value="yuuki/animation" />
 	<property name="SPRITE" value="yuuki/sprite" />
 	
 	<property name="LIB" value="lib" />

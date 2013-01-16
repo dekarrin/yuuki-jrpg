@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import yuuki.anim.Animatable;
-import yuuki.anim.AnimationOwner;
-import yuuki.anim.Animator;
+import yuuki.animation.engine.AnimationOwner;
+import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.Animatable;
 
 /**
  * A graphical object that can be animated. A Sprite may have other Animatable

@@ -1,4 +1,4 @@
-package yuuki.anim;
+package yuuki.animation;
 
 /**
  * Continuously animates until explicitly stopped by calling halt() on an

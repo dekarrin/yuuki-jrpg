@@ -9,7 +9,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import yuuki.action.Action;
-import yuuki.anim.Animator;
+import yuuki.animation.engine.Animator;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;

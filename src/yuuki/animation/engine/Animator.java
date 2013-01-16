@@ -1,6 +1,8 @@
-package yuuki.anim;
+package yuuki.animation.engine;
 
 import java.util.LinkedList;
+
+import yuuki.animation.Animation;
 
 /**
  * Continuously runs animations.
