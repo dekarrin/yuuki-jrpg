@@ -28,6 +28,11 @@ public abstract class Animation implements Animatable {
 	private boolean forcedComplete;
 	
 	/**
+	 * Whether this animation is on its first pulse.
+	 */
+	private boolean firstPulse;
+	
+	/**
 	 * The sprite that this Animation has the parameters for animating.
 	 */
 	protected Sprite sprite;
@@ -48,14 +53,35 @@ public abstract class Animation implements Animatable {
 		this.controlled = false;
 		this.forcedComplete = false;
 		this.endEventFired = false;
+		this.firstPulse = true;
 	}
 	
 	/**
-	 * Forces the animation to halt. The next time animation is attempted to be
+	 * Forces the animation to stop. The next time animation is attempted to be
 	 * driven on this Animation, it will immediately complete.
 	 */
 	public void halt() {
 		forcedComplete = true;
+	}
+	
+	/**
+	 * Whether animation has started.
+	 * 
+	 * @return True if advanceFrame() has already been called on this Animation
+	 * at least once; otherwise, false.
+	 */
+	public boolean isRunning() {
+		return !firstPulse;
+	}
+	
+	/**
+	 * Whether the animation is on its first pulse.
+	 * 
+	 * @return True if advance() has already been called at least once before;
+	 * otherwise, false.
+	 */
+	protected boolean isOnFirstPulse() {
+		return firstPulse;
 	}
 	
 	/**
@@ -81,7 +107,7 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @return True if the animation is complete; otherwise, false.
 	 */
-	protected abstract boolean isComplete();
+	public abstract boolean isComplete();
 	
 	/**
 	 * Advances the animation by one frame. The method isComplete() is checked
@@ -118,6 +144,7 @@ public abstract class Animation implements Animatable {
 	public void advanceFrame(int fps) {
 		if (!isComplete() && !forcedComplete) {
 			advance(fps);
+			firstPulse = false;
 		}
 		if ((isComplete() || forcedComplete) && !endEventFired) {
 			fireAnimationComplete();

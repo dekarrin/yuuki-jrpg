@@ -10,22 +10,12 @@ public class MotionTween extends Tween {
 	/**
 	 * The amount to move along the x-axis each step.
 	 */
-	private int dx;
+	private int xDistance;
 	
 	/**
 	 * The amount to move along the y-axis each step.
 	 */
-	private int dy;
-	
-	/**
-	 * The remainder of total movement along the x-axis divided by steps.
-	 */
-	private int rx;
-	
-	/**
-	 * The remainder of total movement along the y-axis divided by steps.
-	 */
-	private int ry;
+	private int yDistance;
 
 	/**
 	 * Creates a new MotionTween.
@@ -37,10 +27,16 @@ public class MotionTween extends Tween {
 	 */
 	public MotionTween(Sprite sprite, int steps, int dx, int dy) {
 		super(sprite, steps);
-		this.dx = dx / getRemainingSteps();
-		this.dy = dy / getRemainingSteps();
-		rx = dx % getRemainingSteps();
-		ry = dy % getRemainingSteps();
+		xDistance = dx;
+		yDistance = dy;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean propertiesAtTargets() {
+		return (xDistance == 0 && yDistance == 0);
 	}
 
 	/**
@@ -51,13 +47,15 @@ public class MotionTween extends Tween {
 	 */
 	@Override
 	protected void advanceTween(int fps) {
-		int totalDx = dx;
-		int totalDy = dy;
-		if (getRemainingSteps() == 1) {
-			totalDx += rx;
-			totalDy += ry;
-		}
-		sprite.move(totalDx, totalDy);
+		double fpms = (double) fps / 1000;
+		long remaining = getRemainingTime();
+		int dx = (int) Math.round(xDistance / (fpms * remaining));
+		int dy = (int) Math.round(yDistance / (fpms * remaining));
+		dx = Math.min(dx, xDistance);
+		dy = Math.min(dy, yDistance);
+		xDistance -= dx;
+		yDistance -= dy;
+		sprite.move(dx, dy);
 	}
 	
 }
