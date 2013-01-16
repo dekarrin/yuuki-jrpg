@@ -2,9 +2,9 @@ package yuuki.sound;
 
 /**
  * An AudioEngine specifically intended for playing sound effects one time
- * each.
+ * each. Several sounds at once are allowed.
  */
-class EffectEngine extends AudioEngine {
+public class EffectEngine extends AudioEngine {
 	
 	/**
 	 * {@inheritDoc}
