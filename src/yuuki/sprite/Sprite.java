@@ -47,17 +47,18 @@ AnimationOwner {
 	/**
 	 * Allocates a new Sprite.
 	 * 
+	 * @param animator The animation engine that will drive this sprite.
 	 * @param width The width of the Sprite
 	 * @param height The height of the Sprite.
-	 * @param animator The animation engine that will drive this sprite.
 	 */
-	public Sprite(int width, int height, Animator animator) {
+	public Sprite(Animator animator, int width, int height) {
 		x = 0;
 		y = 0;
 		this.animator = animator;
 		setSize(width, height);
 		controlled = false;
 		ownedAnims = new ArrayList<Animatable>();
+		setOpaque(false);
 		setLayout(null);
 		updateBounds();
 	}

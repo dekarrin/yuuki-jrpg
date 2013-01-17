@@ -14,7 +14,6 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
-import yuuki.ui.StatBar;
 import yuuki.ui.StatPanel;
 
 /**
@@ -86,13 +85,12 @@ public class FighterSprite extends Sprite {
 	/**
 	 * Creates a new FighterSprite from a Character.
 	 * 
-	 * @param fighter The Character to make the sprite for.
 	 * @param animator The Animator that will drive this Sprite's animation.
+	 * @param fighter The Character to make the sprite for.
 	 */
 	public FighterSprite(Character fighter, Animator animator) {
-		super(SPRITE_WIDTH,
-				BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE + IMAGE_HEIGHT,
-				animator);
+		super(animator, SPRITE_WIDTH,
+				BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE + IMAGE_HEIGHT);
 		createComponents();
 		initializeComponents(fighter);
 		addComponents();
@@ -160,7 +158,8 @@ public class FighterSprite extends Sprite {
 	}
 	
 	/**
-	 * Updates this FighterSprite to show that a stat took damage.
+	 * Updates this FighterSprite to show that a stat took damage. This does
+	 * not directly modify Swing components, and is therefore thread-safe.
 	 * 
 	 * @param stat The stat that took damage.
 	 * @param damage The amount of damage taken.
@@ -170,7 +169,8 @@ public class FighterSprite extends Sprite {
 	}
 	
 	/**
-	 * Updates this FighterSprite to show that a stat took damage.
+	 * Updates this FighterSprite to show that a stat took damage. This does
+	 * not directly modify Swing components, and is therefore thread-safe.
 	 * 
 	 * @param stat The stat that took damage.
 	 * @param damage The amount of damage taken.
@@ -180,7 +180,8 @@ public class FighterSprite extends Sprite {
 	}
 	
 	/**
-	 * Updates this FighterSprite to show that a stat recovered.
+	 * Updates this FighterSprite to show that a stat recovered. This does
+	 * not directly modify Swing components, and is therefore thread-safe.
 	 * 
 	 * @param stat The stat that recovered.
 	 * @param amount The amount of recovery.
@@ -190,7 +191,8 @@ public class FighterSprite extends Sprite {
 	}
 	
 	/**
-	 * Updates this FighterSprite to show that a stat recovered.
+	 * Updates this FighterSprite to show that a stat recovered. This does
+	 * not directly modify Swing components, and is therefore thread-safe.
 	 * 
 	 * @param stat The stat that recovered.
 	 * @param amount The amount of recovery.
@@ -235,8 +237,8 @@ public class FighterSprite extends Sprite {
 	 */
 	private void createComponents() {
 		buffPanel = new JPanel();
-		healthBar = new StatBar(SPRITE_WIDTH, BAR_HEIGHT, Color.RED);
-		manaBar = new StatBar(SPRITE_WIDTH, BAR_HEIGHT, Color.BLUE);
+		healthBar = new StatBar(animator, SPRITE_WIDTH, BAR_HEIGHT, Color.RED);
+		manaBar = new StatBar(animator, SPRITE_WIDTH, BAR_HEIGHT, Color.BLUE);
 		nameLabel = new JLabel();
 		imagePanel = new JPanel();
 		statPanel = new StatPanel();
@@ -276,7 +278,7 @@ public class FighterSprite extends Sprite {
 	 * @param level The level of this FighterSprite's fighter.
 	 */
 	private void initializeHealthBar(VariableStat hpStat, int level) {
-		healthBar.setBounds(0, BUFF_HEIGHT, SPRITE_WIDTH, BAR_HEIGHT);
+		healthBar.setY(BUFF_HEIGHT);
 		healthBar.setStat(hpStat);
 		healthBar.setLevel(level);
 		healthBar.setVisible(true);
@@ -309,8 +311,7 @@ public class FighterSprite extends Sprite {
 	 * @param level The level of this FighterSprite's fighter.
 	 */
 	private void initializeManaBar(VariableStat mpStat, int level) {
-		int y = BUFF_HEIGHT + BAR_HEIGHT;
-		manaBar.setBounds(0, y, SPRITE_WIDTH, BAR_HEIGHT);
+		manaBar.setY(BUFF_HEIGHT + BAR_HEIGHT);
 		manaBar.setStat(mpStat);
 		manaBar.setLevel(level);
 		manaBar.setVisible(true);
@@ -341,7 +342,8 @@ public class FighterSprite extends Sprite {
 	}
 	
 	/**
-	 * Updates this FighterSprite with new stat values.
+	 * Updates this FighterSprite with new stat values. This does not directly
+	 * modify Swing components, and is therefore thread-safe.
 	 * 
 	 * @param stat The stat to update.
 	 */
