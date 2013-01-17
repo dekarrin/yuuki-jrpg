@@ -348,13 +348,13 @@ public class FighterSprite extends Sprite {
 	 * @param stat The stat to update.
 	 */
 	private void updateStat(Stat stat) {
-		if (healthBar.isWatching(stat)) {
-			healthBar.update();
-		} else if (manaBar.isWatching(stat)) {
+		// there is literally NO other way to compare stats;
+		// stat won't have come directly from the fighter; it'll be cloned.
+		if (stat.getName().equalsIgnoreCase("mana")) {
 			manaBar.update();
+		} else if (stat.getName().equalsIgnoreCase("health")) {
+			healthBar.update();
 		}
-		revalidate();
-		repaint();
 	}
 	
 	/**
