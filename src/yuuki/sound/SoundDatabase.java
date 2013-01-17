@@ -61,12 +61,18 @@ class SoundDatabase {
 		String fileLocation = RESOURCE_LOCATION + DATA_FILE;
 		InputStream file = getClass().getResourceAsStream(fileLocation);
 		parser = new CsvParser(file, '\n', ',', '"');
-		String[][] records = null;
 		try {
-			records = parser.read();
+			readParser();
 		} catch (IOException e) {
 			System.out.println("Sound file format error");
 		}
+	}
+	
+	/**
+	 * Reads the definitions from the parser.
+	 */
+	private void readParser() throws IOException {
+		String[][] records = parser.read();
 		for (String[] r: records) {
 			String index = r[0];
 			String soundFile = r[1];
