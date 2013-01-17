@@ -4,6 +4,9 @@ import java.awt.Color;
 
 import javax.swing.JLayeredPane;
 
+import yuuki.animation.Animation;
+import yuuki.animation.MotionTween;
+import yuuki.animation.SizeTween;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.VariableStat;
 import yuuki.sprite.Rectangle;
@@ -125,7 +128,15 @@ public class StatBar extends Sprite {
 	 */
 	public void update() {
 		if (stat.getCurrent() != this.value) {
-			// TODO: Fix me!
+			int targetWidth = (int) Math.round(getWidth() * getPercent());
+			int dw = targetWidth - foreground.getWidth();
+			Animation updateAnimation;
+			updateAnimation = new SizeTween(foreground, 1000, dw, 0);
+			try {
+				Animator.animateAndWait(animator, updateAnimation);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -159,7 +159,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * Shows that a fighter took damage.
+	 * Shows that a fighter took damage. This method is thread-safe and does
+	 * not directly manipulate Swing components.
 	 * 
 	 * @param fighter The fighter that took damage.
 	 * @param stat The stat that took damage.
@@ -171,7 +172,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * Shows that a fighter took damage.
+	 * Shows that a fighter took damage. This method is thread-safe and does
+	 * not directly manipulate Swing components.
 	 * 
 	 * @param fighter The fighter that took damage.
 	 * @param stat The stat that took damage.
@@ -183,7 +185,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * Shows that a fighter recovered.
+	 * Shows that a fighter recovered. This method is thread-safe and does not
+	 * directly manipulate Swing components.
 	 * 
 	 * @param fighter The fighter that recovered.
 	 * @param stat The stat that was recovered.
@@ -195,7 +198,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * Shows that a fighter recovered.
+	 * Shows that a fighter recovered. This method is thread-safe and does not
+	 * directly manipulate Swing components.
 	 * 
 	 * @param fighter The fighter that recovered.
 	 * @param stat The stat that was recovered.

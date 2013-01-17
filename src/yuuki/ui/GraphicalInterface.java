@@ -648,21 +648,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, double damage) {
-		class Runner implements Runnable {
-			public double damage;
-			public Character fighter;
-			public Stat stat;
-			@Override
-			public void run() {
-				battleScreen.showDamage(fighter, stat, damage);
-			}
-		}
-		Runner r = new Runner();
-		r.fighter = fighter;
-		r.stat = stat;
-		r.damage = damage;
-		// we need to wait for the animation to complete
-		SwingUtilities.invokeLater(r);
+		battleScreen.showDamage(fighter, stat, damage);
 	}
 	
 	/**
@@ -670,20 +656,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, int damage) {
-		class Runner implements Runnable {
-			public int damage;
-			public Character fighter;
-			public Stat stat;
-			@Override
-			public void run() {
-				battleScreen.showDamage(fighter, stat, damage);
-			}
-		}
-		Runner r = new Runner();
-		r.fighter = fighter;
-		r.stat = stat;
-		r.damage = damage;
-		SwingUtilities.invokeLater(r);
+		battleScreen.showDamage(fighter, stat, damage);
 	}
 	
 	/**
@@ -691,20 +664,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, double amount) {
-		class Runner implements Runnable {
-			public double amount;
-			public Character fighter;
-			public Stat stat;
-			@Override
-			public void run() {
-				battleScreen.showRecovery(fighter, stat, amount);
-			}
-		}
-		Runner r = new Runner();
-		r.fighter = fighter;
-		r.stat = stat;
-		r.amount = amount;
-		SwingUtilities.invokeLater(r);
+		battleScreen.showRecovery(fighter, stat, amount);
 	}
 	
 	/**
@@ -712,20 +672,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, int amount) {
-		class Runner implements Runnable {
-			public int amount;
-			public Character fighter;
-			public Stat stat;
-			@Override
-			public void run() {
-				battleScreen.showRecovery(fighter, stat, amount);
-			}
-		}
-		Runner r = new Runner();
-		r.fighter = fighter;
-		r.stat = stat;
-		r.amount = amount;
-		SwingUtilities.invokeLater(r);
+		battleScreen.showRecovery(fighter, stat, amount);
 	}
 	
 	/**
