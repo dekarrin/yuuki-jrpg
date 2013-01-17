@@ -40,6 +40,11 @@ CharacterCreationScreenListener, OverworldScreenListener,
 OptionsScreenListener, MenuBarListener {
 	
 	/**
+	 * The speed of game animation.
+	 */
+	public static final int ANIMATION_FPS = 30;
+	
+	/**
 	 * The height of the message box within the window.
 	 */
 	public static final int MESSAGE_BOX_HEIGHT = 100;
@@ -133,15 +138,13 @@ OptionsScreenListener, MenuBarListener {
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
 	 * @param options The options of the program.
-	 * @param animationEngine The Animator for animating different objects.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram, Options options,
-			Animator animationEngine) {
+	public GraphicalInterface(UiExecutor mainProgram, Options options) {
 		this.options = options;
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
-		this.animationEngine = animationEngine;
+		this.animationEngine = new Animator(ANIMATION_FPS);
 		createComponents();
 	}
 	

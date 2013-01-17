@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import yuuki.action.Action;
-import yuuki.animation.engine.Animator;
 import yuuki.battle.Battle;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
@@ -41,11 +40,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The speed of game animation.
-	 */
-	public static final int ANIMATION_FPS = 30;
-	
-	/**
 	 * Program execution hook. Creates a new instance of YuukiEngine and then
 	 * runs it.
 	 *
@@ -55,11 +49,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		YuukiEngine gameEngine = new YuukiEngine();
 		gameEngine.run();
 	}
-	
-	/**
-	 * Drives animation.
-	 */
-	private Animator animationEngine;
 	
 	/**
 	 * Creates all entities.
@@ -74,7 +63,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * The options for the game.
 	 */
-	private Options options;;
+	private Options options;
 	
 	/**
 	 * The player character.
@@ -96,8 +85,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	public YuukiEngine() {
 		options = new Options();
-		animationEngine = new Animator(ANIMATION_FPS);
-		ui = new GraphicalInterface(this, options, animationEngine);
+		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
 		soundEngine = new SoundEngine();
 		applyOptions();
