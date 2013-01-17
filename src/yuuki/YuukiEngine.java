@@ -74,7 +74,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * The options for the game.
 	 */
-	private GameOptions options;;
+	private Options options;;
 	
 	/**
 	 * The player character.
@@ -95,7 +95,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
-		options = new GameOptions();
+		options = new Options();
 		animationEngine = new Animator(ANIMATION_FPS);
 		ui = new GraphicalInterface(this, options, animationEngine);
 		entityMaker = new EntityFactory();

@@ -3,7 +3,7 @@ package yuuki;
 /**
  * Contains game options.
  */
-public class GameOptions {
+public class Options {
 	
 	/**
 	 * The volume of in-game background music.

@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import yuuki.GameOptions;
+import yuuki.Options;
 import yuuki.action.Action;
 import yuuki.animation.engine.Animator;
 import yuuki.buff.Buff;
@@ -111,7 +111,7 @@ OptionsScreenListener, MenuBarListener {
 	/**
 	 * The options of the game.
 	 */
-	private GameOptions options;
+	private Options options;
 	
 	/**
 	 * The options screen.
@@ -135,7 +135,7 @@ OptionsScreenListener, MenuBarListener {
 	 * @param options The options of the program.
 	 * @param animationEngine The Animator for animating different objects.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram, GameOptions options,
+	public GraphicalInterface(UiExecutor mainProgram, Options options,
 			Animator animationEngine) {
 		this.options = options;
 		this.mainProgram = mainProgram;
@@ -658,6 +658,7 @@ OptionsScreenListener, MenuBarListener {
 		r.fighter = fighter;
 		r.stat = stat;
 		r.damage = damage;
+		// we need to wait for the animation to complete
 		SwingUtilities.invokeLater(r);
 	}
 	

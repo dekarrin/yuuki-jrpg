@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import yuuki.GameOptions;
+import yuuki.Options;
 
 /**
  * The screen containing the options for the game.
@@ -109,7 +109,7 @@ ChangeListener {
 	 * 
 	 * @param options The options object.
 	 */
-	public void setValues(GameOptions options) {
+	public void setValues(Options options) {
 		bgmVolumeSlider.setValue(options.bgmVolume);
 		sfxVolumeSlider.setValue(options.sfxVolume);
 	}
