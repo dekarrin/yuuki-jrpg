@@ -5,7 +5,6 @@ import java.awt.Color;
 import javax.swing.JLayeredPane;
 
 import yuuki.animation.Animation;
-import yuuki.animation.MotionTween;
 import yuuki.animation.SizeTween;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.VariableStat;
