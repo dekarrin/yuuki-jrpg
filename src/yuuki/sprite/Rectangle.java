@@ -60,10 +60,4 @@ public class Rectangle extends Shape {
 		super(animator, width, height);
 	}
 	
-	/**
-	 * Has no effect. Rectangle does not have a special behavior.
-	 */
-	@Override
-	protected void advance(int fps) {}
-	
 }

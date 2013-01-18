@@ -137,11 +137,5 @@ public class StatBar extends Sprite {
 			}
 		}
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void advance(int fps) {}
 	
 }

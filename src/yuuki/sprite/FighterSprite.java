@@ -348,10 +348,4 @@ public class FighterSprite extends Sprite {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void advance(int fps) {}
-	
 }

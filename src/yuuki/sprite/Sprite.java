@@ -17,7 +17,7 @@ import yuuki.animation.engine.Animator;
  * instances contained within it, which are advanced every time the owner
  * Sprite is.
  */
-public abstract class Sprite implements Animatable, AnimationOwner {
+public class Sprite implements Animatable, AnimationOwner {
 	
 	/**
 	 * The graphical component that this Sprite controls.
@@ -82,16 +82,23 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 * Sets the properties of this Sprite's component.
 	 */
 	private void setupComponent() {
-		Dimension size = new Dimension(width, height);
 		component = createComponent();
+		setComponentProperties();
+		component.setLayout(null);
+	}
+	
+	/**
+	 * Sets the properties of the component.
+	 */
+	private void setComponentProperties() {
+		Dimension size = new Dimension(width, height);
 		component.setSize(size);
 		component.setPreferredSize(size);
 		component.setMinimumSize(size);
 		component.setMaximumSize(size);
-		component.setLayout(null);
 		component.setOpaque(false);
 	}
-	
+		
 	/**
 	 * Creates the component. This should be overridden by subclasses that wish
 	 * to have their component do custom painting.
@@ -132,11 +139,21 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 */
 	private Component add(Component c, boolean setBounds) {
 		if (setBounds) {
-			Dimension d = c.getPreferredSize();
-			Point p = c.getLocation();
-			c.setBounds(p.x, p.y, d.width, d.height);
+			setDefaultComponentBounds(c);
 		}
 		return component.add(c);
+	}
+	
+	/**
+	 * Sets a component dimensions from its preferred dimensions and its
+	 * location from its current location.
+	 * 
+	 * @param c The component to set.
+	 */
+	protected void setDefaultComponentBounds(Component c) {
+		Dimension d = c.getPreferredSize();
+		Point p = c.getLocation();
+		c.setBounds(p.x, p.y, d.width, d.height);
 	}
 	
 	/**
@@ -284,6 +301,16 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	}
 	
 	/**
+	 * Sets the component that this Sprite controls.
+	 * 
+	 * @param c The new component.
+	 */
+	public void setComponent(JComponent c) {
+		component = c;
+		setComponentProperties();
+	}
+	
+	/**
 	 * Sets the height of this sprite.
 	 * 
 	 * @param height The new height.
@@ -326,7 +353,7 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	/**
 	 * Updates the bounds of this sprite and repaints.
 	 */
-	private void updateBounds() {
+	protected void updateBounds() {
 		component.setBounds(x, y, width, height);
 		component.repaint();
 	}
@@ -336,6 +363,6 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 * 
 	 * @param fps The speed that animation is occurring at.
 	 */
-	protected abstract void advance(int fps);
+	protected void advance(int fps) {}
 	
 }
