@@ -1,6 +1,6 @@
 package yuuki.animation;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 import yuuki.sprite.Sprite;
 
@@ -19,17 +19,17 @@ public class SizeTween extends Tween {
 	 */
 	public SizeTween(Sprite sprite, long time, int dw, int dh) {
 		super(sprite, time);
-		addTweenedProperty(dw);
-		addTweenedProperty(dh);
+		addTweenedProperty("width", dw);
+		addTweenedProperty("height", dh);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void animateSprite(ArrayList<Integer> properties) {
-		int dw = properties.get(0);
-		int dh = properties.get(1);
+	protected void animateSprite(Map<String, Integer> propChanges) {
+		int dw = propChanges.get("width");
+		int dh = propChanges.get("height");
 		sprite.setSize(sprite.getWidth() + dw, sprite.getHeight() + dh);
 	}
 	

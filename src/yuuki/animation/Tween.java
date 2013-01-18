@@ -1,6 +1,9 @@
 package yuuki.animation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import yuuki.sprite.Sprite;
 
@@ -21,12 +24,17 @@ public abstract class Tween extends TimedAnimation {
 	/**
 	 * The amount left to change each property by.
 	 */
-	private ArrayList<Integer> propertyRemainings;
+	private List<Integer> propertyRemainings;
 	
 	/**
 	 * The total amount to change each property by.
 	 */
-	private ArrayList<Integer> propertyTotals;
+	private List<Integer> propertyTotals;
+	
+	/**
+	 * Maps property indexes to property names.
+	 */
+	private Map<Integer, String> propertyNames;
 	
 	/**
 	 * Creates a new Tween.
@@ -39,6 +47,7 @@ public abstract class Tween extends TimedAnimation {
 		super(sprite, time);
 		propertyRemainings = new ArrayList<Integer>();
 		propertyTotals = new ArrayList<Integer>();
+		propertyNames = new HashMap<Integer, String>();
 	}
 	
 	/**
@@ -72,13 +81,17 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
-	 * Adds a property to this tween.
+	 * Adds a property to this tween at the specified index. The property's
+	 * name is the same as its index in the map passed to animateSprite().
 	 * 
+	 * @param name The name of the new property.
 	 * @param total The total amount that this property is to change by.
 	 */
-	protected void addTweenedProperty(int total) {
+	protected void addTweenedProperty(String name, int total) {
+		Integer propIndex = propertyTotals.size();
 		propertyTotals.add(total);
 		propertyRemainings.add(total);
+		propertyNames.put(propIndex, name);
 	}
 	
 	/**
@@ -90,24 +103,24 @@ public abstract class Tween extends TimedAnimation {
 	protected void advanceAnimation(int fps) {
 		double fpms = (double) fps / 1000;
 		long remaining = getRemainingTime();
-		ArrayList<Integer> propValues = new ArrayList<Integer>();
+		HashMap<String, Integer> propChanges = new HashMap<String, Integer>();
 		for (int i = 0; i < propertyTotals.size(); i++) {
 			int pRemain = propertyRemainings.get(i);
 			int dp = getPropertyDifference(pRemain, fpms, remaining);
 			pRemain -= dp;
 			propertyRemainings.set(i, pRemain);
-			propValues.add(dp);
+			propChanges.put(propertyNames.get(i), dp);
 		}
-		animateSprite(propValues);
+		animateSprite(propChanges);
 	}
 	
 	/**
 	 * Animates the owned sprite with the values calculated by advancing the
 	 * tween.
 	 * 
-	 * @param properties The values of the properties.
+	 * @param propChanges The amount that each property should change.
 	 */
-	protected abstract void animateSprite(ArrayList<Integer> properties);
+	protected abstract void animateSprite(Map<String, Integer> propChanges);
 	
 	/**
 	 * Checks whether there is any more time left in this animation and
