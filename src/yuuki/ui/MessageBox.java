@@ -19,7 +19,6 @@ import yuuki.sprite.Sprite;
 /**
  * Displays messages and prompts the user for input.
  */
-@SuppressWarnings("serial")
 public class MessageBox extends Sprite implements MouseListener {
 	
 	/**
@@ -62,7 +61,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	public MessageBox(Animator animator, int width, int height) {
 		super(animator, width, height);
-		setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		component.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
 		textBox.setEditable(false);
@@ -203,7 +202,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param options The options that the user is to pick from.
 	 */
 	public void showChoicePrompt(String prompt, Object[] options) {
-		removeAll();
+		component.removeAll();
 		add(new JLabel(prompt));
 		for (Object opt: options) {
 			JButton button = new JButton(opt.toString());
@@ -211,8 +210,8 @@ public class MessageBox extends Sprite implements MouseListener {
 			button.addMouseListener(this);
 			add(button);
 		}
-		revalidate();
-		repaint();
+		component.revalidate();
+		component.repaint();
 	}
 	
 	/**
@@ -220,10 +219,10 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * except for MessageBoxDisplayer.
 	 */
 	public void showTextBox() {
-		removeAll();
+		component.removeAll();
 		add(textBox);
-		revalidate();
-		repaint();
+		component.revalidate();
+		component.repaint();
 	}
 	
 	/**
@@ -234,12 +233,12 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param prompt The text prompt to show the user.
 	 */
 	public void showTextPrompt(String prompt) {
-		removeAll();
+		component.removeAll();
 		add(new JLabel(prompt));
 		add(input);
 		add(enterButton);
-		revalidate();
-		repaint();
+		component.revalidate();
+		component.repaint();
 	}
 	
 	/**

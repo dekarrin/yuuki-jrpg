@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
+import yuuki.sprite.Sprite;
 
 /**
  * Provides stats for characters.
@@ -94,10 +95,8 @@ public abstract class Character {
 	
 	/**
 	 * The sprite for this Character in the GUI.
-	 * 
-	 * TODO: Make type more specific to get around type-casting.
 	 */
-	private javax.swing.JComponent sprite = null;
+	private Sprite sprite = null;
 	
 	/**
 	 * The physical damage dealt by the character.
@@ -554,7 +553,7 @@ public abstract class Character {
 	 * 
 	 * @return The sprite that this Character is set to use.
 	 */
-	public javax.swing.JComponent getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 	
@@ -798,7 +797,7 @@ public abstract class Character {
 	 * 
 	 * @param sprite The sprite to set it to.
 	 */
-	public void setSprite(javax.swing.JComponent sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 	

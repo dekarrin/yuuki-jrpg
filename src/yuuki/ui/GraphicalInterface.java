@@ -1,7 +1,6 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -967,7 +966,7 @@ OptionsScreenListener, MenuBarListener {
 		clearWindow();
 		mainWindow.add(menuBar, BorderLayout.NORTH);
 		mainWindow.add(screen, BorderLayout.CENTER);
-		mainWindow.add(messageBox, BorderLayout.SOUTH);
+		mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
 		refreshWindow();
 		screen.setInitialFocus();
 	}

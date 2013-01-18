@@ -233,7 +233,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	private void addBottomTeam() {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
-			team.add(fs);
+			team.add(fs.getComponent());
 		}
 		add(team, BorderLayout.SOUTH);
 	}
@@ -253,7 +253,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	private void addTopTeam() {
 		Box team = new Box(BoxLayout.X_AXIS);
 		for (FighterSprite fs: fighterGraphics.get(TOP_TEAM_INDEX)) {
-			team.add(fs);
+			team.add(fs.getComponent());
 		}
 		add(team, BorderLayout.NORTH);
 	}
@@ -272,7 +272,6 @@ public class BattleScreen extends Screen<ScreenListener> {
 			for (int j = 0; j < fighters[i].length; j++) {
 				Animator a = animationEngine;
 				FighterSprite fs = new FighterSprite(fighters[i][j], a);
-				fs.setVisible(true);
 				teamGraphics.add(fs);
 				fighters[i][j].setSprite(fs);
 			}

@@ -2,23 +2,64 @@ package yuuki.sprite;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import yuuki.animation.engine.Animator;
 
 /**
  * A sprite in a specific shape that has a background and a border.
  */
-@SuppressWarnings("serial")
 public abstract class Shape extends Sprite {
-
-	/**
-	 * The color of the border. Null is no border.
-	 */
-	private Color border;
 	
 	/**
-	 * The color of the fill. Null is no fill.
+	 * A JComponent that performs custom painting.
 	 */
-	private Color fill;
+	@SuppressWarnings("serial")
+	protected abstract static class ShapeComponent extends JPanel {
+		
+		/**
+		 * The fill color of this shape.
+		 */
+		public Color fill;
+		
+		/**
+		 * The border color of this shape.
+		 */
+		public Color border;
+		
+		/**
+		 * Paints this shape on a graphical context.
+		 * 
+		 * @param g The graphical context to paint this shape on.
+		 */
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Color oldColor = g.getColor();
+			drawFill(g, fill);
+			drawBorder(g, border);
+			g.setColor(oldColor);
+		}
+		
+		/**
+		 * Draws the fill of this shape.
+		 * 
+		 * @param g The context to paint the fill on.
+		 * @param color The color to make the fill. Null indicates no fill.
+		 */
+		protected abstract void drawFill(Graphics g, Color color);
+		
+		/**
+		 * Draws the border of this shape.
+		 * 
+		 * @param g The context to paint the border on.
+		 * @param color The color to make the border. Null indicates no border.
+		 */
+		protected abstract void drawBorder(Graphics g, Color color);
+		
+	}
 	
 	/**
 	 * Creates a new Shape.
@@ -29,9 +70,26 @@ public abstract class Shape extends Sprite {
 	 */
 	public Shape(Animator animator, int width, int height) {
 		super(animator, width, height);
-		border = null;
-		fill = null;
+		((ShapeComponent) component).border = null;
+		((ShapeComponent) component).fill = null;
 	}
+	
+	/**
+	 * Creates the Component for this Sprite.
+	 * 
+	 * @return The Component.
+	 */
+	@Override
+	protected JComponent createComponent() {
+		return createShapeComponent();
+	}
+	
+	/**
+	 * Creates the ShapeComponent for this Shape.
+	 * 
+	 * @return The ShapeComponent.
+	 */
+	protected abstract ShapeComponent createShapeComponent();
 	
 	/**
 	 * Gets the fill of this shape.
@@ -39,7 +97,7 @@ public abstract class Shape extends Sprite {
 	 * @return The fill color.
 	 */
 	public Color getFillColor() {
-		return fill;
+		return ((ShapeComponent) component).fill;
 	}
 	
 	/**
@@ -48,7 +106,7 @@ public abstract class Shape extends Sprite {
 	 * @return The border color.
 	 */
 	public Color getBorderColor() {
-		return border;
+		return ((ShapeComponent) component).border;
 	}
 	
 	/**
@@ -57,8 +115,8 @@ public abstract class Shape extends Sprite {
 	 * @param color The new border color. Set to null for no border.
 	 */
 	public void setBorderColor(Color color) {
-		border = color;
-		repaint();
+		((ShapeComponent) component).border = color;
+		component.repaint();
 	}
 	
 	/**
@@ -67,38 +125,8 @@ public abstract class Shape extends Sprite {
 	 * @param color The new fill color. Set to null for no fill.
 	 */
 	public void setFillColor(Color color) {
-		fill = color;
-		repaint();
+		((ShapeComponent) component).fill = color;
+		component.repaint();
 	}
-	
-	/**
-	 * Paints this shape on a graphical context.
-	 * 
-	 * @param g The graphical context to paint this shape on.
-	 */
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Color oldColor = g.getColor();
-		drawFill(g, fill);
-		drawBorder(g, border);
-		g.setColor(oldColor);
-	}
-	
-	/**
-	 * Draws the fill of this shape.
-	 * 
-	 * @param g The context to paint the fill on.
-	 * @param color The color to make the fill. Null indicates no fill.
-	 */
-	protected abstract void drawFill(Graphics g, Color color);
-	
-	/**
-	 * Draws the border of this shape.
-	 * 
-	 * @param g The context to paint the border on.
-	 * @param color The color to make the border. Null indicates no border.
-	 */
-	protected abstract void drawBorder(Graphics g, Color color);
 	
 }

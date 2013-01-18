@@ -14,7 +14,6 @@ import yuuki.sprite.Sprite;
 /**
  * Displays a VariableStat in a bar.
  */
-@SuppressWarnings("serial")
 public class StatBar extends Sprite {
 	
 	/**
@@ -73,8 +72,8 @@ public class StatBar extends Sprite {
 		foreground.setBorderColor(null);
 		foreground.setFillColor(barColor);
 		JLayeredPane pane = new JLayeredPane();
-		pane.add(background, new Integer(0));
-		pane.add(foreground, new Integer(1));
+		pane.add(background.getComponent(), new Integer(0));
+		pane.add(foreground.getComponent(), new Integer(1));
 		pane.setBounds(0, 0, getWidth(), getHeight());
 		add(pane);
 	}

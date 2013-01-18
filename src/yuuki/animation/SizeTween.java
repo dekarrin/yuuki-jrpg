@@ -30,7 +30,7 @@ public class SizeTween extends Tween {
 	protected void animateSprite(Map<String, Integer> propChanges) {
 		int dw = propChanges.get("width");
 		int dh = propChanges.get("height");
-		sprite.setSize(sprite.getWidth() + dw, sprite.getHeight() + dh);
+		sprite.resize(dw, dh);
 	}
 	
 }

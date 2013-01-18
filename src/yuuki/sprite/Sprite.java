@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import yuuki.animation.engine.Animatable;
@@ -15,9 +16,12 @@ import yuuki.animation.engine.Animator;
  * instances contained within it, which are advanced every time the owner
  * Sprite is.
  */
-@SuppressWarnings("serial")
-public abstract class Sprite extends JPanel implements Animatable,
-AnimationOwner {
+public abstract class Sprite implements Animatable, AnimationOwner {
+	
+	/**
+	 * The graphical component that this Sprite controls.
+	 */
+	protected JComponent component;
 	
 	/**
 	 * Whether this Sprite has an animation controller.
@@ -40,6 +44,16 @@ AnimationOwner {
 	private int y;
 	
 	/**
+	 * The width of this Sprite.
+	 */
+	private int width;
+	
+	/**
+	 * The height of this Sprite.
+	 */
+	private int height;
+	
+	/**
 	 * The animation engine that is driving the animation of this Sprite.
 	 */
 	protected Animator animator;
@@ -55,20 +69,67 @@ AnimationOwner {
 		x = 0;
 		y = 0;
 		this.animator = animator;
-		setSize(width, height);
+		this.width = width;
+		this.height = height;
 		controlled = false;
 		ownedAnims = new ArrayList<Animatable>();
-		setOpaque(false);
-		setLayout(null);
+		setupComponent();
 		updateBounds();
 	}
 	
 	/**
-	 * Also adds the component to the list of anims.
+	 * Sets the properties of this Sprite's component.
 	 */
-	public Component add(Sprite c) {
-		addAnim(c);
-		return super.add(c);
+	private void setupComponent() {
+		Dimension size = new Dimension(width, height);
+		component = createComponent();
+		component.setSize(size);
+		component.setPreferredSize(size);
+		component.setMinimumSize(size);
+		component.setMaximumSize(size);
+		component.setLayout(null);
+		component.setOpaque(false);
+	}
+	
+	/**
+	 * Creates the component. This should be overridden by subclasses that wish
+	 * to have their component do custom painting.
+	 * 
+	 * @return The component.
+	 */
+	protected JComponent createComponent() {
+		return new JPanel();
+	}
+	
+	/**
+	 * Adds a Sprite to this Sprite. The added Sprite's component is added to
+	 * this Sprite's component and the added Sprite itself is added to the list
+	 * of anims. The added Sprite is then considered owned by this Sprite.
+	 * 
+	 * @param s The Sprite to add.
+	 */
+	public Component add(Sprite s) {
+		addAnim(s);
+		return add(s.getComponent());
+	}
+	
+	/**
+	 * Adds a non-Sprite component to this Sprite. The component is added to
+	 * this Sprite's component.
+	 * 
+	 * @param c The component to add.
+	 */
+	public Component add(Component c) {
+		return component.add(c);
+	}
+	
+	/**
+	 * Gets this Sprite's component.
+	 * 
+	 * @return The component.
+	 */
+	public JComponent getComponent() {
+		return component;
 	}
 	
 	/**
@@ -93,57 +154,41 @@ AnimationOwner {
 			a.advanceFrame(fps);
 		}
 		advance(fps);
-		repaint();
+		component.repaint();
 	}
 	
 	/**
-	 * Returns this Sprite's maximum size. This will be the same as its
-	 * preferred size.
+	 * Gets the height of this Sprite.
 	 * 
-	 * @return A Dimension with this Sprite's size.
+	 * @return The height of this Sprite.
 	 */
-	@Override
-	public Dimension getMaximumSize() {
-		return getPreferredSize();
+	public int getHeight() {
+		return height;
 	}
 	
 	/**
-	 * Returns this Sprite's minimum size. This will be the same as its
-	 * preferred size.
+	 * Gets the width of this Sprite.
 	 * 
-	 * @return A Dimension with this Sprite's size.
+	 * @return The width of this Sprite.
 	 */
-	@Override
-	public Dimension getMinimumSize() {
-		return getPreferredSize();
+	public int getWidth() {
+		return width;
 	}
 	
 	/**
-	 * Returns this Sprite's preferred size.
-	 * 
-	 * @return A Dimension with this Sprite's size.
-	 */
-	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(getWidth(), getHeight());
-	}
-	
-	/**
-	 * Gets the x-coordinate of this sprite.
+	 * Gets the x-coordinate of this Sprite.
 	 * 
 	 * @return The x-coordinate of the location of this sprite.
 	 */
-	@Override
 	public int getX() {
 		return x;
 	}
 	
 	/**
-	 * Gets the y-coordinate of this sprite.
+	 * Gets the y-coordinate of this Sprite.
 	 * 
 	 * @return The y-coordinate of the location of this sprite.
 	 */
-	@Override
 	public int getY() {
 		return y;
 	}
@@ -157,12 +202,35 @@ AnimationOwner {
 	}
 	
 	/**
+	 * Sets the size of this Sprite.
+	 * 
+	 * @param width The new width of this Sprite.
+	 * @param height The new height of this Sprite.
+	 */
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		updateBounds();
+	}
+	
+	/**
+	 * Changes the size of this Sprite by a specific amount.
+	 * 
+	 * @param dw The amount to resize the width by.
+	 * @param dh The amount to resize the height by.
+	 */
+	public void resize(int dw, int dh) {
+		this.width += dw;
+		this.height += dh;
+		updateBounds();
+	}
+	
+	/**
 	 * Moves this sprite by a specific amount.
 	 * 
 	 * @param dx The amount to move it along the x-axis.
 	 * @param dy The amount to move it along the y-axis.
 	 */
-	@Override
 	public void move(int dx, int dy) {
 		this.x += dx;
 		this.y += dy;
@@ -205,7 +273,7 @@ AnimationOwner {
 	 * @param height The new height.
 	 */
 	public void setHeight(int height) {
-		setSize(getWidth(), height);
+		this.height = height;
 		updateBounds();
 	}
 	
@@ -215,7 +283,7 @@ AnimationOwner {
 	 * @param width The new width.
 	 */
 	public void setWidth(int width) {
-		setSize(width, getHeight());
+		this.width = width;
 		updateBounds();
 	}
 	
@@ -243,8 +311,8 @@ AnimationOwner {
 	 * Updates the bounds of this sprite and repaints.
 	 */
 	private void updateBounds() {
-		setBounds(x, y, getWidth(), getHeight());
-		repaint();
+		component.setBounds(x, y, width, height);
+		component.repaint();
 	}
 	
 	/**

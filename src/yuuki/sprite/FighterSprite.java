@@ -19,7 +19,6 @@ import yuuki.ui.StatPanel;
 /**
  * The graphic used to display characters on the battle screen.
  */
-@SuppressWarnings("serial")
 public class FighterSprite extends Sprite {
 	
 	/**
@@ -281,7 +280,6 @@ public class FighterSprite extends Sprite {
 		healthBar.setY(BUFF_HEIGHT);
 		healthBar.setStat(hpStat);
 		healthBar.setLevel(level);
-		healthBar.setVisible(true);
 	}
 	
 	/**
@@ -314,7 +312,6 @@ public class FighterSprite extends Sprite {
 		manaBar.setY(BUFF_HEIGHT + BAR_HEIGHT);
 		manaBar.setStat(mpStat);
 		manaBar.setLevel(level);
-		manaBar.setVisible(true);
 	}
 	
 	/**
