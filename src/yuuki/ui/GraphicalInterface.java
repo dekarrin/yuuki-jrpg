@@ -911,9 +911,8 @@ OptionsScreenListener, MenuBarListener {
 	 * Creates the message box.
 	 */
 	private void createMessageBox() {
-		Dimension size = new Dimension(WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
-		messageBox = new MessageBox();
-		messageBox.setPreferredSize(size);
+		Animator a = animationEngine;
+		messageBox = new MessageBox(a, WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
 	}
 	
 	/**

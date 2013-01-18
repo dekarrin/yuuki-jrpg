@@ -9,17 +9,18 @@ import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import yuuki.animation.engine.Animator;
 import yuuki.entity.Character;
+import yuuki.sprite.Sprite;
 
 /**
  * Displays messages and prompts the user for input.
  */
 @SuppressWarnings("serial")
-public class MessageBox extends JPanel implements MouseListener {
+public class MessageBox extends Sprite implements MouseListener {
 	
 	/**
 	 * The enter button used when a text prompt is displayed.
@@ -54,8 +55,13 @@ public class MessageBox extends JPanel implements MouseListener {
 	/**
 	 * Allocates a new MessageBox. The child components are created and the
 	 * message displayer is started on its own thread.
+	 * 
+	 * @param animator The handler for this MessageBox's animation.
+	 * @param width The width of this MessageBox.
+	 * @param height The height of this MessageBox.
 	 */
-	public MessageBox() {
+	public MessageBox(Animator animator, int width, int height) {
+		super(animator, width, height);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
@@ -173,6 +179,22 @@ public class MessageBox extends JPanel implements MouseListener {
 	}
 	
 	/**
+	 * Adds one character to the text of this MessageBox.
+	 * 
+	 * @param c The character to add.
+	 */
+	public void addChar(char c) {
+		textBox.setText(textBox.getText() + c);
+	}
+	
+	/**
+	 * Clears this MessageBox of all text.
+	 */
+	public void clear() {
+		setText("");
+	}
+	
+	/**
 	 * Shows a choice prompt. This should never be called directly by any class
 	 * but MessageBoxDisplayer; to display a prompt with proper queuing, use
 	 * the getChoice() method.
@@ -251,5 +273,10 @@ public class MessageBox extends JPanel implements MouseListener {
 			l.optionClicked(optValue);
 		}
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void advance(int fps) {}
 	
 }
