@@ -2,6 +2,7 @@ package yuuki.sprite;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -110,7 +111,7 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 */
 	public Component add(Sprite s) {
 		addAnim(s);
-		return add(s.getComponent(), true);
+		return add(s.getComponent(), false);
 	}
 	
 	/**
@@ -120,7 +121,7 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 * @param c The component to add.
 	 */
 	public Component add(Component c) {
-		return add(c, false);
+		return add(c, true);
 	}
 	
 	/**
@@ -132,8 +133,8 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	private Component add(Component c, boolean setBounds) {
 		if (setBounds) {
 			Dimension d = c.getPreferredSize();
-			java.awt.Rectangle r = c.getBounds();
-			c.setBounds(r.x, r.y, d.width, d.height);
+			Point p = c.getLocation();
+			c.setBounds(p.x, p.y, d.width, d.height);
 		}
 		return component.add(c);
 	}

@@ -248,10 +248,8 @@ public class FighterSprite extends Sprite {
 	 * Initializes the buff panel of this FighterSprite.
 	 */
 	private void initializeBuffPanel() {
-		buffPanel.setBounds(0, 0, SPRITE_WIDTH, BUFF_HEIGHT);
+		buffPanel.setPreferredSize(new Dimension(SPRITE_WIDTH, BUFF_HEIGHT));
 		buffPanel.setBackground(Color.RED);
-		buffPanel.setOpaque(true);
-		buffPanel.setVisible(true);
 	}
 	
 	/**
@@ -288,8 +286,6 @@ public class FighterSprite extends Sprite {
 	private void initializeImagePanel() {
 		imagePanel.setBounds(0, 0, SPRITE_WIDTH, IMAGE_HEIGHT);
 		imagePanel.setBackground(Color.GREEN);
-		imagePanel.setOpaque(true);
-		imagePanel.setVisible(true);
 	}
 	
 	/**
@@ -298,8 +294,7 @@ public class FighterSprite extends Sprite {
 	private void initializeImageStatHolder() {
 		Dimension size = new Dimension(SPRITE_WIDTH, IMAGE_HEIGHT);
 		imageStatHolder.setPreferredSize(size);
-		int y = BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE;
-		imageStatHolder.setBounds(0, y, SPRITE_WIDTH, IMAGE_HEIGHT);
+		imageStatHolder.setLocation(0, BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE);
 	}
 	
 	/**
@@ -320,10 +315,9 @@ public class FighterSprite extends Sprite {
 	 * @param name The name of the fighter to initialize the label for.
 	 */
 	private void initializeNameLabel(String name) {
-		int y = BUFF_HEIGHT + 2*BAR_HEIGHT;
-		nameLabel.setBounds(0, y, SPRITE_WIDTH, N_SIZE);
+		nameLabel.setPreferredSize(new Dimension(SPRITE_WIDTH, N_SIZE));
+		nameLabel.setLocation(0, BUFF_HEIGHT + 2*BAR_HEIGHT);
 		nameLabel.setText(name);
-		nameLabel.setVisible(true);
 	}
 	
 	/**
