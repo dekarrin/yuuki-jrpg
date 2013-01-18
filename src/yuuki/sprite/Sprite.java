@@ -110,16 +110,31 @@ public abstract class Sprite implements Animatable, AnimationOwner {
 	 */
 	public Component add(Sprite s) {
 		addAnim(s);
-		return add(s.getComponent());
+		return add(s.getComponent(), true);
 	}
 	
 	/**
-	 * Adds a non-Sprite component to this Sprite. The component is added to
-	 * this Sprite's component.
+	 * Adds a non-Sprite component to this Sprite. The component has its bounds
+	 * set and is then added to this Sprite.
 	 * 
 	 * @param c The component to add.
 	 */
 	public Component add(Component c) {
+		return add(c, false);
+	}
+	
+	/**
+	 * Adds a non-Sprite component to this Sprite.
+	 * 
+	 * @param setBounds Whether the bounds of the component should be set.
+	 * @param c The component to add.
+	 */
+	private Component add(Component c, boolean setBounds) {
+		if (setBounds) {
+			Dimension d = c.getPreferredSize();
+			java.awt.Rectangle r = c.getBounds();
+			c.setBounds(r.x, r.y, d.width, d.height);
+		}
 		return component.add(c);
 	}
 	
