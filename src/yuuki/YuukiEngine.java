@@ -23,6 +23,19 @@ import yuuki.ui.UiExecutor;
 public class YuukiEngine implements Runnable, UiExecutor {
 	
 	/**
+	 * Pauses execution for a number of seconds.
+	 * 
+	 * @param time The time to pause execution for.
+	 */
+	public static void pause(long time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Handles the execution of a battle in its own thread.
 	 */
 	private class BattleRunner implements Runnable {
@@ -114,7 +127,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		Character winner = mainBattle.getFighters(0).get(0);
 		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
 		ui.switchToOverworldScreen();
-		ui.display(null, "Your health has been restored.");
+		ui.display(null, "Your health has been restored.", false);
 		player.restoreHP();
 		player.restoreMP();
 		soundEngine.playMusic("BGM_MAIN_MENU");
@@ -150,7 +163,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestLoadGame() {
-		ui.display(null, "Loading hasn't yet been implemented");
+		ui.display(null, "Loading hasn't yet been implemented", false);
 	}
 	
 	/**
@@ -197,7 +210,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestSaveGame() {
-		ui.display(null, "Saving hasn't yet been implemented");
+		ui.display(null, "Saving hasn't yet been implemented", false);
 	}
 	
 	/**
@@ -352,7 +365,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private void outputTurnStart(Battle battle) {
 		Character c = battle.getCurrentFighter();
 		int recoveredMana = battle.getRegeneratedMana();
-		ui.display(c, "It looks like I'm up next.");
+		ui.display(c, "It looks like I'm up next.", true);
 		ArrayList<Buff> expiredBuffs = c.getExpiredBuffs();
 		for (Buff expired: expiredBuffs) {
 			ui.showBuffDeactivation(expired);
@@ -361,6 +374,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			ui.showRecovery(c, c.getMPStat(), recoveredMana);
 		}
 		ui.showStatUpdate(c);
+		ui.waitForDisplay();
 	}
 	
 	/**

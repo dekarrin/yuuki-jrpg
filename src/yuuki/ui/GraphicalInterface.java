@@ -39,6 +39,17 @@ CharacterCreationScreenListener, OverworldScreenListener,
 OptionsScreenListener, MenuBarListener {
 	
 	/**
+	 * The delay, in milliseconds, between each letter printed on the message
+	 * box.
+	 */
+	public static final int MESSAGE_LETTER_DELAY = 100;
+	
+	/**
+	 * The amount of time to show a message on the screen for.
+	 */
+	public static final int MESSAGE_DISPLAY_TIME = 5000;
+	
+	/**
 	 * The speed of game animation.
 	 */
 	public static final int ANIMATION_FPS = 30;
@@ -189,19 +200,9 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void display(Character speaker, String message) {
-		class StringMessenger implements Runnable {
-			public String message;
-			public Character speaker;
-			@Override
-			public void run() {
-				messageBox.display(speaker, message);
-			}
-		};
-		StringMessenger runner = new StringMessenger();
-		runner.speaker = speaker;
-		runner.message = message;
-		SwingUtilities.invokeLater(runner);
+	public void display(Character speaker, String message, boolean animated) {
+		long letterTime = (animated) ? MESSAGE_LETTER_DELAY : 0;
+		messageBox.display(speaker, message, letterTime, MESSAGE_DISPLAY_TIME);
 	}
 	
 	/**
@@ -695,7 +696,15 @@ OptionsScreenListener, MenuBarListener {
 	 * Shows that a feature has not yet been implemented.
 	 */
 	public void showUnimpMsg() {
-		display(null, "That feature has not yet been implemented.");
+		display(null, "That feature has not yet been implemented.", true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void waitForDisplay() {
+		messageBox.waitForClean();
 	}
 	
 	/**

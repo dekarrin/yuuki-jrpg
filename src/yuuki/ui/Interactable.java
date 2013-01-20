@@ -35,8 +35,14 @@ public interface Interactable {
 	 *
 	 * @param speaker The person doing the talking. Null for none.
 	 * @param message The message to display.
+	 * @param animated Whether the message should come up one letter at a time.
 	 */
-	public void display(Character speaker, String message);
+	public void display(Character speaker, String message, boolean animated);
+	
+	/**
+	 * Waits for the message to stop displaying.
+	 */
+	public void waitForDisplay();
 	
 	/**
 	 * Gets a choice from the user. The choice may be one of the given Objects

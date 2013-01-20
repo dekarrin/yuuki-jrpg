@@ -12,7 +12,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
+import yuuki.animation.TextTween;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.Character;
 import yuuki.sprite.Sprite;
@@ -21,6 +23,48 @@ import yuuki.sprite.Sprite;
  * Displays messages and prompts the user for input.
  */
 public class MessageBox extends Sprite implements MouseListener {
+	
+	/**
+	 * The thread that clears the box after the display time is over.
+	 */
+	private class Cleaner implements Runnable {
+		
+		/**
+		 * The time that thread's waiting started at.
+		 */
+		private long startTime;
+		
+		/**
+		 * The amount of time to wait before cleaning.
+		 */
+		private long waitTime;
+		
+		/**
+		 * Creates a new Cleaner.
+		 * 
+		 * @param time The amount of time to wait before cleaning.
+		 */
+		public Cleaner(long time) {
+			waitTime = time;
+		}
+		
+		/**
+		 * Waits, and then cleans the text area.
+		 */
+		@Override
+		public void run() {
+			startTime = System.currentTimeMillis();
+			while (System.currentTimeMillis() - startTime < waitTime) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					setText("");
+				}
+			}
+			setText("");
+		}
+		
+	}
 	
 	/**
 	 * The enter button used when a text prompt is displayed.
@@ -53,6 +97,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	private JTextArea textBox;
 	
 	/**
+	 * The thread that waits to clear the text after it has been displayed.
+	 */
+	private Thread textCleaner;
+	
+	/**
 	 * Allocates a new MessageBox. The child components are created and the
 	 * message displayer is started on its own thread.
 	 * 
@@ -76,6 +125,15 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Adds one character to the text of this MessageBox.
+	 * 
+	 * @param c The character to add.
+	 */
+	public void addChar(char c) {
+		textBox.setText(textBox.getText() + c);
+	}
+	
+	/**
 	 * Adds a listener for MessageBox input events.
 	 * 
 	 * @param l The listener to add.
@@ -85,14 +143,34 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Clears this MessageBox of all text. If a clean-up thread is waiting, it
+	 * is interrupted.
+	 */
+	public void clear() {
+		if (textCleaner != null && textCleaner.isAlive()) {
+			textCleaner.interrupt();
+		} else {
+			setText("");
+		}
+	}
+	
+	/**
 	 * Queues a text message for displaying.
 	 * 
 	 * @param speaker The character doing the speaking. This is used for
 	 * styling the message. Set this to null for no styling.
 	 * @param message The message to display.
+	 * @param letterDelay The time between each letter. Set to 0 for instant
+	 * display.
+	 * @param displayTime The amount of time to display the message after it
+	 * has finished being displayed.
 	 */
-	public void display(Character speaker, String message) {
-		messageDisplayer.queueMessage(speaker, message);
+	public void display(Character speaker, String message, long letterDelay,
+			long displayTime) {
+		String msg = composeMessage(speaker, message);
+		clear();
+		showMessage(msg, letterDelay);
+		spawnCleanerThread(displayTime);
 	}
 	
 	/**
@@ -169,30 +247,22 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Sets the text of this MessageBox's text box. This should never be called
-	 * directly by any class but MessageBoxDisplayer; to display a message with
-	 * proper queuing, use the display() method.
+	 * Sets the text of this MessageBox's text box.
 	 * 
 	 * @param t The String to set the text box's contents to.
 	 */
 	public void setText(String t) {
-		textBox.setText(t);
-	}
-	
-	/**
-	 * Adds one character to the text of this MessageBox.
-	 * 
-	 * @param c The character to add.
-	 */
-	public void addChar(char c) {
-		textBox.setText(textBox.getText() + c);
-	}
-	
-	/**
-	 * Clears this MessageBox of all text.
-	 */
-	public void clear() {
-		setText("");
+		class Runner implements Runnable {
+			private String t;
+			public Runner(String t) {
+				this.t = t;
+			}
+			public void run() {
+				textBox.setText(t);
+			}
+		}
+		Runner r = new Runner(t);
+		SwingUtilities.invokeLater(r);
 	}
 	
 	/**
@@ -244,6 +314,51 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Joins the current thread with the cleaner thread.
+	 */
+	public void waitForClean() {
+		if (textCleaner != null && textCleaner.isAlive()) {
+			try {
+				textCleaner.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Animates the message and waits for it to complete.
+	 * 
+	 * @param letterDelay The time between each letter.
+	 * @param message The message to display.
+	 */
+	private void animateMessage(long letterDelay, String message) {
+		TextTween tween = new TextTween(this, letterDelay, message);
+		try {
+			Animator.animateAndWait(animator, tween);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Creates the message from the message text and the speaker.
+	 * 
+	 * @param speaker The character speaking the message.
+	 * @param message The text of the message.
+	 * 
+	 * @return The fully-composed message.
+	 */
+	private String composeMessage(Character speaker, String message) {
+		String msg = "";
+		if (speaker != null) {
+			msg = speaker.getName() + ": ";
+		}
+		msg += message;
+		return msg;
+	}
+	
+	/**
 	 * Calls the enterClicked() method on all listeners. This method is called
 	 * when the user presses the enter button in a text prompt.
 	 */
@@ -276,8 +391,31 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Shows a message on the text area. If letter delay is not 0, it will be
+	 * animated.
+	 * 
+	 * @param message The message to display.
+	 * @param letterDelay The time between each letter. Set to 0 for instant
+	 * display.
 	 */
-	public void advance(int fps) {}
+	private void showMessage(String message, long letterDelay) {
+		if (letterDelay != 0) {
+			animateMessage(letterDelay, message);
+		} else {
+			setText(message);
+		}
+	}
+	
+	/**
+	 * Spawns a thread that waits a certain amount of time before clearing the
+	 * display.
+	 * 
+	 * @param time The time to display the message before clearing it.
+	 */
+	private void spawnCleanerThread(long displayTime) {
+		Cleaner c = new Cleaner(displayTime);
+		textCleaner = new Thread(c, "Message Cleaner");
+		textCleaner.start();
+	}
 	
 }
