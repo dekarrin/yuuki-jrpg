@@ -20,8 +20,8 @@ public class Bounce extends AnimationSequence {
 	 */
 	public Bounce(Sprite sprite, long time, int xBounce, int yBounce) {
 		super(sprite);
-		addAnimation(new MotionTween(sprite, time / 2, xBounce, yBounce));
-		addAnimation(new MotionTween(sprite, time / 2, -xBounce, -yBounce));
+		add(new MotionTween(sprite, time / 2, xBounce, yBounce));
+		add(new MotionTween(sprite, time / 2, -xBounce, -yBounce));
 	}
 	
 }
