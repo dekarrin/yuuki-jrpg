@@ -36,7 +36,7 @@ public class AnimationSequence extends Animation {
 	 * 
 	 * @param animation The animation to add.
 	 */
-	protected void addAnimation(Animation animation) {
+	public void addAnimation(Animation animation) {
 		sequence.add(animation);
 	}
 	
