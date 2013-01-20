@@ -358,24 +358,23 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public String getString(String prompt) {
-		class Runner implements Runnable, MessageBoxInputListener {
+		class Runner implements MessageBoxInputListener, Runnable {
 			public String prompt;
 			public String value = null;
-			@Override
-			public void enterClicked(String input) {
-				value = input;
-				messageBox.removeListener(this);
+			public Runner(String prompt) {
+				this.prompt = prompt;
 			}
-			@Override
-			public void optionClicked(Object option) {}
-			@Override
 			public void run() {
 				messageBox.addListener(this);
 				messageBox.getString(prompt);
 			}
-		};
-		Runner r = new Runner();
-		r.prompt = prompt;
+			public void enterClicked(String input) {
+				value = input;
+				messageBox.removeListener(this);
+			}
+			public void optionClicked(Object option) {}
+		}
+		Runner r = new Runner(prompt);
 		SwingUtilities.invokeLater(r);
 		while (r.value == null) {
 			try {

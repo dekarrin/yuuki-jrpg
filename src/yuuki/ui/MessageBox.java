@@ -49,7 +49,8 @@ public class MessageBox extends Sprite implements MouseListener {
 		}
 		
 		/**
-		 * Waits, and then cleans the text area.
+		 * Waits, and then cleans the text area. If interrupted, the text area
+		 * will not be cleaned.
 		 */
 		@Override
 		public void run() {
@@ -58,7 +59,7 @@ public class MessageBox extends Sprite implements MouseListener {
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
-					setText("");
+					Thread.currentThread().interrupt();
 				}
 			}
 			setText("");
@@ -80,11 +81,6 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * The list of listeners for events fired from this MessageBox.
 	 */
 	private ArrayList<MessageBoxInputListener> listeners;
-	
-	/**
-	 * Handles message queuing and displaying.
-	 */
-	private MessageBoxDisplayer messageDisplayer;
 	
 	/**
 	 * The values of the options shown during a choice prompt.
@@ -119,9 +115,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		textBox.setFocusable(false);
 		input = new JTextField(30);
 		enterButton = new JButton("Enter");
-		showTextBox();
-		messageDisplayer = new MessageBoxDisplayer(this);
-		(new Thread(messageDisplayer, "MessageDisplay")).start();
+		showTextArea();
 	}
 	
 	/**
@@ -149,13 +143,13 @@ public class MessageBox extends Sprite implements MouseListener {
 	public void clear() {
 		if (textCleaner != null && textCleaner.isAlive()) {
 			textCleaner.interrupt();
-		} else {
-			setText("");
 		}
+		setText("");
 	}
 	
 	/**
-	 * Queues a text message for displaying.
+	 * Displays a message. This method is safe to call from outside the EDT. It
+	 * may NOT be called from the EDT if animation is used.
 	 * 
 	 * @param speaker The character doing the speaking. This is used for
 	 * styling the message. Set this to null for no styling.
@@ -174,9 +168,9 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Queues a choice prompt for displaying. When it is displayed, the user is
-	 * presented with several options shown as buttons. Once the user clicks an
-	 * option, the optionClicked() method is called on all listeners.
+	 * Displays a choice prompt. When it is displayed, the user is presented
+	 * with several options shown as buttons. Once the user clicks an option,
+	 * the optionClicked() method is called on all listeners.
 	 * 
 	 * @param prompt The text prompt to show to the user.
 	 * @param options The options that the user may choose from. For best
@@ -185,18 +179,18 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	public void getChoice(String prompt, Object[] options) {
 		optionValues = new HashMap<JButton, Object>(options.length);
-		messageDisplayer.queueChoicePrompt(prompt, options);
+		showChoicePrompt(prompt, options);
 	}
 	
 	/**
-	 * Queues a string prompt for displaying. When it is displayed, the user is
-	 * presented with an input field and an enter button. Once the user enters
-	 * a value, the enterClicked() method is called on all listeners.
+	 * Displays a text prompt. When it is displayed, the user is presented with
+	 * an input field and an enter button. Once the user enters a value, the
+	 * enterClicked() method is called on all listeners.
 	 * 
 	 * @param prompt The text prompt to show to the user.
 	 */
 	public void getString(String prompt) {
-		messageDisplayer.queueStringPrompt(prompt);
+		showTextPrompt(prompt);
 	}
 	
 	/**
@@ -266,14 +260,12 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Shows a choice prompt. This should never be called directly by any class
-	 * but MessageBoxDisplayer; to display a prompt with proper queuing, use
-	 * the getChoice() method.
+	 * Shows a choice prompt.
 	 * 
 	 * @param prompt The text prompt to show the user.
 	 * @param options The options that the user is to pick from.
 	 */
-	public void showChoicePrompt(String prompt, Object[] options) {
+	private void showChoicePrompt(String prompt, Object[] options) {
 		component.removeAll();
 		add(new JLabel(prompt));
 		for (Object opt: options) {
@@ -287,10 +279,9 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Shows the text box. This should never be called directly by any class
-	 * except for MessageBoxDisplayer.
+	 * Shows the read-only text box.
 	 */
-	public void showTextBox() {
+	private void showTextArea() {
 		component.removeAll();
 		add(textBox);
 		component.revalidate();
@@ -298,13 +289,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Shows a text prompt. This should never be called directly by any class
-	 * but MessageBoxDisplayer; to display a prompt with proper queuing, use
-	 * the getString() method.
+	 * Shows a text prompt.
 	 * 
 	 * @param prompt The text prompt to show the user.
 	 */
-	public void showTextPrompt(String prompt) {
+	private void showTextPrompt(String prompt) {
 		component.removeAll();
 		add(new JLabel(prompt));
 		add(input);
@@ -337,7 +326,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		try {
 			Animator.animateAndWait(animator, tween);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 	
@@ -363,7 +352,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * when the user presses the enter button in a text prompt.
 	 */
 	private void fireEnterClicked() {
-		messageDisplayer.resetPrompt();
+		showTextArea();
 		String rawInput = input.getText();
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
@@ -380,7 +369,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param option The button that the user clicked.
 	 */
 	private void fireOptionClicked(JButton option) {
-		messageDisplayer.resetPrompt();
+		showTextArea();
 		Object optValue = optionValues.get(option);
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
