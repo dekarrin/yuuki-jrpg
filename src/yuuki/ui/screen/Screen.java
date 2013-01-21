@@ -104,6 +104,57 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * Gets the maximum size of this Screen. This will be the same as the
+	 * preferred size.
+	 * 
+	 * @return The maximum size of this Screen.
+	 */
+	@Override
+	public Dimension getMaximumSize() {
+		return getPreferredSize();
+	}
+	
+	/**
+	 * Gets the minimum size of this Screen. This will be the same as the
+	 * preferred size.
+	 * 
+	 * @return The minimum size of this Screen.
+	 */
+	@Override
+	public Dimension getMinimumSize() {
+		return getPreferredSize();
+	}
+	
+	/**
+	 * Gets the size of this Screen. This will be the same as the preferred
+	 * size.
+	 * 
+	 * @return The size of this Screen.
+	 */
+	@Override
+	public Dimension getSize() {
+		return getPreferredSize();
+	}
+	
+	/**
+	 * Gets the set height of this Screen.
+	 * 
+	 * @return The height that this Screen was set at during construction.
+	 */
+	public int getSetHeight() {
+		return size.height;
+	}
+	
+	/**
+	 * Gets the set width of this Screen.
+	 * 
+	 * @return The height that this Screen was set at during construction.
+	 */
+	public int getSetWidth() {
+		return size.width;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
