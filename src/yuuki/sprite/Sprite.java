@@ -355,7 +355,6 @@ public class Sprite implements Animatable, AnimationOwner {
 	 */
 	protected void updateBounds() {
 		component.setBounds(x, y, width, height);
-		component.repaint();
 	}
 	
 	/**
