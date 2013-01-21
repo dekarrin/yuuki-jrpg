@@ -225,10 +225,14 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public Object getChoice(String prompt, Object[] options) {
-		class StringMessenger implements Runnable, MessageBoxInputListener {
-			public Object[] options;
-			public String prompt;
+		class Runner implements Runnable, MessageBoxInputListener {
+			private Object[] options;
+			private String prompt;
 			public Object value = null;
+			public Runner(String prompt, Object[] options) {
+				this.options = options;
+				this.prompt = prompt;
+			}
 			@Override
 			public void enterClicked(String s) {}
 			@Override
@@ -242,18 +246,18 @@ OptionsScreenListener, MenuBarListener {
 				messageBox.getChoice(prompt, options);
 			}
 		};
-		StringMessenger runner = new StringMessenger();
-		runner.prompt = prompt;
-		runner.options = options;
-		SwingUtilities.invokeLater(runner);
-		while (runner.value == null) {
-			try {
+		Runner r = new Runner(prompt, options);
+		SwingUtilities.invokeLater(r);
+		try {
+			while (r.value == null) {
 				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+		} catch (InterruptedException e) {
+			messageBox.removeListener(r);
+			messageBox.exitPrompt();
+			Thread.currentThread().interrupt();
 		}
-		return runner.value;
+		return r.value;
 	}
 	
 	/**
@@ -375,12 +379,14 @@ OptionsScreenListener, MenuBarListener {
 		}
 		Runner r = new Runner(prompt);
 		SwingUtilities.invokeLater(r);
-		while (r.value == null) {
-			try {
+		try {
+			while (r.value == null) {
 				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
+		} catch (InterruptedException e) {
+			messageBox.removeListener(r);
+			messageBox.exitPrompt();
+			Thread.currentThread().interrupt();
 		}
 		return r.value;
 	}

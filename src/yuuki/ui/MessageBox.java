@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -303,6 +304,51 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Exits the current prompt immediately. Any inputed text is removed and
+	 * the button values are cleared. This method can be used to switch back
+	 * after the user has entered data at a prompt, but care should be taken to
+	 * get the entered data first, as this method will remove it.
+	 */
+	public void exitPrompt() {
+		Runnable r = new Runnable() {
+			public void run() {
+				showTextArea();
+				input.setText("");
+			}
+		};
+		MessageBox.invokeNow(r);
+		optionValues = null;
+	}
+	
+	/**
+	 * Executes a Runnable synchronously on the EDT. This method is
+	 * thread-safe; if the current thread is not the EDT, the Runnable is sent
+	 * to the EDT.
+	 * 
+	 * If an Exception is thrown by the executing code, the stack trace is
+	 * printed to stderr and this method returns immediately.
+	 * 
+	 * If the current thread is interrupted while waiting for the code to be
+	 * executed, the thread's interrupted flag is set and this method returns
+	 * immediately.
+	 * 
+	 * @param doRun The Runnable to be executed.
+	 */
+	private static void invokeNow(Runnable doRun) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			try {
+				SwingUtilities.invokeAndWait(doRun);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		} else {
+			doRun.run();
+		}
+	}
+	
+	/**
 	 * Joins the current thread with the cleaner thread.
 	 */
 	public void waitForClean() {
@@ -310,7 +356,7 @@ public class MessageBox extends Sprite implements MouseListener {
 			try {
 				textCleaner.join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
@@ -352,8 +398,8 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * when the user presses the enter button in a text prompt.
 	 */
 	private void fireEnterClicked() {
-		showTextArea();
 		String rawInput = input.getText();
+		exitPrompt();
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
 		MessageBoxInputListener[] listenersList = listeners.toArray(ls);
@@ -369,8 +415,8 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param option The button that the user clicked.
 	 */
 	private void fireOptionClicked(JButton option) {
-		showTextArea();
 		Object optValue = optionValues.get(option);
+		exitPrompt();
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
 		MessageBoxInputListener[] listenersList = listeners.toArray(ls);

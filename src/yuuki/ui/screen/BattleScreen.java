@@ -56,7 +56,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 */
 	public void initBattle(Character[][] fighters) {
 		createAllGraphics(fighters);
-		addCharacters();
+		refreshSprites();
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * @param fighter The fighter whose sprite to remove.
 	 */
 	public void showCharacterRemoval(Character fighter) {
-		FighterSprite sprite =  (FighterSprite) fighter.getSprite();
+		FighterSprite sprite = (FighterSprite) fighter.getSprite();
 		// TODO: Search that runs better than O(n) time
 		for (ArrayList<FighterSprite> teamGraphics: fighterGraphics) {
 			if (teamGraphics.remove(sprite)) {
@@ -290,6 +290,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	private void refreshSprites() {
 		removeCharacters();
 		addCharacters();
+		repaint();
 	}
 	
 	/**

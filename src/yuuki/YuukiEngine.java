@@ -23,19 +23,6 @@ import yuuki.ui.UiExecutor;
 public class YuukiEngine implements Runnable, UiExecutor {
 	
 	/**
-	 * Pauses execution for a number of seconds.
-	 * 
-	 * @param time The time to pause execution for.
-	 */
-	public static void pause(long time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Handles the execution of a battle in its own thread.
 	 */
 	private class BattleRunner implements Runnable {
@@ -48,7 +35,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		@Override
 		public void run() {
 			runBattle(battle, display);
-			requestBattleEnd();
+			if (display) {
+				if (!Thread.currentThread().isInterrupted()) {
+					requestBattleEnd();
+				}
+			}
 		}
 	}
 	
@@ -72,6 +63,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * The current battle.
 	 */
 	private Battle mainBattle;
+	
+	/**
+	 * The thread running the currently displayed battle.
+	 */
+	private Thread mainBattleThread;
 	
 	/**
 	 * The options for the game.
@@ -393,6 +389,9 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void runBattle(Battle battle, boolean display) {
 		while (battle.advance()) {
+			if (Thread.currentThread().isInterrupted()) {
+				break;
+			}
 			if (display) {
 				switch (battle.getLastState()) {
 					case STARTING_TURN:
@@ -445,7 +444,16 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void spawnBattleThread(Battle battle, boolean display) {
 		BattleRunner r = new BattleRunner(battle, display);
-		Thread t = new Thread(r, "MainBattle");
+		Thread t = new Thread(r);
+		if (display) {
+			if (mainBattleThread != null && mainBattleThread.isAlive()) {
+				mainBattleThread.interrupt();
+			}
+			mainBattleThread = t;
+			t.setName("MainBattle");
+		} else {
+			t.setName("Battle");
+		}
 		t.start();
 	}
 	
