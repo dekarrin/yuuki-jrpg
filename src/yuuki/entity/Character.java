@@ -539,11 +539,13 @@ public abstract class Character {
 	 *
 	 * @return The move that this Character wishes to perform.
 	 */
-	public Action getNextAction(
-			ArrayList<ArrayList<Character>> fighters) {
+	public Action getNextAction(ArrayList<ArrayList<Character>> fighters) {
 		Action m = selectAction(fighters);
-		if (m.getTargets().isEmpty()) {
-			m.addTarget(selectTarget(fighters));
+		if (m != null) {
+			// should only happen if thread is interrupted
+			if (m.getTargets().isEmpty()) {
+				m.addTarget(selectTarget(fighters));
+			}
 		}
 		return m;
 	}
@@ -831,6 +833,7 @@ public abstract class Character {
 		teamId = -1;
 		buffs = null;
 		expiredBuffs = null;
+		setSprite(null);
 	}
 	
 	/**

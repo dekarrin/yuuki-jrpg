@@ -53,7 +53,12 @@ public class PlayerCharacter extends Character {
 	@Override
 	protected Action selectAction(ArrayList<ArrayList<Character>> fighters) {
 		Action m = ui.selectAction(moves);
-		return m.clone();
+		if (m == null) {
+			// should never happen unless current thread has been interrupted
+			return null;
+		} else {
+			return m.clone();
+		}
 	}
 	
 	/**

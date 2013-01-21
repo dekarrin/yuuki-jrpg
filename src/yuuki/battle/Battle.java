@@ -107,24 +107,26 @@ public class Battle {
 	 * is over; otherwise, false.
 	 */
 	public boolean advance() {
-		lastState = state;
 		boolean moreCallsNeeded = true;
 		switch (state) {
 			case STARTING_TURN:
 				getCurrentFighter().removeExpiredBuffs();
 				regenerateMana();
-				state = State.GETTING_ACTION;
+				switchState(State.GETTING_ACTION);
 				break;
 				
 			case GETTING_ACTION:
 				getCurrentFighter().emptyExpiredBuffs();
 				lastAction = getCurrentFighter().getNextAction(fighters);
-				state = State.APPLYING_ACTION;
+				if (lastAction != null) {
+					// shouldn't happen unless thread is interrupted
+					switchState(State.APPLYING_ACTION);
+				}
 				break;
 				
 			case APPLYING_ACTION:
 				lastAction.apply();
-				state = State.APPLYING_BUFFS;
+				switchState(State.APPLYING_BUFFS);
 				break;
 				
 			case APPLYING_BUFFS:
@@ -132,32 +134,32 @@ public class Battle {
 				if (!fled) {
 					getCurrentFighter().applyBuffs();
 				}
-				state = State.CHECKING_DEATH;
+				switchState(State.CHECKING_DEATH);
 				break;
 				
 			case CHECKING_DEATH:
 				checkDeath();
-				state = State.ENDING_TURN;
+				switchState(State.ENDING_TURN);
 				break;
 				
 			case ENDING_TURN:
 				emptyRemovedFighters();
 				checkTeamStatus();
-				state = State.CHECKING_VICTORY;
+				switchState(State.CHECKING_VICTORY);
 				break;
 				
 			case CHECKING_VICTORY:
 				if (battleIsOver()) {
-					state = State.LOOTING;
+					switchState(State.LOOTING);
 				} else {
 					setNextPlayer();
-					state = State.STARTING_TURN;
+					switchState(State.STARTING_TURN);
 				}
 				break;
 				
 			case LOOTING:
 				calculateLoot();
-				state = State.ENDING;
+				switchState(State.ENDING);
 				break;
 				
 			case ENDING:
@@ -165,6 +167,17 @@ public class Battle {
 				break;
 		}
 		return moreCallsNeeded;
+	}
+	
+	/**
+	 * Switches the state to the specified state. The current state is pushed
+	 * back to the last state to make room for the new state.
+	 * 
+	 * @param s The state to switch to.
+	 */
+	private void switchState(State s) {
+		lastState = state;
+		state = s;
 	}
 	
 	/**
