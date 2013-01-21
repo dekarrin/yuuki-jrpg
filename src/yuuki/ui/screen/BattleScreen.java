@@ -1,10 +1,6 @@
 package yuuki.ui.screen;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 
 import yuuki.action.Action;
 import yuuki.animation.engine.Animator;
@@ -28,6 +24,11 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * The index of the team that should be shown on the top of the team.
 	 */
 	public static final int TOP_TEAM_INDEX = 1;
+
+	/**
+	 * The horizontal spacing between each sprite.
+	 */
+	private static final int SPRITE_HGAP = 30;
 	
 	/**
 	 * The animation engine for the game.
@@ -44,7 +45,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 */
 	public BattleScreen(int width, int height, Animator animationEngine) {
 		super(width, height);
-		setLayout(new BorderLayout());
+		setLayout(null); // can't be fighting an LM for control of sprites
 		this.animationEngine = animationEngine;
 	}
 	
@@ -231,11 +232,13 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * Adds a team to the bottom row.
 	 */
 	private void addBottomTeam() {
-		Box team = new Box(BoxLayout.X_AXIS);
+		int x = 0, y = 0;
 		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
-			team.add(fs.getComponent());
+			y = getSetHeight() - fs.getHeight();
+			fs.moveTo(x, y);
+			add(fs.getComponent());
+			x += fs.getWidth() + SPRITE_HGAP;
 		}
-		add(team, BorderLayout.SOUTH);
 	}
 	
 	/**
@@ -251,11 +254,12 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * Adds a team to the top row.
 	 */
 	private void addTopTeam() {
-		Box team = new Box(BoxLayout.X_AXIS);
+		int x = 0, y = 0;
 		for (FighterSprite fs: fighterGraphics.get(TOP_TEAM_INDEX)) {
-			team.add(fs.getComponent());
+			fs.moveTo(x, y);
+			add(fs.getComponent());
+			x += fs.getWidth() + SPRITE_HGAP;
 		}
-		add(team, BorderLayout.NORTH);
 	}
 	
 	/**
