@@ -45,6 +45,13 @@ public interface Interactable {
 	public void waitForDisplay();
 	
 	/**
+	 * Applies applicable options to this Interactable.
+	 * 
+	 * @param options The options.
+	 */
+	public void applyOptions(yuuki.Options options);
+	
+	/**
 	 * Gets a choice from the user. The choice may be one of the given Objects
 	 * in the array. Each of the Objects should have a valid toString() method.
 	 *

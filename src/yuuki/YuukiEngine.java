@@ -80,11 +80,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private PlayerCharacter player;
 	
 	/**
-	 * The sound engine.
-	 */
-	private SoundEngine soundEngine;
-	
-	/**
 	 * The user interface.
 	 */
 	private Interactable ui;
@@ -96,7 +91,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
-		soundEngine = new SoundEngine();
 		applyOptions();
 	}
 	
@@ -112,7 +106,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			mainBattle = battle;
 			ui.switchToBattleScreen(fighters);
 		}
-		soundEngine.playMusic("BGM_BATTLE");
 	}
 	
 	/**
@@ -126,7 +119,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		ui.display(null, "Your health has been restored.", false);
 		player.restoreHP();
 		player.restoreMP();
-		soundEngine.playMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -213,15 +205,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void requestSoundEffect(String soundIndex) {
-		soundEngine.playEffect(soundIndex);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void requestVolumeUpdate() {
+	public void requestOptionApplication() {
 		applyOptions();
 	}
 	
@@ -232,7 +216,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	public void run() {
 		ui.initialize();
 		ui.switchToIntroScreen();
-		soundEngine.playMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -240,8 +223,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * respective effects.
 	 */
 	private void applyOptions() {
-		soundEngine.setEffectVolume(options.sfxVolume);
-		soundEngine.setMusicVolume(options.bgmVolume);
+		ui.applyOptions(options);
 	}
 	
 	/**

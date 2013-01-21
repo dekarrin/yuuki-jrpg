@@ -17,6 +17,7 @@ import yuuki.animation.engine.Animator;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.sound.SoundEngine;
 import yuuki.ui.menu.FileMenu;
 import yuuki.ui.menu.MenuBar;
 import yuuki.ui.menu.MenuBarListener;
@@ -144,6 +145,11 @@ OptionsScreenListener, MenuBarListener {
 	private Screen<?> pauseScreen;
 	
 	/**
+	 * Plays all sounds.
+	 */
+	private SoundEngine soundEngine;
+	
+	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
@@ -155,12 +161,25 @@ OptionsScreenListener, MenuBarListener {
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
+		this.soundEngine = new SoundEngine();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void bgmVolumeChanged(int volume) {
 		options.bgmVolume = volume;
-		mainProgram.requestVolumeUpdate();
+		mainProgram.requestOptionApplication();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void applyOptions(Options options) {
+		soundEngine.setEffectVolume(options.sfxVolume);
+		soundEngine.setMusicVolume(options.bgmVolume);
 	}
 	
 	/**
@@ -511,13 +530,13 @@ OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void sfxTestClicked() {
-		mainProgram.requestSoundEffect("BUTTON_PUSH");
+		soundEngine.playEffect("BUTTON_PUSH");
 	}
 	
 	@Override
 	public void sfxVolumeChanged(int volume) {
 		options.sfxVolume = volume;
-		mainProgram.requestVolumeUpdate();
+		mainProgram.requestOptionApplication();
 	}
 	
 	/**
@@ -733,6 +752,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToBattleScreen(Character[][] fighters) {
+		soundEngine.playMusic("BGM_BATTLE");
 		class Runner implements Runnable {
 			public Character[][] fighters;
 			@Override
@@ -782,6 +802,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToIntroScreen() {
+		soundEngine.playMusic("BGM_MAIN_MENU");
 		introScreen.addListener(this);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

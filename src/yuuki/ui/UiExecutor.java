@@ -74,15 +74,8 @@ public interface UiExecutor {
 	public void requestSaveGame();
 	
 	/**
-	 * Requests that a sound be played.
-	 * 
-	 * @param soundIndex The index of the sound to be played.
+	 * Requests that all options be applied.
 	 */
-	public void requestSoundEffect(String soundIndex);
-	
-	/**
-	 * Requests that all sounds be updated to the current volumes.
-	 */
-	public void requestVolumeUpdate();
+	public void requestOptionApplication();
 	
 }
