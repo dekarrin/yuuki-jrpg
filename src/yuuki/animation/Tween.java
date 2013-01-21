@@ -58,8 +58,13 @@ public abstract class Tween extends TimedAnimation {
 	 * @param time The amount of time remaining.
 	 */
 	private int getPropertyDifference(int prop, double fpms, long time) {
-		int dp = (int) Math.round(prop / (fpms * time));
-		dp = (prop >= 0) ? Math.min(dp, prop) : Math.max(dp, prop);
+		int dp = 0;
+		if (time == 0) {
+			dp = prop;
+		} else {
+			dp = (int) Math.round(prop / (fpms * time));
+			dp = (prop >= 0) ? Math.min(dp, prop) : Math.max(dp, prop);
+		}
 		return dp;
 	}
 	
