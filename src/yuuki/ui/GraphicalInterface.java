@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -155,7 +156,6 @@ OptionsScreenListener, MenuBarListener {
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
-		createComponents();
 	}
 	
 	@Override
@@ -388,17 +388,26 @@ OptionsScreenListener, MenuBarListener {
 	
 	/**
 	 * Creates the components of the main JFrame and draws the main window on
-	 * screen.
+	 * screen. In order to prevent asynchronous access of child components
+	 * before they have finished constructing, this method blocks until
+	 * construction is complete.
 	 */
 	@Override
 	public void initialize() {
-		SwingUtilities.invokeLater(new Runnable() {
+		Runnable r = new Runnable() {
 			@Override
 			public void run() {
+				createComponents();
 				refreshWindow();
 				mainWindow.setVisible(true);
 			}
-		});
+		};
+		try {
+			SwingUtilities.invokeAndWait(r);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Thread.currentThread().interrupt();
+		}
 	}
 	
 	/**
