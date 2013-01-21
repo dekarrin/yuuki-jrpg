@@ -82,8 +82,21 @@ public class SoundEngine {
 	 * @param musicIndex The index of the music file.
 	 */
 	public void playMusic(String musicIndex) {
+		playMusic(musicIndex, true);
+	}
+	
+	/**
+	 * Plays the music file associated with a music index. The file is loaded
+	 * if it hasn't yet been loaded, and then it is played. If a music file is
+	 * already playing when this method is called, it is stopped.
+	 * 
+	 * @param musicIndex The index of the music file.
+	 * @param restart Whether to restart the music track if the music is
+	 * already playing.
+	 */
+	public void playMusic(String musicIndex, boolean restart) {
 		String file = database.getSound(musicIndex);
-		playMusicFile(file);
+		playMusicFile(file, restart);
 	}
 	
 	/**
@@ -179,10 +192,12 @@ public class SoundEngine {
 	 * 
 	 * @param musicFile The location of the music file, relative to the sound
 	 * resource location.
+	 * @param restart Whether to restart the music if the requested track is
+	 * already playing.
 	 */
-	private void playMusicFile(String musicFile) {
+	private void playMusicFile(String musicFile, boolean restart) {
 		String actualLocation = getMusicLocation(musicFile);
-		musicEngine.playSound(actualLocation);
+		musicEngine.playSound(actualLocation, restart);
 	}
 	
 	/**

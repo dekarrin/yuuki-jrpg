@@ -12,6 +12,11 @@ public class MusicEngine extends AudioEngine {
 	private SoundPlayer musicPlayer;
 	
 	/**
+	 * The name of the currently playing track.
+	 */
+	private String track = null;
+	
+	/**
 	 * Change the volume of the currently playing music.
 	 * 
 	 * @param volume The new volume.
@@ -38,10 +43,24 @@ public class MusicEngine extends AudioEngine {
 	 */
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
+		track = soundFile;
 		byte[] data = sounds.get(soundFile);
 		stopSound();
 		musicPlayer = new SoundPlayer(data, getVolume(), true);
 		(new Thread(musicPlayer, "MusicPlayer")).start();
+	}
+	
+	/**
+	 * Spawns a player thread.
+	 * 
+	 * @param soundFile The name of the file to play.
+	 * @param restart Whether to restart the current player if the requested
+	 * sound file is already playing.
+	 */
+	public void playSound(String soundFile, boolean restart) {		
+		if (track == null || !track.equals(soundFile) || restart) {
+			playSound(soundFile);
+		}
 	}
 	
 }
