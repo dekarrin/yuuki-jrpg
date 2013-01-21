@@ -55,6 +55,11 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * The background music associated with this Screen.
+	 */
+	private String bgmIndex;
+	
+	/**
 	 * Keeps track of all registered listeners.
 	 */
 	private Set<L> listeners;
@@ -73,6 +78,24 @@ JPanel implements yuuki.ui.Listenable<L> {
 	public Screen(int width, int height) {
 		size = new Dimension(width, height);
 		listeners = new HashSet<L>();
+	}
+	
+	/**
+	 * Associates a background music index with this Screen.
+	 * 
+	 * @param index The index of the background music to associate.
+	 */
+	public void setBackgroundMusic(String index) {
+		bgmIndex = index;
+	}
+	
+	/**
+	 * Gets this Screen's associated background music index.
+	 * 
+	 * @return The background music index.
+	 */
+	public String getBackgroundMusic() {
+		return bgmIndex;
 	}
 	
 	/**

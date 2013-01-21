@@ -423,7 +423,6 @@ OptionsScreenListener, MenuBarListener {
 			public void run() {
 				createComponents();
 				refreshWindow();
-				mainWindow.setVisible(true);
 			}
 		};
 		try {
@@ -752,7 +751,6 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToBattleScreen(Character[][] fighters) {
-		soundEngine.playMusic("BGM_BATTLE");
 		class Runner implements Runnable {
 			public Character[][] fighters;
 			@Override
@@ -774,14 +772,7 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void switchToCharacterCreationScreen() {
 		charCreationScreen.addListener(this);
-		class Runner implements Runnable {
-			@Override
-			public void run() {
-				switchWindow(charCreationScreen);
-			}
-		}
-		Runner r = new Runner();
-		SwingUtilities.invokeLater(r);
+		switchWindow(charCreationScreen);
 	}
 	
 	/**
@@ -789,12 +780,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToEndingScreen() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(endingScreen);
-			}
-		});
+		switchWindow(endingScreen);
 	}
 	
 	/**
@@ -802,14 +788,8 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToIntroScreen() {
-		soundEngine.playMusic("BGM_MAIN_MENU");
 		introScreen.addListener(this);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(introScreen);
-			}
-		});
+		switchWindow(introScreen);
 	}
 	
 	/**
@@ -817,12 +797,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToLastScreen() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(formerScreen);
-			}
-		});
+		switchWindow(formerScreen);
 	}
 	
 	/**
@@ -832,12 +807,7 @@ OptionsScreenListener, MenuBarListener {
 	public void switchToOptionsScreen() {
 		optionsScreen.addListener(this);
 		optionsScreen.setValues(options);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(optionsScreen);
-			}
-		});
+		switchWindow(optionsScreen);
 	}
 	
 	/**
@@ -846,12 +816,7 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void switchToOverworldScreen() {
 		overworldScreen.addListener(this);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(overworldScreen);
-			}
-		});
+		switchWindow(overworldScreen);
 	}
 	
 	/**
@@ -859,12 +824,7 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void switchToPauseScreen() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				switchWindow(pauseScreen);
-			}
-		});
+		switchWindow(pauseScreen);
 	}
 	
 	/**
@@ -889,7 +849,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createBattleScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		battleScreen = new BattleScreen(WINDOW_WIDTH, height, animationEngine);
-		battleScreen.setVisible(true);
+		battleScreen.setBackgroundMusic("BGM_BATTLE");
 	}
 	
 	/**
@@ -914,6 +874,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createEndingScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		endingScreen = Screen.getInstance(WINDOW_WIDTH, height);
+		endingScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -922,6 +883,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		introScreen = new IntroScreen(WINDOW_WIDTH, height);
+		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -963,6 +925,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createOptionsScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		optionsScreen = new OptionsScreen(WINDOW_WIDTH, height);
+		optionsScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -971,6 +934,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createOverworldScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		overworldScreen = new OverworldScreen(WINDOW_WIDTH, height);
+		overworldScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -979,6 +943,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createPauseScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		pauseScreen = Screen.getInstance(WINDOW_WIDTH, height);
+		pauseScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
@@ -987,10 +952,11 @@ OptionsScreenListener, MenuBarListener {
 	private void createPlayerCreationScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		charCreationScreen = new CharacterCreationScreen(WINDOW_WIDTH, height);
+		charCreationScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
 	
 	/**
-	 * Shows the main window with the default screen.
+	 * Packs, revalidates, and repaints the main window.
 	 */
 	private void refreshWindow() {
 		mainWindow.pack();
@@ -1004,14 +970,51 @@ OptionsScreenListener, MenuBarListener {
 	 * @param screen The screen to switch to.
 	 */
 	private void switchWindow(Screen<?> screen) {
+		setScreen(screen);
+		class Runner implements Runnable {
+			private Screen<?> screen;
+			public Runner(Screen<?> screen) {
+				this.screen = screen;
+			}
+			public void run() {
+				clearWindow();
+				mainWindow.add(menuBar, BorderLayout.NORTH);
+				mainWindow.add(screen, BorderLayout.CENTER);
+				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
+				refreshWindow();
+				if (!mainWindow.isVisible()) {
+					mainWindow.setVisible(true);
+				}
+				screen.setInitialFocus();
+			}
+		}
+		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
+		soundEngine.playMusic(screen.getBackgroundMusic(), false);
+	}
+	
+	/**
+	 * Invokes the given Runnable later if not on the EDT. If currently on the
+	 * EDT, executes the Runnable immediately on the current thread.
+	 * 
+	 * @param doRun The Runnable to be executed.
+	 */
+	private static void invokeLaterIfNeeded(Runnable doRun) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			doRun.run();
+		} else {
+			SwingUtilities.invokeLater(doRun);
+		}
+	}
+	
+	/**
+	 * Sets the screen of this window. The current screen is moved to the
+	 * former screen to make room.
+	 * 
+	 * @param screen The screen to switch to.
+	 */
+	private void setScreen(Screen<?> screen) {
 		formerScreen = currentScreen;
 		currentScreen = screen;
-		clearWindow();
-		mainWindow.add(menuBar, BorderLayout.NORTH);
-		mainWindow.add(screen, BorderLayout.CENTER);
-		mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
-		refreshWindow();
-		screen.setInitialFocus();
 	}
 	
 }
