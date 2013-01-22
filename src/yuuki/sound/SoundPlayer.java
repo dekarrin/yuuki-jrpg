@@ -27,7 +27,7 @@ class SoundPlayer implements Runnable {
 	/**
 	 * The maximum volume in dBs.
 	 */
-	private static final float MAXIMUM_VOLUME = 0.0f;
+	private static final float MAXIMUM_VOLUME = 0f;
 	
 	/**
 	 * The minimum volume in dBs.
@@ -141,13 +141,14 @@ class SoundPlayer implements Runnable {
 	 * desired volume.
 	 */
 	private void adjustClipVolume() {
-		float max = Math.min(volumeControl.getMaximum(), MAXIMUM_VOLUME);
-		float min = Math.max(volumeControl.getMinimum(), MINIMUM_VOLUME);
-		float range = max - min;
-		float desiredOffset = ((float) volume / 100) * range;
-		float desired = min + desiredOffset;
-		if (Math.abs(volumeControl.getValue() - desired) >= 0.0001) {
-			volumeControl.setValue(desired);
+		float gMax = Math.min(volumeControl.getMaximum(), MAXIMUM_VOLUME);
+		float gMin = Math.max(volumeControl.getMinimum(), MINIMUM_VOLUME);
+		double aMax = Math.pow(10, gMax/20);
+		double aMin = Math.pow(10, gMin/20);
+		double amplitude = aMin + ((volume - 1) * (aMax - aMin)) / 99;
+		float gain = (float) (20 * Math.log10(amplitude));
+		if (Math.abs(volumeControl.getValue() - gain) >= 0.0001) {
+			volumeControl.setValue(gain);
 		}
 	}
 	
