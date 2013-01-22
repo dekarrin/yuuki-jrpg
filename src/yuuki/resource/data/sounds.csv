@@ -1,4 +1,5 @@
 #"Index", "File"
-"BUTTON_PUSH", "slash.wav"
+"SFX_TEST", "slash.mp3"
+"HIT", "strike.mp3"
 "BGM_MAIN_MENU", "worldmap.mp3"
 "BGM_BATTLE", "insidia.mp3"

@@ -529,7 +529,7 @@ OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void sfxTestClicked() {
-		soundEngine.playEffect("BUTTON_PUSH");
+		soundEngine.playEffect("SFX_TEST");
 	}
 	
 	@Override
@@ -679,6 +679,9 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, double damage) {
+		if (stat.getName().equalsIgnoreCase("health")) {
+			soundEngine.playEffect("HIT");
+		}
 		battleScreen.showDamage(fighter, stat, damage);
 	}
 	
@@ -687,6 +690,9 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, int damage) {
+		if (stat.getName().equalsIgnoreCase("health")) {
+			soundEngine.playEffect("HIT");
+		}
 		battleScreen.showDamage(fighter, stat, damage);
 	}
 	

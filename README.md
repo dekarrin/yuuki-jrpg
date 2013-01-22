@@ -23,10 +23,10 @@ Attribution
 Assets used in Yuuki are created created by:
 * bgm/insidia.mp3: Aaron Krogh - Creative Commons Attribution 3.0 Unported
 * bgm/worldmap.mp3: Aaron Krogh - Creative Commons Attribution 3.0 Unported
-* sfx/strike.wav: thecluegeek - Creative Commons Attribution 3.0 Unported
-* sfx/strike.wav: Ekokubza123 - Creative Commons 0 1.0 Universal
-* sfx/strike.wav: zimbot - Creative Commons Attribution 3.0 Unported
-* sfx/strike.wav: hazure - Creative Commons Attribution 3.0 Unported
+* sfx/strike.mp3: thecluegeek - Creative Commons Attribution 3.0 Unported
+* sfx/strike.mp3: Ekokubza123 - Creative Commons 0 1.0 Universal
+* sfx/strike.mp3: zimbot - Creative Commons Attribution 3.0 Unported
+* sfx/strike.mp3: hazure - Creative Commons Attribution 3.0 Unported
 
 You can view the above artists by checking out their home pages:
 * Aaron Krogh - http://soundcloud.com/aaron-anderson-11

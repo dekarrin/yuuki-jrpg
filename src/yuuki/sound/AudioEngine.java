@@ -46,7 +46,11 @@ abstract class AudioEngine {
 	 */
 	public void playSound(String soundFile) {
 		preload(soundFile);
-		spawnPlayerThread(soundFile);
+		if (isLoaded(soundFile)) {
+			spawnPlayerThread(soundFile);
+		} else {
+			System.err.println("Could not play '" + soundFile + "'");
+		}
 	}
 	
 	/**
@@ -62,6 +66,8 @@ abstract class AudioEngine {
 				loadSound(soundFile);
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (NullPointerException e) {
+				System.err.println("could not open '" + soundFile + "'");
 			}
 		}
 	}
