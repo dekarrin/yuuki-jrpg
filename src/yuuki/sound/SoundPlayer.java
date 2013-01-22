@@ -7,6 +7,7 @@ import java.util.Arrays;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
@@ -70,6 +71,11 @@ class SoundPlayer implements Runnable {
 	private FloatControl volumeControl;
 	
 	/**
+	 * The control for muting this clip.
+	 */
+	private BooleanControl muteControl;
+	
+	/**
 	 * Allocates a new SoundPlayer with given data. The data is copied from
 	 * the given array to negate access issues.
 	 * 
@@ -93,8 +99,10 @@ class SoundPlayer implements Runnable {
 		openAudioClip();
 		try {
 			clip.open(stream);
-			FloatControl.Type controlType = FloatControl.Type.MASTER_GAIN;
-			volumeControl = (FloatControl) clip.getControl(controlType);
+			FloatControl.Type vType = FloatControl.Type.MASTER_GAIN;
+			BooleanControl.Type mType = BooleanControl.Type.MUTE;
+			volumeControl = (FloatControl) clip.getControl(vType);
+			muteControl = (BooleanControl) clip.getControl(mType);
 			adjustClipVolume();
 			if (looping) {
 				clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -114,7 +122,7 @@ class SoundPlayer implements Runnable {
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// do nothing; interruption is expected
+			Thread.currentThread().interrupt();
 		} finally {
 			clip.close();
 		}
@@ -141,14 +149,17 @@ class SoundPlayer implements Runnable {
 	 * desired volume.
 	 */
 	private void adjustClipVolume() {
-		float gMax = Math.min(volumeControl.getMaximum(), MAXIMUM_VOLUME);
-		float gMin = Math.max(volumeControl.getMinimum(), MINIMUM_VOLUME);
-		double aMax = Math.pow(10, gMax/20);
-		double aMin = Math.pow(10, gMin/20);
-		double amplitude = aMin + ((volume - 1) * (aMax - aMin)) / 99;
-		float gain = (float) (20 * Math.log10(amplitude));
-		if (Math.abs(volumeControl.getValue() - gain) >= 0.0001) {
-			volumeControl.setValue(gain);
+		muteControl.setValue(volume == 0);
+		if (volume != 0) {
+			float gMax = Math.min(volumeControl.getMaximum(), MAXIMUM_VOLUME);
+			float gMin = Math.max(volumeControl.getMinimum(), MINIMUM_VOLUME);
+			double aMax = Math.pow(10, gMax/20);
+			double aMin = Math.pow(10, gMin/20);
+			double amplitude = aMin + ((volume - 1) * (aMax - aMin)) / 99;
+			float gain = (float) (20 * Math.log10(amplitude));
+			if (Math.abs(volumeControl.getValue() - gain) >= 0.0001) {
+				volumeControl.setValue(gain);
+			}
 		}
 	}
 	
