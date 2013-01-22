@@ -81,12 +81,11 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * Associates a background music index with this Screen.
-	 * 
-	 * @param index The index of the background music to associate.
+	 * {@inheritDoc}
 	 */
-	public void setBackgroundMusic(String index) {
-		bgmIndex = index;
+	@Override
+	public boolean addListener(L listener) {
+		return listeners.add(listener);
 	}
 	
 	/**
@@ -102,28 +101,12 @@ JPanel implements yuuki.ui.Listenable<L> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean addListener(L listener) {
-		return listeners.add(listener);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
 		for (L listener: listeners) {
 			listenersList.add(listener);
 		}
 		return listenersList;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Dimension getPreferredSize() {
-		return size;
 	}
 	
 	/**
@@ -149,14 +132,11 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * Gets the size of this Screen. This will be the same as the preferred
-	 * size.
-	 * 
-	 * @return The size of this Screen.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Dimension getSize() {
-		return getPreferredSize();
+	public Dimension getPreferredSize() {
+		return size;
 	}
 	
 	/**
@@ -178,11 +158,31 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * Gets the size of this Screen. This will be the same as the preferred
+	 * size.
+	 * 
+	 * @return The size of this Screen.
+	 */
+	@Override
+	public Dimension getSize() {
+		return getPreferredSize();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);
+	}
+	
+	/**
+	 * Associates a background music index with this Screen.
+	 * 
+	 * @param index The index of the background music to associate.
+	 */
+	public void setBackgroundMusic(String index) {
+		bgmIndex = index;
 	}
 	
 	/**

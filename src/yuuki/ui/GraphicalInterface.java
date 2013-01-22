@@ -40,17 +40,6 @@ CharacterCreationScreenListener, OverworldScreenListener,
 OptionsScreenListener, MenuBarListener {
 	
 	/**
-	 * The delay, in milliseconds, between each letter printed on the message
-	 * box.
-	 */
-	public static final int MESSAGE_LETTER_DELAY = 100;
-	
-	/**
-	 * The amount of time to show a message on the screen for.
-	 */
-	public static final int MESSAGE_DISPLAY_TIME = 5000;
-	
-	/**
 	 * The speed of game animation.
 	 */
 	public static final int ANIMATION_FPS = 30;
@@ -59,6 +48,17 @@ OptionsScreenListener, MenuBarListener {
 	 * The height of the message box within the window.
 	 */
 	public static final int MESSAGE_BOX_HEIGHT = 100;
+	
+	/**
+	 * The amount of time to show a message on the screen for.
+	 */
+	public static final int MESSAGE_DISPLAY_TIME = 5000;
+	
+	/**
+	 * The delay, in milliseconds, between each letter printed on the message
+	 * box.
+	 */
+	public static final int MESSAGE_LETTER_DELAY = 100;
 	
 	/**
 	 * The height of the game window.
@@ -71,9 +71,23 @@ OptionsScreenListener, MenuBarListener {
 	public static final int WINDOW_WIDTH = 800;
 	
 	/**
+	 * Invokes the given Runnable later if not on the EDT. If currently on the
+	 * EDT, executes the Runnable immediately on the current thread.
+	 * 
+	 * @param doRun The Runnable to be executed.
+	 */
+	private static void invokeLaterIfNeeded(Runnable doRun) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			doRun.run();
+		} else {
+			SwingUtilities.invokeLater(doRun);
+		}
+	}
+	/**
 	 * The animation engine.
 	 */
 	private Animator animationEngine;
+	
 	/**
 	 * The battle screen.
 	 */
@@ -168,18 +182,18 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void bgmVolumeChanged(int volume) {
-		options.bgmVolume = volume;
-		mainProgram.requestOptionApplication();
+	public void applyOptions(Options options) {
+		soundEngine.setEffectVolume(options.sfxVolume);
+		soundEngine.setMusicVolume(options.bgmVolume);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void applyOptions(Options options) {
-		soundEngine.setEffectVolume(options.sfxVolume);
-		soundEngine.setMusicVolume(options.bgmVolume);
+	public void bgmVolumeChanged(int volume) {
+		options.bgmVolume = volume;
+		mainProgram.requestOptionApplication();
 	}
 	
 	/**
@@ -245,9 +259,9 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public Object getChoice(String prompt, Object[] options) {
 		class Runner implements Runnable, MessageBoxInputListener {
+			public Object value = null;
 			private Object[] options;
 			private String prompt;
-			public Object value = null;
 			public Runner(String prompt, Object[] options) {
 				this.options = options;
 				this.prompt = prompt;
@@ -386,15 +400,18 @@ OptionsScreenListener, MenuBarListener {
 			public Runner(String prompt) {
 				this.prompt = prompt;
 			}
-			public void run() {
-				messageBox.addListener(this);
-				messageBox.getString(prompt);
-			}
+			@Override
 			public void enterClicked(String input) {
 				value = input;
 				messageBox.removeListener(this);
 			}
+			@Override
 			public void optionClicked(Object option) {}
+			@Override
+			public void run() {
+				messageBox.addListener(this);
+				messageBox.getString(prompt);
+			}
 		}
 		Runner r = new Runner(prompt);
 		SwingUtilities.invokeLater(r);
@@ -740,14 +757,6 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void waitForDisplay() {
-		messageBox.waitForClean();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void startBattleClicked() {
 		mainProgram.requestBattle(true);
 	}
@@ -831,6 +840,14 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void switchToPauseScreen() {
 		switchWindow(pauseScreen);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void waitForDisplay() {
+		messageBox.waitForClean();
 	}
 	
 	/**
@@ -971,6 +988,17 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
+	 * Sets the screen of this window. The current screen is moved to the
+	 * former screen to make room.
+	 * 
+	 * @param screen The screen to switch to.
+	 */
+	private void setScreen(Screen<?> screen) {
+		formerScreen = currentScreen;
+		currentScreen = screen;
+	}
+	
+	/**
 	 * Switches the window to display the specified screen.
 	 * 
 	 * @param screen The screen to switch to.
@@ -982,6 +1010,7 @@ OptionsScreenListener, MenuBarListener {
 			public Runner(Screen<?> screen) {
 				this.screen = screen;
 			}
+			@Override
 			public void run() {
 				clearWindow();
 				mainWindow.add(menuBar, BorderLayout.NORTH);
@@ -996,31 +1025,6 @@ OptionsScreenListener, MenuBarListener {
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
 		soundEngine.playMusic(screen.getBackgroundMusic(), false);
-	}
-	
-	/**
-	 * Invokes the given Runnable later if not on the EDT. If currently on the
-	 * EDT, executes the Runnable immediately on the current thread.
-	 * 
-	 * @param doRun The Runnable to be executed.
-	 */
-	private static void invokeLaterIfNeeded(Runnable doRun) {
-		if (SwingUtilities.isEventDispatchThread()) {
-			doRun.run();
-		} else {
-			SwingUtilities.invokeLater(doRun);
-		}
-	}
-	
-	/**
-	 * Sets the screen of this window. The current screen is moved to the
-	 * former screen to make room.
-	 * 
-	 * @param screen The screen to switch to.
-	 */
-	private void setScreen(Screen<?> screen) {
-		formerScreen = currentScreen;
-		currentScreen = screen;
 	}
 	
 }

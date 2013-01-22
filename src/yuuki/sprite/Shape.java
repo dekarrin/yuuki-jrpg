@@ -20,14 +20,14 @@ public abstract class Shape extends Sprite {
 	protected abstract static class ShapeComponent extends JPanel {
 		
 		/**
-		 * The fill color of this shape.
-		 */
-		public Color fill;
-		
-		/**
 		 * The border color of this shape.
 		 */
 		public Color border;
+		
+		/**
+		 * The fill color of this shape.
+		 */
+		public Color fill;
 		
 		/**
 		 * Paints this shape on a graphical context.
@@ -44,20 +44,20 @@ public abstract class Shape extends Sprite {
 		}
 		
 		/**
-		 * Draws the fill of this shape.
-		 * 
-		 * @param g The context to paint the fill on.
-		 * @param color The color to make the fill. Null indicates no fill.
-		 */
-		protected abstract void drawFill(Graphics g, Color color);
-		
-		/**
 		 * Draws the border of this shape.
 		 * 
 		 * @param g The context to paint the border on.
 		 * @param color The color to make the border. Null indicates no border.
 		 */
 		protected abstract void drawBorder(Graphics g, Color color);
+		
+		/**
+		 * Draws the fill of this shape.
+		 * 
+		 * @param g The context to paint the fill on.
+		 * @param color The color to make the fill. Null indicates no fill.
+		 */
+		protected abstract void drawFill(Graphics g, Color color);
 		
 	}
 	
@@ -75,21 +75,13 @@ public abstract class Shape extends Sprite {
 	}
 	
 	/**
-	 * Creates the Component for this Sprite.
+	 * Gets the border color of this shape.
 	 * 
-	 * @return The Component.
+	 * @return The border color.
 	 */
-	@Override
-	protected JComponent createComponent() {
-		return createShapeComponent();
+	public Color getBorderColor() {
+		return ((ShapeComponent) component).border;
 	}
-	
-	/**
-	 * Creates the ShapeComponent for this Shape.
-	 * 
-	 * @return The ShapeComponent.
-	 */
-	protected abstract ShapeComponent createShapeComponent();
 	
 	/**
 	 * Gets the fill of this shape.
@@ -98,15 +90,6 @@ public abstract class Shape extends Sprite {
 	 */
 	public Color getFillColor() {
 		return ((ShapeComponent) component).fill;
-	}
-	
-	/**
-	 * Gets the border color of this shape.
-	 * 
-	 * @return The border color.
-	 */
-	public Color getBorderColor() {
-		return ((ShapeComponent) component).border;
 	}
 	
 	/**
@@ -128,5 +111,22 @@ public abstract class Shape extends Sprite {
 		((ShapeComponent) component).fill = color;
 		component.repaint();
 	}
+	
+	/**
+	 * Creates the Component for this Sprite.
+	 * 
+	 * @return The Component.
+	 */
+	@Override
+	protected JComponent createComponent() {
+		return createShapeComponent();
+	}
+	
+	/**
+	 * Creates the ShapeComponent for this Shape.
+	 * 
+	 * @return The ShapeComponent.
+	 */
+	protected abstract ShapeComponent createShapeComponent();
 	
 }

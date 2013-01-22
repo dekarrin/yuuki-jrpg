@@ -165,6 +165,14 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void requestOptionApplication() {
+		applyOptions();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void requestOptionsScreen() {
 		ui.switchToOptionsScreen();
 	}
@@ -198,14 +206,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	@Override
 	public void requestSaveGame() {
 		ui.display(null, "Saving hasn't yet been implemented", false);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void requestOptionApplication() {
-		applyOptions();
 	}
 	
 	/**

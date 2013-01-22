@@ -20,10 +20,10 @@ public class Rectangle extends Shape {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void drawFill(Graphics g, Color color) {
+		protected void drawBorder(Graphics g, Color color) {
 			if (color != null) {
 				g.setColor(color);
-				g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
+				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 			}
 		}
 		
@@ -31,22 +31,13 @@ public class Rectangle extends Shape {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void drawBorder(Graphics g, Color color) {
+		protected void drawFill(Graphics g, Color color) {
 			if (color != null) {
 				g.setColor(color);
-				g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+				g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
 			}
 		}
-	
-	}
-	
-	/**
-	 * Creates the shape for this Sprite.
-	 * 
-	 * @return The ShapeComponent.
-	 */
-	protected ShapeComponent createShapeComponent() {
-		return new RectangleComponent();
+		
 	}
 	
 	/**
@@ -58,6 +49,16 @@ public class Rectangle extends Shape {
 	 */
 	public Rectangle(Animator animator, int width, int height) {
 		super(animator, width, height);
+	}
+	
+	/**
+	 * Creates the shape for this Sprite.
+	 * 
+	 * @return The ShapeComponent.
+	 */
+	@Override
+	protected ShapeComponent createShapeComponent() {
+		return new RectangleComponent();
 	}
 	
 }

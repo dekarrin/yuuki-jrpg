@@ -170,17 +170,6 @@ public class Battle {
 	}
 	
 	/**
-	 * Switches the state to the specified state. The current state is pushed
-	 * back to the last state to make room for the new state.
-	 * 
-	 * @param s The state to switch to.
-	 */
-	private void switchState(State s) {
-		lastState = state;
-		state = s;
-	}
-	
-	/**
 	 * Checks if the last move was a flee.
 	 * 
 	 * @return Whether it was a flee.
@@ -456,6 +445,17 @@ public class Battle {
 		if (currentFighter >= turnOrder.size()) {
 			currentFighter = 0;
 		}
+	}
+	
+	/**
+	 * Switches the state to the specified state. The current state is pushed
+	 * back to the last state to make room for the new state.
+	 * 
+	 * @param s The state to switch to.
+	 */
+	private void switchState(State s) {
+		lastState = state;
+		state = s;
 	}
 	
 }

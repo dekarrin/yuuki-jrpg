@@ -55,6 +55,18 @@ class SoundDatabase {
 	}
 	
 	/**
+	 * Reads the definitions from the parser.
+	 */
+	private void readParser() throws IOException {
+		String[][] records = parser.read();
+		for (String[] r: records) {
+			String index = r[0];
+			String soundFile = r[1];
+			database.put(index, soundFile);
+		}
+	}
+	
+	/**
 	 * Loads the sound definitions into memory.
 	 */
 	private void readSoundDefinitions() {
@@ -65,18 +77,6 @@ class SoundDatabase {
 			readParser();
 		} catch (IOException e) {
 			System.out.println("Sound file format error");
-		}
-	}
-	
-	/**
-	 * Reads the definitions from the parser.
-	 */
-	private void readParser() throws IOException {
-		String[][] records = parser.read();
-		for (String[] r: records) {
-			String index = r[0];
-			String soundFile = r[1];
-			database.put(index, soundFile);
 		}
 	}
 	

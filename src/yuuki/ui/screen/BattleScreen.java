@@ -24,7 +24,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * The index of the team that should be shown on the top of the team.
 	 */
 	public static final int TOP_TEAM_INDEX = 1;
-
+	
 	/**
 	 * The horizontal spacing between each sprite.
 	 */

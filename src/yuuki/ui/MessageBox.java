@@ -69,6 +69,34 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Executes a Runnable synchronously on the EDT. This method is
+	 * thread-safe; if the current thread is not the EDT, the Runnable is sent
+	 * to the EDT.
+	 * 
+	 * If an Exception is thrown by the executing code, the stack trace is
+	 * printed to stderr and this method returns immediately.
+	 * 
+	 * If the current thread is interrupted while waiting for the code to be
+	 * executed, the thread's interrupted flag is set and this method returns
+	 * immediately.
+	 * 
+	 * @param doRun The Runnable to be executed.
+	 */
+	private static void invokeNow(Runnable doRun) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			try {
+				SwingUtilities.invokeAndWait(doRun);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		} else {
+			doRun.run();
+		}
+	}
+	
+	/**
 	 * The enter button used when a text prompt is displayed.
 	 */
 	private JButton enterButton;
@@ -169,6 +197,24 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Exits the current prompt immediately. Any inputed text is removed and
+	 * the button values are cleared. This method can be used to switch back
+	 * after the user has entered data at a prompt, but care should be taken to
+	 * get the entered data first, as this method will remove it.
+	 */
+	public void exitPrompt() {
+		Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				showTextArea();
+				input.setText("");
+			}
+		};
+		MessageBox.invokeNow(r);
+		optionValues = null;
+	}
+	
+	/**
 	 * Displays a choice prompt. When it is displayed, the user is presented
 	 * with several options shown as buttons. Once the user clicks an option,
 	 * the optionClicked() method is called on all listeners.
@@ -252,100 +298,13 @@ public class MessageBox extends Sprite implements MouseListener {
 			public Runner(String t) {
 				this.t = t;
 			}
+			@Override
 			public void run() {
 				textBox.setText(t);
 			}
 		}
 		Runner r = new Runner(t);
 		SwingUtilities.invokeLater(r);
-	}
-	
-	/**
-	 * Shows a choice prompt.
-	 * 
-	 * @param prompt The text prompt to show the user.
-	 * @param options The options that the user is to pick from.
-	 */
-	private void showChoicePrompt(String prompt, Object[] options) {
-		component.removeAll();
-		add(new JLabel(prompt));
-		for (Object opt: options) {
-			JButton button = new JButton(opt.toString());
-			optionValues.put(button, opt);
-			button.addMouseListener(this);
-			add(button);
-		}
-		component.revalidate();
-		component.repaint();
-	}
-	
-	/**
-	 * Shows the read-only text box.
-	 */
-	private void showTextArea() {
-		component.removeAll();
-		add(textBox);
-		component.revalidate();
-		component.repaint();
-	}
-	
-	/**
-	 * Shows a text prompt.
-	 * 
-	 * @param prompt The text prompt to show the user.
-	 */
-	private void showTextPrompt(String prompt) {
-		component.removeAll();
-		add(new JLabel(prompt));
-		add(input);
-		add(enterButton);
-		component.revalidate();
-		component.repaint();
-	}
-	
-	/**
-	 * Exits the current prompt immediately. Any inputed text is removed and
-	 * the button values are cleared. This method can be used to switch back
-	 * after the user has entered data at a prompt, but care should be taken to
-	 * get the entered data first, as this method will remove it.
-	 */
-	public void exitPrompt() {
-		Runnable r = new Runnable() {
-			public void run() {
-				showTextArea();
-				input.setText("");
-			}
-		};
-		MessageBox.invokeNow(r);
-		optionValues = null;
-	}
-	
-	/**
-	 * Executes a Runnable synchronously on the EDT. This method is
-	 * thread-safe; if the current thread is not the EDT, the Runnable is sent
-	 * to the EDT.
-	 * 
-	 * If an Exception is thrown by the executing code, the stack trace is
-	 * printed to stderr and this method returns immediately.
-	 * 
-	 * If the current thread is interrupted while waiting for the code to be
-	 * executed, the thread's interrupted flag is set and this method returns
-	 * immediately.
-	 * 
-	 * @param doRun The Runnable to be executed.
-	 */
-	private static void invokeNow(Runnable doRun) {
-		if (!SwingUtilities.isEventDispatchThread()) {
-			try {
-				SwingUtilities.invokeAndWait(doRun);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		} else {
-			doRun.run();
-		}
 	}
 	
 	/**
@@ -426,6 +385,25 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Shows a choice prompt.
+	 * 
+	 * @param prompt The text prompt to show the user.
+	 * @param options The options that the user is to pick from.
+	 */
+	private void showChoicePrompt(String prompt, Object[] options) {
+		component.removeAll();
+		add(new JLabel(prompt));
+		for (Object opt: options) {
+			JButton button = new JButton(opt.toString());
+			optionValues.put(button, opt);
+			button.addMouseListener(this);
+			add(button);
+		}
+		component.revalidate();
+		component.repaint();
+	}
+	
+	/**
 	 * Shows a message on the text area. If letter delay is not 0, it will be
 	 * animated.
 	 * 
@@ -439,6 +417,30 @@ public class MessageBox extends Sprite implements MouseListener {
 		} else {
 			setText(message);
 		}
+	}
+	
+	/**
+	 * Shows the read-only text box.
+	 */
+	private void showTextArea() {
+		component.removeAll();
+		add(textBox);
+		component.revalidate();
+		component.repaint();
+	}
+	
+	/**
+	 * Shows a text prompt.
+	 * 
+	 * @param prompt The text prompt to show the user.
+	 */
+	private void showTextPrompt(String prompt) {
+		component.removeAll();
+		add(new JLabel(prompt));
+		add(input);
+		add(enterButton);
+		component.revalidate();
+		component.repaint();
 	}
 	
 	/**

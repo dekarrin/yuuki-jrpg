@@ -22,6 +22,11 @@ import yuuki.sprite.Sprite;
 public abstract class Tween extends TimedAnimation {
 	
 	/**
+	 * Maps property indexes to property names.
+	 */
+	private Map<Integer, String> propertyNames;
+	
+	/**
 	 * The amount left to change each property by.
 	 */
 	private List<Integer> propertyRemainings;
@@ -30,11 +35,6 @@ public abstract class Tween extends TimedAnimation {
 	 * The total amount to change each property by.
 	 */
 	private List<Integer> propertyTotals;
-	
-	/**
-	 * Maps property indexes to property names.
-	 */
-	private Map<Integer, String> propertyNames;
 	
 	/**
 	 * Creates a new Tween.

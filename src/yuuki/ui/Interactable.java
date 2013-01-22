@@ -13,6 +13,13 @@ import yuuki.entity.Stat;
 public interface Interactable {
 	
 	/**
+	 * Applies applicable options to this Interactable.
+	 * 
+	 * @param options The options.
+	 */
+	public void applyOptions(yuuki.Options options);
+	
+	/**
 	 * Gets a confirmation from the user.
 	 *
 	 * @param prompt The prompt to show the user.
@@ -38,18 +45,6 @@ public interface Interactable {
 	 * @param animated Whether the message should come up one letter at a time.
 	 */
 	public void display(Character speaker, String message, boolean animated);
-	
-	/**
-	 * Waits for the message to stop displaying.
-	 */
-	public void waitForDisplay();
-	
-	/**
-	 * Applies applicable options to this Interactable.
-	 * 
-	 * @param options The options.
-	 */
-	public void applyOptions(yuuki.Options options);
 	
 	/**
 	 * Gets a choice from the user. The choice may be one of the given Objects
@@ -334,5 +329,10 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
+	
+	/**
+	 * Waits for the message to stop displaying.
+	 */
+	public void waitForDisplay();
 	
 }

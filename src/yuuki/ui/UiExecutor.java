@@ -54,6 +54,11 @@ public interface UiExecutor {
 	public void requestNewGame();
 	
 	/**
+	 * Requests that all options be applied.
+	 */
+	public void requestOptionApplication();
+	
+	/**
 	 * Requests that the options screen be shown.
 	 */
 	public void requestOptionsScreen();
@@ -72,10 +77,5 @@ public interface UiExecutor {
 	 * Requests that the game be saved.
 	 */
 	public void requestSaveGame();
-	
-	/**
-	 * Requests that all options be applied.
-	 */
-	public void requestOptionApplication();
 	
 }

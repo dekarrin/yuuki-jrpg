@@ -8,8 +8,6 @@ import yuuki.animation.Animation;
 import yuuki.animation.SizeTween;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.VariableStat;
-import yuuki.sprite.Rectangle;
-import yuuki.sprite.Sprite;
 
 /**
  * Displays a VariableStat in a bar.
@@ -27,6 +25,16 @@ public class StatBar extends Sprite {
 	public static final Color BORDER_COLOR = new Color(0, 0, 0);
 	
 	/**
+	 * The background portion of this StatBar.
+	 */
+	private Rectangle background;
+	
+	/**
+	 * The filled portion of this StatBar.
+	 */
+	private Rectangle foreground;
+	
+	/**
 	 * The level of the fighter who owns this StatBar's VariableStat.
 	 */
 	private int level;
@@ -40,16 +48,6 @@ public class StatBar extends Sprite {
 	 * The currently-displayed value of this StatBar.
 	 */
 	private int value;
-	
-	/**
-	 * The filled portion of this StatBar.
-	 */
-	private Rectangle foreground;
-	
-	/**
-	 * The background portion of this StatBar.
-	 */
-	private Rectangle background;
 	
 	/**
 	 * Creates a new StatBar with the given dimensions and whose filled portion

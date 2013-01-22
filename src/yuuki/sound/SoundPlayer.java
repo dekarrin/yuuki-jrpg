@@ -51,6 +51,11 @@ class SoundPlayer implements Runnable {
 	private boolean looping;
 	
 	/**
+	 * The control for muting this clip.
+	 */
+	private BooleanControl muteControl;
+	
+	/**
 	 * The thread playing the audio clip.
 	 */
 	private Thread playerThread;
@@ -69,11 +74,6 @@ class SoundPlayer implements Runnable {
 	 * The control for changing the clip volume.
 	 */
 	private FloatControl volumeControl;
-	
-	/**
-	 * The control for muting this clip.
-	 */
-	private BooleanControl muteControl;
 	
 	/**
 	 * Allocates a new SoundPlayer with given data. The data is copied from

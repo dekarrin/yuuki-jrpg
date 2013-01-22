@@ -10,14 +10,14 @@ import yuuki.ui.MessageBox;
 public class TextTween extends Tween {
 	
 	/**
-	 * The complete message that is being displayed on the message box.
-	 */
-	private String text;
-	
-	/**
 	 * The position of the next character to be added to the message box.
 	 */
 	private int position;
+	
+	/**
+	 * The complete message that is being displayed on the message box.
+	 */
+	private String text;
 	
 	/**
 	 * Creates a new TextChange for a MessageBox.
@@ -32,7 +32,7 @@ public class TextTween extends Tween {
 		this.text = text;
 		this.position = 0;
 	}
-
+	
 	/**
 	 * Adds the next character(s) to the message box.
 	 * 
