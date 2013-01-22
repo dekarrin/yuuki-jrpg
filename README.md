@@ -17,3 +17,20 @@ manner, you may have to attempt to manually build the code and debug any problem
 To build the project code into a directory rather than a JAR file, execute `ant all` at the project's root.
 The code will be compiled to dist/bin. Execute the main class yuuki.YuukiEngine to run the program. You must
 include dist/lib/ and dist/bin/ in your classpath when executing the main class manually.
+
+Attribution
+-----------
+Assets used in Yuuki are created created by:
+* bgm/insidia.mp3: Aaron Krogh - Creative Commons Attribution 3.0 Unported
+* bgm/worldmap.mp3: Aaron Krogh - Creative Commons Attribution 3.0 Unported
+* sfx/strike.wav: thecluegeek - Creative Commons Attribution 3.0 Unported
+* sfx/strike.wav: Ekokubza123 - Creative Commons 0 1.0 Universal
+* sfx/strike.wav: zimbot - Creative Commons Attribution 3.0 Unported
+* sfx/strike.wav: hazure - Creative Commons Attribution 3.0 Unported
+
+You can view the above artists by checking out their home pages:
+* Aaron Krogh - http://soundcloud.com/aaron-anderson-11
+* Ekokubza123 - http://www.freesound.org/people/Ekokubza123/
+* thecluegeek - http://www.freesound.org/people/thecluegeek/
+* hazure - http://www.freesound.org/people/hazure/
+* zimbot - http://www.freesound.org/people/zimbot/
