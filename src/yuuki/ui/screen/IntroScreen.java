@@ -1,13 +1,16 @@
 package yuuki.ui.screen;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +26,21 @@ import yuuki.ui.EffectButton;
 @SuppressWarnings("serial")
 public class IntroScreen extends Screen<IntroScreenListener> implements
 MouseListener {
+	
+	/**
+	 * The amount of vertical space between each button.
+	 */
+	private static final int BUTTON_V_GAP = 15;
+	
+	/**
+	 * The amount of space above the buttons.
+	 */
+	private static final int TOP_MARGIN = 75;
+	
+	/**
+	 * The amount of space to the right of the buttons.
+	 */
+	private static final int RIGHT_MARGIN = 125;
 	
 	/**
 	 * The color that buttons change to when hovered over.
@@ -76,6 +94,10 @@ MouseListener {
 		loadGameButton = new EffectButton("Load Game", EFFECT_COLOR, sound);
 		optionsButton = new EffectButton("Options", EFFECT_COLOR, sound);
 		exitButton = new EffectButton("Exit", EFFECT_COLOR, sound);
+		newGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		loadGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		setButtonListeners();
 		build();
 	}
@@ -127,16 +149,25 @@ MouseListener {
 	 * Adds the child components of this screen to itself.
 	 */
 	private void build() {
-		setLayout(new OverlayLayout(this));
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(new JLabel("Yuuki"));
-		buttonPanel.add(newGameButton);
-		buttonPanel.add(loadGameButton);
-		buttonPanel.add(optionsButton);
-		buttonPanel.add(exitButton);
-		add(buttonPanel);
+		setLayout(new BorderLayout());
+		Box buttonsHorz = Box.createHorizontalBox();
+		Box buttonsVert = Box.createVerticalBox();
+		JLabel nameLabel = new JLabel("Yuuki");
+		nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		buttonsVert.add(Box.createVerticalStrut(TOP_MARGIN));
+		buttonsVert.add(nameLabel);
+		buttonsVert.add(Box.createVerticalStrut(BUTTON_V_GAP));
+		buttonsVert.add(newGameButton);
+		buttonsVert.add(Box.createVerticalStrut(BUTTON_V_GAP));
+		buttonsVert.add(loadGameButton);
+		buttonsVert.add(Box.createVerticalStrut(BUTTON_V_GAP));
+		buttonsVert.add(optionsButton);
+		buttonsVert.add(Box.createVerticalStrut(BUTTON_V_GAP));
+		buttonsVert.add(exitButton);
+		buttonsVert.setAlignmentY(Component.TOP_ALIGNMENT);
+		buttonsHorz.add(buttonsVert);
+		buttonsHorz.add(Box.createHorizontalStrut(RIGHT_MARGIN));
+		add(buttonsHorz, BorderLayout.EAST);
 	}
 	
 	/**
