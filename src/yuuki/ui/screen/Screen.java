@@ -1,6 +1,8 @@
 package yuuki.ui.screen;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,6 +57,11 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * The background image of this Screen.
+	 */
+	private Image backgroundImage;
+	
+	/**
 	 * The background music associated with this Screen.
 	 */
 	private String bgmIndex;
@@ -78,6 +85,16 @@ JPanel implements yuuki.ui.Listenable<L> {
 	public Screen(int width, int height) {
 		size = new Dimension(width, height);
 		listeners = new HashSet<L>();
+		backgroundImage = null;
+	}
+	
+	/**
+	 * Sets the background image for this Screen.
+	 * 
+	 * @param image The background image. Set to null for no background.
+	 */
+	public void setBackgroundImage(Image image) {
+		this.backgroundImage = image;
 	}
 	
 	/**
@@ -137,6 +154,19 @@ JPanel implements yuuki.ui.Listenable<L> {
 	@Override
 	public Dimension getPreferredSize() {
 		return size;
+	}
+	
+	/**
+	 * Calls super.paintComponent() and then paints the background.
+	 * 
+	 * @param g The graphical context on which to paint.
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (backgroundImage != null) {
+			g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+		}
 	}
 	
 	/**

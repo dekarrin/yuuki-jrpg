@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -17,6 +18,7 @@ import yuuki.animation.engine.Animator;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.graphic.ImageFactory;
 import yuuki.sound.SoundEngine;
 import yuuki.ui.menu.FileMenu;
 import yuuki.ui.menu.MenuBar;
@@ -164,6 +166,11 @@ OptionsScreenListener, MenuBarListener {
 	private SoundEngine soundEngine;
 	
 	/**
+	 * Loads image files.
+	 */
+	private ImageFactory imageEngine;
+	
+	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
@@ -176,6 +183,7 @@ OptionsScreenListener, MenuBarListener {
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
 		this.soundEngine = new SoundEngine();
+		this.imageEngine = new ImageFactory();
 	}
 	
 	/**
@@ -905,8 +913,10 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		Image screenImage = imageEngine.getImage("BG_INTRO_SCREEN");
 		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
+		introScreen.setBackgroundImage(screenImage);
 	}
 	
 	/**

@@ -76,7 +76,7 @@ class SoundDatabase {
 		try {
 			readParser();
 		} catch (IOException e) {
-			System.out.println("Sound file format error");
+			System.err.println("Sound file format error");
 		}
 	}
 	

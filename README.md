@@ -27,6 +27,8 @@ Assets used in Yuuki are created created by:
 * sfx/strike.mp3: Ekokubza123 - Creative Commons 0 1.0 Universal
 * sfx/strike.mp3: zimbot - Creative Commons Attribution 3.0 Unported
 * sfx/strike.mp3: hazure - Creative Commons Attribution 3.0 Unported
+* images/joshua_tree.jpg: steveberardi - Creative Commons Attribution-ShareAlike 2.0 Generic
+* Other sounds used from http://www.freesfx.co.uk
 
 You can view the above artists by checking out their home pages:
 * Aaron Krogh - http://soundcloud.com/aaron-anderson-11
@@ -34,3 +36,4 @@ You can view the above artists by checking out their home pages:
 * thecluegeek - http://www.freesound.org/people/thecluegeek/
 * hazure - http://www.freesound.org/people/hazure/
 * zimbot - http://www.freesound.org/people/zimbot/
+* steveberardi - http://www.flickr.com/photos/steveberardi/
