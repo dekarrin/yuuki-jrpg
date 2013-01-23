@@ -1,8 +1,11 @@
-yuuki-right
+yuuki-jrpg
 ===========
 
-Yuuki done right. This is a re-working of the original yuuki-jrpg project. Some of the processes weren't going as
-smoothly as they should have, and so, yuuki-right was born out of yuuki-jrpg.
+An NDSU project to create a JRPG from scratch.
+
+Yuuki is an attempt to fully create every aspect of a Japanese-style RPG from the ground up. It was started
+as a course project for an introductory computer science class at North Dakota State University. Once the
+assignment was finished, the developers decided to continue working on the project.
 
 
 Testing
