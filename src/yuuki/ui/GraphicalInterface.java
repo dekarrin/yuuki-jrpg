@@ -914,7 +914,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		Image screenImage = imageEngine.getImage("BG_INTRO_SCREEN");
-		introScreen = new IntroScreen(WINDOW_WIDTH, height);
+		introScreen = new IntroScreen(WINDOW_WIDTH, height, soundEngine);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 		introScreen.setBackgroundImage(screenImage);
 	}

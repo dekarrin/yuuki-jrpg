@@ -1,5 +1,6 @@
 package yuuki.ui.screen;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,12 +14,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 
+import yuuki.sound.SoundEngine;
+import yuuki.ui.EffectButton;
+
 /**
  * The screen shown at the introduction. This is the starting screen.
  */
 @SuppressWarnings("serial")
 public class IntroScreen extends Screen<IntroScreenListener> implements
 MouseListener {
+	
+	/**
+	 * The color that buttons change to when hovered over.
+	 */
+	public static final Color EFFECT_COLOR = new Color(222, 127, 0);
 	
 	/**
 	 * The listener assigned to each of this screen's buttons to see if the
@@ -59,13 +68,14 @@ MouseListener {
 	 * 
 	 * @param width The width of the screen.
 	 * @param height The height of the screen.
+	 * @param sound The game sound engine.
 	 */
-	public IntroScreen(int width, int height) {
+	public IntroScreen(int width, int height, SoundEngine sound) {
 		super(width, height);
-		newGameButton = new JButton("New Game");
-		loadGameButton = new JButton("Load Game");
-		optionsButton = new JButton("Options");
-		exitButton = new JButton("Exit");
+		newGameButton = new EffectButton("New Game", EFFECT_COLOR, sound);
+		loadGameButton = new EffectButton("Load Game", EFFECT_COLOR, sound);
+		optionsButton = new EffectButton("Options", EFFECT_COLOR, sound);
+		exitButton = new EffectButton("Exit", EFFECT_COLOR, sound);
 		setButtonListeners();
 		build();
 	}
