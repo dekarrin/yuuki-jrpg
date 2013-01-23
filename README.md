@@ -33,7 +33,7 @@ Assets used in Yuuki are created created by:
 * sfx/strike.mp3: Ekokubza123 - CC-0-1.0 Universal
 * sfx/strike.mp3: zimbot - CC-BY-3.0 Unported
 * sfx/strike.mp3: hazure - CC-BY-3.0 Unported
-* images/joshua_tree.jpg: steveberardi - CC-BY-2.0 Generic
+* images/joshua_tree.jpg: steveberardi - CC-BY-SA-2.0 Generic
 * Other sounds used from http://www.freesfx.co.uk
 
 You can view the above artists by checking out their home pages:
