@@ -2,8 +2,8 @@ package yuuki.world;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds all data for a particular land in the world. In addition to their tile
@@ -28,12 +28,12 @@ public class Land {
 	/**
 	 * The Movable objects in this Land.
 	 */
-	private Set<Movable> residents;
+	private Map<Point, Movable> residents;
 	
 	/**
 	 * The Portals that link this Land to different areas.
 	 */
-	private Set<Portal> portals;
+	private Map<Point, Portal> portals;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -51,17 +51,20 @@ public class Land {
 	public Land(String name, int width, int height, Tile[] tileData) {
 		this.name = name;
 		tiles = new TileGrid(width, height, tileData);
-		residents = new HashSet<Movable>();
-		portals = new HashSet<Portal>();
+		residents = new HashMap<Point, Movable>();
+		portals = new HashMap<Point, Portal>();
 	}
 	
 	/**
-	 * Adds a resident to this Land.
+	 * Adds a resident to this Land if it has not already been added.
 	 * 
 	 * @param r The resident to add.
 	 */
 	public void addResident(Movable r) {
-		residents.add(r);
+		Point pos = r.getLocation();
+		if (residents.get(pos) == null) {
+			residents.put(pos, r);
+		}
 	}
 	
 	/**
@@ -96,12 +99,15 @@ public class Land {
 	}
 	
 	/**
-	 * Adds a Portal to this Land.
+	 * Adds a Portal to this Land if it has not already been added.
 	 * 
 	 * @param p The Portal to add.
 	 */
 	public void addPortal(Portal p) {
-		portals.add(p);
+		Point pos = p.getLocation();
+		if (portals.get(pos) == null) {
+			portals.put(pos, p);
+		}
 	}
 	
 	/**
@@ -110,7 +116,7 @@ public class Land {
 	 * @param p The Portal to remove.
 	 */
 	public void removePortal(Portal p) {
-		portals.remove(p);
+		portals.remove(p.getLocation());
 	}
 	
 	/**
@@ -120,8 +126,8 @@ public class Land {
 	 */
 	public ArrayList<Locatable> getLocatables() {
 		ArrayList<Locatable> ls = new ArrayList<Locatable>();
-		ls.addAll(portals);
-		ls.addAll(residents);
+		ls.addAll(portals.values());
+		ls.addAll(residents.values());
 		return ls;
 	}
 	
@@ -163,7 +169,7 @@ public class Land {
 	 * @param r The resident to remove.
 	 */
 	public void removeResident(Movable r) {
-		residents.remove(r);
+		residents.remove(r.getLocation());
 	}
 	
 }
