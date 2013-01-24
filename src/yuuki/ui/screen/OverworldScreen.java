@@ -8,8 +8,11 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
+import yuuki.ui.WorldViewer;
 
 /**
  * The screen displayed when at the overworld.
@@ -17,6 +20,21 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class OverworldScreen extends Screen<OverworldScreenListener> implements
 MouseListener {
+	
+	/**
+	 * The width of the world viewer, in tiles.
+	 */
+	public static final int VIEWER_WIDTH = 10;
+	
+	/**
+	 * The height of the world viewer, in tiles.
+	 */
+	public static final int VIEWER_HEIGHT = 10;
+	
+	/**
+	 * Displays the world.
+	 */
+	private WorldViewer worldViewer;
 	
 	/**
 	 * The button that advances to the battle screen.
@@ -41,13 +59,20 @@ MouseListener {
 			}
 		};
 		setLayout(new FlowLayout());
+		Box vertBox = Box.createVerticalBox();
+		Box fieldBox = Box.createHorizontalBox();
+		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
 		startButton = new JButton("Start");
 		startButton.addMouseListener(this);
 		startButton.addKeyListener(enterListener);
-		add(new JLabel("Welcome to the overworld!"));
-		add(new JLabel("There's nothing here yet."));
-		add(new JLabel("Hit the button to start a battle -->"));
-		add(startButton);
+		fieldBox.add(new JLabel("The overworld!"));
+		fieldBox.add(Box.createHorizontalStrut(2));
+		fieldBox.add(new JLabel("Hit the button to start a battle ==>"));
+		fieldBox.add(Box.createHorizontalStrut(2));
+		fieldBox.add(startButton);
+		vertBox.add(worldViewer);
+		vertBox.add(fieldBox);
+		add(vertBox);
 	}
 	
 	/**
