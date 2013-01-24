@@ -1,5 +1,7 @@
 package yuuki.world;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,12 +22,46 @@ public class World {
 	private Map<String, Land> lands;
 	
 	/**
+	 * Creates a new, empty World.
+	 */
+	public World() {
+		lands = new HashMap<String, Land>();
+	}
+	
+	/**
 	 * Advances the world by one tick. All Locatables are queried for where
 	 * they wish to move, and if they make a valid request, they are moved
 	 * to where they requested.
 	 */
 	public void advance() {
-		// TODO: advancement logic
+		
+	}
+	
+	/**
+	 * Get the tiles in the current Land.
+	 * 
+	 * @return The TileGrid that makes up the current Land.
+	 */
+	public TileGrid getTiles() {
+		return activeLand.getTiles();
+	}
+	
+	/**
+	 * Get the occupants in the current Land.
+	 * 
+	 * @return The occupants in the current Land.
+	 */
+	public ArrayList<Locatable> getOccupants() {
+		return activeLand.getOccupants();
+	}
+	
+	/**
+	 * Adds a new Land to this world.
+	 * 
+	 * @param land The Land to add.
+	 */
+	public void addLand(Land land) {
+		lands.put(land.getName(), land);
 	}
 	
 	/**
@@ -38,12 +74,12 @@ public class World {
 	}
 	
 	/**
-	 * Gets the current land.
+	 * Gets the name of the current Land.
 	 * 
-	 * @return The current land.
+	 * @return The name of the current land.
 	 */
-	public Land getLand() {
-		return activeLand;
+	public String getLandName() {
+		return activeLand.getName();
 	}
 	
 }
