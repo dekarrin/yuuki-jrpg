@@ -39,12 +39,12 @@ public class Town implements Locatable {
 	}
 	
 	/**
-	 * Gets the Land that this Town links to.
+	 * Gets the name of the Land that this Town links to.
 	 * 
-	 * @return The Land that this Town links to.
+	 * @return The name of the Land that this Town links to.
 	 */
-	public Land getLinkedLand() {
-		return land;
+	public String getLinkedLandName() {
+		return land.getName();
 	}
 	
 	/**
