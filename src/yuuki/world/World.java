@@ -29,16 +29,15 @@ public class World {
 	}
 	
 	/**
-	 * Advances the world by one tick. All Locatables are queried for where
-	 * they wish to move, and if they make a valid request, they are moved
-	 * to where they requested.
+	 * Advances the world by one tick. The current Land is instructed to
+	 * advance.
 	 */
 	public void advance() {
-		
+		activeLand.advance();
 	}
 	
 	/**
-	 * Get the tiles in the current Land.
+	 * Gets the tiles in the current Land.
 	 * 
 	 * @return The TileGrid that makes up the current Land.
 	 */
@@ -47,7 +46,7 @@ public class World {
 	}
 	
 	/**
-	 * Get the Locatables in the current Land.
+	 * Gets the Locatables in the current Land.
 	 * 
 	 * @return The Locatables in the current Land.
 	 */

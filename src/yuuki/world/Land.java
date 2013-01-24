@@ -56,6 +56,15 @@ public class Land {
 	}
 	
 	/**
+	 * Advances this Land by one tick. All residents are queried for where they
+	 * wish to move, and if they make a valid request, they are moved to where
+	 * they requested.
+	 */
+	public void advance() {
+		moveResidents();
+	}
+	
+	/**
 	 * Adds a resident to this Land if it has not already been added.
 	 * 
 	 * @param r The resident to add.
@@ -170,6 +179,14 @@ public class Land {
 	 */
 	public void removeResident(Movable r) {
 		residents.remove(r.getLocation());
+	}
+	
+	/**
+	 * Moves all residents. Each resident is asked where it wishes to move, and
+	 * if it gives a valid move, it is then moved there.
+	 */
+	private void moveResidents() {
+		
 	}
 	
 }
