@@ -1,9 +1,11 @@
 package yuuki.world;
 
+import yuuki.ui.Displayable;
+
 /**
  * A single tile in a land.
  */
-public class Tile {
+public class Tile implements Displayable {
 	
 	/**
 	 * The name of this tile. This may be used for identifying different types
@@ -34,12 +36,12 @@ public class Tile {
 	}
 	
 	/**
-	 * Gets the name of this Tile.
+	 * Gets the name of this Tile, normalized to lower-case.
 	 * 
 	 * @return This Tile's name.
 	 */
 	public String getName() {
-		return name;
+		return name.toLowerCase();
 	}
 	
 	/**
@@ -78,4 +80,27 @@ public class Tile {
 		this.walkable = walkable;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public char getDisplayChar() {
+		return name.charAt(0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOverworldImage() {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
 }

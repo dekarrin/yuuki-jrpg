@@ -2,10 +2,12 @@ package yuuki.world;
 
 import java.awt.Point;
 
+import yuuki.ui.Displayable;
+
 /**
  * A location in a Land that links to another Land.
  */
-public class Portal implements Locatable {
+public class Portal implements Locatable, Displayable {
 	
 	/**
 	 * The Land that this Portal links to.
@@ -88,6 +90,30 @@ public class Portal implements Locatable {
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public char getDisplayChar() {
+		return 'P';
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOverworldImage() {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getBattleImage() {
+		return null;
 	}
 	
 }
