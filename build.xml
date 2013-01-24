@@ -77,7 +77,7 @@
 	
 	<target name="all" depends="main,resource,lib"></target>
 
-	<target name="main" depends="battle,ui,sound,animationm,sprite,graphic,world">
+	<target name="main" depends="battle,ui,sound,animation,sprite,graphic,world">
 		<antcall target="-build">
 			<param name="PACKAGE" value="yuuki" />
 			<param name="NAME" value="YuukiEngine" />
@@ -93,6 +93,7 @@
 	<target name="world">
 		<antcall target="-build">
 			<param name="PACKAGE" value="${WORLD}" />
+		</antcall>
 	</target>
 	
 	<target name="sprite">
