@@ -18,9 +18,20 @@ import yuuki.file.CsvParser;
 public class ImageFactory {
 	
 	/**
-	 * Maps image string indexes to resource ID indexes.
+	 * The location of the file containing the graphics definitions. The
+	 * location is relative to the package structure.
 	 */
-	private Map<String, Integer> indexIds;
+	public static final String GRAPHICS_FILE = "graphics.csv";
+	
+	/**
+	 * The location of image files in the package structure.
+	 */
+	public static final String IMAGE_LOCATION = "/yuuki/resource/images/";
+	
+	/**
+	 * The location of data files in the package structure.
+	 */
+	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
 	
 	/**
 	 * Maps image file names to resource ID indexes.
@@ -33,25 +44,14 @@ public class ImageFactory {
 	private ArrayList<Image> images;
 	
 	/**
+	 * Maps image string indexes to resource ID indexes.
+	 */
+	private Map<String, Integer> indexIds;
+	
+	/**
 	 * Parses the definitions file.
 	 */
 	private CsvParser parser;
-	
-	/**
-	 * The location of the file containing the graphics definitions. The
-	 * location is relative to the package structure.
-	 */
-	public static final String GRAPHICS_FILE = "graphics.csv";
-	
-	/**
-	 * The location of data files in the package structure.
-	 */
-	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
-	
-	/**
-	 * The location of image files in the package structure.
-	 */
-	public static final String IMAGE_LOCATION = "/yuuki/resource/images/";
 	
 	/**
 	 * Creates a new ImageFactory. The data file is read and the image files
@@ -84,23 +84,6 @@ public class ImageFactory {
 	}
 	
 	/**
-	 * Loads the actual image files into memory.
-	 * 
-	 * @param defs A map of the indexes to image files.
-	 */
-	private void precacheImages(Map<String, String> defs) {
-		for (Map.Entry<String, String> entry: defs.entrySet()) {
-			String index = entry.getKey();
-			String path = entry.getValue();
-			try {
-				cacheImage(index, path);
-			} catch (IOException e) {
-				System.out.println("Could not load image '" + path + "'");
-			}
-		}
-	}
-	
-	/**
 	 * Loads an image from disk into memory. The image is stored in the images
 	 * map if it hasn't already been loaded for a previous index. The index is
 	 * mapped to the ID of the image that it is loaded for.
@@ -119,6 +102,24 @@ public class ImageFactory {
 			id = loadImage(path);
 		}
 		indexIds.put(index, id);
+	}
+	
+	/**
+	 * Loads the definition files from disk.
+	 * 
+	 * @return A map of the indexes to the image paths.
+	 */
+	private Map<String, String> getDefinitions() {
+		String graphicsFile = RESOURCE_LOCATION + GRAPHICS_FILE;
+		InputStream file = getClass().getResourceAsStream(graphicsFile);
+		parser = new CsvParser(file, '\n', ',', '"');
+		Map<String, String> defs = null;
+		try {
+			defs = readParser();
+		} catch (IOException e) {
+			System.err.println("Graphics file format error");
+		}
+		return defs;
 	}
 	
 	/**
@@ -155,6 +156,23 @@ public class ImageFactory {
 	}
 	
 	/**
+	 * Loads the actual image files into memory.
+	 * 
+	 * @param defs A map of the indexes to image files.
+	 */
+	private void precacheImages(Map<String, String> defs) {
+		for (Map.Entry<String, String> entry: defs.entrySet()) {
+			String index = entry.getKey();
+			String path = entry.getValue();
+			try {
+				cacheImage(index, path);
+			} catch (IOException e) {
+				System.out.println("Could not load image '" + path + "'");
+			}
+		}
+	}
+	
+	/**
 	 * Reads image data directly from a file to an array of bytes.
 	 * 
 	 * @param file The path of the file to read, relative to the package
@@ -172,24 +190,6 @@ public class ImageFactory {
 		buffer.flush();
 		byte[] fileData = buffer.toByteArray();
 		return fileData;
-	}
-	
-	/**
-	 * Loads the definition files from disk.
-	 * 
-	 * @return A map of the indexes to the image paths.
-	 */
-	private Map<String, String> getDefinitions() {
-		String graphicsFile = RESOURCE_LOCATION + GRAPHICS_FILE;
-		InputStream file = getClass().getResourceAsStream(graphicsFile);
-		parser = new CsvParser(file, '\n', ',', '"');
-		Map<String, String> defs = null;
-		try {
-			defs = readParser();
-		} catch (IOException e) {
-			System.err.println("Graphics file format error");
-		}
-		return defs;
 	}
 	
 	/**

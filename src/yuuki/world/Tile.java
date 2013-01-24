@@ -6,9 +6,10 @@ package yuuki.world;
 public class Tile {
 	
 	/**
-	 * Whether this tile can be walked on.
+	 * The name of this tile. This may be used for identifying different types
+	 * of tiles for graphical representation.
 	 */
-	private boolean walkable;
+	private String name;
 	
 	/**
 	 * Whether this tile currently has occupants.
@@ -16,10 +17,9 @@ public class Tile {
 	private boolean occupied;
 	
 	/**
-	 * The name of this tile. This may be used for identifying different types
-	 * of tiles for graphical representation.
+	 * Whether this tile can be walked on.
 	 */
-	private String name;
+	private boolean walkable;
 	
 	/**
 	 * Creates a new Tile.
@@ -43,15 +43,6 @@ public class Tile {
 	}
 	
 	/**
-	 * Checks whether this Tile is walkable.
-	 * 
-	 * @return True if this Tile can be walked on; false otherwise.
-	 */
-	public boolean isWalkable() {
-		return walkable;
-	}
-	
-	/**
 	 * Checks whether this Tile is occupied.
 	 * 
 	 * @return True if there is some occupant on this tile; otherwise, false.
@@ -61,12 +52,12 @@ public class Tile {
 	}
 	
 	/**
-	 * Sets whether this Tile is walkable.
+	 * Checks whether this Tile is walkable.
 	 * 
-	 * @param walkable What to set this Tile's walkable status to.
+	 * @return True if this Tile can be walked on; false otherwise.
 	 */
-	public void setWalkable(boolean walkable) {
-		this.walkable = walkable;
+	public boolean isWalkable() {
+		return walkable;
 	}
 	
 	/**
@@ -76,6 +67,15 @@ public class Tile {
 	 */
 	public void setOccupied(boolean occupied) {
 		this.occupied = occupied;
+	}
+	
+	/**
+	 * Sets whether this Tile is walkable.
+	 * 
+	 * @param walkable What to set this Tile's walkable status to.
+	 */
+	public void setWalkable(boolean walkable) {
+		this.walkable = walkable;
 	}
 	
 }

@@ -8,16 +8,6 @@ import java.awt.Point;
 public class Town implements Locatable {
 	
 	/**
-	 * This Town's position relative to the Land that it is in.
-	 */
-	private Point position;
-	
-	/**
-	 * Whether this Town may be entered.
-	 */
-	private boolean open;
-	
-	/**
 	 * The Land that this Town links to.
 	 */
 	private Land land;
@@ -26,6 +16,16 @@ public class Town implements Locatable {
 	 * The name of this Town.
 	 */
 	private String name;
+	
+	/**
+	 * Whether this Town may be entered.
+	 */
+	private boolean open;
+	
+	/**
+	 * This Town's position relative to the Land that it is in.
+	 */
+	private Point position;
 	
 	/**
 	 * Creates a new Town.
@@ -48,12 +48,29 @@ public class Town implements Locatable {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getLocation() {
+		return position;
+	}
+	
+	/**
 	 * Gets the name of this Town.
 	 * 
 	 * @return The name of this Town.
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getNextMove(Land land) {
+		// Towns do not move
+		return getLocation();
 	}
 	
 	/**
@@ -66,37 +83,20 @@ public class Town implements Locatable {
 	}
 	
 	/**
-	 * Sets whether this Town may be entered.
-	 * 
-	 * @param open Whether this Town may be entered.
-	 */
-	public void setOpen(boolean open) {
-		this.open = open;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Point getLocation() {
-		return position;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void setLocation(Point l) {
 		position = l;
 	}
-
+	
 	/**
-	 * {@inheritDoc}
+	 * Sets whether this Town may be entered.
+	 * 
+	 * @param open Whether this Town may be entered.
 	 */
-	@Override
-	public Point getNextMove(Land land) {
-		// Towns do not move
-		return getLocation();
+	public void setOpen(boolean open) {
+		this.open = open;
 	}
 	
 }

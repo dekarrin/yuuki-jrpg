@@ -89,15 +89,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * Sets the background image for this Screen.
-	 * 
-	 * @param image The background image. Set to null for no background.
-	 */
-	public void setBackgroundImage(Image image) {
-		this.backgroundImage = image;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -157,19 +148,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * Calls super.paintComponent() and then paints the background.
-	 * 
-	 * @param g The graphical context on which to paint.
-	 */
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		if (backgroundImage != null) {
-			g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-		}
-	}
-	
-	/**
 	 * Gets the set height of this Screen.
 	 * 
 	 * @return The height that this Screen was set at during construction.
@@ -199,11 +177,33 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
+	 * Calls super.paintComponent() and then paints the background.
+	 * 
+	 * @param g The graphical context on which to paint.
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (backgroundImage != null) {
+			g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);
+	}
+	
+	/**
+	 * Sets the background image for this Screen.
+	 * 
+	 * @param image The background image. Set to null for no background.
+	 */
+	public void setBackgroundImage(Image image) {
+		this.backgroundImage = image;
 	}
 	
 	/**

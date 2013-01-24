@@ -7,11 +7,6 @@ package yuuki.world;
 public class TileGrid {
 	
 	/**
-	 * The width of this TileGrid, in number of Tile instances.
-	 */
-	private int width;
-	
-	/**
 	 * The height of this TileGrid, in number of Tile instances.
 	 */
 	private int height;
@@ -20,6 +15,11 @@ public class TileGrid {
 	 * The Tile instances in this TileGrid.
 	 */
 	private Tile[][] tiles;
+	
+	/**
+	 * The width of this TileGrid, in number of Tile instances.
+	 */
+	private int width;
 	
 	/**
 	 * Creates a new TileGrid and initializes new Tiles with the given names.
@@ -37,24 +37,6 @@ public class TileGrid {
 				tiles[i][j] = new Tile(names[(i*height) + j], true);
 			}
 		}
-	}
-	
-	/**
-	 * Gets the width of this TileGrid.
-	 * 
-	 * @return The width.
-	 */
-	public int getWidth() {
-		return width;
-	}
-	
-	/**
-	 * Gets the height of this TileGrid.
-	 * 
-	 * @return The height.
-	 */
-	public int getHeight() {
-		return height;
 	}
 	
 	/**
@@ -98,15 +80,12 @@ public class TileGrid {
 	private TileGrid() {}
 	
 	/**
-	 * Gets a reference to the Tile instance at the specific point.
+	 * Gets the height of this TileGrid.
 	 * 
-	 * @param x The x-coordinate of the Tile to get.
-	 * @param y The y-coordinate of the Tile to get.
-	 * 
-	 * @return A reference to the Tile at the given position.
+	 * @return The height.
 	 */
-	public Tile tileAt(int x, int y) {
-		return tiles[x][y];
+	public int getHeight() {
+		return height;
 	}
 	
 	/**
@@ -136,6 +115,27 @@ public class TileGrid {
 		subGrid.width = subTiles.length;
 		subGrid.height = subTiles[0].length;
 		return subGrid;
+	}
+	
+	/**
+	 * Gets the width of this TileGrid.
+	 * 
+	 * @return The width.
+	 */
+	public int getWidth() {
+		return width;
+	}
+	
+	/**
+	 * Gets a reference to the Tile instance at the specific point.
+	 * 
+	 * @param x The x-coordinate of the Tile to get.
+	 * @param y The y-coordinate of the Tile to get.
+	 * 
+	 * @return A reference to the Tile at the given position.
+	 */
+	public Tile tileAt(int x, int y) {
+		return tiles[x][y];
 	}
 	
 }

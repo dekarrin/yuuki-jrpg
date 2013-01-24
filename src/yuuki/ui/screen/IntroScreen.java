@@ -24,14 +24,14 @@ public class IntroScreen extends Screen<IntroScreenListener> implements
 MouseListener {
 	
 	/**
+	 * The color that buttons change to when hovered over.
+	 */
+	public static final Color EFFECT_COLOR = new Color(222, 127, 0);
+	
+	/**
 	 * The amount of vertical space between each button.
 	 */
 	private static final int BUTTON_V_GAP = 15;
-	
-	/**
-	 * The amount of space above the buttons.
-	 */
-	private static final int TOP_MARGIN = 75;
 	
 	/**
 	 * The amount of space to the right of the buttons.
@@ -39,9 +39,9 @@ MouseListener {
 	private static final int RIGHT_MARGIN = 125;
 	
 	/**
-	 * The color that buttons change to when hovered over.
+	 * The amount of space above the buttons.
 	 */
-	public static final Color EFFECT_COLOR = new Color(222, 127, 0);
+	private static final int TOP_MARGIN = 75;
 	
 	/**
 	 * The listener assigned to each of this screen's buttons to see if the

@@ -44,7 +44,7 @@ public class EffectButton extends JButton implements MouseListener {
 		normalColor = getForeground();
 		addMouseListener(this);
 	}
-
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		soundEngine.playEffect("BUTTON_HIT");
@@ -55,15 +55,15 @@ public class EffectButton extends JButton implements MouseListener {
 		soundEngine.playEffect("BUTTON_HOVER");
 		setForeground(hoverColor);
 	}
-
+	
 	@Override
 	public void mouseExited(MouseEvent e) {
 		setForeground(normalColor);
 	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	

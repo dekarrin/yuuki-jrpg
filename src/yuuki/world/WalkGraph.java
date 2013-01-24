@@ -14,6 +14,11 @@ public class WalkGraph {
 	private boolean fullyValid;
 	
 	/**
+	 * Whether the east point is valid.
+	 */
+	private boolean hasEast;
+	
+	/**
 	 * Whether the north point is valid.
 	 */
 	private boolean hasNorth;
@@ -29,16 +34,6 @@ public class WalkGraph {
 	private boolean hasNorthWest;
 	
 	/**
-	 * Whether the west point is valid.
-	 */
-	private boolean hasWest;
-	
-	/**
-	 * Whether the east point is valid.
-	 */
-	private boolean hasEast;
-	
-	/**
 	 * Whether the south point is valid.
 	 */
 	private boolean hasSouth;
@@ -52,6 +47,11 @@ public class WalkGraph {
 	 * Whether the south-west point is valid.
 	 */
 	private boolean hasSouthWest;
+	
+	/**
+	 * Whether the west point is valid.
+	 */
+	private boolean hasWest;
 	
 	/**
 	 * The coordinates of the center of this WalkGraph.
@@ -73,23 +73,13 @@ public class WalkGraph {
 	}
 	
 	/**
-	 * Gets the position of the center tile of this graph.
+	 * Gets the coordinates of the eastern tile.
 	 * 
-	 * @return The position of the center tile.
+	 * @return The point containing the coordinates of the tile if is a valid
+	 * tile to walk on; otherwise, null.
 	 */
-	public Point getPosition() {
-		return p;
-	}
-	
-	/**
-	 * Checks whether this WalkGraph returns a valid point for each of the 8
-	 * directions.
-	 * 
-	 * @return True if this WalkGraph returns a valid point for each of the 8
-	 * directions; otherwise, false.
-	 */
-	public boolean isFullyValid() {
-		return fullyValid;
+	public Point getEast() {
+		return (hasEast) ? new Point(p.x + 1, p.y) : null;
 	}
 	
 	/**
@@ -103,33 +93,13 @@ public class WalkGraph {
 	}
 	
 	/**
-	 * Gets the coordinates of the southern tile.
+	 * Gets the coordinates of the north-eastern tile.
 	 * 
 	 * @return The point containing the coordinates of the tile if is a valid
 	 * tile to walk on; otherwise, null.
 	 */
-	public Point getSouth() {
-		return (hasSouth) ? new Point(p.x, p.y + 1) : null;
-	}
-	
-	/**
-	 * Gets the coordinates of the eastern tile.
-	 * 
-	 * @return The point containing the coordinates of the tile if is a valid
-	 * tile to walk on; otherwise, null.
-	 */
-	public Point getEast() {
-		return (hasEast) ? new Point(p.x + 1, p.y) : null;
-	}
-	
-	/**
-	 * Gets the coordinates of the western tile.
-	 * 
-	 * @return The point containing the coordinates of the tile if is a valid
-	 * tile to walk on; otherwise, null.
-	 */
-	public Point getWest() {
-		return (hasWest) ? new Point(p.x - 1, p.y) : null;
+	public Point getNorthEast() {
+		return (hasNorthEast) ? new Point(p.x + 1, p.y - 1) : null;
 	}
 	
 	/**
@@ -143,13 +113,22 @@ public class WalkGraph {
 	}
 	
 	/**
-	 * Gets the coordinates of the north-eastern tile.
+	 * Gets the position of the center tile of this graph.
+	 * 
+	 * @return The position of the center tile.
+	 */
+	public Point getPosition() {
+		return p;
+	}
+	
+	/**
+	 * Gets the coordinates of the southern tile.
 	 * 
 	 * @return The point containing the coordinates of the tile if is a valid
 	 * tile to walk on; otherwise, null.
 	 */
-	public Point getNorthEast() {
-		return (hasNorthEast) ? new Point(p.x + 1, p.y - 1) : null;
+	public Point getSouth() {
+		return (hasSouth) ? new Point(p.x, p.y + 1) : null;
 	}
 	
 	/**
@@ -173,6 +152,35 @@ public class WalkGraph {
 	}
 	
 	/**
+	 * Gets the coordinates of the western tile.
+	 * 
+	 * @return The point containing the coordinates of the tile if is a valid
+	 * tile to walk on; otherwise, null.
+	 */
+	public Point getWest() {
+		return (hasWest) ? new Point(p.x - 1, p.y) : null;
+	}
+	
+	/**
+	 * Checks whether this WalkGraph returns a valid point for each of the 8
+	 * directions.
+	 * 
+	 * @return True if this WalkGraph returns a valid point for each of the 8
+	 * directions; otherwise, false.
+	 */
+	public boolean isFullyValid() {
+		return fullyValid;
+	}
+	
+	/**
+	 * Sets whether this graph has every direction as valid.
+	 */
+	private void setFullyValid() {
+		fullyValid = hasNorthWest && hasNorth && hasNorthEast && hasWest &&
+				hasEast && hasSouthWest && hasSouth && hasSouthEast;
+	}
+	
+	/**
 	 * Sets whether each direction is valid based on whether the tile in each
 	 * direction is walkable.
 	 * 
@@ -188,14 +196,6 @@ public class WalkGraph {
 		hasSouthWest = tiles.tileAt(0, 2).isWalkable();
 		hasSouth = tiles.tileAt(1, 2).isWalkable();
 		hasSouthEast = tiles.tileAt(2, 2).isWalkable();
-	}
-	
-	/**
-	 * Sets whether this graph has every direction as valid.
-	 */
-	private void setFullyValid() {
-		fullyValid = hasNorthWest && hasNorth && hasNorthEast && hasWest &&
-				hasEast && hasSouthWest && hasSouth && hasSouthEast;
 	}
 	
 }

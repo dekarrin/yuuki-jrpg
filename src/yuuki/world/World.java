@@ -20,12 +20,12 @@ public class World {
 	private Map<String, Land> lands;
 	
 	/**
-	 * Gets the current land.
-	 * 
-	 * @return The current land.
+	 * Advances the world by one tick. All Locatables are queried for where
+	 * they wish to move, and if they make a valid request, they are moved
+	 * to where they requested.
 	 */
-	public Land getLand() {
-		return activeLand;
+	public void advance() {
+		// TODO: advancement logic
 	}
 	
 	/**
@@ -38,12 +38,12 @@ public class World {
 	}
 	
 	/**
-	 * Advances the world by one tick. All Locatables are queried for where
-	 * they wish to move, and if they make a valid request, they are moved
-	 * to where they requested.
+	 * Gets the current land.
+	 * 
+	 * @return The current land.
 	 */
-	public void advance() {
-		// TODO: advancement logic
+	public Land getLand() {
+		return activeLand;
 	}
 	
 }

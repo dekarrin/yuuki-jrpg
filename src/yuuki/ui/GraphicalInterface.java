@@ -116,6 +116,11 @@ OptionsScreenListener, MenuBarListener {
 	private Screen<?> formerScreen;
 	
 	/**
+	 * Loads image files.
+	 */
+	private ImageFactory imageEngine;
+	
+	/**
 	 * The intro screen.
 	 */
 	private IntroScreen introScreen;
@@ -164,11 +169,6 @@ OptionsScreenListener, MenuBarListener {
 	 * Plays all sounds.
 	 */
 	private SoundEngine soundEngine;
-	
-	/**
-	 * Loads image files.
-	 */
-	private ImageFactory imageEngine;
 	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.

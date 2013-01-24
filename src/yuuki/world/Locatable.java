@@ -15,13 +15,6 @@ public interface Locatable {
 	public Point getLocation();
 	
 	/**
-	 * Sets the current location of this Locatable.
-	 * 
-	 * @param l The location to set this Locatable to.
-	 */
-	public void setLocation(Point l);
-	
-	/**
 	 * Gets the next move of this Locatable. This must not actually move this
 	 * Locatable, only get where it wishes to move to next.
 	 * 
@@ -30,5 +23,12 @@ public interface Locatable {
 	 * @return This Locatable's next move.
 	 */
 	public Point getNextMove(Land land);
+	
+	/**
+	 * Sets the current location of this Locatable.
+	 * 
+	 * @param l The location to set this Locatable to.
+	 */
+	public void setLocation(Point l);
 	
 }
