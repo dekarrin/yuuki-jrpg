@@ -17,4 +17,12 @@ public interface Movable extends Locatable {
 	 */
 	public Point getNextMove(Land land);
 	
+	/**
+	 * Checks whether this Movable will transfer to another world if it walks
+	 * on a tile occupied by a Portal.
+	 * 
+	 * @return Whether stepping on Portals make this Movable transfer.
+	 */
+	public boolean isTransferrable();
+	
 }

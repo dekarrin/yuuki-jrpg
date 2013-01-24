@@ -169,11 +169,41 @@ public class Land {
 	}
 	
 	/**
+	 * Checks whether a tile is occupied by a resident.
+	 * 
+	 * @param location The point to check.
+	 * 
+	 * @return True if the tile at the given point has a resident standing on
+	 * it; otherwise, false.
+	 */
+	public boolean isOccupied(Point location) {
+		Tile toCheck = tiles.tileAt(location.x, location.y);
+		return toCheck.isOccupied();
+	}
+	
+	/**
 	 * Moves all residents. Each resident is asked where it wishes to move, and
-	 * if it gives a valid move, it is then moved there.
+	 * is then moved there.
 	 */
 	private void moveResidents() {
-		
+		Movable[] moveList = residents.values().toArray(new Movable[0]);
+		for (Movable r: moveList) {
+			Point destination = r.getNextMove(this);
+			r.setLocation(destination);
+		}
+		applyMove(moveList);
+	}
+	
+	/**
+	 * Clears the resident map and moves all residents to their new positions.
+	 * 
+	 * @param moveList An array containing the updated residents.
+	 */
+	private void applyMove(Movable[] moveList) {
+		residents.clear();
+		for (Movable r: moveList) {
+			residents.put(r.getLocation(), r);
+		}
 	}
 	
 }
