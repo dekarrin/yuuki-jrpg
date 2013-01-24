@@ -95,19 +95,6 @@ public class Land {
 	}
 	
 	/**
-	 * Gets the next Point in a path to a destination.
-	 * 
-	 * @param current The start of the path.
-	 * @param dest The destination of the path.
-	 * 
-	 * @return The next point along the path described.
-	 */
-	public Point getNextStep(Point current, Point dest) {
-		// TODO: Path-finding
-		return current;
-	}
-	
-	/**
 	 * Adds a Portal to this Land if it has not already been added.
 	 * 
 	 * @param p The Portal to add.
