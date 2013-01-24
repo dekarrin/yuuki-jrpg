@@ -8,12 +8,6 @@ import java.awt.Point;
 public class WalkGraph {
 	
 	/**
-	 * Whether this WalkGraph returns a valid point to walk on for all 8
-	 * directions.
-	 */
-	private boolean fullyValid;
-	
-	/**
 	 * Whether the east point is valid.
 	 */
 	private boolean hasEast;
@@ -69,7 +63,6 @@ public class WalkGraph {
 	public WalkGraph(Point position, TileGrid tiles) {
 		this.p = position;
 		setValidity(tiles);
-		setFullyValid();
 	}
 	
 	/**
@@ -152,6 +145,40 @@ public class WalkGraph {
 	}
 	
 	/**
+	 * Gets the number of valid directions.
+	 * 
+	 * @return The number of valid direction.
+	 */
+	public int getValidCount() {
+		int c = 0;
+		if (hasNorthWest) {
+			c++;
+		}
+		if (hasNorth) {
+			c++;
+		}
+		if (hasNorthEast) {
+			c++;
+		}
+		if (hasWest) {
+			c++;
+		}
+		if (hasEast) {
+			c++;
+		}
+		if (hasSouthWest) {
+			c++;
+		}
+		if (hasSouth) {
+			c++;
+		}
+		if (hasSouthEast) {
+			c++;
+		}
+		return c;
+	}
+	
+	/**
 	 * Gets the coordinates of the western tile.
 	 * 
 	 * @return The point containing the coordinates of the tile if is a valid
@@ -169,15 +196,7 @@ public class WalkGraph {
 	 * directions; otherwise, false.
 	 */
 	public boolean isFullyValid() {
-		return fullyValid;
-	}
-	
-	/**
-	 * Sets whether this graph has every direction as valid.
-	 */
-	private void setFullyValid() {
-		fullyValid = hasNorthWest && hasNorth && hasNorthEast && hasWest &&
-				hasEast && hasSouthWest && hasSouth && hasSouthEast;
+		return (getValidCount() == 8);
 	}
 	
 	/**

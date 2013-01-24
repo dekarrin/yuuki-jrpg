@@ -1,16 +1,18 @@
 package yuuki.entity;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.sprite.Sprite;
+import yuuki.world.Movable;
 
 /**
  * Provides stats for characters.
  */
-public abstract class Character {
+public abstract class Character implements Movable {
 	
 	/**
 	 * The base used in calculating required experience.
@@ -92,6 +94,11 @@ public abstract class Character {
 	 * The Name of the Character.
 	 */
 	private String name;
+	
+	/**
+	 * This Character's position in the overworld.
+	 */
+	private Point position;
 	
 	/**
 	 * The sprite for this Character in the GUI.
@@ -439,6 +446,14 @@ public abstract class Character {
 	 */
 	public int getLevel() {
 		return level;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getLocation() {
+		return position;
 	}
 	
 	/**
@@ -792,6 +807,14 @@ public abstract class Character {
 	 */
 	public void setFighterId(int id) {
 		fighterId = id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setLocation(Point l) {
+		this.position = l;
 	}
 	
 	/**

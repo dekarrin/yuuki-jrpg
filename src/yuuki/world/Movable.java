@@ -9,7 +9,8 @@ public interface Movable extends Locatable {
 	
 	/**
 	 * Gets the next move of this Locatable. This must not actually move this
-	 * Locatable, only get where it wishes to move to next.
+	 * Locatable, only get where it wishes to move to next. Returns null for
+	 * no movement requested.
 	 * 
 	 * @param land The land that this Locatable is to move on.
 	 * 

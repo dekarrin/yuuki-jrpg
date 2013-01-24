@@ -1,9 +1,11 @@
 package yuuki.entity;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import yuuki.action.Action;
 import yuuki.ui.Interactable;
+import yuuki.world.Land;
 
 /**
  * A Character that can be controlled by the interface.
@@ -72,6 +74,22 @@ public class PlayerCharacter extends Character {
 	protected Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getNextMove(Land land) {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTransferrable() {
+		return true;
 	}
 	
 }

@@ -189,7 +189,9 @@ public class Land {
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
 		for (Movable r: moveList) {
 			Point destination = r.getNextMove(this);
-			r.setLocation(destination);
+			if (destination != null) {
+				r.setLocation(destination);
+			}
 		}
 		applyMove(moveList);
 	}
