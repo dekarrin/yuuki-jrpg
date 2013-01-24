@@ -47,12 +47,12 @@ public class World {
 	}
 	
 	/**
-	 * Get the occupants in the current Land.
+	 * Get the Locatables in the current Land.
 	 * 
-	 * @return The occupants in the current Land.
+	 * @return The Locatables in the current Land.
 	 */
-	public ArrayList<Locatable> getOccupants() {
-		return activeLand.getOccupants();
+	public ArrayList<Locatable> getLocatables() {
+		return activeLand.getLocatables();
 	}
 	
 	/**
