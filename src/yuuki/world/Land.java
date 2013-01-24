@@ -6,7 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Holds all data for a particular land in the world.
+ * Holds all data for a particular land in the world. In addition to their tile
+ * data, Lands hold entities that have a specific location in the Land. All of
+ * these entities implement the interface yuuki.world.Locatable, and there are
+ * several types of entities.
+ * 
+ * A resident is a Locatable that moves from tile to tile around the Land on
+ * every turn. Residents do not have a specific type, but all residents
+ * implement the yuuki.world.Movable interface.
+ * 
+ * A portal is a Locatable that occupies a tile and serves to link the Land it
+ * is in with another. All portals are of the type Portal.
  */
 public class Land {
 	
@@ -16,9 +26,14 @@ public class Land {
 	private String name;
 	
 	/**
-	 * The Locatable objects in this Land.
+	 * The Movable objects in this Land.
 	 */
-	private Set<Locatable> occupants;
+	private Set<Movable> residents;
+	
+	/**
+	 * The Portals that link this Land to different areas.
+	 */
+	private Set<Portal> portals;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -36,16 +51,17 @@ public class Land {
 	public Land(String name, int width, int height, Tile[] tileData) {
 		this.name = name;
 		tiles = new TileGrid(width, height, tileData);
-		occupants = new HashSet<Locatable>();
+		residents = new HashSet<Movable>();
+		portals = new HashSet<Portal>();
 	}
 	
 	/**
-	 * Adds a Locatable to this Land.
+	 * Adds a resident to this Land.
 	 * 
-	 * @param o The Locatable to add.
+	 * @param r The resident to add.
 	 */
-	public void addOccupant(Locatable o) {
-		occupants.add(o);
+	public void addResident(Movable r) {
+		residents.add(r);
 	}
 	
 	/**
@@ -80,12 +96,33 @@ public class Land {
 	}
 	
 	/**
+	 * Adds a Portal to this Land.
+	 * 
+	 * @param p The Portal to add.
+	 */
+	public void addPortal(Portal p) {
+		portals.add(p);
+	}
+	
+	/**
+	 * Removes a Portal from this Land.
+	 * 
+	 * @param p The Portal to remove.
+	 */
+	public void removePortal(Portal p) {
+		portals.remove(p);
+	}
+	
+	/**
 	 * Gets all the Locatables that occupy this Land.
 	 * 
 	 * @return The Locatables.
 	 */
-	public ArrayList<Locatable> getOccupants() {
-		return new ArrayList<Locatable>(occupants);
+	public ArrayList<Locatable> getLocatables() {
+		ArrayList<Locatable> ls = new ArrayList<Locatable>();
+		ls.addAll(portals);
+		ls.addAll(residents);
+		return ls;
 	}
 	
 	/**
@@ -121,12 +158,12 @@ public class Land {
 	}
 	
 	/**
-	 * Removes a Locatable from this Land.
+	 * Removes a resident from this Land.
 	 * 
-	 * @param o The Locatable to remove.
+	 * @param r The resident to remove.
 	 */
-	public void removeOccupant(Locatable o) {
-		occupants.remove(o);
+	public void removeResident(Movable r) {
+		residents.remove(r);
 	}
 	
 }
