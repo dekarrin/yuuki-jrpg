@@ -12,6 +12,19 @@ import java.util.ArrayList;
 public class CsvParser {
 	
 	/**
+	 * Gets a CsvParser that uses ',' for the field separator, '\n' for the
+	 * record separator, and '"' for the field delimiter.
+	 * 
+	 * @param stream The InputStream to read the CSV data from.
+	 * 
+	 * @return A CsvParser that uses the above common characters.
+	 */
+	public static CsvParser defaultParser(InputStream stream) {
+		CsvParser parser = new CsvParser(stream, '\n', ',', '"');
+		return parser;
+	}
+	
+	/**
 	 * The character that delimits field.
 	 */
 	private char fieldDelimiter;
@@ -35,7 +48,7 @@ public class CsvParser {
 	 * Creates a new CsvParser.
 	 * 
 	 * @param stream The stream that has CSV data.
-	 * @param recordSeparator The character that separates record.
+	 * @param recordSeparator The character that separates records.
 	 * @param fieldSeparator The character that separates fields.
 	 * @param fieldDelimiter The character that delimits field data.
 	 */
