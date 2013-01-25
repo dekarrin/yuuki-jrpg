@@ -48,6 +48,29 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Handles the execution of a world in its own thread.
+	 */
+	private class WorldRunner implements Runnable {
+		private boolean paused = false;
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					while (paused) {
+						Thread.sleep(10);
+					}
+					advanceWorld();
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
+		public void setPaused(boolean paused) {
+			this.paused = paused;
+		}
+	}
+	
+	/**
 	 * The path to definitions files.
 	 */
 	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
@@ -114,6 +137,11 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private World world;
 	
 	/**
+	 * The thread running the world advancement.
+	 */
+	private WorldRunner worldRunner;
+	
+	/**
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
@@ -134,6 +162,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		Battle battle = new Battle(fighters);
 		if (display) {
 			mainBattle = battle;
+			exitOverworldMode();
 			ui.switchToBattleScreen(fighters);
 		}
 	}
@@ -145,7 +174,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	public void requestBattleEnd() {
 		Character winner = mainBattle.getFighters(0).get(0);
 		ui.getChoice(winner.getName() + " won", new String[]{"Continue"});
-		ui.switchToOverworldScreen();
+		enterOverworldMode();
 		ui.display(null, "Your health has been restored.", false);
 		player.restoreHP();
 		player.restoreMP();
@@ -165,7 +194,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
-		enterOverworld();
+		enterOverworldMode();
 	}
 	
 	/**
@@ -173,6 +202,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestCloseGame() {
+		exitOverworldMode();
 		ui.switchToIntroScreen();
 	}
 	
@@ -189,6 +219,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestNewGame() {
+		exitOverworldMode();
 		ui.switchToCharacterCreationScreen();
 	}
 	
@@ -249,6 +280,14 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Advances the world by one tick and updates the GUI with the new world
+	 * data.
+	 */
+	private void advanceWorld() {
+		
+	}
+	
+	/**
 	 * Applies each of the options in the game options object to obtain their
 	 * respective effects.
 	 */
@@ -259,8 +298,18 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	/**
 	 * Switches to the overworld screen and begins overworld advancement.
 	 */
-	private void enterOverworld() {
+	private void enterOverworldMode() {
 		ui.switchToOverworldScreen();
+		startWorldThread();
+	}
+	
+	/**
+	 * Sets the world advancer to stop clicking through the world.
+	 */
+	private void exitOverworldMode() {
+		if (worldRunner != null) {
+			pauseWorldThread();
+		}
 	}
 	
 	/**
@@ -422,6 +471,13 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private void outputVictory(Battle battle) {}
 	
 	/**
+	 * Pauses the thread running the world.
+	 */
+	private void pauseWorldThread() {
+		worldRunner.setPaused(true);
+	}
+	
+	/**
 	 * Runs a battle to completion.
 	 *
 	 * @param battle The battle to run
@@ -495,6 +551,18 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			t.setName("Battle");
 		}
 		t.start();
+	}
+	
+	/**
+	 * Starts the thread running the world. If the thread has not yet been
+	 * created, it is created.
+	 */
+	private void startWorldThread() {
+		if (worldRunner == null) {
+			worldRunner = new WorldRunner();
+			(new Thread(worldRunner, "World")).start();
+		}
+		worldRunner.setPaused(false);
 	}
 	
 }
