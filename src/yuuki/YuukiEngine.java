@@ -134,9 +134,16 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
-		ui.switchToOverworldScreen();
+		enterOverworld();
 	}
 	
+	/**
+	 * Switches to the overworld screen and begins overworld advancement.
+	 */
+	private void enterOverworld() {
+		ui.switchToOverworldScreen();
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
