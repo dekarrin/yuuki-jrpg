@@ -49,6 +49,7 @@ public class TileGrid {
 	public TileGrid(int w, int h, Tile[] tiles) {
 		this.width = w;
 		this.height = h;
+		this.tiles = new Tile[w][h];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				this.tiles[i][j] = tiles[(i*height) + j];
