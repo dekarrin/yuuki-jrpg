@@ -24,6 +24,11 @@ public class Tile implements Displayable {
 	private boolean walkable;
 	
 	/**
+	 * The ID of this Tile, used for getting the representative character.
+	 */
+	private int id;
+	
+	/**
 	 * Creates a new Tile.
 	 * 
 	 * @param name The name of the new Tile.
@@ -33,6 +38,15 @@ public class Tile implements Displayable {
 		this.name = name;
 		this.walkable = walkable;
 		occupied = false;
+	}
+	
+	/**
+	 * Sets the ID of this Tile.
+	 * 
+	 * @param id The ID to set it to.
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	/**
@@ -85,7 +99,7 @@ public class Tile implements Displayable {
 	 */
 	@Override
 	public char getDisplayChar() {
-		return name.charAt(0);
+		return ((char) id);
 	}
 	
 	/**

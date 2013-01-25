@@ -1,0 +1,3 @@
+#id-char,		name,		walkable
+"#",			"wall",		"0"
+".",			"floor",	"1"
