@@ -1,5 +1,6 @@
 package yuuki;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -11,9 +12,13 @@ import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.file.TileLoader;
+import yuuki.file.WorldLoader;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
+import yuuki.world.TileFactory;
+import yuuki.world.World;
 
 /**
  * The game engine for the Yuuki JRPG project. This class may be executed
@@ -41,6 +46,26 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			}
 		}
 	}
+	
+	/**
+	 * The path to definitions files.
+	 */
+	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
+	
+	/**
+	 * The path to land files.
+	 */
+	public static final String LAND_PATH = "/yuuki/resource/land/";
+	
+	/**
+	 * The name of the tile definitions file.
+	 */
+	public static final String TILE_FILE = "tiles.csv";
+	
+	/**
+	 * The name of the world definitions file.
+	 */
+	public static final String WORLD_FILE = "world.csv";
 	
 	/**
 	 * Program execution hook. Creates a new instance of YuukiEngine and then
@@ -84,12 +109,18 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private Interactable ui;
 	
 	/**
+	 * The world controller.
+	 */
+	private World world;
+	
+	/**
 	 * Creates a new YuukiEngine with a Swing-based GUI.
 	 */
 	public YuukiEngine() {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
+		world = loadWorld();
 		applyOptions();
 	}
 	
@@ -137,13 +168,6 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		enterOverworld();
 	}
 	
-	/**
-	 * Switches to the overworld screen and begins overworld advancement.
-	 */
-	private void enterOverworld() {
-		ui.switchToOverworldScreen();
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -230,6 +254,34 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void applyOptions() {
 		ui.applyOptions(options);
+	}
+	
+	/**
+	 * Switches to the overworld screen and begins overworld advancement.
+	 */
+	private void enterOverworld() {
+		ui.switchToOverworldScreen();
+	}
+	
+	/**
+	 * Loads the world from disk.
+	 * 
+	 * @return The loaded World.
+	 */
+	private World loadWorld() {
+		TileLoader tileLoader = null;
+		TileFactory tf = null;
+		WorldLoader worldLoader = null;
+		World world = null;
+		try {
+			tileLoader = new TileLoader(DEFINITIONS_PATH);
+			tf = tileLoader.loadTiles(TILE_FILE);
+			worldLoader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf);
+			world = worldLoader.load(WORLD_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load world file!");
+		}
+		return world;
 	}
 	
 	/**

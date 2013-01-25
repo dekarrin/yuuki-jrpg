@@ -70,10 +70,8 @@ public class LandLoader extends ResourceLoader {
 		landName = name;
 		Land land = null;
 		InputStream stream = getStream(resource);
-		if (stream != null) {
-			reader = new BufferedReader(new InputStreamReader(stream));
-			land = loadLand();
-		}
+		reader = new BufferedReader(new InputStreamReader(stream));
+		land = loadLand();
 		return land;
 	}
 	

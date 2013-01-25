@@ -42,19 +42,17 @@ public class WorldLoader extends CsvResourceLoader {
 	 * @throws IOException If an IOException occurs.
 	 */
 	public World load(String resource) throws IOException {
-		World world = null;
+		World world = new World();
 		String[][] records = loadRecords(resource);
-		if (records != null) {
-			ArrayList<String> names = new ArrayList<String>();
-			ArrayList<String> paths = new ArrayList<String>();
-			for (String[] r : records) {
-				names.add(r[0]);
-				paths.add(r[1]);
-			}
-			String[] namesArr = names.toArray(new String[0]);
-			String[] pathsArr = paths.toArray(new String[0]);
-			loadLands(world, namesArr, pathsArr);
+		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> paths = new ArrayList<String>();
+		for (String[] r : records) {
+			names.add(r[0]);
+			paths.add(r[1]);
 		}
+		String[] namesArr = names.toArray(new String[0]);
+		String[] pathsArr = paths.toArray(new String[0]);
+		loadLands(world, namesArr, pathsArr);
 		return world;
 	}
 	

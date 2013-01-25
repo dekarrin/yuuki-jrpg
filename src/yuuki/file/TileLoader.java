@@ -33,14 +33,12 @@ public class TileLoader extends CsvResourceLoader {
 	public TileFactory loadTiles(String resource) throws IOException {
 		TileFactory factory = null;
 		String[][] records = loadRecords(resource);
-		if (records != null) {
-			factory = new TileFactory();
-			for (String[] r : records) {
-				int id = r[0].charAt(0);
-				String name = r[1];
-				boolean walkable = r[2].equals("1");
-				factory.addDefinition(id, name, walkable);
-			}
+		factory = new TileFactory();
+		for (String[] r : records) {
+			int id = r[0].charAt(0);
+			String name = r[1];
+			boolean walkable = r[2].equals("1");
+			factory.addDefinition(id, name, walkable);
 		}
 		return factory;
 	}
