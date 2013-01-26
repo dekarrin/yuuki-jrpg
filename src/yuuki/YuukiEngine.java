@@ -51,7 +51,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * Handles the execution of a world in its own thread.
 	 */
 	private class WorldRunner implements Runnable {
-		private boolean paused = false;
+		private volatile boolean paused = false;
 		@Override
 		public void run() {
 			while (true) {
