@@ -137,7 +137,7 @@ MouseListener {
 	 * Sets the initial focus of this screen to the new game button.
 	 */
 	@Override
-	public void setInitialFocus() {
+	public void setInitialProperties() {
 		newGameButton.requestFocus();
 	}
 	

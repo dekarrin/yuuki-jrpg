@@ -115,7 +115,7 @@ MouseListener {
 	 * Sets the initial focus of this screen to the start button.
 	 */
 	@Override
-	public void setInitialFocus() {
+	public void setInitialProperties() {
 		startButton.requestFocus();
 	}
 	

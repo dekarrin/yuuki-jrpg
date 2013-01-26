@@ -140,7 +140,7 @@ Screen<CharacterCreationScreenListener> implements MouseListener {
 	 * Sets the initial focus of this screen to the name field.
 	 */
 	@Override
-	public void setInitialFocus() {
+	public void setInitialProperties() {
 		nameField.requestFocus();
 	}
 	

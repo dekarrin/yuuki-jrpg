@@ -63,7 +63,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setInitialFocus() {}
+	public void setInitialProperties() {}
 	
 	/**
 	 * Shows a sprite failing at an action.

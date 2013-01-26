@@ -68,7 +68,7 @@ class SoundPlayer implements Runnable {
 	/**
 	 * The volume to play the data at.
 	 */
-	private int volume;
+	private volatile int volume;
 	
 	/**
 	 * The control for changing the clip volume.

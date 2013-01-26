@@ -100,7 +100,7 @@ ChangeListener {
 	 * Sets the initial focus to the primary element in the options screen.
 	 */
 	@Override
-	public void setInitialFocus() {
+	public void setInitialProperties() {
 		submitButton.requestFocus();
 	}
 	

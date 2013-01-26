@@ -1030,7 +1030,7 @@ OptionsScreenListener, MenuBarListener {
 				if (!mainWindow.isVisible()) {
 					mainWindow.setVisible(true);
 				}
-				screen.setInitialFocus();
+				screen.setInitialProperties();
 			}
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));

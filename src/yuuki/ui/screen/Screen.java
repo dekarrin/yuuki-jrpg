@@ -39,7 +39,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 		 * Empty implementation.
 		 */
 		@Override
-		public void setInitialFocus() {}
+		public void setInitialProperties() {}
 	}
 	
 	/**
@@ -216,8 +216,10 @@ JPanel implements yuuki.ui.Listenable<L> {
 	}
 	
 	/**
-	 * Sets focus on the primary element in this screen.
+	 * Called when this screen is switched to. May be used to set the focus on
+	 * the initial element and/or set the properties of elements within this
+	 * Screen.
 	 */
-	public abstract void setInitialFocus();
+	public abstract void setInitialProperties();
 	
 }
