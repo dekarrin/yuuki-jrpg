@@ -59,22 +59,22 @@ MouseListener {
 	/**
 	 * The button to quit the game with.
 	 */
-	private JButton exitButton;
+	private EffectButton exitButton;
 	
 	/**
 	 * The button to load a new game with.
 	 */
-	private JButton loadGameButton;
+	private EffectButton loadGameButton;
 	
 	/**
 	 * The button to start a new game with.
 	 */
-	private JButton newGameButton;
+	private EffectButton newGameButton;
 	
 	/**
 	 * The button to go into the options screen with.
 	 */
-	private JButton optionsButton;
+	private EffectButton optionsButton;
 	
 	/**
 	 * Creates a new IntroScreen. The child components are created and added to
@@ -134,11 +134,16 @@ MouseListener {
 	public void mouseReleased(MouseEvent e) {}
 	
 	/**
-	 * Sets the initial focus of this screen to the new game button.
+	 * Sets the initial focus of this screen to the new game button and clears
+	 * all buttons of their effect text.
 	 */
 	@Override
 	public void setInitialProperties() {
 		newGameButton.requestFocus();
+		newGameButton.clearHoverEffects();
+		loadGameButton.clearHoverEffects();
+		optionsButton.clearHoverEffects();
+		exitButton.clearHoverEffects();
 	}
 	
 	/**

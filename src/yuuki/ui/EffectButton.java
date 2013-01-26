@@ -45,6 +45,13 @@ public class EffectButton extends JButton implements MouseListener {
 		addMouseListener(this);
 	}
 	
+	/**
+	 * Clears this EffectButton of mouse hover effects.
+	 */
+	public void clearHoverEffects() {
+		setForeground(normalColor);
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		soundEngine.playEffect("BUTTON_HIT");
@@ -58,7 +65,7 @@ public class EffectButton extends JButton implements MouseListener {
 	
 	@Override
 	public void mouseExited(MouseEvent e) {
-		setForeground(normalColor);
+		clearHoverEffects();
 	}
 	
 	@Override
