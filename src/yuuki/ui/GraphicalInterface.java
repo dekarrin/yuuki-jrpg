@@ -2,6 +2,7 @@ package yuuki.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -33,6 +34,7 @@ import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
+import yuuki.world.TileGrid;
 
 /**
  * A graphical user interface that uses the Swing framework.
@@ -995,6 +997,20 @@ OptionsScreenListener, MenuBarListener {
 		mainWindow.pack();
 		mainWindow.revalidate();
 		mainWindow.repaint();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setWorldView(TileGrid view) {
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateWorldView(Point center) {
+		
 	}
 	
 	/**

@@ -1,16 +1,32 @@
 package yuuki.ui;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.world.TileGrid;
 
 /**
  * Shows program input and output.
  */
 public interface Interactable {
+	
+	/**
+	 * Sets the world view to the given tile grid.
+	 * 
+	 * @param tiles The tiles that make up the world view.
+	 */
+	public void setWorldView(TileGrid view);
+	
+	/**
+	 * Updates the world view to show a certain position.
+	 * 
+	 * @param center The point to center the view on.
+	 */
+	public void updateWorldView(Point center);
 	
 	/**
 	 * Applies applicable options to this Interactable.

@@ -284,7 +284,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 * data.
 	 */
 	private void advanceWorld() {
-		
+		world.advance();
+		ui.updateWorldView(player.getLocation());
 	}
 	
 	/**
@@ -563,6 +564,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 			(new Thread(worldRunner, "World")).start();
 		}
 		worldRunner.setPaused(false);
+		ui.setWorldView(world.getTiles());
 	}
 	
 }
