@@ -1,5 +1,7 @@
 package yuuki.ui;
 
+import java.awt.Point;
+
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -33,6 +35,24 @@ public class WorldViewer extends JPanel {
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
 		add(textArea);
+	}
+	
+	/**
+	 * Sets the view of the world being displayed.
+	 * 
+	 * @param view The view to show.
+	 */
+	public void setView(TileGrid view) {
+		this.view = view;
+	}
+	
+	/**
+	 * Updates this WorldViewer to show a new area.
+	 * 
+	 * @param center The center of the area to show.
+	 */
+	public void updateDisplay(Point center) {
+		
 	}
 	
 }

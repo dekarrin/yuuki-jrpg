@@ -554,6 +554,25 @@ OptionsScreenListener, MenuBarListener {
 		return (Character) getChoice("Select a target", charsArr);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setWorldView(TileGrid view) {
+		class Runner implements Runnable {
+			private TileGrid view;
+			public Runner(TileGrid tg) {
+				view = tg;
+			}
+			@Override
+			public void run() {
+				overworldScreen.setWorldView(view);
+			}
+		}
+		Runner r = new Runner(view);
+		SwingUtilities.invokeLater(r);
+	}
+	
 	@Override
 	public void sfxTestClicked() {
 		soundEngine.playEffect("SFX_TEST");
@@ -856,6 +875,25 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void updateWorldView(Point center) {
+		class Runner implements Runnable {
+			private Point p;
+			public Runner(Point p) {
+				this.p = p;
+			}
+			@Override
+			public void run() {
+				overworldScreen.updateWorldView(p);
+			}
+		}
+		Runner r = new Runner(center);
+		SwingUtilities.invokeLater(r);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void waitForDisplay() {
 		messageBox.waitForClean();
 	}
@@ -997,20 +1035,6 @@ OptionsScreenListener, MenuBarListener {
 		mainWindow.pack();
 		mainWindow.revalidate();
 		mainWindow.repaint();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setWorldView(TileGrid view) {
-		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void updateWorldView(Point center) {
-		
 	}
 	
 	/**

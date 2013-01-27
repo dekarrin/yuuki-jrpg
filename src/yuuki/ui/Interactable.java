@@ -15,20 +15,6 @@ import yuuki.world.TileGrid;
 public interface Interactable {
 	
 	/**
-	 * Sets the world view to the given tile grid.
-	 * 
-	 * @param tiles The tiles that make up the world view.
-	 */
-	public void setWorldView(TileGrid view);
-	
-	/**
-	 * Updates the world view to show a certain position.
-	 * 
-	 * @param center The point to center the view on.
-	 */
-	public void updateWorldView(Point center);
-	
-	/**
 	 * Applies applicable options to this Interactable.
 	 * 
 	 * @param options The options.
@@ -206,6 +192,13 @@ public interface Interactable {
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters);
 	
 	/**
+	 * Sets the world view to the given tile grid.
+	 * 
+	 * @param tiles The tiles that make up the world view.
+	 */
+	public void setWorldView(TileGrid view);
+	
+	/**
 	 * Shows a character fail at an attack.
 	 *
 	 * @param action The move used.
@@ -345,6 +338,13 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
+	
+	/**
+	 * Updates the world view to show a certain position.
+	 * 
+	 * @param center The point to center the view on.
+	 */
+	public void updateWorldView(Point center);
 	
 	/**
 	 * Waits for the message to stop displaying.

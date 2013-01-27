@@ -2,6 +2,7 @@ package yuuki.ui.screen;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import yuuki.ui.WorldViewer;
+import yuuki.world.TileGrid;
 
 /**
  * The screen displayed when at the overworld.
@@ -22,24 +24,24 @@ public class OverworldScreen extends Screen<OverworldScreenListener> implements
 MouseListener {
 	
 	/**
-	 * The width of the world viewer, in tiles.
-	 */
-	public static final int VIEWER_WIDTH = 10;
-	
-	/**
 	 * The height of the world viewer, in tiles.
 	 */
 	public static final int VIEWER_HEIGHT = 10;
 	
 	/**
-	 * Displays the world.
+	 * The width of the world viewer, in tiles.
 	 */
-	private WorldViewer worldViewer;
+	public static final int VIEWER_WIDTH = 10;
 	
 	/**
 	 * The button that advances to the battle screen.
 	 */
 	private JButton startButton;
+	
+	/**
+	 * Displays the world.
+	 */
+	private WorldViewer worldViewer;
 	
 	/**
 	 * Creates a new OverworldScreen. The child components are created and
@@ -117,6 +119,24 @@ MouseListener {
 	@Override
 	public void setInitialProperties() {
 		startButton.requestFocus();
+	}
+	
+	/**
+	 * Changes the world viewer's view of the world.
+	 * 
+	 * @param view The TileGrid with the view to show.
+	 */
+	public void setWorldView(TileGrid view) {
+		worldViewer.setView(view);
+	}
+	
+	/**
+	 * Updates the world view to show a new center.
+	 * 
+	 * @param center The coordinates of the new center to show.
+	 */
+	public void updateWorldView(Point center) {
+		worldViewer.updateDisplay(center);
 	}
 	
 	/**
