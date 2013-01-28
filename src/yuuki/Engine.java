@@ -1,6 +1,5 @@
 package yuuki;
 
-import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -289,8 +288,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void advanceWorld() {
 		world.advance();
-		Point nextLocation = player.getLocation();
-		ui.updateWorldView(nextLocation);
+		ui.updateWorldView(player.getLocation());
 	}
 	
 	/**
@@ -570,6 +568,7 @@ public class Engine implements Runnable, UiExecutor {
 		}
 		worldRunner.setPaused(false);
 		ui.setWorldView(world.getTiles());
+		ui.updateWorldView(player.getLocation());
 	}
 	
 }

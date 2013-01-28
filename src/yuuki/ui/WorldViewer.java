@@ -1,5 +1,6 @@
 package yuuki.ui;
 
+import java.awt.Font;
 import java.awt.Point;
 
 import javax.swing.JPanel;
@@ -34,6 +35,7 @@ public class WorldViewer extends JPanel {
 		textArea = new JTextArea(height, width);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
+		textArea.setFont(new Font("Courier New", Font.PLAIN, 12));
 		add(textArea);
 	}
 	
