@@ -27,7 +27,7 @@ dist/bin/ in your classpath when executing the main class manually.
 
 Attribution
 -----------
-*Assets used in Yuuki are created created by:*
+**Yuuki Asset Credits:**
 * bgm/insidia.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * bgm/worldmap.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * sfx/strike.mp3: thecluegeek - CC-BY-3.0 Unported
@@ -37,7 +37,7 @@ Attribution
 * images/joshua_tree.jpg: steveberardi - CC-BY-SA-2.0 Generic
 * Other sounds used from http://www.freesfx.co.uk
 
-*You can view the above artists by checking out their home pages:*
+**Artist home pages:**
 * Aaron Krogh - http://soundcloud.com/aaron-anderson-11
 * Ekokubza123 - http://www.freesound.org/people/Ekokubza123/
 * thecluegeek - http://www.freesound.org/people/thecluegeek/
@@ -45,7 +45,7 @@ Attribution
 * zimbot - http://www.freesound.org/people/zimbot/
 * steveberardi - http://www.flickr.com/photos/steveberardi/
 
-*Abbreviations:*
+**Abbreviations:**
 * CC - Creative Commons
 * BY - Attribution
 * SA - ShareAlike
