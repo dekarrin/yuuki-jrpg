@@ -5,8 +5,9 @@ An NDSU project to create a JRPG from scratch.
 
 Yuuki is an attempt to fully create every aspect of a Japanese-style RPG from
 the ground up. It was started as a course project for an introductory computer
-science class at North Dakota State University. Once the assignment was
-finished, the developers decided to continue working on the project.
+science class at North Dakota State University in late September of 2012. Once
+the assignment was finished, the developers decided to continue working on the
+project.
 
 
 Testing
@@ -21,12 +22,12 @@ to attempt to manually build the code and debug any problems you find.
 
 To build the project code into a directory rather than a JAR file, execute `ant
 all` at the project's root. The code will be compiled to dist/bin. Execute the
-main class yuuki.YuukiEngine to run the program. You must include dist/lib/ and
+main class yuuki.Engine to run the program. You must include dist/lib/ and
 dist/bin/ in your classpath when executing the main class manually.
 
 Attribution
 -----------
-Assets used in Yuuki are created created by:
+*Assets used in Yuuki are created created by:*
 * bgm/insidia.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * bgm/worldmap.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * sfx/strike.mp3: thecluegeek - CC-BY-3.0 Unported
@@ -36,7 +37,7 @@ Assets used in Yuuki are created created by:
 * images/joshua_tree.jpg: steveberardi - CC-BY-SA-2.0 Generic
 * Other sounds used from http://www.freesfx.co.uk
 
-You can view the above artists by checking out their home pages:
+*You can view the above artists by checking out their home pages:*
 * Aaron Krogh - http://soundcloud.com/aaron-anderson-11
 * Ekokubza123 - http://www.freesound.org/people/Ekokubza123/
 * thecluegeek - http://www.freesound.org/people/thecluegeek/
@@ -44,7 +45,7 @@ You can view the above artists by checking out their home pages:
 * zimbot - http://www.freesound.org/people/zimbot/
 * steveberardi - http://www.flickr.com/photos/steveberardi/
 
-Abbreviations:
+*Abbreviations:*
 * CC - Creative Commons
 * BY - Attribution
 * SA - ShareAlike

@@ -24,7 +24,7 @@
 	
 	<property name="LIB" value="lib" />
 	
-	<property name="class.main" value="yuuki.YuukiEngine" />
+	<property name="class.main" value="yuuki.Engine" />
 	
 	<!-- other properties -->
 	<property name="warnings" value="all" />

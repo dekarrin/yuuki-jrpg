@@ -24,7 +24,7 @@ import yuuki.world.World;
  * The game engine for the Yuuki JRPG project. This class may be executed
  * directly to run Yuuki.
  */
-public class YuukiEngine implements Runnable, UiExecutor {
+public class Engine implements Runnable, UiExecutor {
 	
 	/**
 	 * Handles the execution of a battle in its own thread.
@@ -91,14 +91,14 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	public static final String WORLD_FILE = "world.csv";
 	
 	/**
-	 * Program execution hook. Creates a new instance of YuukiEngine and then
-	 * runs it.
+	 * Program execution hook. Creates a new instance of Engine and then runs
+	 * it.
 	 *
 	 * @param args Command line arguments. Not used.
 	 */
 	public static void main(String[] args) {
-		YuukiEngine gameEngine = new YuukiEngine();
-		gameEngine.run();
+		Engine game = new Engine();
+		game.run();
 	}
 	
 	/**
@@ -142,9 +142,9 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	private WorldRunner worldRunner;
 	
 	/**
-	 * Creates a new YuukiEngine with a Swing-based GUI.
+	 * Creates a new Engine with a Swing-based GUI.
 	 */
-	public YuukiEngine() {
+	public Engine() {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
