@@ -13,7 +13,10 @@ import javax.swing.JPanel;
 /**
  * Base class for the screens that appear in the GUI.
  * 
- * @param <L> The type of the listener that this screen uses.
+ * @param <L> The type of the listener for primary screen events. Primary
+ * screen events are events fired from this Screen that need the help of
+ * external main program classes to execute, such as a button press that causes
+ * the current screen to switch.
  */
 @SuppressWarnings("serial")
 public abstract class Screen<L extends ScreenListener> extends

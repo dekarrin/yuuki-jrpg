@@ -7,8 +7,11 @@ import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -16,13 +19,13 @@ import javax.swing.JLabel;
 
 import yuuki.ui.WorldViewer;
 import yuuki.world.TileGrid;
+import yuuki.world.WalkGraph;
 
 /**
  * The screen displayed when at the overworld.
  */
 @SuppressWarnings("serial")
-public class OverworldScreen extends Screen<OverworldScreenListener> implements
-MouseListener {
+public class OverworldScreen extends Screen<OverworldScreenListener> {
 	
 	/**
 	 * The height of the world viewer, in tiles.
@@ -85,6 +88,11 @@ MouseListener {
 	private JButton moveNullButton;
 	
 	/**
+	 * The objects listening for movement events by the player.
+	 */
+	private Set<OverworldMovementListener> movementListeners;
+	
+	/**
 	 * Displays the world.
 	 */
 	private WorldViewer worldViewer;
@@ -137,6 +145,34 @@ MouseListener {
 	};
 	
 	/**
+	 * Listens for clicks on this OverworldScreen's buttons.
+	 */
+	private MouseListener clickListener = new MouseAdapter() {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Component c = e.getComponent();
+			if (c == startButton) {
+				fireStartClicked();
+			} else if (c == moveSouthWestButton || c == moveSouthButton ||
+					c == moveSouthEastButton || c == moveWestButton ||
+					c == moveNullButton || c == moveEastButton ||
+					c == moveNorthWestButton || c == moveNorthButton ||
+					c == moveNorthEastButton) {
+				if (walkGraph != null) {
+					fireMoveButtonClicked(c);
+				}
+			}
+		}
+		
+	};
+	
+	/**
+	 * Used to calculate where the user wishes to go when a button is clicked.
+	 */
+	private WalkGraph walkGraph;
+	
+	/**
 	 * Creates a new OverworldScreen. The child components are created and
 	 * added to the screen.
 	 * 
@@ -145,6 +181,7 @@ MouseListener {
 	 */
 	public OverworldScreen(int width, int height) {
 		super(width, height);
+		movementListeners = new HashSet<OverworldMovementListener>();
 		KeyListener enterListener = new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -157,11 +194,86 @@ MouseListener {
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
 		startButton = new JButton("Start");
-		startButton.addMouseListener(this);
+		startButton.addMouseListener(clickListener);
 		startButton.addKeyListener(enterListener);
 		startButton.setFocusable(false);
 		createMovementButtons();
 		addElements();
+	}
+	
+	/**
+	 * Adds a listener to the list of movement listeners.
+	 * 
+	 * @param l The listener to add.
+	 */
+	public void addMovementListener(OverworldMovementListener l) {
+		movementListeners.add(l);
+	}
+	
+	/**
+	 * Removes a listener from the list of movement listeners.
+	 * 
+	 * @param l The listener to remove.
+	 */
+	public void removeMovementListener(OverworldMovementListener l) {
+		movementListeners.remove(l);
+	}
+	
+	/**
+	 * Gets the requested movement and calls the movementButtonPressed() method
+	 * on all movement listeners.
+	 * 
+	 * @param c The button that was pressed.
+	 */
+	private void fireMoveButtonClicked(Component c) {
+		Point p = getMovementPoint(c);
+		int size = movementListeners.size();
+		OverworldMovementListener[] ls = new OverworldMovementListener[size];
+		ls = movementListeners.toArray(ls);
+		for (OverworldMovementListener l : ls) {
+			l.movementButtonClicked(p);
+		}
+	}
+	
+	/**
+	 * Gets the point that the player is to be moved to based on which movement
+	 * button was clicked.
+	 * 
+	 * @param c The movement button that was clicked.
+	 * 
+	 * @return The point that the player is to be moved to.
+	 */
+	private Point getMovementPoint(Component c) {
+		Point movePoint = null;
+		if (c == moveSouthWestButton) {
+			movePoint = walkGraph.getSouthWest();
+		} else if (c == moveSouthButton) {
+			movePoint = walkGraph.getSouth();
+		} else if (c == moveSouthEastButton) {
+			movePoint = walkGraph.getSouthEast();
+		} else if (c == moveWestButton) {
+			movePoint = walkGraph.getWest();
+		} else if (c == moveNullButton) {
+			movePoint = walkGraph.getPosition();
+		} else if (c == moveEastButton) {
+			movePoint = walkGraph.getEast();
+		} else if (c == moveNorthWestButton) {
+			movePoint = walkGraph.getNorthWest();
+		} else if (c == moveNorthButton) {
+			movePoint = walkGraph.getNorth();
+		} else if (c == moveNorthEastButton) {
+			movePoint = walkGraph.getNorthEast();
+		}
+		return movePoint;
+	}
+	
+	/**
+	 * Sets the WalkGraph used to calculate where the user wants to walk to.
+	 * 
+	 * @param graph The WalkGraph to use.
+	 */
+	public void setWalkGraph(WalkGraph graph) {
+		this.walkGraph = graph;
 	}
 	
 	/**
@@ -242,42 +354,6 @@ MouseListener {
 		vertBox.add(moveBox);
 		add(vertBox);
 	}
-	
-	/**
-	 * Fires the start clicked event on all registered listeners. This method
-	 * is called when the start button is clicked.
-	 */
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		Component c = e.getComponent();
-		if (c == startButton) {
-			fireStartClicked();
-		}
-	}
-	
-	/**
-	 * Not used.
-	 */
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-	
-	/**
-	 * Not used.
-	 */
-	@Override
-	public void mouseExited(MouseEvent e) {}
-	
-	/**
-	 * Not used.
-	 */
-	@Override
-	public void mousePressed(MouseEvent e) {}
-	
-	/**
-	 * Not used.
-	 */
-	@Override
-	public void mouseReleased(MouseEvent e) {}
 	
 	/**
 	 * Sets the initial focus of this screen to the start button.

@@ -31,10 +31,12 @@ import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
 import yuuki.ui.screen.OptionsScreen;
 import yuuki.ui.screen.OptionsScreenListener;
+import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
 import yuuki.world.TileGrid;
+import yuuki.world.WalkGraph;
 
 /**
  * A graphical user interface that uses the Swing framework.
@@ -552,6 +554,42 @@ OptionsScreenListener, MenuBarListener {
 		}
 		Character[] charsArr = chars.toArray(new Character[0]);
 		return (Character) getChoice("Select a target", charsArr);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point selectMove(WalkGraph graph) {
+		class Runner implements Runnable, OverworldMovementListener {
+			private WalkGraph graph;
+			public Point move = null;
+			public Runner(WalkGraph graph) {
+				this.graph = graph;
+			}
+			public void run() {
+				overworldScreen.setWalkGraph(graph);
+				overworldScreen.addMovementListener(this);
+			}
+			@Override
+			public void movementButtonClicked(Point moveLocation) {
+				overworldScreen.setWalkGraph(null);
+				overworldScreen.removeMovementListener(this);
+				this.move = moveLocation;
+			}
+		};
+		Runner r = new Runner(graph);
+		SwingUtilities.invokeLater(r);
+		try {
+			while (r.move == null) {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {
+			overworldScreen.setWalkGraph(null);
+			overworldScreen.removeMovementListener(r);
+			Thread.currentThread().interrupt();
+		}
+		return r.move;
 	}
 	
 	/**

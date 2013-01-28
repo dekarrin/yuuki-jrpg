@@ -8,6 +8,7 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.world.TileGrid;
+import yuuki.world.WalkGraph;
 
 /**
  * Shows program input and output.
@@ -20,6 +21,15 @@ public interface Interactable {
 	 * @param options The options.
 	 */
 	public void applyOptions(yuuki.Options options);
+	
+	/**
+	 * Gets the next move that the human character wishes to make.
+	 * 
+	 * @param graph The graph of available places to walk to.
+	 * 
+	 * @return The point that the user wants to move to.
+	 */
+	public Point selectMove(WalkGraph graph);
 	
 	/**
 	 * Gets a confirmation from the user.

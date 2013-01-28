@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import yuuki.action.Action;
 import yuuki.ui.Interactable;
 import yuuki.world.Land;
+import yuuki.world.WalkGraph;
 
 /**
  * A Character that can be controlled by the interface.
@@ -81,7 +82,8 @@ public class PlayerCharacter extends Character {
 	 */
 	@Override
 	public Point getNextMove(Land land) {
-		return null;
+		WalkGraph graph = land.getWalkGraph(getLocation());
+		return ui.selectMove(graph);
 	}
 	
 	/**
