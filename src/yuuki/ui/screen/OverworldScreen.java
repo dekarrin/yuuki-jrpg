@@ -97,7 +97,6 @@ MouseListener {
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
 				case KeyEvent.VK_NUMPAD1:
-					System.out.println("Y");
 					moveSouthWestButton.doClick();
 					break;
 					
