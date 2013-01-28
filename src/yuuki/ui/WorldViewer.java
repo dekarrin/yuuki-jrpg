@@ -52,7 +52,30 @@ public class WorldViewer extends JPanel {
 	 * @param center The center of the area to show.
 	 */
 	public void updateDisplay(Point center) {
-		
+		int w = textArea.getColumns();
+		int h = textArea.getRows();
+		int subX = center.x - (w / 2);
+		int subY = center.y - (h / 2);
+		TileGrid subView = view.getSubGrid(subX, subY, w, h);
+		displayGrid(subView);
+	}
+	
+	/**
+	 * Displays the given tiles on the display.
+	 * 
+	 * @param grid The grid of tiles to display.
+	 */
+	private void displayGrid(TileGrid grid) {
+		StringBuilder strVer = new StringBuilder();
+		for (int i = 0; i < grid.getHeight(); i++) {
+			for (int j = 0; j < grid.getWidth(); j++) {
+				strVer.append(grid.tileAt(j, i).getDisplayChar());
+			}
+			if (i < grid.getHeight() - 1) {
+				strVer.append('\n');
+			}
+		}
+		textArea.setText(strVer.toString());
 	}
 	
 }
