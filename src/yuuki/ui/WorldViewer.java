@@ -52,12 +52,14 @@ public class WorldViewer extends JPanel {
 	 * @param center The center of the area to show.
 	 */
 	public void updateDisplay(Point center) {
-		int w = textArea.getColumns();
-		int h = textArea.getRows();
-		int subX = center.x - (w / 2);
-		int subY = center.y - (h / 2);
-		TileGrid subView = view.getSubGrid(subX, subY, w, h);
-		displayGrid(subView);
+		if (center != null) {
+			int w = textArea.getColumns();
+			int h = textArea.getRows();
+			int subX = center.x - (w / 2);
+			int subY = center.y - (h / 2);
+			TileGrid subView = view.getSubGrid(subX, subY, w, h);
+			displayGrid(subView);
+		}
 	}
 	
 	/**

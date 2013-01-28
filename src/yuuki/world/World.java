@@ -73,6 +73,19 @@ public class World {
 	}
 	
 	/**
+	 * Gets the names of all lands in this World.
+	 * 
+	 * @return An array containing the names of all loaded Lands.
+	 */
+	public String[] getAllLandNames() {
+		ArrayList<String> names = new ArrayList<String>();
+		for (Land l : lands.values()) {
+			names.add(l.getName());
+		}
+		return names.toArray(new String[0]);
+	}
+	
+	/**
 	 * Gets the name of the current Land.
 	 * 
 	 * @return The name of the current land.

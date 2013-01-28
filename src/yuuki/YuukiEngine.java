@@ -149,6 +149,8 @@ public class YuukiEngine implements Runnable, UiExecutor {
 		ui = new GraphicalInterface(this, options);
 		entityMaker = new EntityFactory();
 		world = loadWorld();
+		String[] lands = world.getAllLandNames();
+		world.changeLand(lands[0]); // always load the first land in world
 		applyOptions();
 	}
 	
@@ -285,7 +287,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void advanceWorld() {
 		world.advance();
-		ui.updateWorldView(player.getLocation());
+//		ui.updateWorldView(player.getLocation());
 	}
 	
 	/**
