@@ -177,11 +177,11 @@ public interface Interactable {
 	public void initialize();
 	
 	/**
-	 * Plays a sound from an audio file.
+	 * Plays a sound effect.
 	 *
-	 * @param path The file name of the sound.
+	 * @param path The index of the sound.
 	 */
-	public void playSound(String path);
+	public void playSound(String effectIndex);
 	
 	/**
 	 * Gets the action that a player wishes to do.

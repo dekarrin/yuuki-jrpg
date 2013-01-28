@@ -528,8 +528,8 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void playSound(String path) {
-		
+	public void playSound(String effectIndex) {
+		soundEngine.playEffect(effectIndex);
 	}
 	
 	/**
