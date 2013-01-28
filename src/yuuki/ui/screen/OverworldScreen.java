@@ -90,6 +90,54 @@ MouseListener {
 	private WorldViewer worldViewer;
 	
 	/**
+	 * Listens for directional keypad pushes.
+	 */
+	private KeyListener numpadListener = new KeyAdapter() {
+		@Override
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_NUMPAD1:
+					System.out.println("Y");
+					moveSouthWestButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD2:
+					moveSouthButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD3:
+					moveSouthEastButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD4:
+					moveWestButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD5:
+					moveNullButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD6:
+					moveEastButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD7:
+					moveNorthWestButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD8:
+					moveNorthButton.doClick();
+					break;
+					
+				case KeyEvent.VK_NUMPAD9:
+					moveNorthEastButton.doClick();
+					break;
+			}
+		}
+		
+	};
+	
+	/**
 	 * Creates a new OverworldScreen. The child components are created and
 	 * added to the screen.
 	 * 
@@ -106,11 +154,13 @@ MouseListener {
 				}
 			}
 		};
+		addKeyListener(numpadListener);
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
 		startButton = new JButton("Start");
 		startButton.addMouseListener(this);
 		startButton.addKeyListener(enterListener);
+		startButton.setFocusable(false);
 		createMovementButtons();
 		addElements();
 	}
@@ -128,6 +178,15 @@ MouseListener {
 		moveSouthEastButton = new JButton("\u2198"); // arrow char
 		moveSouthWestButton = new JButton("\u2199"); // arrow char
 		moveNullButton = new JButton("\u25CF"); // dot char
+		moveNorthButton.setFocusable(false);
+		moveEastButton.setFocusable(false);
+		moveWestButton.setFocusable(false);
+		moveSouthButton.setFocusable(false);
+		moveNorthEastButton.setFocusable(false);
+		moveSouthEastButton.setFocusable(false);
+		moveNorthWestButton.setFocusable(false);
+		moveNorthEastButton.setFocusable(false);
+		moveNullButton.setFocusable(false);
 	}
 	
 	/**
@@ -226,7 +285,7 @@ MouseListener {
 	 */
 	@Override
 	public void setInitialProperties() {
-		startButton.requestFocus();
+		this.requestFocus();
 	}
 	
 	/**
