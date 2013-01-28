@@ -37,7 +37,7 @@ Attribution
 * images/joshua_tree.jpg: steveberardi - CC-BY-SA-2.0 Generic
 * Other sounds used from http://www.freesfx.co.uk
 
-**Artist home pages:**
+**Artist Home Pages:**
 * Aaron Krogh - http://soundcloud.com/aaron-anderson-11
 * Ekokubza123 - http://www.freesound.org/people/Ekokubza123/
 * thecluegeek - http://www.freesound.org/people/thecluegeek/
