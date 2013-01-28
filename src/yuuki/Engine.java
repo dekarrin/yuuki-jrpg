@@ -1,5 +1,6 @@
 package yuuki;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -196,6 +197,7 @@ public class Engine implements Runnable, UiExecutor {
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
+		world.addResident(player);
 		enterOverworldMode();
 	}
 	
@@ -287,7 +289,8 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void advanceWorld() {
 		world.advance();
-		//		ui.updateWorldView(player.getLocation());
+		Point nextLocation = player.getLocation();
+		ui.updateWorldView(nextLocation);
 	}
 	
 	/**

@@ -200,6 +200,25 @@ public class WalkGraph {
 	}
 	
 	/**
+	 * Checks if the tile at the given position is walkable.
+	 * 
+	 * @param grid The TileGrid to check.
+	 * @param x The x-coordinate to check.
+	 * @param y The y-coordinate to check.
+	 * 
+	 * @return True if a tile exists at the given coordinates and it is
+	 * walkable; otherwise, false.
+	 */
+	private boolean checkTile(TileGrid grid, int x, int y) {
+		if (x >= 0 && x <= grid.getWidth() && y >= 0 &&
+				y <= grid.getHeight()) {
+			return grid.tileAt(x, y).isWalkable();
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Sets whether each direction is valid based on whether the tile in each
 	 * direction is walkable.
 	 * 
@@ -207,14 +226,16 @@ public class WalkGraph {
 	 * eight tiles.
 	 */
 	private void setValidity(TileGrid tiles) {
-		hasNorthWest = tiles.tileAt(0, 0).isWalkable();
-		hasNorth = tiles.tileAt(1, 0).isWalkable();
-		hasNorthEast = tiles.tileAt(2, 0).isWalkable();
-		hasWest = tiles.tileAt(0, 1).isWalkable();
-		hasEast = tiles.tileAt(2, 1).isWalkable();
-		hasSouthWest = tiles.tileAt(0, 2).isWalkable();
-		hasSouth = tiles.tileAt(1, 2).isWalkable();
-		hasSouthEast = tiles.tileAt(2, 2).isWalkable();
+		int xOff = 3 - tiles.getWidth();
+		int yOff = 3 - tiles.getHeight();
+		hasNorthWest	= checkTile(tiles, 0 - xOff, 0 - yOff);
+		hasNorth		= checkTile(tiles, 1 - xOff, 0 - yOff);
+		hasNorthEast	= checkTile(tiles, 2 - xOff, 0 - yOff);
+		hasWest			= checkTile(tiles, 0 - xOff, 1 - yOff);
+		hasEast			= checkTile(tiles, 2 - xOff, 1 - yOff);
+		hasSouthWest	= checkTile(tiles, 0 - xOff, 2 - yOff);
+		hasSouth		= checkTile(tiles, 1 - xOff, 2 - yOff);
+		hasSouthEast	= checkTile(tiles, 2 - xOff, 2 - yOff);
 	}
 	
 }

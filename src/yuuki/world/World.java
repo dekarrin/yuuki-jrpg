@@ -38,6 +38,15 @@ public class World {
 	}
 	
 	/**
+	 * Adds a resident to the active land.
+	 * 
+	 * @param resident The resident to add.
+	 */
+	public void addResident(Movable resident) {
+		activeLand.addResident(resident);
+	}
+	
+	/**
 	 * Advances the world by one tick. The current Land is instructed to
 	 * advance.
 	 */
@@ -92,6 +101,15 @@ public class World {
 	 */
 	public TileGrid getTiles() {
 		return activeLand.getTiles();
+	}
+	
+	/**
+	 * Removes a resident from the active land.
+	 * 
+	 * @param resident The resident to remove.
+	 */
+	public void removeResident(Movable resident) {
+		activeLand.removeResident(resident);
 	}
 	
 }

@@ -154,6 +154,7 @@ public abstract class Character implements Movable {
 		if (level < 1) {
 			throw new IllegalArgumentException("Character level too low.");
 		}
+		position = new Point(0, 0);
 		hp.restore(level);
 		mp.restore(level);
 		this.name = name;
