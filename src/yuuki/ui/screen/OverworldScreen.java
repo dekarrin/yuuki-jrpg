@@ -38,19 +38,27 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	public static final int VIEWER_WIDTH = 10;
 	
 	/**
-	 * The button that advances to the battle screen.
+	 * Listens for clicks on this OverworldScreen's buttons.
 	 */
-	private JButton startButton;
-	
-	/**
-	 * The button that moves the character north.
-	 */
-	private JButton moveNorthButton;
-	
-	/**
-	 * The button that moves the character west.
-	 */
-	private JButton moveWestButton;
+	private MouseListener clickListener = new MouseAdapter() {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Component c = e.getComponent();
+			if (c == startButton) {
+				fireStartClicked();
+			} else if (c == moveSouthWestButton || c == moveSouthButton ||
+					c == moveSouthEastButton || c == moveWestButton ||
+					c == moveNullButton || c == moveEastButton ||
+					c == moveNorthWestButton || c == moveNorthButton ||
+					c == moveNorthEastButton) {
+				if (walkGraph != null) {
+					fireMoveButtonClicked(c);
+				}
+			}
+		}
+		
+	};
 	
 	/**
 	 * The button that moves the character east.
@@ -58,9 +66,14 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private JButton moveEastButton;
 	
 	/**
-	 * The button that moves the character south.
+	 * The objects listening for movement events by the player.
 	 */
-	private JButton moveSouthButton;
+	private Set<OverworldMovementListener> movementListeners;
+	
+	/**
+	 * The button that moves the character north.
+	 */
+	private JButton moveNorthButton;
 	
 	/**
 	 * The button that moves the character north-east.
@@ -73,6 +86,16 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private JButton moveNorthWestButton;
 	
 	/**
+	 * The button that makes the character pass one turn.
+	 */
+	private JButton moveNullButton;
+	
+	/**
+	 * The button that moves the character south.
+	 */
+	private JButton moveSouthButton;
+	
+	/**
 	 * The button that moves the character south-east.
 	 */
 	private JButton moveSouthEastButton;
@@ -83,19 +106,9 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private JButton moveSouthWestButton;
 	
 	/**
-	 * The button that makes the character pass one turn.
+	 * The button that moves the character west.
 	 */
-	private JButton moveNullButton;
-	
-	/**
-	 * The objects listening for movement events by the player.
-	 */
-	private Set<OverworldMovementListener> movementListeners;
-	
-	/**
-	 * Displays the world.
-	 */
-	private WorldViewer worldViewer;
+	private JButton moveWestButton;
 	
 	/**
 	 * Listens for directional keypad pushes.
@@ -145,32 +158,19 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	};
 	
 	/**
-	 * Listens for clicks on this OverworldScreen's buttons.
+	 * The button that advances to the battle screen.
 	 */
-	private MouseListener clickListener = new MouseAdapter() {
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			Component c = e.getComponent();
-			if (c == startButton) {
-				fireStartClicked();
-			} else if (c == moveSouthWestButton || c == moveSouthButton ||
-					c == moveSouthEastButton || c == moveWestButton ||
-					c == moveNullButton || c == moveEastButton ||
-					c == moveNorthWestButton || c == moveNorthButton ||
-					c == moveNorthEastButton) {
-				if (walkGraph != null) {
-					fireMoveButtonClicked(c);
-				}
-			}
-		}
-		
-	};
+	private JButton startButton;
 	
 	/**
 	 * Used to calculate where the user wishes to go when a button is clicked.
 	 */
 	private WalkGraph walkGraph;
+	
+	/**
+	 * Displays the world.
+	 */
+	private WorldViewer worldViewer;
 	
 	/**
 	 * Creates a new OverworldScreen. The child components are created and
@@ -220,51 +220,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
-	 * Gets the requested movement and calls the movementButtonPressed() method
-	 * on all movement listeners.
-	 * 
-	 * @param c The button that was pressed.
+	 * Sets the initial focus of this screen to the start button.
 	 */
-	private void fireMoveButtonClicked(Component c) {
-		Point p = getMovementPoint(c);
-		int size = movementListeners.size();
-		OverworldMovementListener[] ls = new OverworldMovementListener[size];
-		ls = movementListeners.toArray(ls);
-		for (OverworldMovementListener l : ls) {
-			l.movementButtonClicked(p);
-		}
-	}
-	
-	/**
-	 * Gets the point that the player is to be moved to based on which movement
-	 * button was clicked.
-	 * 
-	 * @param c The movement button that was clicked.
-	 * 
-	 * @return The point that the player is to be moved to.
-	 */
-	private Point getMovementPoint(Component c) {
-		Point movePoint = null;
-		if (c == moveSouthWestButton) {
-			movePoint = walkGraph.getSouthWest();
-		} else if (c == moveSouthButton) {
-			movePoint = walkGraph.getSouth();
-		} else if (c == moveSouthEastButton) {
-			movePoint = walkGraph.getSouthEast();
-		} else if (c == moveWestButton) {
-			movePoint = walkGraph.getWest();
-		} else if (c == moveNullButton) {
-			movePoint = walkGraph.getPosition();
-		} else if (c == moveEastButton) {
-			movePoint = walkGraph.getEast();
-		} else if (c == moveNorthWestButton) {
-			movePoint = walkGraph.getNorthWest();
-		} else if (c == moveNorthButton) {
-			movePoint = walkGraph.getNorth();
-		} else if (c == moveNorthEastButton) {
-			movePoint = walkGraph.getNorthEast();
-		}
-		return movePoint;
+	@Override
+	public void setInitialProperties() {
+		this.requestFocus();
 	}
 	
 	/**
@@ -277,27 +237,40 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
-	 * Constructs the movement buttons.
+	 * Changes the world viewer's view of the world.
+	 * 
+	 * @param view The TileGrid with the view to show.
 	 */
-	private void createMovementButtons() {
-		moveNorthButton = new JButton("\u2191"); // arrow char
-		moveWestButton = new JButton("\u2190"); // arrow char
-		moveEastButton = new JButton("\u2192"); // arrow char
-		moveSouthButton = new JButton("\u2193"); // arrow char
-		moveNorthEastButton = new JButton("\u2197"); // arrow char
-		moveNorthWestButton = new JButton("\u2196"); // arrow char
-		moveSouthEastButton = new JButton("\u2198"); // arrow char
-		moveSouthWestButton = new JButton("\u2199"); // arrow char
-		moveNullButton = new JButton("\u25CF"); // dot char
-		moveNorthButton.setFocusable(false);
-		moveEastButton.setFocusable(false);
-		moveWestButton.setFocusable(false);
-		moveSouthButton.setFocusable(false);
-		moveNorthEastButton.setFocusable(false);
-		moveSouthEastButton.setFocusable(false);
-		moveNorthWestButton.setFocusable(false);
-		moveNorthEastButton.setFocusable(false);
-		moveNullButton.setFocusable(false);
+	public void setWorldView(TileGrid view) {
+		worldViewer.setView(view);
+	}
+	
+	/**
+	 * Updates the world view to show a new center.
+	 * 
+	 * @param center The coordinates of the new center to show.
+	 */
+	public void updateWorldView(Point center) {
+		worldViewer.updateDisplay(center);
+	}
+	
+	/**
+	 * Creates element containers and adds them to this Screen.
+	 */
+	private void addElements() {
+		Box moveBox = createMovementBox();
+		Box vertBox = Box.createVerticalBox();
+		Box fieldBox = Box.createHorizontalBox();
+		fieldBox.add(new JLabel("The overworld!"));
+		fieldBox.add(Box.createHorizontalStrut(2));
+		fieldBox.add(new JLabel("Hit the button to start a battle ==>"));
+		fieldBox.add(Box.createHorizontalStrut(2));
+		fieldBox.add(startButton);
+		vertBox.add(worldViewer);
+		vertBox.add(fieldBox);
+		vertBox.add(Box.createVerticalStrut(10));
+		vertBox.add(moveBox);
+		add(vertBox);
 	}
 	
 	/**
@@ -337,48 +310,43 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
-	 * Creates element containers and adds them to this Screen.
+	 * Constructs the movement buttons.
 	 */
-	private void addElements() {
-		Box moveBox = createMovementBox();
-		Box vertBox = Box.createVerticalBox();
-		Box fieldBox = Box.createHorizontalBox();
-		fieldBox.add(new JLabel("The overworld!"));
-		fieldBox.add(Box.createHorizontalStrut(2));
-		fieldBox.add(new JLabel("Hit the button to start a battle ==>"));
-		fieldBox.add(Box.createHorizontalStrut(2));
-		fieldBox.add(startButton);
-		vertBox.add(worldViewer);
-		vertBox.add(fieldBox);
-		vertBox.add(Box.createVerticalStrut(10));
-		vertBox.add(moveBox);
-		add(vertBox);
+	private void createMovementButtons() {
+		moveNorthButton = new JButton("\u2191"); // arrow char
+		moveWestButton = new JButton("\u2190"); // arrow char
+		moveEastButton = new JButton("\u2192"); // arrow char
+		moveSouthButton = new JButton("\u2193"); // arrow char
+		moveNorthEastButton = new JButton("\u2197"); // arrow char
+		moveNorthWestButton = new JButton("\u2196"); // arrow char
+		moveSouthEastButton = new JButton("\u2198"); // arrow char
+		moveSouthWestButton = new JButton("\u2199"); // arrow char
+		moveNullButton = new JButton("\u25CF"); // dot char
+		moveNorthButton.setFocusable(false);
+		moveEastButton.setFocusable(false);
+		moveWestButton.setFocusable(false);
+		moveSouthButton.setFocusable(false);
+		moveNorthEastButton.setFocusable(false);
+		moveSouthEastButton.setFocusable(false);
+		moveNorthWestButton.setFocusable(false);
+		moveNorthEastButton.setFocusable(false);
+		moveNullButton.setFocusable(false);
 	}
 	
 	/**
-	 * Sets the initial focus of this screen to the start button.
-	 */
-	@Override
-	public void setInitialProperties() {
-		this.requestFocus();
-	}
-	
-	/**
-	 * Changes the world viewer's view of the world.
+	 * Gets the requested movement and calls the movementButtonPressed() method
+	 * on all movement listeners.
 	 * 
-	 * @param view The TileGrid with the view to show.
+	 * @param c The button that was pressed.
 	 */
-	public void setWorldView(TileGrid view) {
-		worldViewer.setView(view);
-	}
-	
-	/**
-	 * Updates the world view to show a new center.
-	 * 
-	 * @param center The coordinates of the new center to show.
-	 */
-	public void updateWorldView(Point center) {
-		worldViewer.updateDisplay(center);
+	private void fireMoveButtonClicked(Component c) {
+		Point p = getMovementPoint(c);
+		int size = movementListeners.size();
+		OverworldMovementListener[] ls = new OverworldMovementListener[size];
+		ls = movementListeners.toArray(ls);
+		for (OverworldMovementListener l : ls) {
+			l.movementButtonClicked(p);
+		}
 	}
 	
 	/**
@@ -388,6 +356,38 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		for (OverworldScreenListener l: getElementListeners()) {
 			l.startBattleClicked();
 		}
+	}
+	
+	/**
+	 * Gets the point that the player is to be moved to based on which movement
+	 * button was clicked.
+	 * 
+	 * @param c The movement button that was clicked.
+	 * 
+	 * @return The point that the player is to be moved to.
+	 */
+	private Point getMovementPoint(Component c) {
+		Point movePoint = null;
+		if (c == moveSouthWestButton) {
+			movePoint = walkGraph.getSouthWest();
+		} else if (c == moveSouthButton) {
+			movePoint = walkGraph.getSouth();
+		} else if (c == moveSouthEastButton) {
+			movePoint = walkGraph.getSouthEast();
+		} else if (c == moveWestButton) {
+			movePoint = walkGraph.getWest();
+		} else if (c == moveNullButton) {
+			movePoint = walkGraph.getPosition();
+		} else if (c == moveEastButton) {
+			movePoint = walkGraph.getEast();
+		} else if (c == moveNorthWestButton) {
+			movePoint = walkGraph.getNorthWest();
+		} else if (c == moveNorthButton) {
+			movePoint = walkGraph.getNorth();
+		} else if (c == moveNorthEastButton) {
+			movePoint = walkGraph.getNorthEast();
+		}
+		return movePoint;
 	}
 	
 }

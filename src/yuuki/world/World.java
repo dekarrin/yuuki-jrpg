@@ -29,38 +29,20 @@ public class World {
 	}
 	
 	/**
-	 * Advances the world by one tick. The current Land is instructed to
-	 * advance.
-	 */
-	public void advance() {
-		activeLand.advance();
-	}
-	
-	/**
-	 * Gets the tiles in the current Land.
-	 * 
-	 * @return The TileGrid that makes up the current Land.
-	 */
-	public TileGrid getTiles() {
-		return activeLand.getTiles();
-	}
-	
-	/**
-	 * Gets the Locatables in the current Land.
-	 * 
-	 * @return The Locatables in the current Land.
-	 */
-	public ArrayList<Locatable> getLocatables() {
-		return activeLand.getLocatables();
-	}
-	
-	/**
 	 * Adds a new Land to this world.
 	 * 
 	 * @param land The Land to add.
 	 */
 	public void addLand(Land land) {
 		lands.put(land.getName(), land);
+	}
+	
+	/**
+	 * Advances the world by one tick. The current Land is instructed to
+	 * advance.
+	 */
+	public void advance() {
+		activeLand.advance();
 	}
 	
 	/**
@@ -92,6 +74,24 @@ public class World {
 	 */
 	public String getLandName() {
 		return activeLand.getName();
+	}
+	
+	/**
+	 * Gets the Locatables in the current Land.
+	 * 
+	 * @return The Locatables in the current Land.
+	 */
+	public ArrayList<Locatable> getLocatables() {
+		return activeLand.getLocatables();
+	}
+	
+	/**
+	 * Gets the tiles in the current Land.
+	 * 
+	 * @return The TileGrid that makes up the current Land.
+	 */
+	public TileGrid getTiles() {
+		return activeLand.getTiles();
 	}
 	
 }

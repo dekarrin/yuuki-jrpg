@@ -287,7 +287,7 @@ public class YuukiEngine implements Runnable, UiExecutor {
 	 */
 	private void advanceWorld() {
 		world.advance();
-//		ui.updateWorldView(player.getLocation());
+		//		ui.updateWorldView(player.getLocation());
 	}
 	
 	/**

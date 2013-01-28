@@ -544,38 +544,23 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
-		ArrayList<Character> chars = new ArrayList<Character>();
-		for (int i = 0; i < fighters.size(); i++) {
-			ArrayList<Character> team = fighters.get(i);
-			for (int j = 0; j < team.size(); j++) {
-				chars.add(team.get(j));
-			}
-		}
-		Character[] charsArr = chars.toArray(new Character[0]);
-		return (Character) getChoice("Select a target", charsArr);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public Point selectMove(WalkGraph graph) {
 		class Runner implements Runnable, OverworldMovementListener {
-			private WalkGraph graph;
 			public Point move = null;
+			private WalkGraph graph;
 			public Runner(WalkGraph graph) {
 				this.graph = graph;
-			}
-			public void run() {
-				overworldScreen.setWalkGraph(graph);
-				overworldScreen.addMovementListener(this);
 			}
 			@Override
 			public void movementButtonClicked(Point moveLocation) {
 				overworldScreen.setWalkGraph(null);
 				overworldScreen.removeMovementListener(this);
 				this.move = moveLocation;
+			}
+			@Override
+			public void run() {
+				overworldScreen.setWalkGraph(graph);
+				overworldScreen.addMovementListener(this);
 			}
 		};
 		Runner r = new Runner(graph);
@@ -590,6 +575,22 @@ OptionsScreenListener, MenuBarListener {
 			Thread.currentThread().interrupt();
 		}
 		return r.move;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
+		ArrayList<Character> chars = new ArrayList<Character>();
+		for (int i = 0; i < fighters.size(); i++) {
+			ArrayList<Character> team = fighters.get(i);
+			for (int j = 0; j < team.size(); j++) {
+				chars.add(team.get(j));
+			}
+		}
+		Character[] charsArr = chars.toArray(new Character[0]);
+		return (Character) getChoice("Select a target", charsArr);
 	}
 	
 	/**

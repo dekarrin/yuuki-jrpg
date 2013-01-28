@@ -47,6 +47,23 @@ public class PlayerCharacter extends Character {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getNextMove(Land land) {
+		WalkGraph graph = land.getWalkGraph(getLocation());
+		return ui.selectMove(graph);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isTransferrable() {
+		return true;
+	}
+	
+	/**
 	 * Decides what move to do next based on input from the interface.
 	 *
 	 * @param fighters The states of the players, including this one.
@@ -75,23 +92,6 @@ public class PlayerCharacter extends Character {
 	protected Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Point getNextMove(Land land) {
-		WalkGraph graph = land.getWalkGraph(getLocation());
-		return ui.selectMove(graph);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isTransferrable() {
-		return true;
 	}
 	
 }

@@ -21,16 +21,6 @@ public class LandLoader extends ResourceLoader {
 	private final TileFactory factory;
 	
 	/**
-	 * Reads from the resource file.
-	 */
-	private BufferedReader reader;
-	
-	/**
-	 * The width of the land file currently being parsed.
-	 */
-	private int landWidth;
-	
-	/**
 	 * The height of the land file currently being parsed.
 	 */
 	private int landHeight;
@@ -39,6 +29,16 @@ public class LandLoader extends ResourceLoader {
 	 * The name of the land currently being created.
 	 */
 	private String landName;
+	
+	/**
+	 * The width of the land file currently being parsed.
+	 */
+	private int landWidth;
+	
+	/**
+	 * Reads from the resource file.
+	 */
+	private BufferedReader reader;
 	
 	/**
 	 * Creates a new LandLoader for land files at the specified location.
@@ -110,7 +110,7 @@ public class LandLoader extends ResourceLoader {
 			}
 			for (int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
-				tileList.add(factory.createTile((int) c));
+				tileList.add(factory.createTile(c));
 			}
 		}
 		return tileList;

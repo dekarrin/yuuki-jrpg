@@ -26,14 +26,14 @@ public class Land {
 	private String name;
 	
 	/**
-	 * The Movable objects in this Land.
-	 */
-	private Map<Point, Movable> residents;
-	
-	/**
 	 * The Portals that link this Land to different areas.
 	 */
 	private Map<Point, Portal> portals;
+	
+	/**
+	 * The Movable objects in this Land.
+	 */
+	private Map<Point, Movable> residents;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -56,12 +56,15 @@ public class Land {
 	}
 	
 	/**
-	 * Advances this Land by one tick. All residents are queried for where they
-	 * wish to move, and if they make a valid request, they are moved to where
-	 * they requested.
+	 * Adds a Portal to this Land if it has not already been added.
+	 * 
+	 * @param p The Portal to add.
 	 */
-	public void advance() {
-		moveResidents();
+	public void addPortal(Portal p) {
+		Point pos = p.getLocation();
+		if (portals.get(pos) == null) {
+			portals.put(pos, p);
+		}
 	}
 	
 	/**
@@ -77,42 +80,21 @@ public class Land {
 	}
 	
 	/**
+	 * Advances this Land by one tick. All residents are queried for where they
+	 * wish to move, and if they make a valid request, they are moved to where
+	 * they requested.
+	 */
+	public void advance() {
+		moveResidents();
+	}
+	
+	/**
 	 * Gets the height of this Land in tiles.
 	 * 
 	 * @return The height.
 	 */
 	public int getHeight() {
 		return tiles.getHeight();
-	}
-	
-	/**
-	 * Gets the name of this Land.
-	 * 
-	 * @return The name of this Land.
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Adds a Portal to this Land if it has not already been added.
-	 * 
-	 * @param p The Portal to add.
-	 */
-	public void addPortal(Portal p) {
-		Point pos = p.getLocation();
-		if (portals.get(pos) == null) {
-			portals.put(pos, p);
-		}
-	}
-	
-	/**
-	 * Removes a Portal from this Land.
-	 * 
-	 * @param p The Portal to remove.
-	 */
-	public void removePortal(Portal p) {
-		portals.remove(p.getLocation());
 	}
 	
 	/**
@@ -125,6 +107,15 @@ public class Land {
 		ls.addAll(portals.values());
 		ls.addAll(residents.values());
 		return ls;
+	}
+	
+	/**
+	 * Gets the name of this Land.
+	 * 
+	 * @return The name of this Land.
+	 */
+	public String getName() {
+		return name;
 	}
 	
 	/**
@@ -160,15 +151,6 @@ public class Land {
 	}
 	
 	/**
-	 * Removes a resident from this Land.
-	 * 
-	 * @param r The resident to remove.
-	 */
-	public void removeResident(Movable r) {
-		residents.remove(r.getLocation());
-	}
-	
-	/**
 	 * Checks whether a tile is occupied by a resident.
 	 * 
 	 * @param location The point to check.
@@ -179,6 +161,36 @@ public class Land {
 	public boolean isOccupied(Point location) {
 		Tile toCheck = tiles.tileAt(location.x, location.y);
 		return toCheck.isOccupied();
+	}
+	
+	/**
+	 * Removes a Portal from this Land.
+	 * 
+	 * @param p The Portal to remove.
+	 */
+	public void removePortal(Portal p) {
+		portals.remove(p.getLocation());
+	}
+	
+	/**
+	 * Removes a resident from this Land.
+	 * 
+	 * @param r The resident to remove.
+	 */
+	public void removeResident(Movable r) {
+		residents.remove(r.getLocation());
+	}
+	
+	/**
+	 * Clears the resident map and moves all residents to their new positions.
+	 * 
+	 * @param moveList An array containing the updated residents.
+	 */
+	private void applyMove(Movable[] moveList) {
+		residents.clear();
+		for (Movable r: moveList) {
+			residents.put(r.getLocation(), r);
+		}
 	}
 	
 	/**
@@ -194,18 +206,6 @@ public class Land {
 			}
 		}
 		applyMove(moveList);
-	}
-	
-	/**
-	 * Clears the resident map and moves all residents to their new positions.
-	 * 
-	 * @param moveList An array containing the updated residents.
-	 */
-	private void applyMove(Movable[] moveList) {
-		residents.clear();
-		for (Movable r: moveList) {
-			residents.put(r.getLocation(), r);
-		}
 	}
 	
 }

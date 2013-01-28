@@ -23,15 +23,6 @@ public interface Interactable {
 	public void applyOptions(yuuki.Options options);
 	
 	/**
-	 * Gets the next move that the human character wishes to make.
-	 * 
-	 * @param graph The graph of available places to walk to.
-	 * 
-	 * @return The point that the user wants to move to.
-	 */
-	public Point selectMove(WalkGraph graph);
-	
-	/**
 	 * Gets a confirmation from the user.
 	 *
 	 * @param prompt The prompt to show the user.
@@ -191,6 +182,15 @@ public interface Interactable {
 	 * @return The selected Action.
 	 */
 	public Action selectAction(Action[] moves);
+	
+	/**
+	 * Gets the next move that the human character wishes to make.
+	 * 
+	 * @param graph The graph of available places to walk to.
+	 * 
+	 * @return The point that the user wants to move to.
+	 */
+	public Point selectMove(WalkGraph graph);
 	
 	/**
 	 * Gets the target of a move.

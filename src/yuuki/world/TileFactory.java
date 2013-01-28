@@ -38,6 +38,20 @@ public class TileFactory {
 	}
 	
 	/**
+	 * Adds a Tile definition.
+	 * 
+	 * @param id The ID of the tile to add.
+	 * @param name The name of the tile definition.
+	 * @param walkable Whether the tile is walkable.
+	 */
+	public void addDefinition(int id, String name, boolean walkable) {
+		TileDefinition td = new TileDefinition();
+		td.name = name;
+		td.walkable = walkable;
+		definitions.put(id, td);
+	}
+	
+	/**
 	 * Creates a Tile from an ID.
 	 * 
 	 * @param id The ID of the Tile to create. This is the integer version of
@@ -50,20 +64,6 @@ public class TileFactory {
 		Tile tile = new Tile(td.name, td.walkable);
 		tile.setId(id);
 		return tile;
-	}
-	
-	/**
-	 * Adds a Tile definition.
-	 * 
-	 * @param id The ID of the tile to add.
-	 * @param name The name of the tile definition.
-	 * @param walkable Whether the tile is walkable.
-	 */
-	public void addDefinition(int id, String name, boolean walkable) {
-		TileDefinition td = new TileDefinition();
-		td.name = name;
-		td.walkable = walkable;
-		definitions.put(id, td);
 	}
 	
 }

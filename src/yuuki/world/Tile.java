@@ -8,6 +8,11 @@ import yuuki.ui.Displayable;
 public class Tile implements Displayable {
 	
 	/**
+	 * The ID of this Tile, used for getting the representative character.
+	 */
+	private int id;
+	
+	/**
 	 * The name of this tile. This may be used for identifying different types
 	 * of tiles for graphical representation.
 	 */
@@ -24,11 +29,6 @@ public class Tile implements Displayable {
 	private boolean walkable;
 	
 	/**
-	 * The ID of this Tile, used for getting the representative character.
-	 */
-	private int id;
-	
-	/**
 	 * Creates a new Tile.
 	 * 
 	 * @param name The name of the new Tile.
@@ -41,12 +41,19 @@ public class Tile implements Displayable {
 	}
 	
 	/**
-	 * Sets the ID of this Tile.
-	 * 
-	 * @param id The ID to set it to.
+	 * {@inheritDoc}
 	 */
-	public void setId(int id) {
-		this.id = id;
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public char getDisplayChar() {
+		return ((char) id);
 	}
 	
 	/**
@@ -56,6 +63,14 @@ public class Tile implements Displayable {
 	 */
 	public String getName() {
 		return name.toLowerCase();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOverworldImage() {
+		return null;
 	}
 	
 	/**
@@ -77,6 +92,15 @@ public class Tile implements Displayable {
 	}
 	
 	/**
+	 * Sets the ID of this Tile.
+	 * 
+	 * @param id The ID to set it to.
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
 	 * Sets whether this Tile is occupied.
 	 * 
 	 * @param occupied What to set this Tile's occupied status to.
@@ -92,29 +116,5 @@ public class Tile implements Displayable {
 	 */
 	public void setWalkable(boolean walkable) {
 		this.walkable = walkable;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public char getDisplayChar() {
-		return ((char) id);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOverworldImage() {
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getBattleImage() {
-		return null;
 	}
 }

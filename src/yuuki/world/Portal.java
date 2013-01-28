@@ -41,6 +41,22 @@ public class Portal implements Locatable, Displayable {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public char getDisplayChar() {
+		return 'P';
+	}
+	
+	/**
 	 * Gets the name of the Land that this Portal links to.
 	 * 
 	 * @return The name of the Land that this Portal links to.
@@ -67,6 +83,14 @@ public class Portal implements Locatable, Displayable {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOverworldImage() {
+		return null;
+	}
+	
+	/**
 	 * Checks whether this Portal may be entered.
 	 * 
 	 * @return True if this Portal may be entered; otherwise, false.
@@ -90,30 +114,6 @@ public class Portal implements Locatable, Displayable {
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public char getDisplayChar() {
-		return 'P';
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOverworldImage() {
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getBattleImage() {
-		return null;
 	}
 	
 }
