@@ -15,6 +15,11 @@ import yuuki.world.TileGrid;
 public class WorldViewer extends JPanel {
 	
 	/**
+	 * The exact text being displayed.
+	 */
+	private char[][] buffer;
+	
+	/**
 	 * The main text area for this world viewer.
 	 */
 	private JTextArea textArea;
@@ -32,6 +37,7 @@ public class WorldViewer extends JPanel {
 	 * @param height The height of this WorldViewer in tiles.
 	 */
 	public WorldViewer(int width, int height) {
+		buffer = new char[width][height];
 		textArea = new JTextArea(height, width);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
@@ -60,7 +66,20 @@ public class WorldViewer extends JPanel {
 			int subX = center.x - (w / 2);
 			int subY = center.y - (h / 2);
 			TileGrid subView = view.getSubGrid(subX, subY, w, h);
-			displayGrid(subView);
+			int xOffset = (subX < 0) ? Math.abs(subX) : 0;
+			int yOffset = (subY < 0) ? Math.abs(subY) : 0;
+			displayGrid(subView, xOffset, yOffset);
+		}
+	}
+	
+	/**
+	 * Sets all tiles in the tile buffer to be empty.
+	 */
+	private void clearBuffer() {
+		for (int y = 0; y < textArea.getRows(); y++) {
+			for (int x = 0; x < textArea.getColumns(); x++) {
+				buffer[x][y] = ' ';
+			}
 		}
 	}
 	
@@ -68,18 +87,46 @@ public class WorldViewer extends JPanel {
 	 * Displays the given tiles on the display.
 	 * 
 	 * @param grid The grid of tiles to display.
+	 * @param xOffset The number of tiles to shift the display right.
+	 * @param yOffset The number of tiles to shift the display down.
 	 */
-	private void displayGrid(TileGrid grid) {
-		StringBuilder strVer = new StringBuilder();
-		for (int i = 0; i < grid.getHeight(); i++) {
-			for (int j = 0; j < grid.getWidth(); j++) {
-				strVer.append(grid.tileAt(j, i).getDisplayChar());
-			}
-			if (i < grid.getHeight() - 1) {
-				strVer.append('\n');
+	private void displayGrid(TileGrid grid, int xOffset, int yOffset) {
+		setBufferTiles(grid, xOffset, yOffset);
+		showBuffer();
+	}
+	
+	/**
+	 * Sets the buffer to the initial tiles.
+	 * 
+	 * @param grid The grid of tiles to use to populate the display.
+	 * @param xOffset The number of tiles to shift the display right.
+	 * @param yOffset The number of tiles to shift the display down.
+	 */
+	private void setBufferTiles(TileGrid grid, int xOffset, int yOffset) {
+		clearBuffer();
+		char c = '\0';
+		for (int y = 0; y < grid.getHeight(); y++) {
+			for (int x = 0; x < grid.getWidth(); x++) {
+				c = grid.tileAt(x, y).getDisplayChar();
+				buffer[x + xOffset][y + yOffset] = c;
 			}
 		}
-		textArea.setText(strVer.toString());
+	}
+	
+	/**
+	 * Updates the actual display area with the buffer.
+	 */
+	private void showBuffer() {
+		StringBuilder sb = new StringBuilder();
+		for (int y = 0; y < textArea.getRows(); y++) {
+			for (int x = 0; x < textArea.getColumns(); x++) {
+				sb.append(buffer[x][y]);
+			}
+			if (y < textArea.getRows() - 1) {
+				sb.append('\n');
+			}
+		}
+		textArea.setText(sb.toString());
 	}
 	
 }
