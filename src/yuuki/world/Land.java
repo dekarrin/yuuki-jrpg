@@ -182,6 +182,23 @@ public class Land {
 	}
 	
 	/**
+	 * Gets a String representation of this Land. This will be a .lnd format
+	 * String containing all meta data and tiles.
+	 * 
+	 * @return The String representation of this Land.
+	 */
+	@Override
+	public String toString() {
+		StringBuilder strVersion = new StringBuilder();
+		for (int i = 0; i < tiles.getHeight(); i++) {
+			for (int j = 0; j < tiles.getWidth(); j++) {
+				strVersion.append(tiles.tileAt(j, i).getDisplayChar());
+			}
+		}
+		return strVersion.toString();
+	}
+	
+	/**
 	 * Clears the resident map and moves all residents to their new positions.
 	 * 
 	 * @param moveList An array containing the updated residents.

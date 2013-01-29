@@ -77,6 +77,15 @@ public class World {
 	}
 	
 	/**
+	 * Gets the current land as a .lnd format String.
+	 * 
+	 * @return The current Land's String representation.
+	 */
+	public String getLandAsString() {
+		return activeLand.toString();
+	}
+	
+	/**
 	 * Gets the name of the current Land.
 	 * 
 	 * @return The name of the current land.
