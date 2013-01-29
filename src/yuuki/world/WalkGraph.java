@@ -131,7 +131,7 @@ public class WalkGraph {
 	 * tile to walk on; otherwise, null.
 	 */
 	public Point getSouthEast() {
-		return (hasSouthEast) ? new Point(p.x - 1, p.y + 1) : null;
+		return (hasSouthEast) ? new Point(p.x + 1, p.y + 1) : null;
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class WalkGraph {
 	 * tile to walk on; otherwise, null.
 	 */
 	public Point getSouthWest() {
-		return (hasSouthWest) ? new Point(p.x + 1, p.y + 1) : null;
+		return (hasSouthWest) ? new Point(p.x - 1, p.y + 1) : null;
 	}
 	
 	/**
