@@ -218,6 +218,7 @@ public class Land {
 	 * is then moved there.
 	 */
 	private void moveResidents() {
+		System.out.println("Starting rezzy move");
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
 		for (Movable r: moveList) {
 			Point destination = r.getNextMove(this);
@@ -226,6 +227,7 @@ public class Land {
 			}
 		}
 		applyMove(moveList);
+		System.out.println("Ending rezzy move");
 	}
 	
 }

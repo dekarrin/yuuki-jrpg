@@ -287,7 +287,10 @@ public class Engine implements Runnable, UiExecutor {
 	 * data.
 	 */
 	private void advanceWorld() {
+		System.out.println("Advancing world...");
 		world.advance();
+		java.awt.Point p = player.getLocation();
+		System.out.println("("+p.x+", "+p.y+")");
 		ui.updateWorldView(player.getLocation());
 	}
 	

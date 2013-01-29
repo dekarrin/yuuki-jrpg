@@ -211,6 +211,21 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
+	 * Creates a movement button and sets standard movement button properties
+	 * on it.
+	 * 
+	 * @param label The text to show on the button.
+	 * 
+	 * @return The movement button.
+	 */
+	public JButton createMoveButton(String label) {
+		JButton button = new JButton(label);
+		button.setFocusable(false);
+		button.addMouseListener(clickListener);
+		return button;
+	}
+	
+	/**
 	 * Removes a listener from the list of movement listeners.
 	 * 
 	 * @param l The listener to remove.
@@ -234,6 +249,34 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	public void setWalkGraph(WalkGraph graph) {
 		this.walkGraph = graph;
+		setMoveButtonActivations();
+	}
+	
+	/**
+	 * Enables or disables the movement buttons based on whether they represent
+	 * a valid move.
+	 */
+	private void setMoveButtonActivations() {
+		boolean sw, so, se, we, ea, nw, no, ne;
+		sw = so = se = we = ea = nw = no = ne = true;
+		if (walkGraph != null) {
+			sw = (walkGraph.getSouthWest() != null);
+			so = (walkGraph.getSouth() != null);
+			se = (walkGraph.getSouthEast() != null);
+			we = (walkGraph.getWest() != null);
+			ea = (walkGraph.getEast() != null);
+			nw = (walkGraph.getNorthWest() != null);
+			no = (walkGraph.getNorth() != null);
+			ne = (walkGraph.getNorthEast() != null);
+		}
+		moveSouthWestButton.setEnabled(sw);
+		moveSouthButton.setEnabled(so);
+		moveSouthEastButton.setEnabled(se);
+		moveWestButton.setEnabled(we);
+		moveEastButton.setEnabled(ea);
+		moveNorthWestButton.setEnabled(nw);
+		moveNorthButton.setEnabled(no);
+		moveNorthEastButton.setEnabled(ne);
 	}
 	
 	/**
@@ -313,24 +356,15 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 * Constructs the movement buttons.
 	 */
 	private void createMovementButtons() {
-		moveNorthButton = new JButton("\u2191"); // arrow char
-		moveWestButton = new JButton("\u2190"); // arrow char
-		moveEastButton = new JButton("\u2192"); // arrow char
-		moveSouthButton = new JButton("\u2193"); // arrow char
-		moveNorthEastButton = new JButton("\u2197"); // arrow char
-		moveNorthWestButton = new JButton("\u2196"); // arrow char
-		moveSouthEastButton = new JButton("\u2198"); // arrow char
-		moveSouthWestButton = new JButton("\u2199"); // arrow char
-		moveNullButton = new JButton("\u25CF"); // dot char
-		moveNorthButton.setFocusable(false);
-		moveEastButton.setFocusable(false);
-		moveWestButton.setFocusable(false);
-		moveSouthButton.setFocusable(false);
-		moveNorthEastButton.setFocusable(false);
-		moveSouthEastButton.setFocusable(false);
-		moveNorthWestButton.setFocusable(false);
-		moveNorthEastButton.setFocusable(false);
-		moveNullButton.setFocusable(false);
+		moveNorthButton = createMoveButton("\u2191"); // arrow char
+		moveWestButton = createMoveButton("\u2190"); // arrow char
+		moveEastButton = createMoveButton("\u2192"); // arrow char
+		moveSouthButton = createMoveButton("\u2193"); // arrow char
+		moveNorthEastButton = createMoveButton("\u2197"); // arrow char
+		moveNorthWestButton = createMoveButton("\u2196"); // arrow char
+		moveSouthEastButton = createMoveButton("\u2198"); // arrow char
+		moveSouthWestButton = createMoveButton("\u2199"); // arrow char
+		moveNullButton = createMoveButton("\u25CF"); // dot char
 	}
 	
 	/**
@@ -341,11 +375,14 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	private void fireMoveButtonClicked(Component c) {
 		Point p = getMovementPoint(c);
-		int size = movementListeners.size();
-		OverworldMovementListener[] ls = new OverworldMovementListener[size];
-		ls = movementListeners.toArray(ls);
-		for (OverworldMovementListener l : ls) {
-			l.movementButtonClicked(p);
+		if (p != null) { // if the user pressed a valid direction
+			int size = movementListeners.size();
+			OverworldMovementListener[] ls;
+			ls = new OverworldMovementListener[size];
+			movementListeners.toArray(ls);
+			for (OverworldMovementListener l : ls) {
+				l.movementButtonClicked(p);
+			}
 		}
 	}
 	
