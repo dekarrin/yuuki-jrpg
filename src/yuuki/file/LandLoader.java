@@ -1,5 +1,7 @@
 package yuuki.file;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,14 +18,26 @@ import yuuki.world.TileFactory;
 public class LandLoader extends ResourceLoader {
 	
 	/**
+	 * Holds meta data for the currently loading land file.
+	 */
+	private static class MetaData {
+		
+		/**
+		 * The size of the map.
+		 */
+		public Dimension size;
+		
+		/**
+		 * Where the player starts.
+		 */
+		public Point start;
+		
+	}
+	
+	/**
 	 * Generates tiles from tile definitions.
 	 */
 	private final TileFactory factory;
-	
-	/**
-	 * The height of the land file currently being parsed.
-	 */
-	private int landHeight;
 	
 	/**
 	 * The name of the land currently being created.
@@ -31,9 +45,9 @@ public class LandLoader extends ResourceLoader {
 	private String landName;
 	
 	/**
-	 * The width of the land file currently being parsed.
+	 * The meta data from the land file currently being read.
 	 */
-	private int landWidth;
+	private MetaData meta;
 	
 	/**
 	 * Reads from the resource file.
@@ -50,8 +64,6 @@ public class LandLoader extends ResourceLoader {
 	public LandLoader(String location, TileFactory tiles) {
 		super(location);
 		this.factory = tiles;
-		landHeight = 0;
-		landWidth = 0;
 		landName = null;
 	}
 	
@@ -67,12 +79,39 @@ public class LandLoader extends ResourceLoader {
 	 * @throws IOException If an IOException occurs.
 	 */
 	public Land load(String name, String resource) throws IOException {
+		meta = null;
 		landName = name;
 		Land land = null;
 		InputStream stream = getStream(resource);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		land = loadLand();
 		return land;
+	}
+	
+	/**
+	 * Fills the given lists of tiles with rows of void tiles until the land
+	 * height is reached.
+	 * 
+	 * @param list The list of tiles to fill.
+	 * @param start The number of rows of tiles already added to the list.
+	 */
+	private void fillRemainingHeight(ArrayList<Tile> list, int start) {
+		for (int i = start; i < meta.size.height; i++) {
+			fillRemainingWidth(list, 0);
+		}
+	}
+	
+	/**
+	 * Fills the given list of tiles with void tiles until the land width is
+	 * reached.
+	 * 
+	 * @param list The list of tiles to fill.
+	 * @param start The number of tiles already added to the list.
+	 */
+	private void fillRemainingWidth(ArrayList<Tile> list, int start) {
+		for (int i = start; i < meta.size.width; i++) {
+			list.add(factory.createTile(TileFactory.VOID_CHAR));
+		}
 	}
 	
 	/**
@@ -85,13 +124,47 @@ public class LandLoader extends ResourceLoader {
 	private Land loadLand() throws IOException {
 		ArrayList<Tile> tileData = new ArrayList<Tile>();
 		String line = null;
+		int heightCount = 0;
 		while ((line = reader.readLine()) != null) {
-			tileData.addAll(parseLine(line));
+			if (meta == null) {
+				readMetaData(line); // The first line is meta data
+			} else {
+				tileData.addAll(parseLine(line));
+				heightCount++;
+			}
 		}
+		fillRemainingHeight(tileData, heightCount);
 		Tile[] tiles = new Tile[tileData.size()];
 		tileData.toArray(tiles);
-		Land land = new Land(landName, landWidth, landHeight, tiles);
+		Land land = new Land(landName, meta.size, meta.start, tiles);
 		return land;
+	}
+	
+	/**
+	 * Parses a Dimension value from a String value of the form "w,h", where w
+	 * is the width and h is the height.
+	 * 
+	 * @param value The String to parse.
+	 * 
+	 * @return The Dimension represented by the given String.
+	 */
+	private Dimension parseDimension(String value) {
+		String[] parts = value.split(",");
+		Dimension d = new Dimension();
+		d.width = parseInt(parts[0]);
+		d.height = parseInt(parts[1]);
+		return d;
+	}
+	
+	/**
+	 * Parses an integer value from a String value.
+	 * 
+	 * @param value The String to parse.
+	 * 
+	 * @return The integer represented by the given String.
+	 */
+	private int parseInt(String value) {
+		return Integer.parseInt(value);
 	}
 	
 	/**
@@ -103,17 +176,49 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private ArrayList<Tile> parseLine(String line) {
 		ArrayList<Tile> tileList = new ArrayList<Tile>();
-		if (line.length() > 0) {
-			landHeight++;
-			if (landWidth == 0) {
-				landWidth = line.length();
-			}
-			for (int i = 0; i < line.length(); i++) {
-				char c = line.charAt(i);
-				tileList.add(factory.createTile(c));
+		int limit = Math.min(line.length(), meta.size.width);
+		for (int i = 0; i < limit; i++) {
+			char c = line.charAt(i);
+			tileList.add(factory.createTile(c));
+		}
+		// for the remaining width, add void tiles.
+		fillRemainingWidth(tileList, limit);
+		return tileList;
+	}
+	
+	/**
+	 * Parses a Point value from a String value of the form "x,y", where x is
+	 * the x-coordinate and y is the y-coordinate.
+	 * 
+	 * @param value The String to parse.
+	 * 
+	 * @return The Point represented by the given String.
+	 */
+	private Point parsePoint(String value) {
+		String[] parts = value.split(",");
+		Point p = new Point();
+		p.x = parseInt(parts[0]);
+		p.y = parseInt(parts[1]);
+		return p;
+	}
+	
+	/**
+	 * Parses a line of meta data into the actual meta data.
+	 * 
+	 * @param line The line to parse.
+	 */
+	private void readMetaData(String line) {
+		meta = new MetaData();
+		String[] parts = line.split(";");
+		for (String attribute : parts) {
+			String key = attribute.split("=")[0];
+			String value = attribute.split("=")[1];
+			if (key.equalsIgnoreCase("start")) {
+				meta.start = parsePoint(value);
+			} else if (key.equalsIgnoreCase("size")) {
+				meta.size = parseDimension(value);
 			}
 		}
-		return tileList;
 	}
 	
 }

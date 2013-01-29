@@ -26,6 +26,11 @@ public class TileFactory {
 	}
 	
 	/**
+	 * The character that represents a void tile.
+	 */
+	public static final char VOID_CHAR = ' ';
+	
+	/**
 	 * The definitions in this TileFactory.
 	 */
 	private Map<Integer, TileDefinition> definitions;
@@ -35,6 +40,7 @@ public class TileFactory {
 	 */
 	public TileFactory() {
 		definitions = new HashMap<Integer, TileDefinition>();
+		addDefinition(VOID_CHAR, "void", false);
 	}
 	
 	/**

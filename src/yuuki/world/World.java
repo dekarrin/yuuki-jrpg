@@ -1,5 +1,6 @@
 package yuuki.world;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,15 @@ public class World {
 	 */
 	public void addLand(Land land) {
 		lands.put(land.getName(), land);
+	}
+	
+	/**
+	 * Gets the player start for the current land.
+	 * 
+	 * @return The player start.
+	 */
+	public Point getPlayerStart() {
+		return activeLand.getPlayerStart();
 	}
 	
 	/**

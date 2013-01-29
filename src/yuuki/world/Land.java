@@ -1,5 +1,6 @@
 package yuuki.world;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,11 @@ public class Land {
 	private Map<Point, Portal> portals;
 	
 	/**
+	 * The position that the player starts at.
+	 */
+	private Point playerStart;
+	
+	/**
 	 * The Movable objects in this Land.
 	 */
 	private Map<Point, Movable> residents;
@@ -44,13 +50,14 @@ public class Land {
 	 * Creates a new Land.
 	 * 
 	 * @param name The name of this Land.
-	 * @param width The width, in tiles, of this Land.
-	 * @param height The height, in tiles, of this Land.
+	 * @param size The size of this Land, in tiles.
+	 * @param start The player start for this land.
 	 * @param tileData The tiles that makes up this Land.
 	 */
-	public Land(String name, int width, int height, Tile[] tileData) {
+	public Land(String name, Dimension size, Point start, Tile[] tileData) {
 		this.name = name;
-		tiles = new TileGrid(width, height, tileData);
+		playerStart = start;
+		tiles = new TileGrid(size.width, size.height, tileData);
 		residents = new HashMap<Point, Movable>();
 		portals = new HashMap<Point, Portal>();
 	}
@@ -65,6 +72,13 @@ public class Land {
 		if (portals.get(pos) == null) {
 			portals.put(pos, p);
 		}
+	}
+	
+	/**
+	 * Gets the player start.
+	 */
+	public Point getPlayerStart() {
+		return playerStart;
 	}
 	
 	/**
@@ -218,7 +232,6 @@ public class Land {
 	 * is then moved there.
 	 */
 	private void moveResidents() {
-		System.out.println("Starting rezzy move");
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
 		for (Movable r: moveList) {
 			Point destination = r.getNextMove(this);
@@ -227,7 +240,6 @@ public class Land {
 			}
 		}
 		applyMove(moveList);
-		System.out.println("Ending rezzy move");
 	}
 	
 }

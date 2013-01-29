@@ -196,6 +196,7 @@ public class Engine implements Runnable, UiExecutor {
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
+		player.setLocation(world.getPlayerStart());
 		world.addResident(player);
 		enterOverworldMode();
 	}
@@ -287,10 +288,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * data.
 	 */
 	private void advanceWorld() {
-		System.out.println("Advancing world...");
 		world.advance();
-		java.awt.Point p = player.getLocation();
-		System.out.println("("+p.x+", "+p.y+")");
 		ui.updateWorldView(player.getLocation());
 	}
 	
