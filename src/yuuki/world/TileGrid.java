@@ -32,9 +32,9 @@ public class TileGrid {
 		this.width = w;
 		this.height = h;
 		tiles = new Tile[width][height];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				tiles[i][j] = new Tile(names[(i*height) + j], true);
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				tiles[j][i] = new Tile(names[(width * i) + j], true);
 			}
 		}
 	}
@@ -50,9 +50,9 @@ public class TileGrid {
 		this.width = w;
 		this.height = h;
 		this.tiles = new Tile[w][h];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				this.tiles[i][j] = tiles[(i*height) + j];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.tiles[j][i] = tiles[(width * i) + j];
 			}
 		}
 	}
@@ -68,9 +68,9 @@ public class TileGrid {
 		this.width = tiles.length;
 		this.height = tiles[0].length;
 		this.tiles = new Tile[width][height];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				this.tiles[i][j] = tiles[i][j];
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				this.tiles[j][i] = tiles[j][i];
 			}
 		}
 	}

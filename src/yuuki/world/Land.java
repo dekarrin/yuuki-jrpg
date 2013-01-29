@@ -194,6 +194,9 @@ public class Land {
 			for (int j = 0; j < tiles.getWidth(); j++) {
 				strVersion.append(tiles.tileAt(j, i).getDisplayChar());
 			}
+			if (i < tiles.getHeight() - 1) {
+				strVersion.append('\n');
+			}
 		}
 		return strVersion.toString();
 	}
