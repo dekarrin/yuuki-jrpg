@@ -115,5 +115,10 @@ public class Portal implements Locatable, Displayable {
 	public void setOpen(boolean open) {
 		this.open = open;
 	}
+
+	@Override
+	public Displayable getDisplayable() {
+		return this;
+	}
 	
 }

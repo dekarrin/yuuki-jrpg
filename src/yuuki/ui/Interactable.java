@@ -7,6 +7,7 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.world.Locatable;
 import yuuki.world.TileGrid;
 import yuuki.world.WalkGraph;
 
@@ -360,5 +361,17 @@ public interface Interactable {
 	 * Waits for the message to stop displaying.
 	 */
 	public void waitForDisplay();
+	
+	/**
+	 * Adds a list of Locatables to the world viewer.
+	 * 
+	 * @param l The Locatables to add.
+	 */
+	public void addWorldLocatables(ArrayList<Locatable> l);
+	
+	/**
+	 * Clears the Locatables from the world viewer.
+	 */
+	public void clearWorldLocatables();
 	
 }

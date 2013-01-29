@@ -117,4 +117,5 @@ public class Tile implements Displayable {
 	public void setWalkable(boolean walkable) {
 		this.walkable = walkable;
 	}
+	
 }

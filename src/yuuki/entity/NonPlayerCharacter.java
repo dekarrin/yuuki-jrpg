@@ -200,5 +200,20 @@ public class NonPlayerCharacter extends Character {
 		int fighterId = (int) Math.floor(Math.random() * team.size());
 		return team.get(fighterId);
 	}
+
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+
+	@Override
+	public char getDisplayChar() {
+		return 'x';
+	}
+
+	@Override
+	public String getOverworldImage() {
+		return null;
+	}
 	
 }

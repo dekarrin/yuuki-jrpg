@@ -14,6 +14,11 @@ import yuuki.world.WalkGraph;
 public class PlayerCharacter extends Character {
 	
 	/**
+	 * The representation of the PlayerCharacter as a single character.
+	 */
+	public static final int DISPLAY_CHAR = '@';
+	
+	/**
 	 * A reference to the user interface for this PC to get its moves from.
 	 */
 	private Interactable ui;
@@ -92,6 +97,21 @@ public class PlayerCharacter extends Character {
 	protected Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
+	}
+
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+
+	@Override
+	public char getDisplayChar() {
+		return DISPLAY_CHAR;
+	}
+
+	@Override
+	public String getOverworldImage() {
+		return null;
 	}
 	
 }

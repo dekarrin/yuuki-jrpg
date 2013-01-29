@@ -7,12 +7,13 @@ import java.util.Iterator;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.sprite.Sprite;
+import yuuki.ui.Displayable;
 import yuuki.world.Movable;
 
 /**
  * Provides stats for characters.
  */
-public abstract class Character implements Movable {
+public abstract class Character implements Movable, Displayable {
 	
 	/**
 	 * The base used in calculating required experience.
@@ -247,6 +248,11 @@ public abstract class Character implements Movable {
 	 */
 	public void addMPMod(double mod) {
 		mp.addModifier(mod, level);
+	}
+	
+	@Override
+	public Displayable getDisplayable() {
+		return this;
 	}
 	
 	/**
