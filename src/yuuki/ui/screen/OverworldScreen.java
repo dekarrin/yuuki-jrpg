@@ -4,12 +4,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,11 +39,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	/**
 	 * Listens for clicks on this OverworldScreen's buttons.
 	 */
-	private MouseListener clickListener = new MouseAdapter() {
+	private ActionListener hitListener = new ActionListener() {
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			Component c = e.getComponent();
+		public void actionPerformed(ActionEvent e) {
+			Component c = (Component) e.getSource();
 			if (c == startButton) {
 				fireStartClicked();
 			} else if (c == moveSouthWestButton || c == moveSouthButton ||
@@ -194,7 +193,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
 		startButton = new JButton("Start");
-		startButton.addMouseListener(clickListener);
+		startButton.addActionListener(hitListener);
 		startButton.addKeyListener(enterListener);
 		startButton.setFocusable(false);
 		createMovementButtons();
@@ -221,7 +220,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	public JButton createMoveButton(String label) {
 		JButton button = new JButton(label);
 		button.setFocusable(false);
-		button.addMouseListener(clickListener);
+		button.addActionListener(hitListener);
 		return button;
 	}
 	
@@ -250,33 +249,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	public void setWalkGraph(WalkGraph graph) {
 		this.walkGraph = graph;
 		setMoveButtonActivations();
-	}
-	
-	/**
-	 * Enables or disables the movement buttons based on whether they represent
-	 * a valid move.
-	 */
-	private void setMoveButtonActivations() {
-		boolean sw, so, se, we, ea, nw, no, ne;
-		sw = so = se = we = ea = nw = no = ne = true;
-		if (walkGraph != null) {
-			sw = (walkGraph.getSouthWest() != null);
-			so = (walkGraph.getSouth() != null);
-			se = (walkGraph.getSouthEast() != null);
-			we = (walkGraph.getWest() != null);
-			ea = (walkGraph.getEast() != null);
-			nw = (walkGraph.getNorthWest() != null);
-			no = (walkGraph.getNorth() != null);
-			ne = (walkGraph.getNorthEast() != null);
-		}
-		moveSouthWestButton.setEnabled(sw);
-		moveSouthButton.setEnabled(so);
-		moveSouthEastButton.setEnabled(se);
-		moveWestButton.setEnabled(we);
-		moveEastButton.setEnabled(ea);
-		moveNorthWestButton.setEnabled(nw);
-		moveNorthButton.setEnabled(no);
-		moveNorthEastButton.setEnabled(ne);
 	}
 	
 	/**
@@ -425,6 +397,33 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 			movePoint = walkGraph.getNorthEast();
 		}
 		return movePoint;
+	}
+	
+	/**
+	 * Enables or disables the movement buttons based on whether they represent
+	 * a valid move.
+	 */
+	private void setMoveButtonActivations() {
+		boolean sw, so, se, we, ea, nw, no, ne;
+		sw = so = se = we = ea = nw = no = ne = true;
+		if (walkGraph != null) {
+			sw = (walkGraph.getSouthWest() != null);
+			so = (walkGraph.getSouth() != null);
+			se = (walkGraph.getSouthEast() != null);
+			we = (walkGraph.getWest() != null);
+			ea = (walkGraph.getEast() != null);
+			nw = (walkGraph.getNorthWest() != null);
+			no = (walkGraph.getNorth() != null);
+			ne = (walkGraph.getNorthEast() != null);
+		}
+		moveSouthWestButton.setEnabled(sw);
+		moveSouthButton.setEnabled(so);
+		moveSouthEastButton.setEnabled(se);
+		moveWestButton.setEnabled(we);
+		moveEastButton.setEnabled(ea);
+		moveNorthWestButton.setEnabled(nw);
+		moveNorthButton.setEnabled(no);
+		moveNorthEastButton.setEnabled(ne);
 	}
 	
 }
