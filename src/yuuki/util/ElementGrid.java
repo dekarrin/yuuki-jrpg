@@ -52,7 +52,11 @@ public class ElementGrid<E> implements Grid<E> {
 		this.size = size;
 		items = new ArrayList<ArrayList<E>>(size.width);
 		for (int i = 0; i < size.width; i++) {
-			items.add(new ArrayList<E>(size.height));
+			ArrayList<E> list = new ArrayList<E>(size.height);
+			for (int j = 0; j < size.height; j++) {
+				list.add(null);
+			}
+			items.add(list);
 		}
 	}
 	

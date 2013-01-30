@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
@@ -23,7 +24,7 @@ public class WorldViewer extends JPanel {
 	/**
 	 * The exact text being displayed.
 	 */
-	private char[][] buffer;
+	private Grid<java.lang.Character> buffer;
 	
 	/**
 	 * The Locatables on the screen.
@@ -48,7 +49,8 @@ public class WorldViewer extends JPanel {
 	 * @param height The height of this WorldViewer in tiles.
 	 */
 	public WorldViewer(int width, int height) {
-		buffer = new char[width][height];
+		Dimension d = new Dimension(width, height);
+		buffer = new ElementGrid<java.lang.Character>(d);
 		locatables = new HashSet<Locatable>();
 		textArea = new JTextArea(height, width);
 		textArea.setEditable(false);
@@ -131,16 +133,17 @@ public class WorldViewer extends JPanel {
 	private void addToBuffer(Locatable ls, Point position, Dimension size) {
 		Rectangle box = new Rectangle(position, size);
 		Point c = getRelativePosition(ls.getLocation(), box);
-		buffer[c.x][c.y] = ls.getDisplayable().getDisplayChar();
+		buffer.set(c, ls.getDisplayable().getDisplayChar());
 	}
 	
 	/**
 	 * Sets all tiles in the tile buffer to be empty.
 	 */
 	private void clearBuffer() {
-		for (int y = 0; y < textArea.getRows(); y++) {
-			for (int x = 0; x < textArea.getColumns(); x++) {
-				buffer[x][y] = ' ';
+		Point p = new Point(0, 0);
+		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
+			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
+				buffer.set(p, ' ');
 			}
 		}
 	}
@@ -190,12 +193,12 @@ public class WorldViewer extends JPanel {
 	private void setBufferTiles(Grid<Tile> grid, int xOffset, int yOffset) {
 		clearBuffer();
 		char c = '\0';
-		Point p = new Point();
 		Dimension d = grid.getSize();
+		Point p = new Point(0, 0);
 		for (p.y = 0; p.y < d.height; p.y++) {
 			for (p.x = 0; p.x < d.width; p.x++) {
 				c = grid.itemAt(p).getDisplayChar();
-				buffer[p.x + xOffset][p.y + yOffset] = c;
+				buffer.set(new Point(p.x + xOffset, p.y + yOffset), c);
 			}
 		}
 	}
@@ -205,11 +208,12 @@ public class WorldViewer extends JPanel {
 	 */
 	private void showBuffer() {
 		StringBuilder sb = new StringBuilder();
-		for (int y = 0; y < textArea.getRows(); y++) {
-			for (int x = 0; x < textArea.getColumns(); x++) {
-				sb.append(buffer[x][y]);
+		Point p = new Point(0, 0);
+		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
+			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
+				sb.append(buffer.itemAt(p));
 			}
-			if (y < textArea.getRows() - 1) {
+			if (p.y < textArea.getRows() - 1) {
 				sb.append('\n');
 			}
 		}
