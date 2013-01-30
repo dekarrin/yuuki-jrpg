@@ -78,7 +78,7 @@ public class TileGrid {
 	/**
 	 * Creates a new TileGrid without setting any properties.
 	 */
-	private TileGrid() {}
+	protected TileGrid() {}
 	
 	/**
 	 * Gets the height of this TileGrid.
