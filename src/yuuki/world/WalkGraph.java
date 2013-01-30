@@ -1,5 +1,6 @@
 package yuuki.world;
 
+import java.awt.Dimension;
 import java.awt.Point;
 
 /**
@@ -210,8 +211,8 @@ public class WalkGraph {
 	 * walkable; otherwise, false.
 	 */
 	private boolean checkTile(Grid<Tile> grid, int x, int y) {
-		if (x >= 0 && x <= grid.getWidth() && y >= 0 &&
-				y <= grid.getHeight()) {
+		Dimension d = grid.getSize();
+		if (x >= 0 && x <= d.width && y >= 0 && y <= d.height) {
 			return grid.itemAt(new Point(x, y)).isWalkable();
 		} else {
 			return false;
@@ -226,8 +227,9 @@ public class WalkGraph {
 	 * eight tiles.
 	 */
 	private void setValidity(Grid<Tile> tiles) {
-		int xOff = 3 - tiles.getWidth();
-		int yOff = 3 - tiles.getHeight();
+		Dimension d = tiles.getSize();
+		int xOff = 3 - d.width;
+		int yOff = 3 - d.height;
 		hasNorthWest	= checkTile(tiles, 0 - xOff, 0 - yOff);
 		hasNorth		= checkTile(tiles, 1 - xOff, 0 - yOff);
 		hasNorthEast	= checkTile(tiles, 2 - xOff, 0 - yOff);

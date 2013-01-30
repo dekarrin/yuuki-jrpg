@@ -51,6 +51,16 @@ public class PlayerCharacter extends Character {
 		this.ui = ui;
 	}
 	
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+	
+	@Override
+	public char getDisplayChar() {
+		return DISPLAY_CHAR;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -58,6 +68,11 @@ public class PlayerCharacter extends Character {
 	public Point getNextMove(Land land) {
 		WalkGraph graph = land.getWalkGraph(getLocation());
 		return ui.selectMove(graph);
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		return null;
 	}
 	
 	/**
@@ -97,21 +112,6 @@ public class PlayerCharacter extends Character {
 	protected Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
-	}
-
-	@Override
-	public String getBattleImage() {
-		return null;
-	}
-
-	@Override
-	public char getDisplayChar() {
-		return DISPLAY_CHAR;
-	}
-
-	@Override
-	public String getOverworldImage() {
-		return null;
 	}
 	
 }

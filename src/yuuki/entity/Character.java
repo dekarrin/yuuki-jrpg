@@ -250,11 +250,6 @@ public abstract class Character implements Movable, Displayable {
 		mp.addModifier(mod, level);
 	}
 	
-	@Override
-	public Displayable getDisplayable() {
-		return this;
-	}
-	
 	/**
 	 * Adds a modifier to the strength stat.
 	 * 
@@ -408,6 +403,11 @@ public abstract class Character implements Movable, Displayable {
 	 */
 	public Stat getDefenseStat() {
 		return defense;
+	}
+	
+	@Override
+	public Displayable getDisplayable() {
+		return this;
 	}
 	
 	/**

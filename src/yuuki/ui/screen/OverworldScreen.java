@@ -213,6 +213,24 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
+	 * Adds a series of Locatable objects to the world viewer.
+	 * 
+	 * @param ls The Locatables to add.
+	 */
+	public void addWorldLocatables(ArrayList<Locatable> ls) {
+		for (Locatable l : ls) {
+			worldViewer.addLocatable(l);
+		}
+	}
+	
+	/**
+	 * Clears all of the world Locatables out of the world viewer.
+	 */
+	public void clearWorldLocatables() {
+		worldViewer.clearLocatables();
+	}
+	
+	/**
 	 * Creates a movement button and sets standard movement button properties
 	 * on it.
 	 * 
@@ -427,24 +445,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		moveNorthWestButton.setEnabled(nw);
 		moveNorthButton.setEnabled(no);
 		moveNorthEastButton.setEnabled(ne);
-	}
-	
-	/**
-	 * Clears all of the world Locatables out of the world viewer.
-	 */
-	public void clearWorldLocatables() {
-		worldViewer.clearLocatables();
-	}
-	
-	/**
-	 * Adds a series of Locatable objects to the world viewer.
-	 * 
-	 * @param ls The Locatables to add.
-	 */
-	public void addWorldLocatables(ArrayList<Locatable> ls) {
-		for (Locatable l : ls) {
-			worldViewer.addLocatable(l);
-		}
 	}
 	
 }

@@ -39,15 +39,6 @@ public class World {
 	}
 	
 	/**
-	 * Gets the player start for the current land.
-	 * 
-	 * @return The player start.
-	 */
-	public Point getPlayerStart() {
-		return activeLand.getPlayerStart();
-	}
-	
-	/**
 	 * Adds a resident to the active land.
 	 * 
 	 * @param resident The resident to add.
@@ -111,6 +102,15 @@ public class World {
 	 */
 	public ArrayList<Locatable> getLocatables() {
 		return activeLand.getLocatables();
+	}
+	
+	/**
+	 * Gets the player start for the current land.
+	 * 
+	 * @return The player start.
+	 */
+	public Point getPlayerStart() {
+		return activeLand.getPlayerStart();
 	}
 	
 	/**

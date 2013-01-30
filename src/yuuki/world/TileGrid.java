@@ -1,5 +1,6 @@
 package yuuki.world;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -84,8 +85,8 @@ public class TileGrid implements Grid<Tile> {
 	protected TileGrid() {}
 	
 	@Override
-	public int getHeight() {
-		return height;
+	public Dimension getSize() {
+		return new Dimension(width, height);
 	}
 	
 	@Override
@@ -107,11 +108,6 @@ public class TileGrid implements Grid<Tile> {
 		subGrid.width = subTiles.length;
 		subGrid.height = subTiles[0].length;
 		return subGrid;
-	}
-	
-	@Override
-	public int getWidth() {
-		return width;
 	}
 	
 	@Override

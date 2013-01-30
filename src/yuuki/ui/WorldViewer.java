@@ -58,15 +58,6 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Sets the view of the world being displayed.
-	 * 
-	 * @param view The view to show.
-	 */
-	public void setView(Grid<Tile> view) {
-		this.view = view;
-	}
-	
-	/**
 	 * Adds a Locatable to the current display.
 	 * 
 	 * @param l The Locatable to add.
@@ -100,6 +91,15 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Sets the view of the world being displayed.
+	 * 
+	 * @param view The view to show.
+	 */
+	public void setView(Grid<Tile> view) {
+		this.view = view;
+	}
+	
+	/**
 	 * Updates this WorldViewer to show a new area.
 	 * 
 	 * @param center The center of the area to show.
@@ -115,54 +115,9 @@ public class WorldViewer extends JPanel {
 			int xOffset = (subX < 0) ? Math.abs(subX) : 0;
 			int yOffset = (subY < 0) ? Math.abs(subY) : 0;
 			Point subPos = new Point(subX, subY);
-			Dimension subSize = new Dimension(sub.getWidth(), sub.getHeight());
 			setBufferTiles(sub, xOffset, yOffset);
-			setBufferLocatables(subPos, subSize);
+			setBufferLocatables(subPos, sub.getSize());
 			showBuffer();
-		}
-	}
-	
-	/**
-	 * Sets all tiles in the tile buffer to be empty.
-	 */
-	private void clearBuffer() {
-		for (int y = 0; y < textArea.getRows(); y++) {
-			for (int x = 0; x < textArea.getColumns(); x++) {
-				buffer[x][y] = ' ';
-			}
-		}
-	}
-	
-	/**
-	 * Sets the buffer to the initial tiles.
-	 * 
-	 * @param grid The grid of tiles to use to populate the display.
-	 * @param xOffset The number of tiles to shift the display right.
-	 * @param yOffset The number of tiles to shift the display down.
-	 */
-	private void setBufferTiles(Grid<Tile> grid, int xOffset, int yOffset) {
-		clearBuffer();
-		char c = '\0';
-		Point p = new Point();
-		for (p.y = 0; p.y < grid.getHeight(); p.y++) {
-			for (p.x = 0; p.x < grid.getWidth(); p.x++) {
-				c = grid.itemAt(p).getDisplayChar();
-				buffer[p.x + xOffset][p.y + yOffset] = c;
-			}
-		}
-	}
-	
-	/**
-	 * Sets the buffer to contain the Locatables.
-	 * 
-	 * @param position The position of the displayed view.
-	 * @param size The size of the displayed view.
-	 */
-	private void setBufferLocatables(Point position, Dimension size) {
-		Rectangle bound = new Rectangle(position, size);
-		ArrayList<Locatable> ls = getLocatablesInBox(bound);
-		for (Locatable l : ls) {
-			addToBuffer(l, position, size);
 		}
 	}
 	
@@ -177,6 +132,17 @@ public class WorldViewer extends JPanel {
 		Rectangle box = new Rectangle(position, size);
 		Point c = getRelativePosition(ls.getLocation(), box);
 		buffer[c.x][c.y] = ls.getDisplayable().getDisplayChar();
+	}
+	
+	/**
+	 * Sets all tiles in the tile buffer to be empty.
+	 */
+	private void clearBuffer() {
+		for (int y = 0; y < textArea.getRows(); y++) {
+			for (int x = 0; x < textArea.getColumns(); x++) {
+				buffer[x][y] = ' ';
+			}
+		}
 	}
 	
 	/**
@@ -198,6 +164,40 @@ public class WorldViewer extends JPanel {
 		rel.x = p.x - viewBox.x + offsetX;
 		rel.y = p.y - viewBox.y + offsetY;
 		return rel;
+	}
+	
+	/**
+	 * Sets the buffer to contain the Locatables.
+	 * 
+	 * @param position The position of the displayed view.
+	 * @param size The size of the displayed view.
+	 */
+	private void setBufferLocatables(Point position, Dimension size) {
+		Rectangle bound = new Rectangle(position, size);
+		ArrayList<Locatable> ls = getLocatablesInBox(bound);
+		for (Locatable l : ls) {
+			addToBuffer(l, position, size);
+		}
+	}
+	
+	/**
+	 * Sets the buffer to the initial tiles.
+	 * 
+	 * @param grid The grid of tiles to use to populate the display.
+	 * @param xOffset The number of tiles to shift the display right.
+	 * @param yOffset The number of tiles to shift the display down.
+	 */
+	private void setBufferTiles(Grid<Tile> grid, int xOffset, int yOffset) {
+		clearBuffer();
+		char c = '\0';
+		Point p = new Point();
+		Dimension d = grid.getSize();
+		for (p.y = 0; p.y < d.height; p.y++) {
+			for (p.x = 0; p.x < d.width; p.x++) {
+				c = grid.itemAt(p).getDisplayChar();
+				buffer[p.x + xOffset][p.y + yOffset] = c;
+			}
+		}
 	}
 	
 	/**

@@ -50,6 +50,11 @@ public class NonPlayerCharacter extends Character {
 		this.xpBase = xpBase;
 	}
 	
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+	
 	/**
 	 * Gets the total experience given up by this NPC on death.
 	 *
@@ -58,6 +63,11 @@ public class NonPlayerCharacter extends Character {
 	public int getDeathXP() {
 		double power = Math.pow(DEATH_XP_BASE, level);
 		return (int) Math.floor(xpBase * level * power);
+	}
+	
+	@Override
+	public char getDisplayChar() {
+		return 'x';
 	}
 	
 	/**
@@ -111,6 +121,11 @@ public class NonPlayerCharacter extends Character {
 				}
 		}
 		return dest;
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		return null;
 	}
 	
 	/**
@@ -199,21 +214,6 @@ public class NonPlayerCharacter extends Character {
 		ArrayList<Character> team = fighters.get(teamId);
 		int fighterId = (int) Math.floor(Math.random() * team.size());
 		return team.get(fighterId);
-	}
-
-	@Override
-	public String getBattleImage() {
-		return null;
-	}
-
-	@Override
-	public char getDisplayChar() {
-		return 'x';
-	}
-
-	@Override
-	public String getOverworldImage() {
-		return null;
 	}
 	
 }

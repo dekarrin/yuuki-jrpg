@@ -1,5 +1,6 @@
 package yuuki.world;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -11,18 +12,11 @@ import java.awt.Rectangle;
 public interface Grid<T> {
 	
 	/**
-	 * Gets the number of rows in this Grid.
+	 * Gets the dimensions of this Grid.
 	 * 
-	 * @return The height of this Grid.
+	 * @return The dimensions.
 	 */
-	public int getHeight();
-	
-	/**
-	 * Gets the number of columns in this Grid.
-	 * 
-	 * @return The width of this Grid.
-	 */
-	public int getWidth();
+	public Dimension getSize();
 	
 	/**
 	 * Gets a representation of a section of this Grid. The returned Grid will

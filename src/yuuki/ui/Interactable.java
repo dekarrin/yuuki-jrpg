@@ -18,11 +18,23 @@ import yuuki.world.WalkGraph;
 public interface Interactable {
 	
 	/**
+	 * Adds a list of Locatables to the world viewer.
+	 * 
+	 * @param l The Locatables to add.
+	 */
+	public void addWorldLocatables(ArrayList<Locatable> l);
+	
+	/**
 	 * Applies applicable options to this Interactable.
 	 * 
 	 * @param options The options.
 	 */
 	public void applyOptions(yuuki.Options options);
+	
+	/**
+	 * Clears the Locatables from the world viewer.
+	 */
+	public void clearWorldLocatables();
 	
 	/**
 	 * Gets a confirmation from the user.
@@ -362,17 +374,5 @@ public interface Interactable {
 	 * Waits for the message to stop displaying.
 	 */
 	public void waitForDisplay();
-	
-	/**
-	 * Adds a list of Locatables to the world viewer.
-	 * 
-	 * @param l The Locatables to add.
-	 */
-	public void addWorldLocatables(ArrayList<Locatable> l);
-	
-	/**
-	 * Clears the Locatables from the world viewer.
-	 */
-	public void clearWorldLocatables();
 	
 }

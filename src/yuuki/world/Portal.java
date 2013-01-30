@@ -48,6 +48,11 @@ public class Portal implements Locatable, Displayable {
 		return null;
 	}
 	
+	@Override
+	public Displayable getDisplayable() {
+		return this;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -114,11 +119,6 @@ public class Portal implements Locatable, Displayable {
 	 */
 	public void setOpen(boolean open) {
 		this.open = open;
-	}
-
-	@Override
-	public Displayable getDisplayable() {
-		return this;
 	}
 	
 }

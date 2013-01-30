@@ -192,6 +192,22 @@ OptionsScreenListener, MenuBarListener {
 		this.imageEngine = new ImageFactory();
 	}
 	
+	@Override
+	public void addWorldLocatables(ArrayList<Locatable> l) {
+		class Runner implements Runnable {
+			private ArrayList<Locatable> l;
+			public Runner(ArrayList<Locatable> l) {
+				this.l = l;
+			}
+			@Override
+			public void run() {
+				overworldScreen.addWorldLocatables(l);
+			}
+		}
+		Runner r = new Runner(l);
+		SwingUtilities.invokeLater(r);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -208,6 +224,16 @@ OptionsScreenListener, MenuBarListener {
 	public void bgmVolumeChanged(int volume) {
 		options.bgmVolume = volume;
 		mainProgram.requestOptionApplication();
+	}
+	
+	@Override
+	public void clearWorldLocatables() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				overworldScreen.clearWorldLocatables();
+			}
+		});
 	}
 	
 	/**
@@ -1116,31 +1142,6 @@ OptionsScreenListener, MenuBarListener {
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
 		soundEngine.playMusic(screen.getBackgroundMusic(), false);
-	}
-
-	@Override
-	public void addWorldLocatables(ArrayList<Locatable> l) {
-		class Runner implements Runnable {
-			private ArrayList<Locatable> l;
-			public Runner(ArrayList<Locatable> l) {
-				this.l = l;
-			}
-			public void run() {
-				overworldScreen.addWorldLocatables(l);
-			}
-		}
-		Runner r = new Runner(l);
-		SwingUtilities.invokeLater(r);
-	}
-
-	@Override
-	public void clearWorldLocatables() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				overworldScreen.clearWorldLocatables();
-			}
-		});
 	}
 	
 }

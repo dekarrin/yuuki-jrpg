@@ -28,14 +28,14 @@ public class Land {
 	private String name;
 	
 	/**
-	 * The Portals that link this Land to different areas.
-	 */
-	private Map<Point, Portal> portals;
-	
-	/**
 	 * The position that the player starts at.
 	 */
 	private Point playerStart;
+	
+	/**
+	 * The Portals that link this Land to different areas.
+	 */
+	private Map<Point, Portal> portals;
 	
 	/**
 	 * The Movable objects in this Land.
@@ -76,13 +76,6 @@ public class Land {
 	}
 	
 	/**
-	 * Gets the player start.
-	 */
-	public Point getPlayerStart() {
-		return playerStart;
-	}
-	
-	/**
 	 * Adds a resident to this Land if it has not already been added.
 	 * 
 	 * @param r The resident to add.
@@ -101,15 +94,6 @@ public class Land {
 	 */
 	public void advance() {
 		moveResidents();
-	}
-	
-	/**
-	 * Gets the height of this Land in tiles.
-	 * 
-	 * @return The height.
-	 */
-	public int getHeight() {
-		return tiles.getHeight();
 	}
 	
 	/**
@@ -134,6 +118,22 @@ public class Land {
 	}
 	
 	/**
+	 * Gets the player start.
+	 */
+	public Point getPlayerStart() {
+		return playerStart;
+	}
+	
+	/**
+	 * Gets the size of this Land in tiles.
+	 * 
+	 * @return The size.
+	 */
+	public Dimension getSize() {
+		return tiles.getSize();
+	}
+	
+	/**
 	 * Gets the tiles that make up this Land.
 	 * 
 	 * @return The tiles.
@@ -155,15 +155,6 @@ public class Land {
 		Grid<Tile> grid = tiles.getSubGrid(box);
 		WalkGraph graph = new WalkGraph(center, grid);
 		return graph;
-	}
-	
-	/**
-	 * Gets the height of this Land in tiles.
-	 * 
-	 * @return The height.
-	 */
-	public int getWidth() {
-		return tiles.getWidth();
 	}
 	
 	/**
@@ -207,11 +198,12 @@ public class Land {
 	public String toString() {
 		StringBuilder strVersion = new StringBuilder();
 		Point p = new Point();
-		for (p.y = 0; p.y < tiles.getHeight(); p.y++) {
-			for (p.x = 0; p.x < tiles.getWidth(); p.x++) {
+		Dimension d = tiles.getSize();
+		for (p.y = 0; p.y < d.height; p.y++) {
+			for (p.x = 0; p.x < d.width; p.x++) {
 				strVersion.append(tiles.itemAt(p).getDisplayChar());
 			}
-			if (p.x < tiles.getHeight() - 1) {
+			if (p.x < d.height - 1) {
 				strVersion.append('\n');
 			}
 		}
