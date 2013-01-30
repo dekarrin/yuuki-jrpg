@@ -21,6 +21,11 @@ public class SubGrid<E> implements Grid<E> {
 	 */
 	private Grid<E> sourceGrid;
 	
+	@Override
+	public Point getLocation() {
+		return boundingBox.getLocation();
+	}
+	
 	/**
 	 * Creates a new TileSubGrid that points to an existing one.
 	 * 

@@ -61,6 +61,11 @@ public class ElementGrid<E> implements Grid<E> {
 	}
 	
 	@Override
+	public Point getLocation() {
+		return new Point(0, 0);
+	}
+	
+	@Override
 	public void set(Point p, E e) {
 		if (contains(p)) {
 			items.get(p.x).set(p.y, e);

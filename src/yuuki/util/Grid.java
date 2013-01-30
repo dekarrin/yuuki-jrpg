@@ -57,4 +57,11 @@ public interface Grid<E> {
 	 */
 	public void set(Point p, E e);
 	
+	/**
+	 * Gets the relative position of this Grid.
+	 * 
+	 * @return The position of this Grid.
+	 */
+	public Point getLocation();
+	
 }

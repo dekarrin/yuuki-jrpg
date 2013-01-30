@@ -27,6 +27,11 @@ public class WorldViewer extends JPanel {
 	private Grid<java.lang.Character> buffer;
 	
 	/**
+	 * The section of the buffer that contains the drawn map.
+	 */
+	private Grid<java.lang.Character> bufferView;
+	
+	/**
 	 * The Locatables on the screen.
 	 */
 	private Set<Locatable> locatables;
@@ -40,6 +45,11 @@ public class WorldViewer extends JPanel {
 	 * The current view of this world.
 	 */
 	private Grid<Tile> view;
+	
+	/**
+	 * The view of the world that is being drawn.
+	 */
+	private Grid<Tile> subView;
 	
 	/**
 	 * Creates a new WorldViewer that can display the specified number of
@@ -107,33 +117,84 @@ public class WorldViewer extends JPanel {
 	 * @param center The center of the area to show.
 	 */
 	public void updateDisplay(Point center) {
-		if (center != null) {
-			int w = textArea.getColumns();
-			int h = textArea.getRows();
-			int subX = center.x - (w / 2);
-			int subY = center.y - (h / 2);
-			Rectangle box = new Rectangle(subX, subY, w, h);
-			Grid<Tile> sub = view.getSubGrid(box);
-			int xOffset = (subX < 0) ? Math.abs(subX) : 0;
-			int yOffset = (subY < 0) ? Math.abs(subY) : 0;
-			Point subPos = new Point(subX, subY);
-			setBufferTiles(sub, xOffset, yOffset);
-			setBufferLocatables(subPos, sub.getSize());
-			showBuffer();
+		clearBuffer();
+		Point requested = setSubView(center);
+		setBufferView(requested);
+		drawSubView();
+		drawLocatables();
+		showBuffer();
+	}
+	
+	/**
+	 * Draws the locatables on the screen.
+	 */
+	private void drawLocatables() {
+		Rectangle box;
+		box = new Rectangle(subView.getLocation(), subView.getSize());
+		ArrayList<Locatable> ls = getLocatablesInBox(box);
+		for (Locatable l : ls) {
+			Point p = l.getLocation();
+			p.x -= box.x;
+			p.y -= box.y;
+			bufferView.set(p, l.getDisplayable().getDisplayChar());
 		}
 	}
 	
 	/**
-	 * Adds a Locatable to the buffer.
-	 * 
-	 * @param l The locatable to add.
-	 * @param position The position of the displayed view.
-	 * @param size The size of the displayed view.
+	 * Draws the sub view onto the buffer.
 	 */
-	private void addToBuffer(Locatable ls, Point position, Dimension size) {
-		Rectangle box = new Rectangle(position, size);
-		Point c = getRelativePosition(ls.getLocation(), box);
-		buffer.set(c, ls.getDisplayable().getDisplayChar());
+	private void drawSubView() {
+		Point p = new Point(0, 0);
+		Dimension size = bufferView.getSize();
+		for (p.x = 0; p.x < size.width; p.x++) {
+			for (p.y = 0; p.y < size.height; p.y++) {
+				bufferView.set(p, subView.itemAt(p).getDisplayChar());
+			}
+		}
+	}
+	
+	/**
+	 * Gets the proper sub view centered about a point.
+	 * 
+	 * @param center The center of the view to set as the sub view.
+	 * 
+	 * @return The position of the requested upper-left corner.
+	 */
+	private Point setSubView(Point center) {
+		Dimension size = buffer.getSize();
+		Point actualLocation = center;
+		actualLocation.move(-size.width / 2, -size.height / 2);
+		Rectangle subBox = new Rectangle(actualLocation, size);
+		subView = view.getSubGrid(subBox);
+		return subBox.getLocation();
+	}
+	
+	/**
+	 * Sets the buffer sub view as the section that matches the draw position
+	 * of the current world sub view.
+	 * 
+	 * @param request The requested upper-left corner.
+	 */
+	private void setBufferView(Point request) {
+		Rectangle subBox, bufBox, bufView;
+		subBox = new Rectangle(subView.getLocation(), subView.getSize());
+		bufBox = new Rectangle(buffer.getLocation(), buffer.getSize());
+		bufView = new Rectangle(buffer.getLocation(), buffer.getSize());
+		if (subBox.height < bufBox.height) {
+			int shiftAmount = subBox.y - request.y;
+			bufView.y += shiftAmount;
+			bufView.height -= (bufBox.height - shiftAmount - subBox.height);
+		}
+		if (subBox.width < bufBox.width) {
+			int shiftAmount = subBox.x - request.x;
+			bufView.x += shiftAmount;
+			bufView.width -= (bufBox.width - shiftAmount - subBox.width);
+		}
+		bufferView = buffer.getSubGrid(bufView);
+		System.out.println("requst: "+request);
+		System.out.println("subBox: "+subBox);
+		System.out.println("bufVew: "+bufView);
+		System.out.println("bufBox: "+bufBox);
 	}
 	
 	/**
@@ -144,61 +205,6 @@ public class WorldViewer extends JPanel {
 		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
 			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
 				buffer.set(p, ' ');
-			}
-		}
-	}
-	
-	/**
-	 * Transforms an absolute ordered pair to a relative ordered pair by using
-	 * the size and location of the displayed point.
-	 * 
-	 * @param p The absolute point.
-	 * @param viewBox The size and position of the displayed view.
-	 */
-	private Point getRelativePosition(Point p, Rectangle viewBox) {
-		Point rel = new Point();
-		int offsetX = 0, offsetY = 0;
-		if (viewBox.y == 0 && viewBox.height < textArea.getHeight()) {
-			offsetY = textArea.getHeight() - viewBox.height;
-		}
-		if (viewBox.x == 0 && viewBox.width < textArea.getWidth()) {
-			offsetX = textArea.getWidth() - viewBox.width;
-		}
-		rel.x = p.x - viewBox.x + offsetX;
-		rel.y = p.y - viewBox.y + offsetY;
-		return rel;
-	}
-	
-	/**
-	 * Sets the buffer to contain the Locatables.
-	 * 
-	 * @param position The position of the displayed view.
-	 * @param size The size of the displayed view.
-	 */
-	private void setBufferLocatables(Point position, Dimension size) {
-		Rectangle bound = new Rectangle(position, size);
-		ArrayList<Locatable> ls = getLocatablesInBox(bound);
-		for (Locatable l : ls) {
-			addToBuffer(l, position, size);
-		}
-	}
-	
-	/**
-	 * Sets the buffer to the initial tiles.
-	 * 
-	 * @param grid The grid of tiles to use to populate the display.
-	 * @param xOffset The number of tiles to shift the display right.
-	 * @param yOffset The number of tiles to shift the display down.
-	 */
-	private void setBufferTiles(Grid<Tile> grid, int xOffset, int yOffset) {
-		clearBuffer();
-		char c = '\0';
-		Dimension d = grid.getSize();
-		Point p = new Point(0, 0);
-		for (p.y = 0; p.y < d.height; p.y++) {
-			for (p.x = 0; p.x < d.width; p.x++) {
-				c = grid.itemAt(p).getDisplayChar();
-				buffer.set(new Point(p.x + xOffset, p.y + yOffset), c);
 			}
 		}
 	}
