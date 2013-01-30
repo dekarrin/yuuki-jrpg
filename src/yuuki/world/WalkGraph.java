@@ -204,19 +204,13 @@ public class WalkGraph {
 	 * Checks if the tile at the given position is walkable.
 	 * 
 	 * @param grid The grid of tiles to check.
-	 * @param x The x-coordinate to check.
-	 * @param y The y-coordinate to check.
+	 * @param p The point to check.
 	 * 
 	 * @return True if a tile exists at the given coordinates and it is
 	 * walkable; otherwise, false.
 	 */
-	private boolean checkTile(Grid<Tile> grid, int x, int y) {
-		Dimension d = grid.getSize();
-		if (x >= 0 && x <= d.width && y >= 0 && y <= d.height) {
-			return grid.itemAt(new Point(x, y)).isWalkable();
-		} else {
-			return false;
-		}
+	private boolean checkTile(Grid<Tile> grid, Point p) {
+		return (grid.contains(p)) && (grid.itemAt(p).isWalkable());
 	}
 	
 	/**
@@ -230,14 +224,14 @@ public class WalkGraph {
 		Dimension d = tiles.getSize();
 		int xOff = 3 - d.width;
 		int yOff = 3 - d.height;
-		hasNorthWest	= checkTile(tiles, 0 - xOff, 0 - yOff);
-		hasNorth		= checkTile(tiles, 1 - xOff, 0 - yOff);
-		hasNorthEast	= checkTile(tiles, 2 - xOff, 0 - yOff);
-		hasWest			= checkTile(tiles, 0 - xOff, 1 - yOff);
-		hasEast			= checkTile(tiles, 2 - xOff, 1 - yOff);
-		hasSouthWest	= checkTile(tiles, 0 - xOff, 2 - yOff);
-		hasSouth		= checkTile(tiles, 1 - xOff, 2 - yOff);
-		hasSouthEast	= checkTile(tiles, 2 - xOff, 2 - yOff);
+		hasNorthWest	= checkTile(tiles, new Point(0 - xOff, 0 - yOff));
+		hasNorth		= checkTile(tiles, new Point(1 - xOff, 0 - yOff));
+		hasNorthEast	= checkTile(tiles, new Point(2 - xOff, 0 - yOff));
+		hasWest			= checkTile(tiles, new Point(0 - xOff, 1 - yOff));
+		hasEast			= checkTile(tiles, new Point(2 - xOff, 1 - yOff));
+		hasSouthWest	= checkTile(tiles, new Point(0 - xOff, 2 - yOff));
+		hasSouth		= checkTile(tiles, new Point(1 - xOff, 2 - yOff));
+		hasSouthEast	= checkTile(tiles, new Point(2 - xOff, 2 - yOff));
 	}
 	
 }

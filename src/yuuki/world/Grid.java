@@ -12,6 +12,15 @@ import java.awt.Rectangle;
 public interface Grid<T> {
 	
 	/**
+	 * Checks whether this grid contains a specific point.
+	 * 
+	 * @param point The point to check.
+	 * 
+	 * @return True if this grid contains the given point; otherwise, false.
+	 */
+	public boolean contains(Point point);
+	
+	/**
 	 * Gets the dimensions of this Grid.
 	 * 
 	 * @return The dimensions.
@@ -38,6 +47,6 @@ public interface Grid<T> {
 	 * 
 	 * @return The element at the given point.
 	 */
-	public T itemAt(Point p);
+	public T itemAt(Point point);
 	
 }

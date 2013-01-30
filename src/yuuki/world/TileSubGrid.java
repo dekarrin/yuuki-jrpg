@@ -34,6 +34,12 @@ public class TileSubGrid implements Grid<Tile> {
 	}
 	
 	@Override
+	public boolean contains(Point p) {
+		Rectangle box = new Rectangle(getSize());
+		return box.contains(p);
+	}
+	
+	@Override
 	public Dimension getSize() {
 		return boundingBox.getSize();
 	}
@@ -45,7 +51,7 @@ public class TileSubGrid implements Grid<Tile> {
 	
 	@Override
 	public Tile itemAt(Point p) {
-		if (boundingBox.contains(p)) {
+		if (contains(p)) {
 			transformRelativeToAbsolute(p);
 			return sourceGrid.itemAt(p);
 		} else {

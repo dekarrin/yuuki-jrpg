@@ -150,8 +150,9 @@ public class Land {
 	 * @return The WalkGraph for the given point.
 	 */
 	public WalkGraph getWalkGraph(Point center) {
+		Point graphCenter = new Point(center.x - 1, center.y - 1);
 		Dimension size = new Dimension(3, 3);
-		Rectangle box = new Rectangle(center, size);
+		Rectangle box = new Rectangle(graphCenter, size);
 		Grid<Tile> grid = tiles.getSubGrid(box);
 		WalkGraph graph = new WalkGraph(center, grid);
 		return graph;
