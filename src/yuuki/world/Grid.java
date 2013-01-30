@@ -7,9 +7,9 @@ import java.awt.Rectangle;
 /**
  * A grid of some objects in the world.
  * 
- * @param <T> The type of objects in the grid.
+ * @param <E> The type of objects in the grid.
  */
-public interface Grid<T> {
+public interface Grid<E> {
 	
 	/**
 	 * Checks whether this grid contains a specific point.
@@ -36,7 +36,7 @@ public interface Grid<T> {
 	 * @return A Grid that has the same references to element instances as this
 	 * one does, with the specified dimensions.
 	 */
-	public Grid<T> getSubGrid(Rectangle boundingBox);
+	public Grid<E> getSubGrid(Rectangle boundingBox);
 	
 	/**
 	 * Gets the element at a point in this grid. The origin is in the
@@ -47,6 +47,6 @@ public interface Grid<T> {
 	 * 
 	 * @return The element at the given point.
 	 */
-	public T itemAt(Point point);
+	public E itemAt(Point point);
 	
 }
