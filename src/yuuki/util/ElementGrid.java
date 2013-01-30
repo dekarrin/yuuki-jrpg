@@ -43,6 +43,28 @@ public class ElementGrid<E> implements Grid<E> {
 		}
 	}
 	
+	/**
+	 * Creates a new ElementGrid of a specific size.
+	 * 
+	 * @param size The size of the new ElementGrid.
+	 */
+	public ElementGrid(Dimension size) {
+		this.size = size;
+		items = new ArrayList<ArrayList<E>>(size.width);
+		for (int i = 0; i < size.width; i++) {
+			items.add(new ArrayList<E>(size.height));
+		}
+	}
+	
+	@Override
+	public void set(Point p, E e) {
+		if (contains(p)) {
+			items.get(p.x).set(p.y, e);
+		} else {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+	
 	@Override
 	public boolean contains(Point point) {
 		Rectangle box = new Rectangle(getSize());

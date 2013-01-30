@@ -61,6 +61,16 @@ public class SubGrid<E> implements Grid<E> {
 		}
 	}
 	
+	@Override
+	public void set(Point p, E e) {
+		if (contains(p)) {
+			transformRelativeToAbsolute(p);
+			sourceGrid.set(p, e);
+		} else {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+	
 	/**
 	 * Resizes a Rectangle so that it does not contain any points that the
 	 * original source grid does not contain.

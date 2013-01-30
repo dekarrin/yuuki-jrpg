@@ -49,4 +49,12 @@ public interface Grid<E> {
 	 */
 	public E itemAt(Point point);
 	
+	/**
+	 * Sets the value of the item if a valid point is given.
+	 * 
+	 * @param p The point to set the element at.
+	 * @param e The element to set the point's value to.
+	 */
+	public void set(Point p, E e);
+	
 }
