@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import yuuki.ui.WorldViewer;
-import yuuki.world.Grid;
+import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
 import yuuki.world.WalkGraph;

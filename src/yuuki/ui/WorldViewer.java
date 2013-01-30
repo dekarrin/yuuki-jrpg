@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import yuuki.world.Grid;
+import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
 /**

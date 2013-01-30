@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.util.ElementGrid;
+import yuuki.util.Grid;
+
 /**
  * Holds all data for a particular land in the world. In addition to their tile
  * data, Lands hold entities that have a specific location in the Land. All of
@@ -58,7 +61,7 @@ public class Land {
 	public Land(String name, Dimension size, Point start, Tile[] tileData) {
 		this.name = name;
 		playerStart = start;
-		tiles = new TileGrid(size.width, size.height, tileData);
+		tiles = new ElementGrid<Tile>(size, tileData);
 		residents = new HashMap<Point, Movable>();
 		portals = new HashMap<Point, Portal>();
 	}

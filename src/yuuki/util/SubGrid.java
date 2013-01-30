@@ -1,13 +1,15 @@
-package yuuki.world;
+package yuuki.util;
 
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
- * Points to a specific region of a TileGrid.
+ * Points to a specific region of a Grid.
+ * 
+ * @param <E> The type of element that this sub grid's source holds.
  */
-public class TileSubGrid implements Grid<Tile> {
+public class SubGrid<E> implements Grid<E> {
 	
 	/**
 	 * The area in the source grid that this sub grid covers.
@@ -17,7 +19,7 @@ public class TileSubGrid implements Grid<Tile> {
 	/**
 	 * The TileGrid that this sub grid points to.
 	 */
-	private Grid<Tile> sourceGrid;
+	private Grid<E> sourceGrid;
 	
 	/**
 	 * Creates a new TileSubGrid that points to an existing one.
@@ -27,7 +29,7 @@ public class TileSubGrid implements Grid<Tile> {
 	 * invalid points that this box covers (i.e. points that lie outside of the
 	 * source grid) are removed by resizing the given box.
 	 */
-	public TileSubGrid(Grid<Tile> sourceGrid, Rectangle box) {
+	public SubGrid(Grid<E> sourceGrid, Rectangle box) {
 		super();
 		this.sourceGrid = sourceGrid;
 		this.boundingBox = resizeToFit(box);
@@ -45,12 +47,12 @@ public class TileSubGrid implements Grid<Tile> {
 	}
 	
 	@Override
-	public Grid<Tile> getSubGrid(Rectangle boundingBox) {
-		return new TileSubGrid(this, boundingBox);
+	public Grid<E> getSubGrid(Rectangle boundingBox) {
+		return new SubGrid<E>(this, boundingBox);
 	}
 	
 	@Override
-	public Tile itemAt(Point p) {
+	public E itemAt(Point p) {
 		if (contains(p)) {
 			transformRelativeToAbsolute(p);
 			return sourceGrid.itemAt(p);

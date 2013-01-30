@@ -3,6 +3,8 @@ package yuuki.world;
 import java.awt.Dimension;
 import java.awt.Point;
 
+import yuuki.util.Grid;
+
 /**
  * Contains the walkable points adjacent to some other point.
  */

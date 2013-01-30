@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.util.Grid;
+
 /**
  * Handles overworld navigation and data. The World class is responsible for
  * loading land data, keeping track of entities on the current land, and

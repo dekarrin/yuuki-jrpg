@@ -1,4 +1,4 @@
-package yuuki.world;
+package yuuki.util;
 
 import java.awt.Dimension;
 import java.awt.Point;
