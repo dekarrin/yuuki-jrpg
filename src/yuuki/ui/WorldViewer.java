@@ -11,9 +11,9 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import yuuki.world.Grid;
 import yuuki.world.Locatable;
-import yuuki.world.TileGrid;
-
+import yuuki.world.Tile;
 /**
  * Displays the overworld graphically.
  */
@@ -38,7 +38,7 @@ public class WorldViewer extends JPanel {
 	/**
 	 * The current view of this world.
 	 */
-	private TileGrid view;
+	private Grid<Tile> view;
 	
 	/**
 	 * Creates a new WorldViewer that can display the specified number of
@@ -62,7 +62,7 @@ public class WorldViewer extends JPanel {
 	 * 
 	 * @param view The view to show.
 	 */
-	public void setView(TileGrid view) {
+	public void setView(Grid<Tile> view) {
 		this.view = view;
 	}
 	
@@ -110,7 +110,8 @@ public class WorldViewer extends JPanel {
 			int h = textArea.getRows();
 			int subX = center.x - (w / 2);
 			int subY = center.y - (h / 2);
-			TileGrid sub = view.getSubGrid(subX, subY, w, h);
+			Rectangle box = new Rectangle(subX, subY, w, h);
+			Grid<Tile> sub = view.getSubGrid(box);
 			int xOffset = (subX < 0) ? Math.abs(subX) : 0;
 			int yOffset = (subY < 0) ? Math.abs(subY) : 0;
 			Point subPos = new Point(subX, subY);
@@ -139,13 +140,14 @@ public class WorldViewer extends JPanel {
 	 * @param xOffset The number of tiles to shift the display right.
 	 * @param yOffset The number of tiles to shift the display down.
 	 */
-	private void setBufferTiles(TileGrid grid, int xOffset, int yOffset) {
+	private void setBufferTiles(Grid<Tile> grid, int xOffset, int yOffset) {
 		clearBuffer();
 		char c = '\0';
-		for (int y = 0; y < grid.getHeight(); y++) {
-			for (int x = 0; x < grid.getWidth(); x++) {
-				c = grid.tileAt(x, y).getDisplayChar();
-				buffer[x + xOffset][y + yOffset] = c;
+		Point p = new Point();
+		for (p.y = 0; p.y < grid.getHeight(); p.y++) {
+			for (p.x = 0; p.x < grid.getWidth(); p.x++) {
+				c = grid.itemAt(p).getDisplayChar();
+				buffer[p.x + xOffset][p.y + yOffset] = c;
 			}
 		}
 	}

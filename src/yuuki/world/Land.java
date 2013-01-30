@@ -2,6 +2,7 @@ package yuuki.world;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class Land {
 	/**
 	 * The tiles that make up this Land.
 	 */
-	private TileGrid tiles;
+	private Grid<Tile> tiles;
 	
 	/**
 	 * Creates a new Land.
@@ -137,7 +138,7 @@ public class Land {
 	 * 
 	 * @return The tiles.
 	 */
-	public TileGrid getTiles() {
+	public Grid<Tile> getTiles() {
 		return tiles;
 	}
 	
@@ -149,9 +150,10 @@ public class Land {
 	 * @return The WalkGraph for the given point.
 	 */
 	public WalkGraph getWalkGraph(Point center) {
-		Point p = center;
-		TileGrid grid = tiles.getSubGrid(p.x - 1, p.y - 1, 3, 3);
-		WalkGraph graph = new WalkGraph(p, grid);
+		Dimension size = new Dimension(3, 3);
+		Rectangle box = new Rectangle(center, size);
+		Grid<Tile> grid = tiles.getSubGrid(box);
+		WalkGraph graph = new WalkGraph(center, grid);
 		return graph;
 	}
 	
@@ -173,7 +175,7 @@ public class Land {
 	 * it; otherwise, false.
 	 */
 	public boolean isOccupied(Point location) {
-		Tile toCheck = tiles.tileAt(location.x, location.y);
+		Tile toCheck = tiles.itemAt(location);
 		return toCheck.isOccupied();
 	}
 	
@@ -204,11 +206,12 @@ public class Land {
 	@Override
 	public String toString() {
 		StringBuilder strVersion = new StringBuilder();
-		for (int i = 0; i < tiles.getHeight(); i++) {
-			for (int j = 0; j < tiles.getWidth(); j++) {
-				strVersion.append(tiles.tileAt(j, i).getDisplayChar());
+		Point p = new Point();
+		for (p.y = 0; p.y < tiles.getHeight(); p.y++) {
+			for (p.x = 0; p.x < tiles.getWidth(); p.x++) {
+				strVersion.append(tiles.itemAt(p).getDisplayChar());
 			}
-			if (i < tiles.getHeight() - 1) {
+			if (p.x < tiles.getHeight() - 1) {
 				strVersion.append('\n');
 			}
 		}

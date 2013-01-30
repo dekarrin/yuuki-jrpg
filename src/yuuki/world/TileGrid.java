@@ -1,10 +1,13 @@
 package yuuki.world;
 
+import java.awt.Point;
+import java.awt.Rectangle;
+
 /**
  * Holds a series of Tile instances at a specific set of coordinates. Every
  * TileGrid is rectangular.
  */
-public class TileGrid {
+public class TileGrid implements Grid<Tile> {
 	
 	/**
 	 * The height of this TileGrid, in number of Tile instances.
@@ -80,33 +83,19 @@ public class TileGrid {
 	 */
 	protected TileGrid() {}
 	
-	/**
-	 * Gets the height of this TileGrid.
-	 * 
-	 * @return The height.
-	 */
+	@Override
 	public int getHeight() {
 		return height;
 	}
 	
-	/**
-	 * Gets a TileGrid that is a sub-grid of this TileGrid. The returned
-	 * TileGrid will only contain valid coordinates specified by the given
-	 * dimensions.
-	 * 
-	 * @param x The x-coordinate of the sub-grid to get.
-	 * @param y The y-coordinate of the sub-grid to get.
-	 * @param w The width of the sub-grid to get.
-	 * @param h The height of the sub-grid to get.
-	 * 
-	 * @return A TileGrid that has the same references to Tile instances as
-	 * this one does, with the specified dimensions.
-	 */
-	public TileGrid getSubGrid(int x, int y, int w, int h) {
-		int subX = getBounded(x, 0, width - 1);
-		int subY = getBounded(y, 0, height - 1);
-		int subWidth = getDependentBounded(w, x, subX);
-		int subHeight = getDependentBounded(h, y, subY);
+	@Override
+	public TileGrid getSubGrid(Rectangle boundingBox) {
+		int subX = getBounded(boundingBox.x, 0, width - 1);
+		int subY = getBounded(boundingBox.y, 0, height - 1);
+		int subWidth = getDependentBounded(boundingBox.width, boundingBox.x,
+				subX);
+		int subHeight = getDependentBounded(boundingBox.height, boundingBox.y,
+				subY);
 		Tile[][] subTiles = new Tile[subWidth][subHeight];
 		for (int i = 0; i < subWidth; i++) {
 			for (int j = 0; j < subHeight; j++) {
@@ -120,25 +109,14 @@ public class TileGrid {
 		return subGrid;
 	}
 	
-	/**
-	 * Gets the width of this TileGrid.
-	 * 
-	 * @return The width.
-	 */
+	@Override
 	public int getWidth() {
 		return width;
 	}
 	
-	/**
-	 * Gets a reference to the Tile instance at the specific point.
-	 * 
-	 * @param x The x-coordinate of the Tile to get.
-	 * @param y The y-coordinate of the Tile to get.
-	 * 
-	 * @return A reference to the Tile at the given position.
-	 */
-	public Tile tileAt(int x, int y) {
-		return tiles[x][y];
+	@Override
+	public Tile itemAt(Point point) {
+		return tiles[point.x][point.y];
 	}
 	
 	/**

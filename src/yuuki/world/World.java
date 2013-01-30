@@ -116,9 +116,9 @@ public class World {
 	/**
 	 * Gets the tiles in the current Land.
 	 * 
-	 * @return The TileGrid that makes up the current Land.
+	 * @return The grid of tiles that makes up the current Land.
 	 */
-	public TileGrid getTiles() {
+	public Grid<Tile> getTiles() {
 		return activeLand.getTiles();
 	}
 	

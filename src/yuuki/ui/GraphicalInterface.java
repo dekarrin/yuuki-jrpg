@@ -35,8 +35,9 @@ import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
+import yuuki.world.Grid;
 import yuuki.world.Locatable;
-import yuuki.world.TileGrid;
+import yuuki.world.Tile;
 import yuuki.world.WalkGraph;
 
 /**
@@ -598,10 +599,10 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setWorldView(TileGrid view) {
+	public void setWorldView(Grid<Tile> view) {
 		class Runner implements Runnable {
-			private TileGrid view;
-			public Runner(TileGrid tg) {
+			private Grid<Tile> view;
+			public Runner(Grid<Tile> tg) {
 				view = tg;
 			}
 			@Override

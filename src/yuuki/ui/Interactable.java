@@ -7,8 +7,9 @@ import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.world.Grid;
 import yuuki.world.Locatable;
-import yuuki.world.TileGrid;
+import yuuki.world.Tile;
 import yuuki.world.WalkGraph;
 
 /**
@@ -207,7 +208,7 @@ public interface Interactable {
 	 * 
 	 * @param tiles The tiles that make up the world view.
 	 */
-	public void setWorldView(TileGrid view);
+	public void setWorldView(Grid<Tile> view);
 	
 	/**
 	 * Shows a character fail at an attack.

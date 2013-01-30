@@ -18,8 +18,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import yuuki.ui.WorldViewer;
+import yuuki.world.Grid;
 import yuuki.world.Locatable;
-import yuuki.world.TileGrid;
+import yuuki.world.Tile;
 import yuuki.world.WalkGraph;
 
 /**
@@ -256,9 +257,9 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	/**
 	 * Changes the world viewer's view of the world.
 	 * 
-	 * @param view The TileGrid with the view to show.
+	 * @param view The grid with the view to show.
 	 */
-	public void setWorldView(TileGrid view) {
+	public void setWorldView(Grid<Tile> view) {
 		worldViewer.setView(view);
 	}
 	

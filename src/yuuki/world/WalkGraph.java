@@ -60,7 +60,7 @@ public class WalkGraph {
 	 * @param tiles An array containing the center tile and the surrounding
 	 * eight tiles.
 	 */
-	public WalkGraph(Point position, TileGrid tiles) {
+	public WalkGraph(Point position, Grid<Tile> tiles) {
 		this.p = position;
 		setValidity(tiles);
 	}
@@ -202,17 +202,17 @@ public class WalkGraph {
 	/**
 	 * Checks if the tile at the given position is walkable.
 	 * 
-	 * @param grid The TileGrid to check.
+	 * @param grid The grid of tiles to check.
 	 * @param x The x-coordinate to check.
 	 * @param y The y-coordinate to check.
 	 * 
 	 * @return True if a tile exists at the given coordinates and it is
 	 * walkable; otherwise, false.
 	 */
-	private boolean checkTile(TileGrid grid, int x, int y) {
+	private boolean checkTile(Grid<Tile> grid, int x, int y) {
 		if (x >= 0 && x <= grid.getWidth() && y >= 0 &&
 				y <= grid.getHeight()) {
-			return grid.tileAt(x, y).isWalkable();
+			return grid.itemAt(new Point(x, y)).isWalkable();
 		} else {
 			return false;
 		}
@@ -225,7 +225,7 @@ public class WalkGraph {
 	 * @param tiles An array containing the center tile and the surrounding
 	 * eight tiles.
 	 */
-	private void setValidity(TileGrid tiles) {
+	private void setValidity(Grid<Tile> tiles) {
 		int xOff = 3 - tiles.getWidth();
 		int yOff = 3 - tiles.getHeight();
 		hasNorthWest	= checkTile(tiles, 0 - xOff, 0 - yOff);
