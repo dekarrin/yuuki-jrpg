@@ -183,18 +183,14 @@ public class WorldViewer extends JPanel {
 		if (subBox.height < bufBox.height) {
 			int shiftAmount = subBox.y - request.y;
 			bufView.y += shiftAmount;
-			bufView.height -= (bufBox.height - shiftAmount - subBox.height);
+			bufView.height -= (bufBox.height - subBox.height);
 		}
 		if (subBox.width < bufBox.width) {
 			int shiftAmount = subBox.x - request.x;
 			bufView.x += shiftAmount;
-			bufView.width -= (bufBox.width - shiftAmount - subBox.width);
+			bufView.width -= (bufBox.width - subBox.width);
 		}
 		bufferView = buffer.getSubGrid(bufView);
-		System.out.println("requst: "+request);
-		System.out.println("subBox: "+subBox);
-		System.out.println("bufVew: "+bufView);
-		System.out.println("bufBox: "+bufBox);
 	}
 	
 	/**
