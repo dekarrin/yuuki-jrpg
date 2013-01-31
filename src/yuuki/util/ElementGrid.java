@@ -3,7 +3,6 @@ package yuuki.util;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import java.util.ArrayList;
 
 /**
@@ -15,14 +14,31 @@ import java.util.ArrayList;
 public class ElementGrid<E> implements Grid<E> {
 	
 	/**
+	 * The element instances in this ElementGrid.
+	 */
+	private ArrayList<ArrayList<E>> items;
+	
+	/**
 	 * The size of this ElementGrid, in number of element instances.
 	 */
 	private Dimension size;
 	
 	/**
-	 * The element instances in this ElementGrid.
+	 * Creates a new ElementGrid of a specific size.
+	 * 
+	 * @param size The size of the new ElementGrid.
 	 */
-	private ArrayList<ArrayList<E>> items;
+	public ElementGrid(Dimension size) {
+		this.size = new Dimension(size.width, size.height);
+		items = new ArrayList<ArrayList<E>>(size.width);
+		for (int i = 0; i < size.width; i++) {
+			ArrayList<E> list = new ArrayList<E>(size.height);
+			for (int j = 0; j < size.height; j++) {
+				list.add(null);
+			}
+			items.add(list);
+		}
+	}
 	
 	/**
 	 * Creates a new ElementGrid from an existing element array.
@@ -31,7 +47,7 @@ public class ElementGrid<E> implements Grid<E> {
 	 * @param items The existing element array to create the ElementGrid from.
 	 */
 	public ElementGrid(Dimension size, E[] items) {
-		this.size = size;
+		this.size = new Dimension(size.width, size.height);
 		this.items = new ArrayList<ArrayList<E>>();
 		for (int i = 0; i < size.height; i++) {
 			for (int j = 0; j < size.width; j++) {
@@ -43,41 +59,15 @@ public class ElementGrid<E> implements Grid<E> {
 		}
 	}
 	
-	/**
-	 * Creates a new ElementGrid of a specific size.
-	 * 
-	 * @param size The size of the new ElementGrid.
-	 */
-	public ElementGrid(Dimension size) {
-		this.size = size;
-		items = new ArrayList<ArrayList<E>>(size.width);
-		for (int i = 0; i < size.width; i++) {
-			ArrayList<E> list = new ArrayList<E>(size.height);
-			for (int j = 0; j < size.height; j++) {
-				list.add(null);
-			}
-			items.add(list);
-		}
+	@Override
+	public boolean contains(Point point) {
+		Rectangle box = new Rectangle(getSize());
+		return box.contains(point);
 	}
 	
 	@Override
 	public Point getLocation() {
 		return new Point(0, 0);
-	}
-	
-	@Override
-	public void set(Point p, E e) {
-		if (contains(p)) {
-			items.get(p.x).set(p.y, e);
-		} else {
-			throw new ArrayIndexOutOfBoundsException();
-		}
-	}
-	
-	@Override
-	public boolean contains(Point point) {
-		Rectangle box = new Rectangle(getSize());
-		return box.contains(point);
 	}
 	
 	@Override
@@ -93,6 +83,30 @@ public class ElementGrid<E> implements Grid<E> {
 	@Override
 	public E itemAt(Point point) {
 		return items.get(point.x).get(point.y);
+	}
+	
+	@Override
+	public void set(Point p, E e) {
+		if (contains(p)) {
+			items.get(p.x).set(p.y, e);
+		} else {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Point p = new Point(0, 0);
+		for (p.y = 0; p.y < size.height; p.y++) {
+			for (p.x = 0; p.x < size.width; p.x++) {
+				sb.append(itemAt(p).toString());
+			}
+			if (p.y < size.height - 1) {
+				sb.append('\n');
+			}
+		}
+		return sb.toString();
 	}
 	
 }

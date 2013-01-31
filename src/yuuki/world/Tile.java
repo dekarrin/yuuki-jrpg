@@ -118,4 +118,9 @@ public class Tile implements Displayable {
 		this.walkable = walkable;
 	}
 	
+	@Override
+	public String toString() {
+		return "" + getDisplayChar();
+	}
+	
 }

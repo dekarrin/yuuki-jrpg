@@ -21,6 +21,13 @@ public interface Grid<E> {
 	public boolean contains(Point point);
 	
 	/**
+	 * Gets the relative position of this Grid.
+	 * 
+	 * @return The position of this Grid.
+	 */
+	public Point getLocation();
+	
+	/**
 	 * Gets the dimensions of this Grid.
 	 * 
 	 * @return The dimensions.
@@ -56,12 +63,5 @@ public interface Grid<E> {
 	 * @param e The element to set the point's value to.
 	 */
 	public void set(Point p, E e);
-	
-	/**
-	 * Gets the relative position of this Grid.
-	 * 
-	 * @return The position of this Grid.
-	 */
-	public Point getLocation();
 	
 }

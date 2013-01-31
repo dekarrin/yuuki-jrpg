@@ -21,11 +21,6 @@ public class SubGrid<E> implements Grid<E> {
 	 */
 	private Grid<E> sourceGrid;
 	
-	@Override
-	public Point getLocation() {
-		return boundingBox.getLocation();
-	}
-	
 	/**
 	 * Creates a new TileSubGrid that points to an existing one.
 	 * 
@@ -47,6 +42,11 @@ public class SubGrid<E> implements Grid<E> {
 	}
 	
 	@Override
+	public Point getLocation() {
+		return boundingBox.getLocation();
+	}
+	
+	@Override
 	public Dimension getSize() {
 		return boundingBox.getSize();
 	}
@@ -58,6 +58,7 @@ public class SubGrid<E> implements Grid<E> {
 	
 	@Override
 	public E itemAt(Point p) {
+		p = new Point(p);
 		if (contains(p)) {
 			transformRelativeToAbsolute(p);
 			return sourceGrid.itemAt(p);
@@ -68,12 +69,28 @@ public class SubGrid<E> implements Grid<E> {
 	
 	@Override
 	public void set(Point p, E e) {
+		p = new Point(p);
 		if (contains(p)) {
 			transformRelativeToAbsolute(p);
 			sourceGrid.set(p, e);
 		} else {
 			throw new ArrayIndexOutOfBoundsException();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		Point p = new Point();
+		for (p.y = 0; p.y < boundingBox.height; p.y++) {
+			for (p.x = 0; p.x < boundingBox.width; p.x++) {
+				sb.append(itemAt(p));
+			}
+			if (p.y < boundingBox.height - 1) {
+				sb.append('\n');
+			}
+		}
+		return sb.toString();
 	}
 	
 	/**
@@ -94,7 +111,8 @@ public class SubGrid<E> implements Grid<E> {
 	 * Transforms a relative point somewhere in this TileSubGrid to its
 	 * absolute version in the source grid.
 	 * 
-	 * @param p The relative point to transform.
+	 * @param p The relative point to transform. This reference will be
+	 * mutated.
 	 * 
 	 * @return The absolute version of the given point.
 	 */

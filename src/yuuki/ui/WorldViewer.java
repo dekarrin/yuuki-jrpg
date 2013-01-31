@@ -15,6 +15,7 @@ import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
+import yuuki.world.TileFactory;
 /**
  * Displays the overworld graphically.
  */
@@ -37,6 +38,11 @@ public class WorldViewer extends JPanel {
 	private Set<Locatable> locatables;
 	
 	/**
+	 * The view of the world that is being drawn.
+	 */
+	private Grid<Tile> subView;
+	
+	/**
 	 * The main text area for this world viewer.
 	 */
 	private JTextArea textArea;
@@ -45,11 +51,6 @@ public class WorldViewer extends JPanel {
 	 * The current view of this world.
 	 */
 	private Grid<Tile> view;
-	
-	/**
-	 * The view of the world that is being drawn.
-	 */
-	private Grid<Tile> subView;
 	
 	/**
 	 * Creates a new WorldViewer that can display the specified number of
@@ -126,6 +127,18 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Sets all tiles in the tile buffer to be empty.
+	 */
+	private void clearBuffer() {
+		Point p = new Point();
+		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
+			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
+				buffer.set(p, TileFactory.VOID_CHAR);
+			}
+		}
+	}
+	
+	/**
 	 * Draws the locatables on the screen.
 	 */
 	private void drawLocatables() {
@@ -154,22 +167,6 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Gets the proper sub view centered about a point.
-	 * 
-	 * @param center The center of the view to set as the sub view.
-	 * 
-	 * @return The position of the requested upper-left corner.
-	 */
-	private Point setSubView(Point center) {
-		Dimension size = buffer.getSize();
-		Point actualLocation = center;
-		actualLocation.move(-size.width / 2, -size.height / 2);
-		Rectangle subBox = new Rectangle(actualLocation, size);
-		subView = view.getSubGrid(subBox);
-		return subBox.getLocation();
-	}
-	
-	/**
 	 * Sets the buffer sub view as the section that matches the draw position
 	 * of the current world sub view.
 	 * 
@@ -194,15 +191,19 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Sets all tiles in the tile buffer to be empty.
+	 * Gets the proper sub view centered about a point.
+	 * 
+	 * @param center The center of the view to set as the sub view.
+	 * 
+	 * @return The position of the requested upper-left corner.
 	 */
-	private void clearBuffer() {
-		Point p = new Point(0, 0);
-		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
-			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
-				buffer.set(p, ' ');
-			}
-		}
+	private Point setSubView(Point center) {
+		Dimension size = buffer.getSize();
+		Point actualLocation = center;
+		actualLocation.move(-size.width / 2, -size.height / 2);
+		Rectangle subBox = new Rectangle(actualLocation, size);
+		subView = view.getSubGrid(subBox);
+		return subBox.getLocation();
 	}
 	
 	/**
