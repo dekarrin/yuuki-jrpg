@@ -146,7 +146,7 @@ public class WorldViewer extends JPanel {
 		box = new Rectangle(subView.getLocation(), subView.getSize());
 		ArrayList<Locatable> ls = getLocatablesInBox(box);
 		for (Locatable l : ls) {
-			Point p = l.getLocation();
+			Point p = new Point(l.getLocation());
 			p.x -= box.x;
 			p.y -= box.y;
 			bufferView.set(p, l.getDisplayable().getDisplayChar());
