@@ -74,6 +74,7 @@ public class NonPlayerCharacter extends Character {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings("fallthrough")
 	public Point getNextMove(Land land) {
 		WalkGraph graph = land.getWalkGraph(getLocation());
 		int choice = (int) Math.floor((Math.random() * 8));
