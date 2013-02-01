@@ -199,8 +199,8 @@ public class WorldViewer extends JPanel {
 	 */
 	private Point setSubView(Point center) {
 		Dimension size = buffer.getSize();
-		Point actualLocation = center;
-		actualLocation.move(-size.width / 2, -size.height / 2);
+		Point actualLocation = new Point(center);
+		actualLocation.translate(-(size.width / 2), -(size.height / 2));
 		Rectangle subBox = new Rectangle(actualLocation, size);
 		subView = view.getSubGrid(subBox);
 		return subBox.getLocation();
