@@ -66,7 +66,7 @@ public class WorldViewer extends JPanel {
 		textArea = new JTextArea(height, width);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
-		textArea.setFont(new Font("Courier New", Font.PLAIN, 12));
+		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		add(textArea);
 	}
 	

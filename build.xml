@@ -25,7 +25,8 @@
 	
 	<property name="LIB" value="lib" />
 	
-	<property name="class.main" value="yuuki.Engine" />
+	<property name="class.main" value="Engine" />
+	<property name="class.main.qualified" value="yuuki.${class.main}" />
 	
 	<!-- other properties -->
 	<property name="warnings" value="all" />
@@ -44,7 +45,7 @@
 				<exclude name="META-INF/*.SF" />
 			</zipfileset>
 			<manifest>
-				<attribute name="Main-Class" value="${class.main}" />
+				<attribute name="Main-Class" value="${class.main.qualified}" />
 			</manifest>
 		</jar>
 		<delete file="${DIST_ROOT}/dependencies.jar" />
@@ -60,7 +61,7 @@
 	
 	<target name="test-main" depends="debug,main">
 		<antcall target="-test">
-			<param name="TEST_CLASS" value="${class.main}" />
+			<param name="TEST_CLASS" value="${class.main.qualified}" />
 		</antcall>
 	</target>
 	
@@ -83,7 +84,7 @@
 	<target name="main" depends="battle,ui,sound,animation,sprite,graphic,world,util">
 		<antcall target="-build">
 			<param name="PACKAGE" value="yuuki" />
-			<param name="NAME" value="YuukiEngine" />
+			<param name="NAME" value="${class.main}" />
 		</antcall>
 	</target>
 	
