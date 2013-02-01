@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import yuuki.world.Land;
+import yuuki.world.Portal;
 import yuuki.world.Tile;
 import yuuki.world.TileFactory;
 
@@ -46,6 +47,11 @@ public class LandLoader extends ResourceLoader {
 		public int portals;
 		
 	}
+	
+	/**
+	 * The number of portals loaded.
+	 */
+	private ArrayList<Portal> portals;
 	
 	/**
 	 * Generates tiles from tile definitions.
@@ -94,6 +100,7 @@ public class LandLoader extends ResourceLoader {
 	public Land load(String name, String resource) throws IOException {
 		meta = null;
 		mode = ParserMode.METADATA;
+		portals = new ArrayList<Portal>();
 		landName = name;
 		Land land = null;
 		InputStream stream = getStream(resource);
@@ -143,12 +150,16 @@ public class LandLoader extends ResourceLoader {
 			switch (mode) {
 				case METADATA:
 					readMetaData(line);
-					mode = ParserMode.MAP;
+					mode = ParserMode.PORTALS;
 					break;
 					
 				case PORTALS:
-					
-					break;
+					if (portals.size() < meta.portals) {
+						readPortalData(line);
+						break;
+					} else {
+						mode = ParserMode.MAP;
+					}
 					
 				case MAP:
 					tileData.addAll(parseLine(line));
@@ -161,6 +172,22 @@ public class LandLoader extends ResourceLoader {
 		tileData.toArray(tiles);
 		Land land = new Land(landName, meta.size, meta.start, tiles);
 		return land;
+	}
+	
+	/**
+	 * Reads a line containing portal data.
+	 * 
+	 * @param line The line with the portal data.
+	 */
+	private void readPortalData(String line) {
+		String[] parts = line.split(";");
+		String name = parts[0];
+		Point location = parsePoint(parts[1]);
+		Point link = parsePoint(parts[2]);
+		String land = parts[3];
+		Portal p = new Portal(name, land, link);
+		p.setLocation(location);
+		portals.add(p);
 	}
 	
 	/**
