@@ -581,7 +581,6 @@ OptionsScreenListener, MenuBarListener {
 			}
 			@Override
 			public void movementButtonClicked(Point moveLocation) {
-				overworldScreen.setWalkGraph(null);
 				overworldScreen.removeMovementListener(this);
 				this.move = moveLocation;
 			}

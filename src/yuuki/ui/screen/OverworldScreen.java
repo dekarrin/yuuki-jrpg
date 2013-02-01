@@ -37,7 +37,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	/**
 	 * The width of the world viewer, in tiles.
 	 */
-	public static final int VIEWER_WIDTH = 10;
+	public static final int VIEWER_WIDTH = 30;
 	
 	/**
 	 * Listens for clicks on this OverworldScreen's buttons.
