@@ -106,6 +106,9 @@ public class LandLoader extends ResourceLoader {
 		InputStream stream = getStream(resource);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		land = loadLand();
+		for (Portal p : portals) {
+			land.addPortal(p);
+		}
 		return land;
 	}
 	
