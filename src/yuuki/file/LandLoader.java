@@ -17,6 +17,14 @@ import yuuki.world.TileFactory;
  */
 public class LandLoader extends ResourceLoader {
 	
+	private enum ParserMode {
+		METADATA,
+		PORTALS,
+		MAP
+	};
+	
+	private ParserMode mode;
+	
 	/**
 	 * Holds meta data for the currently loading land file.
 	 */
@@ -31,6 +39,11 @@ public class LandLoader extends ResourceLoader {
 		 * Where the player starts.
 		 */
 		public Point start;
+		
+		/**
+		 * The number of portals in the map.
+		 */
+		public int portals;
 		
 	}
 	
@@ -80,6 +93,7 @@ public class LandLoader extends ResourceLoader {
 	 */
 	public Land load(String name, String resource) throws IOException {
 		meta = null;
+		mode = ParserMode.METADATA;
 		landName = name;
 		Land land = null;
 		InputStream stream = getStream(resource);
@@ -126,11 +140,20 @@ public class LandLoader extends ResourceLoader {
 		String line = null;
 		int heightCount = 0;
 		while ((line = reader.readLine()) != null) {
-			if (meta == null) {
-				readMetaData(line); // The first line is meta data
-			} else {
-				tileData.addAll(parseLine(line));
-				heightCount++;
+			switch (mode) {
+				case METADATA:
+					readMetaData(line);
+					mode = ParserMode.MAP;
+					break;
+					
+				case PORTALS:
+					
+					break;
+					
+				case MAP:
+					tileData.addAll(parseLine(line));
+					heightCount++;
+					break;
 			}
 		}
 		fillRemainingHeight(tileData, heightCount);
@@ -217,6 +240,8 @@ public class LandLoader extends ResourceLoader {
 				meta.start = parsePoint(value);
 			} else if (key.equalsIgnoreCase("size")) {
 				meta.size = parseDimension(value);
+			} else if (key.equalsIgnoreCase("portals")) {
+				meta.portals = parseInt(value);
 			}
 		}
 	}
