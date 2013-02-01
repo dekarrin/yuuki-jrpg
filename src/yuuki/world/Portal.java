@@ -12,7 +12,7 @@ public class Portal implements Locatable, Displayable {
 	/**
 	 * The Land that this Portal links to.
 	 */
-	private Land land;
+	private String land;
 	
 	/**
 	 * The name of this Portal.
@@ -30,14 +30,22 @@ public class Portal implements Locatable, Displayable {
 	private Point position;
 	
 	/**
+	 * The point that this Portal links to.
+	 */
+	private Point link;
+	
+	/**
 	 * Creates a new Portal.
 	 * 
 	 * @param name The name of this Portal.
-	 * @param land The Land to link to.
+	 * @param land The name of the Land to link to.
+	 * @param link The location in the land that this portal links to.
 	 */
-	public Portal(String name, Land land) {
+	public Portal(String name, String land, Point link) {
 		this.name = name;
 		this.land = land;
+		this.link = link;
+		this.open = true;
 	}
 	
 	/**
@@ -46,6 +54,15 @@ public class Portal implements Locatable, Displayable {
 	@Override
 	public String getBattleImage() {
 		return null;
+	}
+	
+	/**
+	 * Gets the location of this Portal's link.
+	 * 
+	 * @return The link location.
+	 */
+	public Point getLink() {
+		return link;
 	}
 	
 	@Override
@@ -66,8 +83,8 @@ public class Portal implements Locatable, Displayable {
 	 * 
 	 * @return The name of the Land that this Portal links to.
 	 */
-	public String getLinkedLandName() {
-		return land.getName();
+	public String getLinkedLand() {
+		return land;
 	}
 	
 	/**
