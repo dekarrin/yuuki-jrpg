@@ -100,18 +100,6 @@ public class Land {
 	}
 	
 	/**
-	 * Gets all the Locatables that occupy this Land.
-	 * 
-	 * @return The Locatables.
-	 */
-	public ArrayList<Locatable> getLocatables() {
-		ArrayList<Locatable> ls = new ArrayList<Locatable>();
-		ls.addAll(portals.values());
-		ls.addAll(residents.values());
-		return ls;
-	}
-	
-	/**
 	 * Gets the name of this Land.
 	 * 
 	 * @return The name of this Land.
@@ -125,6 +113,24 @@ public class Land {
 	 */
 	public Point getPlayerStart() {
 		return playerStart;
+	}
+	
+	/**
+	 * Gets the portals in this Land.
+	 * 
+	 * @return The portals.
+	 */
+	public ArrayList<Portal> getPortals() {
+		return new ArrayList<Portal>(portals.values());
+	}
+	
+	/**
+	 * Gets the residents in this Land.
+	 * 
+	 * @return The residents.
+	 */
+	public ArrayList<Movable> getResidents() {
+		return new ArrayList<Movable>(residents.values());
 	}
 	
 	/**

@@ -5,7 +5,9 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -33,9 +35,11 @@ public class WorldViewer extends JPanel {
 	private Grid<java.lang.Character> bufferView;
 	
 	/**
-	 * The Locatables on the screen.
+	 * The Locatables on the screen. They are arranged in layers, which specify
+	 * the z-ordering of the locatables. Higher layers are drawn above lower
+	 * layers.
 	 */
-	private Set<Locatable> locatables;
+	private Map<Integer, Set<Locatable>> locatables;
 	
 	/**
 	 * The view of the world that is being drawn.
@@ -62,7 +66,7 @@ public class WorldViewer extends JPanel {
 	public WorldViewer(int width, int height) {
 		Dimension d = new Dimension(width, height);
 		buffer = new ElementGrid<java.lang.Character>(d);
-		locatables = new HashSet<Locatable>();
+		locatables = new HashMap<Integer, Set<Locatable>>();
 		textArea = new JTextArea(height, width);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
@@ -74,9 +78,14 @@ public class WorldViewer extends JPanel {
 	 * Adds a Locatable to the current display.
 	 * 
 	 * @param l The Locatable to add.
+	 * @param zIndex The Z-index of the layer to add the locatable to.
 	 */
-	public void addLocatable(Locatable l) {
-		locatables.add(l);
+	public void addLocatable(Locatable l, int zIndex) {
+		if (!layerExists(zIndex)) {
+			createLayer(zIndex);
+		}
+		Set<Locatable> layer = getLayer(zIndex);
+		layer.add(l);
 	}
 	
 	/**
@@ -87,15 +96,28 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Gets the number of layers of Locatable objects. The layers with Z-index
+	 * 0 up to but not including the return value of this method are guaranteed
+	 * to exist.
+	 * 
+	 * @return The number of layers.
+	 */
+	public int getLayerCount() {
+		return locatables.size();
+	}
+	
+	/**
 	 * Gets the Locatables that fall within a certain rectangle.
 	 * 
 	 * @param box The Rectangle from within the Locatables should be drawn.
+	 * @param zIndex The Z-index of the layer of Locatables to search in.
 	 * 
 	 * @return The Locatables that currently fall within the bounding box.
 	 */
-	public ArrayList<Locatable> getLocatablesInBox(Rectangle box) {
+	public ArrayList<Locatable> getLocatablesInBox(Rectangle box, int zIndex) {
 		ArrayList<Locatable> desired = new ArrayList<Locatable>();
-		for (Locatable l : locatables) {
+		Set<Locatable> layer = getLayer(zIndex);
+		for (Locatable l : layer) {
 			if (box.contains(l.getLocation())) {
 				desired.add(l);
 			}
@@ -119,9 +141,9 @@ public class WorldViewer extends JPanel {
 	 */
 	public void updateDisplay(Point center) {
 		clearBuffer();
-		Point requested = setSubView(center);
+		Point requested = setWorldSubView(center);
 		setBufferView(requested);
-		drawSubView();
+		drawWorldSubView();
 		drawLocatables();
 		showBuffer();
 	}
@@ -139,31 +161,76 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Creates an empty Locatable layer with the given Z-index. If there is
+	 * already a layer with the given Z-index, it is replaced with an empty
+	 * layer.
+	 * 
+	 * @param zIndex The Z-index of the layer to create.
+	 */
+	private void createLayer(int zIndex) {
+		locatables.put(zIndex, new HashSet<Locatable>());
+	}
+	
+	/**
 	 * Draws the locatables on the screen.
 	 */
 	private void drawLocatables() {
 		Rectangle box;
 		box = new Rectangle(subView.getLocation(), subView.getSize());
-		ArrayList<Locatable> ls = getLocatablesInBox(box);
-		for (Locatable l : ls) {
-			Point p = new Point(l.getLocation());
-			p.x -= box.x;
-			p.y -= box.y;
-			bufferView.set(p, l.getDisplayable().getDisplayChar());
+		for (int i : locatables.keySet()) {
+			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
+			for (Locatable l : ls) {
+				Point p = new Point(l.getLocation());
+				p.x -= box.x;
+				p.y -= box.y;
+				drawOnBuffer(p, l.getDisplayable().getDisplayChar());
+			}
 		}
 	}
 	
 	/**
-	 * Draws the sub view onto the buffer.
+	 * Draws a single item on the buffer.
+	 * 
+	 * @param position The point to draw the item at.
+	 * @param i The item to draw.
 	 */
-	private void drawSubView() {
+	private void drawOnBuffer(Point position, char i) {
+		bufferView.set(position, i);
+	}
+	
+	/**
+	 * Draws the displayed world view onto the buffer.
+	 */
+	private void drawWorldSubView() {
 		Point p = new Point(0, 0);
 		Dimension size = bufferView.getSize();
 		for (p.x = 0; p.x < size.width; p.x++) {
 			for (p.y = 0; p.y < size.height; p.y++) {
-				bufferView.set(p, subView.itemAt(p).getDisplayChar());
+				drawOnBuffer(p, subView.itemAt(p).getDisplayChar());
 			}
 		}
+	}
+	
+	/**
+	 * Gets one layer of the Locatables to be drawn on the screen.
+	 * 
+	 * @param zIndex The Z-index of the layer to get.
+	 * 
+	 * @return The layer.
+	 */
+	private Set<Locatable> getLayer(int zIndex) {
+		return locatables.get(zIndex);
+	}
+	
+	/**
+	 * Checks whether a Locatable with a given Z-index exists.
+	 * 
+	 * @param zIndex The Z-index of the layer to check.
+	 * 
+	 * @return True if the layer exists; otherwise, false.
+	 */
+	private boolean layerExists(int zIndex) {
+		return (locatables.containsKey(zIndex));
 	}
 	
 	/**
@@ -197,7 +264,7 @@ public class WorldViewer extends JPanel {
 	 * 
 	 * @return The position of the requested upper-left corner.
 	 */
-	private Point setSubView(Point center) {
+	private Point setWorldSubView(Point center) {
 		Dimension size = buffer.getSize();
 		Point actualLocation = new Point(center);
 		actualLocation.translate(-(size.width / 2), -(size.height / 2));

@@ -40,6 +40,22 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	public static final int VIEWER_WIDTH = 30;
 	
 	/**
+	 * The Z-index of the layer that contains the moving characters who are not
+	 * the player.
+	 */
+	public static final int Z_INDEX_ENTITY_LAYER = 300;
+	
+	/**
+	 * The Z-index of the layer that contains the items.
+	 */
+	public static final int Z_INDEX_ITEM_LAYER = 200;
+	
+	/**
+	 * The Z-index of the layer that contains the portals.
+	 */
+	public static final int Z_INDEX_PORTAL_LAYER = 100;
+	
+	/**
 	 * Listens for clicks on this OverworldScreen's buttons.
 	 */
 	private ActionListener hitListener = new ActionListener() {
@@ -216,10 +232,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 * Adds a series of Locatable objects to the world viewer.
 	 * 
 	 * @param ls The Locatables to add.
+	 * @param zIndex The Z-index of the layer to add them to.
 	 */
-	public void addWorldLocatables(ArrayList<Locatable> ls) {
+	public void addWorldLocatables(ArrayList<Locatable> ls, int zIndex) {
 		for (Locatable l : ls) {
-			worldViewer.addLocatable(l);
+			worldViewer.addLocatable(l, zIndex);
 		}
 	}
 	

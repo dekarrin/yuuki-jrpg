@@ -8,7 +8,8 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.util.Grid;
-import yuuki.world.Locatable;
+import yuuki.world.Movable;
+import yuuki.world.Portal;
 import yuuki.world.Tile;
 import yuuki.world.WalkGraph;
 
@@ -18,11 +19,18 @@ import yuuki.world.WalkGraph;
 public interface Interactable {
 	
 	/**
-	 * Adds a list of Locatables to the world viewer.
+	 * Adds Characters to the world viewer.
 	 * 
-	 * @param l The Locatables to add.
+	 * @param characters The Characters to add.
 	 */
-	public void addWorldLocatables(ArrayList<Locatable> l);
+	public void addWorldEntities(ArrayList<Movable> characters);
+	
+	/**
+	 * Adds portals to the world viewer.
+	 * 
+	 * @param portals The portals to add.
+	 */
+	public void addWorldPortals(ArrayList<Portal> portals);
 	
 	/**
 	 * Applies applicable options to this Interactable.

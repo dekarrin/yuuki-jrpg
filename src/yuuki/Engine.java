@@ -569,7 +569,8 @@ public class Engine implements Runnable, UiExecutor {
 		}
 		worldRunner.setPaused(false);
 		ui.setWorldView(world.getTiles());
-		ui.addWorldLocatables(world.getLocatables());
+		ui.addWorldPortals(world.getPortals());
+		ui.addWorldEntities(world.getResidents());
 		ui.updateWorldView(player.getLocation());
 	}
 	

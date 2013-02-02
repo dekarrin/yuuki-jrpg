@@ -18,18 +18,15 @@ import yuuki.world.TileFactory;
  */
 public class LandLoader extends ResourceLoader {
 	
-	private enum ParserMode {
-		METADATA,
-		PORTALS,
-		MAP
-	};
-	
-	private ParserMode mode;
-	
 	/**
 	 * Holds meta data for the currently loading land file.
 	 */
 	private static class MetaData {
+		
+		/**
+		 * The number of portals in the map.
+		 */
+		public int portals;
 		
 		/**
 		 * The size of the map.
@@ -41,17 +38,13 @@ public class LandLoader extends ResourceLoader {
 		 */
 		public Point start;
 		
-		/**
-		 * The number of portals in the map.
-		 */
-		public int portals;
-		
-	}
+	};
 	
-	/**
-	 * The number of portals loaded.
-	 */
-	private ArrayList<Portal> portals;
+	private enum ParserMode {
+		MAP,
+		METADATA,
+		PORTALS
+	}
 	
 	/**
 	 * Generates tiles from tile definitions.
@@ -67,6 +60,13 @@ public class LandLoader extends ResourceLoader {
 	 * The meta data from the land file currently being read.
 	 */
 	private MetaData meta;
+	
+	private ParserMode mode;
+	
+	/**
+	 * The number of portals loaded.
+	 */
+	private ArrayList<Portal> portals;
 	
 	/**
 	 * Reads from the resource file.
@@ -178,22 +178,6 @@ public class LandLoader extends ResourceLoader {
 	}
 	
 	/**
-	 * Reads a line containing portal data.
-	 * 
-	 * @param line The line with the portal data.
-	 */
-	private void readPortalData(String line) {
-		String[] parts = line.split(";");
-		String name = parts[0];
-		Point location = parsePoint(parts[1]);
-		Point link = parsePoint(parts[2]);
-		String land = parts[3];
-		Portal p = new Portal(name, land, link);
-		p.setLocation(location);
-		portals.add(p);
-	}
-	
-	/**
 	 * Parses a Dimension value from a String value of the form "w,h", where w
 	 * is the width and h is the height.
 	 * 
@@ -274,6 +258,22 @@ public class LandLoader extends ResourceLoader {
 				meta.portals = parseInt(value);
 			}
 		}
+	}
+	
+	/**
+	 * Reads a line containing portal data.
+	 * 
+	 * @param line The line with the portal data.
+	 */
+	private void readPortalData(String line) {
+		String[] parts = line.split(";");
+		String name = parts[0];
+		Point location = parsePoint(parts[1]);
+		Point link = parsePoint(parts[2]);
+		String land = parts[3];
+		Portal p = new Portal(name, land, link);
+		p.setLocation(location);
+		portals.add(p);
 	}
 	
 }

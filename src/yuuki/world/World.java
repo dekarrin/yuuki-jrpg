@@ -89,21 +89,30 @@ public class World {
 	}
 	
 	/**
-	 * Gets the Locatables in the current Land.
-	 * 
-	 * @return The Locatables in the current Land.
-	 */
-	public ArrayList<Locatable> getLocatables() {
-		return activeLand.getLocatables();
-	}
-	
-	/**
 	 * Gets the player start for the current land.
 	 * 
 	 * @return The player start.
 	 */
 	public Point getPlayerStart() {
 		return activeLand.getPlayerStart();
+	}
+	
+	/**
+	 * Gets the portals in the current land.
+	 * 
+	 * @return The portals.
+	 */
+	public ArrayList<Portal> getPortals() {
+		return activeLand.getPortals();
+	}
+	
+	/**
+	 * Gets the residents in the current land.
+	 * 
+	 * @return The residents.
+	 */
+	public ArrayList<Movable> getResidents() {
+		return activeLand.getResidents();
 	}
 	
 	/**

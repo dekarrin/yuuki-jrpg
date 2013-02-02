@@ -15,6 +15,11 @@ public class Portal implements Locatable, Displayable {
 	private String land;
 	
 	/**
+	 * The point that this Portal links to.
+	 */
+	private Point link;
+	
+	/**
 	 * The name of this Portal.
 	 */
 	private String name;
@@ -28,11 +33,6 @@ public class Portal implements Locatable, Displayable {
 	 * This Portal's position relative to the Land that it is in.
 	 */
 	private Point position;
-	
-	/**
-	 * The point that this Portal links to.
-	 */
-	private Point link;
 	
 	/**
 	 * Creates a new Portal.
@@ -56,15 +56,6 @@ public class Portal implements Locatable, Displayable {
 		return null;
 	}
 	
-	/**
-	 * Gets the location of this Portal's link.
-	 * 
-	 * @return The link location.
-	 */
-	public Point getLink() {
-		return link;
-	}
-	
 	@Override
 	public Displayable getDisplayable() {
 		return this;
@@ -76,6 +67,15 @@ public class Portal implements Locatable, Displayable {
 	@Override
 	public char getDisplayChar() {
 		return 'P';
+	}
+	
+	/**
+	 * Gets the location of this Portal's link.
+	 * 
+	 * @return The link location.
+	 */
+	public Point getLink() {
+		return link;
 	}
 	
 	/**

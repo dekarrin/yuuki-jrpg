@@ -37,6 +37,8 @@ import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
+import yuuki.world.Movable;
+import yuuki.world.Portal;
 import yuuki.world.Tile;
 import yuuki.world.WalkGraph;
 
@@ -193,19 +195,13 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void addWorldLocatables(ArrayList<Locatable> l) {
-		class Runner implements Runnable {
-			private ArrayList<Locatable> l;
-			public Runner(ArrayList<Locatable> l) {
-				this.l = l;
-			}
-			@Override
-			public void run() {
-				overworldScreen.addWorldLocatables(l);
-			}
-		}
-		Runner r = new Runner(l);
-		SwingUtilities.invokeLater(r);
+	public void addWorldEntities(ArrayList<Movable> characters) {
+		addWorldLocatables(characters, OverworldScreen.Z_INDEX_ENTITY_LAYER);
+	}
+	
+	@Override
+	public void addWorldPortals(ArrayList<Portal> portals) {
+		addWorldLocatables(portals, OverworldScreen.Z_INDEX_PORTAL_LAYER);
 	}
 	
 	/**
@@ -962,6 +958,31 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void waitForDisplay() {
 		messageBox.waitForClean();
+	}
+	
+	/**
+	 * Adds a list of Locatables to one of the layers in the world viewer.
+	 * 
+	 * @param l The list of Locatables to add.
+	 * @param z The Z-index of the layer to add the Locatables to.
+	 */
+	private void addWorldLocatables(ArrayList<? extends Locatable> l,
+			int zIndex) {
+		ArrayList<Locatable> list = new ArrayList<Locatable>(l);
+		class Runner implements Runnable {
+			private ArrayList<Locatable> list;
+			private int zIndex;
+			public Runner(ArrayList<Locatable> list, int zIndex) {
+				this.zIndex = zIndex;
+				this.list = list;
+			}
+			@Override
+			public void run() {
+				overworldScreen.addWorldLocatables(list, zIndex);
+			}
+		}
+		Runner r = new Runner(list, zIndex);
+		SwingUtilities.invokeLater(r);
 	}
 	
 	/**
