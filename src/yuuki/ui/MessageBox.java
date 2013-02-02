@@ -1,6 +1,5 @@
 package yuuki.ui;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -8,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -137,7 +135,6 @@ public class MessageBox extends Sprite implements MouseListener {
 	public MessageBox(Animator animator, int width, int height) {
 		super(animator, width, height);
 		component.setLayout(new FlowLayout());
-		component.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
 		textBox.setEditable(false);
