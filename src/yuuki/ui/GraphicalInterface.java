@@ -65,6 +65,11 @@ OptionsScreenListener, MenuBarListener {
 	public static final int MESSAGE_DISPLAY_TIME = 5000;
 	
 	/**
+	 * The content pane of the window.
+	 */
+	private BackgroundPane contentPane;
+	
+	/**
 	 * The delay, in milliseconds, between each letter printed on the message
 	 * box.
 	 */
@@ -471,15 +476,14 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	@Override
 	public void initialize() {
-		Runnable r = new Runnable() {
-			@Override
-			public void run() {
-				createComponents();
-				refreshWindow();
-			}
-		};
 		try {
-			SwingUtilities.invokeAndWait(r);
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					createComponents();
+					refreshWindow();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 			Thread.currentThread().interrupt();
@@ -1014,6 +1018,7 @@ OptionsScreenListener, MenuBarListener {
 	 * Creates the screens used in this GUI.
 	 */
 	private void createComponents() {
+		createContentPane();
 		createMainWindow();
 		createMessageBox();
 		createMenuBar();
@@ -1024,6 +1029,13 @@ OptionsScreenListener, MenuBarListener {
 		createPauseScreen();
 		createEndingScreen();
 		createPlayerCreationScreen();
+	}
+	
+	/**
+	 * Creates the main window's content pane.
+	 */
+	private void createContentPane() {
+		contentPane = new BackgroundPane();
 	}
 	
 	/**
@@ -1040,10 +1052,9 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		Image screenImage = imageEngine.getImage("BG_INTRO_SCREEN");
 		introScreen = new IntroScreen(WINDOW_WIDTH, height, soundEngine);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
-		introScreen.setBackgroundImage(screenImage);
+		introScreen.setBackgroundImage("BG_INTRO_SCREEN");
 	}
 	
 	/**
@@ -1061,6 +1072,7 @@ OptionsScreenListener, MenuBarListener {
 				WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
+		mainWindow.setContentPane(contentPane);
 	}
 	
 	/**
@@ -1153,10 +1165,10 @@ OptionsScreenListener, MenuBarListener {
 				mainWindow.add(menuBar, BorderLayout.NORTH);
 				mainWindow.add(screen, BorderLayout.CENTER);
 				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
+				Image bg = imageEngine.getImage(screen.getBackgroundImage());
+				contentPane.setBackgroundImage(bg);
 				refreshWindow();
-				if (!mainWindow.isVisible()) {
-					mainWindow.setVisible(true);
-				}
+				mainWindow.setVisible(true);
 				screen.setInitialProperties();
 			}
 		}
