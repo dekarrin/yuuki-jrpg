@@ -1094,7 +1094,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createOverworldScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		overworldScreen = new OverworldScreen(WINDOW_WIDTH, height);
-		overworldScreen.setBackgroundMusic("BGM_MAIN_MENU");
+		overworldScreen.setBackgroundMusic("BGM_OVERWORLD");
 	}
 	
 	/**

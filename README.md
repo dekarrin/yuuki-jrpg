@@ -30,6 +30,7 @@ Attribution
 **Yuuki Asset Credits:**
 * bgm/insidia.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * bgm/worldmap.mp3: Aaron Krogh - CC-BY-3.0 Unported
+* bgm/treacherousslopes.mp3: Aaron Krogh - CC-BY-3.0 Unported
 * sfx/strike.mp3: thecluegeek - CC-BY-3.0 Unported
 * sfx/strike.mp3: Ekokubza123 - CC-0-1.0 Universal
 * sfx/strike.mp3: zimbot - CC-BY-3.0 Unported
