@@ -20,7 +20,7 @@ public class TileLoader extends CsvResourceLoader {
 	}
 	
 	/**
-	 * Loads the Tile from a file.
+	 * Loads the tile definitions from a file.
 	 * 
 	 * @param resource The location of the file to load, relative to the
 	 * resource root.
