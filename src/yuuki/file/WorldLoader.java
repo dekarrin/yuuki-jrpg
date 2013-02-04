@@ -44,15 +44,12 @@ public class WorldLoader extends CsvResourceLoader {
 	public World load(String resource) throws IOException {
 		World world = new World();
 		String[][] records = loadRecords(resource);
-		ArrayList<String> names = new ArrayList<String>();
 		ArrayList<String> paths = new ArrayList<String>();
 		for (String[] r : records) {
-			names.add(r[0]);
-			paths.add(r[1]);
+			paths.add(r[0]);
 		}
-		String[] namesArr = names.toArray(new String[0]);
 		String[] pathsArr = paths.toArray(new String[0]);
-		loadLands(world, namesArr, pathsArr);
+		loadLands(world, pathsArr);
 		return world;
 	}
 	
@@ -60,14 +57,13 @@ public class WorldLoader extends CsvResourceLoader {
 	 * Loads the land data into a World.
 	 * 
 	 * @param world The world to load the lands into.
-	 * @param names The names of the lands.
 	 * @param paths The paths to the land data files.
 	 * @throws IOException
 	 */
-	private void loadLands(World world, String[] names, String[] paths)
+	private void loadLands(World world, String[] paths)
 			throws IOException {
-		for (int i = 0; i < names.length; i++) {
-			Land land = landLoader.load(names[i], paths[i]);
+		for (int i = 0; i < paths.length; i++) {
+			Land land = landLoader.load(paths[i]);
 			if (land != null) {
 				world.addLand(land);
 			}

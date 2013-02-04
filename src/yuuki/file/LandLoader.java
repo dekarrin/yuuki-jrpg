@@ -38,6 +38,11 @@ public class LandLoader extends ResourceLoader {
 		 */
 		public Point start;
 		
+		/**
+		 * The name of the map.
+		 */
+		public String name;
+		
 	};
 	
 	private enum ParserMode {
@@ -50,11 +55,6 @@ public class LandLoader extends ResourceLoader {
 	 * Generates tiles from tile definitions.
 	 */
 	private final TileFactory factory;
-	
-	/**
-	 * The name of the land currently being created.
-	 */
-	private String landName;
 	
 	/**
 	 * The meta data from the land file currently being read.
@@ -83,13 +83,11 @@ public class LandLoader extends ResourceLoader {
 	public LandLoader(String location, TileFactory tiles) {
 		super(location);
 		this.factory = tiles;
-		landName = null;
 	}
 	
 	/**
 	 * Loads the data from a land resource file into a Land object.
 	 * 
-	 * @param name The name of the Land being created.
 	 * @param resource The path to the land file to load, relative to the
 	 * resource root.
 	 * 
@@ -97,11 +95,10 @@ public class LandLoader extends ResourceLoader {
 	 * 
 	 * @throws IOException If an IOException occurs.
 	 */
-	public Land load(String name, String resource) throws IOException {
+	public Land load(String resource) throws IOException {
 		meta = null;
 		mode = ParserMode.METADATA;
 		portals = new ArrayList<Portal>();
-		landName = name;
 		Land land = null;
 		InputStream stream = getStream(resource);
 		reader = new BufferedReader(new InputStreamReader(stream));
@@ -173,7 +170,7 @@ public class LandLoader extends ResourceLoader {
 		fillRemainingHeight(tileData, heightCount);
 		Tile[] tiles = new Tile[tileData.size()];
 		tileData.toArray(tiles);
-		Land land = new Land(landName, meta.size, meta.start, tiles);
+		Land land = new Land(meta.name, meta.size, meta.start, tiles);
 		return land;
 	}
 	
@@ -256,6 +253,8 @@ public class LandLoader extends ResourceLoader {
 				meta.size = parseDimension(value);
 			} else if (key.equalsIgnoreCase("portals")) {
 				meta.portals = parseInt(value);
+			} else if (key.equalsIgnoreCase("name")) {
+				meta.name = value;
 			}
 		}
 	}

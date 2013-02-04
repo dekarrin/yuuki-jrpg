@@ -60,6 +60,9 @@ public class World {
 		for (Movable m : moves) {
 			Portal p = activeLand.portalAt(m.getLocation());
 			Land destination = lands.get(p.getLinkedLand());
+			if (destination == null) {
+				throw new InvalidLinkNameException(p.getLinkedLand());
+			}
 			destination.transferInResident(m, p.getLink());
 		}
 	}
