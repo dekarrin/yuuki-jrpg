@@ -9,6 +9,11 @@ import java.io.InputStream;
 public class ResourceLoader {
 	
 	/**
+	 * Separates multiple values in a single field.
+	 */
+	private static final String MULTIVALUE_DELIMITER = ":";
+	
+	/**
 	 * The location of the resource files to be loaded. This is relative to the
 	 * package structure.
 	 */
@@ -39,6 +44,34 @@ public class ResourceLoader {
 		String actualPath = resourceRoot + resource;
 		InputStream stream = getClass().getResourceAsStream(actualPath);
 		return stream;
+	}
+	
+	/**
+	 * Parses an array of strings into an array of integers.
+	 * 
+	 * @param str The array of strings to convert.
+	 * @param start What index to start the conversion at.
+	 * 
+	 * @return An array containing the parsed integers.
+	 */
+	protected int[] parseIntArray(String[] str, int start) {
+		int[] iValues = new int[str.length - start];
+		for (int i = start; i < str.length; i++) {
+			iValues[i - start] = Integer.parseInt(str[i]);
+		}
+		return iValues;
+	}
+	
+	/**
+	 * Splits a multiple-value field into its individual values. Each value is
+	 * delimited by the MULTIVALUE_DELIMITER.
+	 * 
+	 * @param value The entire field as a String.
+	 * 
+	 * @return An array containing each of the field's values.
+	 */
+	protected String[] splitMultiValue(String value) {
+		return value.split(MULTIVALUE_DELIMITER);
 	}
 	
 }
