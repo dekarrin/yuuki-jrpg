@@ -27,11 +27,6 @@ import yuuki.util.Grid;
 public class Land {
 	
 	/**
-	 * The transfers that are waiting to come in.
-	 */
-	private List<Movable> residentsIncoming;
-	
-	/**
 	 * The name of this Land.
 	 */
 	private String name;
@@ -52,14 +47,19 @@ public class Land {
 	private Map<Point, Movable> residents;
 	
 	/**
-	 * The tiles that make up this Land.
+	 * The transfers that are waiting to come in.
 	 */
-	private Grid<Tile> tiles;
+	private List<Movable> residentsIncoming;
 	
 	/**
 	 * The residents that were transfered out in the last advancement.
 	 */
 	private List<Movable> residentsOutgoing;
+	
+	/**
+	 * The tiles that make up this Land.
+	 */
+	private Grid<Tile> tiles;
 	
 	/**
 	 * Creates a new Land.
