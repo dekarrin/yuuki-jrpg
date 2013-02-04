@@ -3,6 +3,7 @@ package yuuki.file;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import yuuki.entity.EntityFactory;
 import yuuki.world.Land;
 import yuuki.world.TileFactory;
 import yuuki.world.World;
@@ -24,11 +25,14 @@ public class WorldLoader extends CsvResourceLoader {
 	 * be loaded, relative to the package structure.
 	 * @param landsPath The path to the directory containing the land files to
 	 * be loaded, relative to the package structure.
-	 * @param fact The TileFactory to use for populating the Land objects.
+	 * @param tiles The TileFactory to use for populating the Land objects.
+	 * @param entities The EntityFactory to use for populating the Land
+	 * objects.
 	 */
-	public WorldLoader(String location, String landsPath, TileFactory fact) {
+	public WorldLoader(String location, String landsPath, TileFactory tiles,
+			EntityFactory entities) {
 		super(location);
-		landLoader = new LandLoader(landsPath, fact);
+		landLoader = new LandLoader(landsPath, tiles, entities);
 	}
 	
 	/**

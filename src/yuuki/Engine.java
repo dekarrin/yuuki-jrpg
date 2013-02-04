@@ -498,7 +498,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private World loadWorld() {
 		TileFactory factory = loadTileDefinitions();
-		World world = loadWorldDefinitions(factory);
+		World world = loadWorldDefinitions(factory, entityMaker);
 		return world;
 	}
 	
@@ -508,12 +508,15 @@ public class Engine implements Runnable, UiExecutor {
 	 * 
 	 * @param tf The factory to use for generating the tiles within the Lands
 	 * contained within the World.
+	 * @param ef The factory to use for generating the entities within the
+	 * Lands contained within the World.
 	 * 
 	 * @return The World as read from the data files.
 	 */
-	private World loadWorldDefinitions(TileFactory tf) {
+	private World loadWorldDefinitions(TileFactory tf, EntityFactory ef) {
 		World w = null;
-		WorldLoader loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf);
+		WorldLoader loader;
+		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf, ef);
 		try {
 			w = loader.load(WORLD_FILE);
 		} catch (IOException e) {

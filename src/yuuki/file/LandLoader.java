@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import yuuki.entity.EntityFactory;
+import yuuki.entity.NonPlayerCharacter;
 import yuuki.world.Land;
+import yuuki.world.Movable;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
 import yuuki.world.TileFactory;
@@ -34,6 +37,11 @@ public class LandLoader extends ResourceLoader {
 		public int portals;
 		
 		/**
+		 * The number of entities in the map.
+		 */
+		public int entities;
+		
+		/**
 		 * The size of the map.
 		 */
 		public Dimension size;
@@ -51,13 +59,19 @@ public class LandLoader extends ResourceLoader {
 	private enum ParserMode {
 		MAP,
 		METADATA,
-		PORTALS
+		PORTALS,
+		ENTITIES
 	}
 	
 	/**
 	 * Generates tiles from tile definitions.
 	 */
-	private final TileFactory factory;
+	private final TileFactory tileFactory;
+	
+	/**
+	 * Generates entities from entity definitions.
+	 */
+	private final EntityFactory entityFactory;
 	
 	/**
 	 * The meta data from the land file currently being read.
@@ -70,9 +84,14 @@ public class LandLoader extends ResourceLoader {
 	private ParserMode mode;
 	
 	/**
-	 * The number of portals loaded.
+	 * The loaded portals.
 	 */
 	private ArrayList<Portal> portals;
+	
+	/**
+	 * The loaded entities.
+	 */
+	private ArrayList<Movable> entities;
 	
 	/**
 	 * Reads from the resource file.
@@ -85,10 +104,13 @@ public class LandLoader extends ResourceLoader {
 	 * @param location The path to the directory containing the land files to
 	 * be loaded, relative to the package structure.
 	 * @param tiles Contains the tile definitions.
+	 * @param entities Contains the entity definitions.
 	 */
-	public LandLoader(String location, TileFactory tiles) {
+	public LandLoader(String location, TileFactory tiles,
+			EntityFactory entities) {
 		super(location);
-		this.factory = tiles;
+		this.tileFactory = tiles;
+		this.entityFactory = entities;
 	}
 	
 	/**
@@ -105,12 +127,16 @@ public class LandLoader extends ResourceLoader {
 		meta = null;
 		mode = ParserMode.METADATA;
 		portals = new ArrayList<Portal>();
+		entities = new ArrayList<Movable>();
 		Land land = null;
 		InputStream stream = getStream(resource);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		land = loadLand();
 		for (Portal p : portals) {
 			land.addPortal(p);
+		}
+		for (Movable m : entities) {
+			land.addResident(m);
 		}
 		return land;
 	}
@@ -137,7 +163,7 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private void fillRemainingWidth(ArrayList<Tile> list, int start) {
 		for (int i = start; i < meta.size.width; i++) {
-			list.add(factory.createTile(TileFactory.VOID_CHAR));
+			list.add(tileFactory.createTile(TileFactory.VOID_CHAR));
 		}
 	}
 	
@@ -162,6 +188,14 @@ public class LandLoader extends ResourceLoader {
 				case PORTALS:
 					if (portals.size() < meta.portals) {
 						readPortalData(line);
+						break;
+					} else {
+						mode = ParserMode.ENTITIES;
+					}
+					
+				case ENTITIES:
+					if (entities.size() < meta.entities) {
+						readEntityData(line);
 						break;
 					} else {
 						mode = ParserMode.MAP;
@@ -219,7 +253,7 @@ public class LandLoader extends ResourceLoader {
 		int limit = Math.min(line.length(), meta.size.width);
 		for (int i = 0; i < limit; i++) {
 			char c = line.charAt(i);
-			tileList.add(factory.createTile(c));
+			tileList.add(tileFactory.createTile(c));
 		}
 		// for the remaining width, add void tiles.
 		fillRemainingWidth(tileList, limit);
@@ -261,6 +295,8 @@ public class LandLoader extends ResourceLoader {
 				meta.portals = parseInt(value);
 			} else if (key.equalsIgnoreCase("name")) {
 				meta.name = value;
+			} else if (key.equalsIgnoreCase("entities")) {
+				meta.entities = parseInt(value);
 			}
 		}
 	}
@@ -279,6 +315,22 @@ public class LandLoader extends ResourceLoader {
 		Portal p = new Portal(name, land, link);
 		p.setLocation(location);
 		portals.add(p);
+	}
+	
+	/**
+	 * Reads a line containing entity data.
+	 * 
+	 * @param line The line with the entity data.
+	 */
+	private void readEntityData(String line) {
+		String[] parts = line.split(";");
+		Point location = parsePoint(parts[0]);
+		String name = parts[1];
+		int level = parseInt(parts[2]);
+		NonPlayerCharacter npc;
+		npc = entityFactory.createNpc(name, level);
+		npc.setLocation(location);
+		entities.add(npc);
 	}
 	
 }
