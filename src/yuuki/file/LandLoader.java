@@ -308,8 +308,8 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private void readPortalData(String line) {
 		String[] parts = line.split(";");
-		String name = parts[0];
-		Point location = parsePoint(parts[1]);
+		Point location = parsePoint(parts[0]);
+		String name = parts[1];
 		Point link = parsePoint(parts[2]);
 		String land = parts[3];
 		Portal p = new Portal(name, land, link);
