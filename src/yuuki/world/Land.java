@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import yuuki.util.ElementGrid;
@@ -36,6 +37,11 @@ public class Land {
 	private Point playerStart;
 	
 	/**
+	 * The residents that were transfered out in the last advancement.
+	 */
+	private List<Movable> transfers;
+	
+	/**
 	 * The Portals that link this Land to different areas.
 	 */
 	private Map<Point, Portal> portals;
@@ -44,6 +50,11 @@ public class Land {
 	 * The Movable objects in this Land.
 	 */
 	private Map<Point, Movable> residents;
+	
+	/**
+	 * The transfers that are waiting to come in.
+	 */
+	private List<Movable> incomingTransfers;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -64,6 +75,7 @@ public class Land {
 		tiles = new ElementGrid<Tile>(size, tileData);
 		residents = new HashMap<Point, Movable>();
 		portals = new HashMap<Point, Portal>();
+		this.incomingTransfers = new ArrayList<Movable>();
 	}
 	
 	/**
@@ -76,6 +88,17 @@ public class Land {
 		if (portals.get(pos) == null) {
 			portals.put(pos, p);
 		}
+	}
+	
+	/**
+	 * Gets the portal at a specific location.
+	 * 
+	 * @param p The point that the portal is at.
+	 * 
+	 * @return The portal at the given location, or null if there is no portal.
+	 */
+	public Portal portalAt(Point p) {
+		return portals.get(p);
 	}
 	
 	/**
@@ -96,7 +119,20 @@ public class Land {
 	 * they requested.
 	 */
 	public void advance() {
+		processIncomingTransfers();
 		moveResidents();
+		transferOutResidents();
+	}
+	
+	/**
+	 * Adds waiting incoming transfers if they can be added.
+	 */
+	private void processIncomingTransfers() {
+		Movable[] incoming = incomingTransfers.toArray(new Movable[0]);
+		incomingTransfers.clear();
+		for (Movable m : incoming) {
+			transferInResident(m, m.getLocation());
+		}
 	}
 	
 	/**
@@ -245,6 +281,58 @@ public class Land {
 			}
 		}
 		applyMove(moveList);
+	}
+	
+	/**
+	 * Moves transferable residents that have stepped on a portal.
+	 */
+	private void transferOutResidents() {
+		Movable[] moveList = residents.values().toArray(new Movable[0]);
+		List<Movable> transfers = new ArrayList<Movable>();
+		for (Movable r: moveList) {
+			Point p = r.getLocation();
+			if (portals.containsKey(p) && r.isTransferrable()) {
+				transfers.add(r);
+			}
+		}
+		applyTransfers(transfers);
+		this.transfers = transfers;
+	}
+	
+	/**
+	 * Gets the list of residents who transfered out during the last
+	 * advancement.
+	 * 
+	 * @return The list of residents.
+	 */
+	public List<Movable> getTransfers() {
+		return transfers;
+	}
+	
+	/**
+	 * Applies all of the transfers in the given list.
+	 * 
+	 * @param transfers The residents that need to be transfered.
+	 */
+	private void applyTransfers(List<Movable> transfers) {
+		for (Movable r : transfers) {
+			removeResident(r);
+		}
+	}
+	
+	/**
+	 * Transfers in a resident to a specific point.
+	 * 
+	 * @param r The resident to transfer in.
+	 * @param p The point to transfer to.
+	 */
+	public void transferInResident(Movable r, Point p) {
+		r.setLocation(p);
+		if (!residents.containsKey(p)) {
+			addResident(r);
+		} else {
+			incomingTransfers.add(r);
+		}
 	}
 	
 }

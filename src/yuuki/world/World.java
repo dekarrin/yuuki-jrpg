@@ -3,6 +3,7 @@ package yuuki.world;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import yuuki.util.Grid;
@@ -55,6 +56,12 @@ public class World {
 	 */
 	public void advance() {
 		activeLand.advance();
+		List<Movable> moves = activeLand.getTransfers();
+		for (Movable m : moves) {
+			Portal p = activeLand.portalAt(m.getLocation());
+			Land destination = lands.get(p.getLinkedLand());
+			destination.transferInResident(m, p.getLink());
+		}
 	}
 	
 	/**
