@@ -1,18 +1,11 @@
 package yuuki.entity;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import yuuki.action.Action;
-import yuuki.action.BasicAttack;
-import yuuki.action.BasicDefense;
-import yuuki.action.Flee;
 import yuuki.ui.Interactable;
 
 /**
@@ -21,138 +14,9 @@ import yuuki.ui.Interactable;
 public class EntityFactory {
 	
 	/**
-	 * Holds the information needed to create an instance of an Action.
-	 */
-	private static class ActionDefinition {
-		
-		/**
-		 * The arguments to the getInstance() method of the Action.
-		 */
-		public String[] args;
-		
-		/**
-		 * This particular ActionDefinition's ID in the list of all
-		 * definitions.
-		 */
-		public int id;
-		
-		/**
-		 * The name of this ActionDefinition.
-		 */
-		public String name;
-		
-	}
-	
-	/**
-	 * Holds the information needed to create the arguments for creating an
-	 * instance of a Character.
-	 */
-	private static class EntityDefinition {
-		
-		/**
-		 * The base accuracy.
-		 */
-		public int acc = 0;
-		
-		/**
-		 * The accuracy gained per level.
-		 */
-		public int accg = 0;
-		
-		/**
-		 * The base agility.
-		 */
-		public int agl = 0;
-		
-		/**
-		 * The agility gained per level.
-		 */
-		public int aglg = 0;
-		
-		/**
-		 * The IDs of the ActionDefinitions that define this entity's actions.
-		 */
-		public int[] attacks;
-		
-		/**
-		 * The base defense.
-		 */
-		public int def = 0;
-		
-		/**
-		 * The defense gained per level.
-		 */
-		public int defg = 0;
-		
-		/**
-		 * The base hit points.
-		 */
-		public int hp = 0;
-		
-		/**
-		 * The hit points gained per level.
-		 */
-		public int hpg = 0;
-		
-		/**
-		 * The base luck.
-		 */
-		public int luk = 0;
-		
-		/**
-		 * The luck gained per level.
-		 */
-		public int lukg = 0;
-		
-		/**
-		 * The base magic.
-		 */
-		public int mag = 0;
-		
-		/**
-		 * The magic gained per level.
-		 */
-		public int magg = 0;
-		
-		/**
-		 * The base mana points.
-		 */
-		public int mp = 0;
-		
-		/**
-		 * The mana points gained per level.
-		 */
-		public int mpg = 0;
-		
-		/**
-		 * The name of the entity. This will be inaccurate for the player
-		 * character, who is stored as an arbitrary string to allow the player
-		 * to select his own name.
-		 */
-		public String name;
-		
-		/**
-		 * The base strength.
-		 */
-		public int str = 0;
-		
-		/**
-		 * The strength gained per level.
-		 */
-		public int strg = 0;
-		
-		/**
-		 * The amount of experience gained when this entity is defeated. This
-		 * is not used by the player character.
-		 */
-		public int xp = 0;
-		
-	}
-	
-	/**
 	 * Holds the arguments to creating an actual instance of a Character.
 	 */
-	private static class StatModel {
+	private static class EntityDefinition implements Cloneable {
 		
 		/**
 		 * The accuracy of the Character.
@@ -195,7 +59,7 @@ public class EntityFactory {
 		public VariableStat mp;
 		
 		/**
-		 * The name of the Character.
+		 * The name of the Character. Not used when creating a PlayerCharacter.
 		 */
 		public String name;
 		
@@ -209,58 +73,97 @@ public class EntityFactory {
 		 */
 		public int xp;
 		
+		/**
+		 * Performs a deep-copy on this EntityDef.
+		 * 
+		 * @return the deep-copied EntityDef.
+		 */
+		@Override
+		public EntityDefinition clone() {
+			EntityDefinition d2 = null;
+			try {
+				d2 = (EntityDefinition) super.clone();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+			d2.hp = hp.clone();
+			d2.mp = mp.clone();
+			d2.str = str.clone();
+			d2.def = def.clone();
+			d2.agl = agl.clone();
+			d2.acc = acc.clone();
+			d2.mag = mag.clone();
+			d2.luk = luk.clone();
+			d2.moves = new Action[moves.length];
+			for (int i = 0; i < moves.length; i++) {
+				d2.moves[i] = moves[i].clone();
+			}
+			return d2;
+		}
+		
 	}
 	
 	/**
-	 * The location of the file containing the action definitions. The location
-	 * is relative to the package structure.
+	 * The name of the EntityDefinition for a player character.
 	 */
-	public static final String ACTIONS_FILE = "actions.csv";
+	private static final String PLAYER_CHARACTER_NAME = "__PLAYER";
 	
 	/**
-	 * The location of the file containing the monster definitions. The
-	 * location is relative to the package structure.
+	 * All defined entities as read from the entity definitions file. When a
+	 * definition is used to create an instance, it must be cloned, or else
+	 * multiple instances of characters will share the same references to
+	 * stats.
 	 */
-	public static final String MONSTERS_FILE = "monsters.csv";
-	
-	/**
-	 * The location of entity data files in the package structure.
-	 */
-	public static final String RESOURCE_LOCATION = "/yuuki/resource/data/";
-	
-	/**
-	 * The bases for creating instances of Action. Used to get an instance
-	 * factory from a String without using reflections.
-	 */
-	private HashMap<String, Action> actionBases;
-	
-	/**
-	 * All defined actions as read from the action definitions file.
-	 */
-	private HashMap<Integer, ActionDefinition> actions;
-	
-	/**
-	 * All defined entities as read from the entity definitions file.
-	 */
-	private HashMap<String, EntityDefinition> entities;
+	private Map<String, EntityDefinition> definitions;
 	
 	/**
 	 * Allocates a new EntityFactory. The definition files are read and the
 	 * list of base actions is populated.
 	 */
 	public EntityFactory() {
-		entities = new HashMap<String, EntityDefinition>();
-		actions = new HashMap<Integer, ActionDefinition>();
-		actionBases = new HashMap<String, Action>();
-		createBaseActions();
-		try {
-			readMonsterDefinitions();
-			readActionDefinitions();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		definitions = new HashMap<String, EntityDefinition>();
+	}
+	
+	/**
+	 * Adds a definition to this EntityFactory.
+	 * 
+	 * @param name The character's name.
+	 * @param hp The base hit points.
+	 * @param hpg The hit points gained per level.
+	 * @param mp The base mana points.
+	 * @param mpg The mana points gained per level.
+	 * @param str The base strength.
+	 * @param strg The strength gained per level.
+	 * @param def The base defense.
+	 * @param defg The defense gained per level.
+	 * @param agl The base agility.
+	 * @param aglg The agility gained per level.
+	 * @param acc The base accuracy.
+	 * @param accg The accuracy gained per level.
+	 * @param mag The base magic ability.
+	 * @param magg The magic ability gained per level.
+	 * @param luk The base luck.
+	 * @param lukg The luck gained per level.
+	 * @param moves The actions that this character may perform.
+	 * @param xp The experienced gained when this character is defeated.
+	 */
+	public void addDefinition(String name, int hp, int hpg, int mp, int mpg,
+			int str, int strg, int def, int defg, int agl, int aglg, int acc,
+			int accg, int mag, int magg, int luk, int lukg, Action[] moves,
+			int xp) {
+		EntityDefinition ed = new EntityDefinition();
+		ed.name = name;
+		ed.hp = new VariableStat("health", hp, hpg);
+		ed.mp = new VariableStat("mana", mp, mpg);
+		ed.str = new Stat("strength", str, strg);
+		ed.def = new Stat("defense", def, defg);
+		ed.agl = new Stat("agility", agl, aglg);
+		ed.acc = new Stat("accuracy", acc, accg);
+		ed.mag = new Stat("magic", mag, magg);
+		ed.luk = new Stat("luck", luk, lukg);
+		ed.moves = moves;
+		ed.xp = xp;
+		definitions.put(name.toLowerCase(), ed);
 	}
 	
 	/**
@@ -272,11 +175,10 @@ public class EntityFactory {
 	 * @return An NPC with the given name and level.
 	 */
 	public NonPlayerCharacter createNpc(String name, int level) {
-		StatModel sm = getStatModel(name);
+		EntityDefinition d = getDefinition(name);
 		NonPlayerCharacter m;
-		m = new NonPlayerCharacter(	sm.name, level, sm.moves, sm.hp, sm.mp,
-				sm.str, sm.def, sm.agl, sm.acc, sm.mag,
-				sm.luk, sm.xp);
+		m = new NonPlayerCharacter(d.name, level, d.moves, d.hp, d.mp, d.str,
+				d.def, d.agl, d.acc, d.mag, d.luk, d.xp);
 		return m;
 	}
 	
@@ -291,11 +193,10 @@ public class EntityFactory {
 	 */
 	public PlayerCharacter createPlayer(String name, int level,
 			Interactable ui) {
-		StatModel sm = getStatModel("__PLAYER");
+		EntityDefinition d = getDefinition(PLAYER_CHARACTER_NAME);
 		PlayerCharacter m;
-		m = new PlayerCharacter(	name, level, sm.moves, sm.hp, sm.mp,
-				sm.str, sm.def, sm.agl, sm.acc, sm.mag,
-				sm.luk, ui);
+		m = new PlayerCharacter(name, level, d.moves, d.hp, d.mp, d.str, d.def,
+				d.agl, d.acc, d.mag, d.luk, ui);
 		return m;
 	}
 	
@@ -313,7 +214,7 @@ public class EntityFactory {
 	 */
 	public NonPlayerCharacter createRandomNpc(int levelMin, int levelMax,
 			String... names) {
-		Set<String> validNames = entities.keySet();
+		Set<String> validNames = definitions.keySet();
 		if (names != null) {
 			Set<String> wantedNames = new HashSet<String>();
 			for (String n: names) {
@@ -361,225 +262,22 @@ public class EntityFactory {
 	 * @return The entities.
 	 */
 	public String[] getEntityNames() {
-		String[] names = entities.keySet().toArray(new String[0]);
+		String[] names = definitions.keySet().toArray(new String[0]);
 		return names;
 	}
 	
 	/**
-	 * Creates one instance of each concrete subclass of Action and stores it
-	 * in the action bases map indexed under the class' name.
-	 */
-	private void createBaseActions() {
-		actionBases.put("BasicAttack", new BasicAttack(0));
-		actionBases.put("BasicDefense", new BasicDefense(0));
-		actionBases.put("Flee", new Flee());
-	}
-	
-	/**
-	 * Gets a stat model for an entity name. The stat model contains all the
-	 * arguments necessary for instantiation.
+	 * Gets an entity definition. The name is normalized and the definition is
+	 * deep-cloned to ensure that its contents are never shared between two
+	 * instances.
 	 * 
 	 * @param name The name of the entity.
 	 * 
-	 * @return The stat model for the given entity name.
+	 * @return The definition for the named entity.
 	 */
-	private StatModel getStatModel(String name) {
-		StatModel sm = new StatModel();
-		EntityDefinition md = entities.get(name.toLowerCase());
-		sm.name = md.name;
-		sm.hp = new VariableStat("health", md.hp, md.hpg);
-		sm.mp = new VariableStat("mana", md.mp, md.mpg);
-		sm.str = new Stat("strength", md.str, md.strg);
-		sm.def = new Stat("defense", md.def, md.defg);
-		sm.mag = new Stat("magic", md.mag, md.magg);
-		sm.agl = new Stat("agility", md.agl, md.aglg);
-		sm.acc = new Stat("accuracy", md.acc, md.accg);
-		sm.luk = new Stat("luck", md.luk, md.lukg);
-		sm.moves = new Action[md.attacks.length];
-		for (int i = 0; i < md.attacks.length; i++) {
-			ActionDefinition ad = actions.get(md.attacks[i]);
-			Action base = actionBases.get(ad.name);
-			Action actualAction = base.createInstance(ad.args);
-			sm.moves[i] = actualAction;
-		}
-		sm.xp = md.xp;
-		return sm;
-	}
-	
-	/**
-	 * Parses a line from the action definitions file into an ActionDefinition
-	 * instance.
-	 * 
-	 * @param line The line to parse.
-	 * 
-	 * @return The ActionDefinition parsed from the line.
-	 */
-	private ActionDefinition parseActionDefinition(String line) {
-		ActionDefinition ad = new ActionDefinition();
-		String[] parts = readCsv(line);
-		ad.id = Integer.parseInt(parts[0]);
-		ad.name = parts[1];
-		ad.args = new String[0];
-		if (!parts[2].equals("")) {
-			ad.args = parts[2].split(":");
-		}
-		return ad;
-	}
-	
-	/**
-	 * Parses a line from the monster definitions file into an EntityDefinition
-	 * instance.
-	 * 
-	 * @param line The line to parse.
-	 * 
-	 * @return The EntityDefinition parsed from the line.
-	 */
-	private EntityDefinition parseMonsterDefinition(String line) {
-		EntityDefinition md = new EntityDefinition();
-		String[] parts = readCsv(line);
-		md.name	= parts[0];
-		md.attacks = parseToInts(parts[1].split(":"), 0);
-		int[] stats = parseToInts(parts, 2);
-		md.hp	= stats[0];
-		md.mp	= stats[1];
-		md.str	= stats[2];
-		md.def	= stats[3];
-		md.agl	= stats[4];
-		md.acc	= stats[5];
-		md.mag	= stats[6];
-		md.luk	= stats[7];
-		md.hpg	= stats[8];
-		md.mpg	= stats[9];
-		md.strg	= stats[10];
-		md.defg	= stats[11];
-		md.aglg	= stats[12];
-		md.accg	= stats[13];
-		md.magg	= stats[14];
-		md.lukg	= stats[15];
-		md.xp	= stats[16];
-		return md;
-	}
-	
-	/**
-	 * Parses an array of strings into an array of ints.
-	 * 
-	 * @param toParse The array of strings to parse.
-	 * @param start The element to start parsing at.
-	 * 
-	 * @return An array of ints parsed from the given starting element of the
-	 * given array.
-	 */
-	private int[] parseToInts(String[] toParse, int start) {
-		int[] parsed = new int[toParse.length-start];
-		for (int i = start; i < toParse.length; i++) {
-			parsed[i - start] = Integer.parseInt(toParse[i]);
-		}
-		return parsed;
-	}
-	
-	/**
-	 * Reads and parses the action definitions file and stores the result in
-	 * the action definitions map.
-	 * 
-	 * @throws FileNotFoundException If the action definitions file cannot be
-	 * found.
-	 * @throws IOException If an IOException occurs.
-	 */
-	private void readActionDefinitions() throws FileNotFoundException,
-	IOException {
-		BufferedReader r = null;
-		String actionsFile = RESOURCE_LOCATION + ACTIONS_FILE;
-		InputStream file = getClass().getResourceAsStream(actionsFile);
-		r = new BufferedReader(new InputStreamReader(file));
-		String line = null;
-		int num = 1;
-		while ((line = r.readLine()) != null) {
-			if (line.charAt(0) != '#') {
-				try {
-					ActionDefinition ad = parseActionDefinition(line);
-					actions.put(ad.id, ad);
-				} catch(RuntimeException e) {
-					System.err.println("Error parsing line #" + num + " of " +
-							"action definitions file.");
-				}
-			}
-			num++;
-		}
-		r.close();
-	}
-	
-	/**
-	 * Reads a CSV-formatted line into an array of Strings. The line is assumed
-	 * to use a comma to delimit fields and double quotes to contain all
-	 * values. Everything in a field before the first double quote and after
-	 * the second double quote is ignored.
-	 * 
-	 * @param line The line to read.
-	 * 
-	 * @return An array containing the CSV fields in the line.
-	 */
-	private String[] readCsv(String line) {
-		String[] parts = line.split(",");
-		for (int i = 0; i < parts.length; i++) {
-			String field = parts[i];
-			StringBuffer f = new StringBuffer("");
-			boolean reading = false;
-			boolean began = false;
-			for (int j = 0; j < field.length(); j++) {
-				char c = field.charAt(j);
-				if (reading) {
-					if (c == '"') {
-						reading = false;
-						break;
-					} else {
-						f.append(c);
-					}
-				} else {
-					if (c == '"') {
-						reading = true;
-						began = true;
-					}
-				}
-			}
-			if (!(began && !reading)) {
-				throw new RuntimeException();
-			} else {
-				parts[i] = f.toString();
-			}
-		}
-		return parts;
-	}
-	
-	/**
-	 * Reads and parses the entity definitions file and stores the result in
-	 * the entity definitions map.
-	 * 
-	 * @throws FileNotFoundException If the entity definitions file cannot be
-	 * found.
-	 * @throws IOException If an IOException occurs.
-	 */
-	private void readMonsterDefinitions() throws FileNotFoundException,
-	IOException {
-		BufferedReader r = null;
-		String monstersFile = RESOURCE_LOCATION + MONSTERS_FILE;
-		InputStream file = getClass().getResourceAsStream(monstersFile);
-		r = new BufferedReader(new InputStreamReader(file));
-		String line = null;
-		int num = 1;
-		while ((line = r.readLine()) != null) {
-			if (line.charAt(0) != '#') {
-				try {
-					// entity names are case-insensitive
-					EntityDefinition md = parseMonsterDefinition(line);
-					entities.put(md.name.toLowerCase(), md);
-				} catch(RuntimeException e) {
-					System.err.println("Error parsing line #" + num + " of " +
-							"monster definitions file.");
-				}
-			}
-			num++;
-		}
-		r.close();
+	private EntityDefinition getDefinition(String name) {
+		EntityDefinition d = definitions.get(name.toLowerCase());
+		return d.clone();
 	}
 	
 }

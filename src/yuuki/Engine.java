@@ -8,10 +8,13 @@ import javax.swing.JOptionPane;
 import yuuki.action.Action;
 import yuuki.battle.Battle;
 import yuuki.buff.Buff;
+import yuuki.entity.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.file.ActionLoader;
+import yuuki.file.EntityLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
 import yuuki.ui.GraphicalInterface;
@@ -71,9 +74,21 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The location of the file containing the action definitions. The location
+	 * is relative to the package structure.
+	 */
+	public static final String ACTIONS_FILE = "actions.csv";
+	
+	/**
 	 * The path to definitions files.
 	 */
 	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
+	
+	/**
+	 * The location of the file containing the monster definitions. The
+	 * location is relative to the package structure.
+	 */
+	public static final String ENTITIES_FILE = "monsters.csv";
 	
 	/**
 	 * The path to land files.
@@ -147,7 +162,7 @@ public class Engine implements Runnable, UiExecutor {
 	public Engine() {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
-		entityMaker = new EntityFactory();
+		entityMaker = loadEntities();
 		world = loadWorld();
 		String[] lands = world.getAllLandNames();
 		world.changeLand(lands[0]); // always load the first land in world
@@ -318,24 +333,96 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Loads the action definitions from disk.
+	 * 
+	 * @return An ActionFactory containing the loaded definitions.
+	 */
+	private ActionFactory loadActionDefinitions() {
+		ActionFactory factory = null;
+		ActionLoader loader = new ActionLoader(DEFINITIONS_PATH);
+		try {
+			factory = loader.load(ACTIONS_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load action definitions!");
+		}
+		return factory;
+	}
+	
+	/**
+	 * Loads the entities from disk.
+	 * 
+	 * @return The loaded EntityFactory.
+	 */
+	private EntityFactory loadEntities() {
+		ActionFactory factory = loadActionDefinitions();
+		EntityFactory entityMaker = loadEntityDefinitions(factory);
+		return entityMaker;
+	}
+	
+	/**
+	 * Loads the entity definitions from disk.
+	 * 
+	 * @param af The ActionFactory for generating Actions used by the loaded
+	 * entities.
+	 * 
+	 * @return An EntityFactory containing the loaded entity definitions.
+	 */
+	private EntityFactory loadEntityDefinitions(ActionFactory af) {
+		EntityFactory factory = null;
+		EntityLoader loader = new EntityLoader(DEFINITIONS_PATH, af);
+		try {
+			factory = loader.load(ENTITIES_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load entity definitions!");
+		}
+		return factory;
+	}
+	
+	/**
+	 * Loads the tile definitions file from disk.
+	 * 
+	 * @return The TileFactory containing the tile definitions.
+	 */
+	private TileFactory loadTileDefinitions() {
+		TileFactory factory = null;
+		TileLoader loader = new TileLoader(DEFINITIONS_PATH);
+		try {
+			factory = loader.load(TILE_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load tile file!");
+		}
+		return factory;
+	}
+	
+	/**
 	 * Loads the world from disk.
 	 * 
 	 * @return The loaded World.
 	 */
 	private World loadWorld() {
-		TileLoader tileLoader = null;
-		TileFactory tf = null;
-		WorldLoader worldLoader = null;
-		World world = null;
+		TileFactory factory = loadTileDefinitions();
+		World world = loadWorldDefinitions(factory);
+		return world;
+	}
+	
+	/**
+	 * Loads the world definitions and all land files within it into a new
+	 * World object.
+	 * 
+	 * @param tf The factory to use for generating the tiles within the Lands
+	 * contained within the World.
+	 * 
+	 * @return The World as read from the data files.
+	 */
+	private World loadWorldDefinitions(TileFactory tf) {
+		World w = null;
+		WorldLoader loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf);
 		try {
-			tileLoader = new TileLoader(DEFINITIONS_PATH);
-			tf = tileLoader.loadTiles(TILE_FILE);
-			worldLoader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf);
-			world = worldLoader.load(WORLD_FILE);
+			w = loader.load(WORLD_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load world file!");
 		}
-		return world;
+		return w;
 	}
 	
 	/**
