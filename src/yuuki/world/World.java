@@ -56,15 +56,7 @@ public class World {
 	 */
 	public void advance() {
 		activeLand.advance();
-		List<Movable> moves = activeLand.getTransfers();
-		for (Movable m : moves) {
-			Portal p = activeLand.portalAt(m.getLocation());
-			Land destination = lands.get(p.getLinkedLand());
-			if (destination == null) {
-				throw new InvalidLinkNameException(p.getLinkedLand());
-			}
-			destination.transferInResident(m, p.getLink());
-		}
+		moveTransfers();
 	}
 	
 	/**
@@ -141,6 +133,22 @@ public class World {
 	 */
 	public void removeResident(Movable resident) {
 		activeLand.removeResident(resident);
+	}
+	
+	/**
+	 * Finalizes the transfers out of the active land and moves them to the
+	 * land that they are transferring to.
+	 */
+	private void moveTransfers() {
+		List<Movable> moves = activeLand.getTransfers();
+		for (Movable m : moves) {
+			Portal p = activeLand.portalAt(m.getLocation());
+			Land destination = lands.get(p.getLinkedLand());
+			if (destination == null) {
+				throw new InvalidLinkNameException(p.getLinkedLand());
+			}
+			destination.transferInResident(m, p.getLink());
+		}
 	}
 	
 }

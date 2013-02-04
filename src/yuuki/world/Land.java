@@ -29,7 +29,7 @@ public class Land {
 	/**
 	 * The transfers that are waiting to come in.
 	 */
-	private List<Movable> incomingTransfers;
+	private List<Movable> residentsIncoming;
 	
 	/**
 	 * The name of this Land.
@@ -59,7 +59,7 @@ public class Land {
 	/**
 	 * The residents that were transfered out in the last advancement.
 	 */
-	private List<Movable> transfers;
+	private List<Movable> residentsOutgoing;
 	
 	/**
 	 * Creates a new Land.
@@ -75,7 +75,7 @@ public class Land {
 		tiles = new ElementGrid<Tile>(size, tileData);
 		residents = new HashMap<Point, Movable>();
 		portals = new HashMap<Point, Portal>();
-		this.incomingTransfers = new ArrayList<Movable>();
+		this.residentsIncoming = new ArrayList<Movable>();
 	}
 	
 	/**
@@ -108,9 +108,9 @@ public class Land {
 	 * they requested.
 	 */
 	public void advance() {
-		processIncomingTransfers();
+		processIncomingResidents();
 		moveResidents();
-		transferOutResidents();
+		processOutgoingResidents();
 	}
 	
 	/**
@@ -172,7 +172,7 @@ public class Land {
 	 * @return The list of residents.
 	 */
 	public List<Movable> getTransfers() {
-		return transfers;
+		return residentsOutgoing;
 	}
 	
 	/**
@@ -266,7 +266,7 @@ public class Land {
 		if (!residents.containsKey(p)) {
 			addResident(r);
 		} else {
-			incomingTransfers.add(r);
+			residentsIncoming.add(r);
 		}
 	}
 	
@@ -311,9 +311,9 @@ public class Land {
 	/**
 	 * Adds waiting incoming transfers if they can be added.
 	 */
-	private void processIncomingTransfers() {
-		Movable[] incoming = incomingTransfers.toArray(new Movable[0]);
-		incomingTransfers.clear();
+	private void processIncomingResidents() {
+		Movable[] incoming = residentsIncoming.toArray(new Movable[0]);
+		residentsIncoming.clear();
 		for (Movable m : incoming) {
 			transferInResident(m, m.getLocation());
 		}
@@ -322,7 +322,7 @@ public class Land {
 	/**
 	 * Moves transferable residents that have stepped on a portal.
 	 */
-	private void transferOutResidents() {
+	private void processOutgoingResidents() {
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
 		List<Movable> transfers = new ArrayList<Movable>();
 		for (Movable r: moveList) {
@@ -332,7 +332,7 @@ public class Land {
 			}
 		}
 		applyTransfers(transfers);
-		this.transfers = transfers;
+		this.residentsOutgoing = transfers;
 	}
 	
 }
