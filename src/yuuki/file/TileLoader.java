@@ -29,7 +29,7 @@ public class TileLoader extends CsvResourceLoader {
 	 * 
 	 * @throws IOException If an IOException occurs.
 	 */
-	public TileFactory loadTiles(String resource) throws IOException {
+	public TileFactory load(String resource) throws IOException {
 		TileFactory factory = null;
 		String[][] records = loadRecords(resource);
 		factory = new TileFactory();
