@@ -195,16 +195,18 @@ OptionsScreenListener, MenuBarListener {
 	 * @param musicData A map of string indexes to byte arrays containing sound
 	 * data for music. Such a map can be easily obtained using a SoundLoader
 	 * object.
+	 * @param imageFactory The ImageFactory for creating images.
 	 */
 	public GraphicalInterface(UiExecutor mainProgram, Options options,
-			Map<String, byte[]> effectData, Map<String, byte[]> musicData) {
+			Map<String, byte[]> effectData, Map<String, byte[]> musicData,
+			ImageFactory imageFactory) {
 		this.options = options;
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
 		this.soundEngine = new DualSoundEngine(effectData, musicData);
-		this.imageEngine = new ImageFactory();
+		this.imageEngine = imageFactory;
 	}
 	
 	@Override
@@ -1173,7 +1175,8 @@ OptionsScreenListener, MenuBarListener {
 				mainWindow.add(menuBar, BorderLayout.NORTH);
 				mainWindow.add(screen, BorderLayout.CENTER);
 				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
-				Image bg = imageEngine.getImage(screen.getBackgroundImage());
+				String index = screen.getBackgroundImage();
+				Image bg = imageEngine.createImage(index);
 				contentPane.setBackgroundImage(bg);
 				refreshWindow();
 				mainWindow.setVisible(true);

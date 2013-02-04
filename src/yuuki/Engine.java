@@ -16,9 +16,11 @@ import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.file.ActionLoader;
 import yuuki.file.EntityLoader;
+import yuuki.file.ImageLoader;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
+import yuuki.graphic.ImageFactory;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
@@ -124,6 +126,16 @@ public class Engine implements Runnable, UiExecutor {
 	public static final String TILE_FILE = "tiles.csv";
 	
 	/**
+	 * The path to image files.
+	 */
+	public static final String IMAGE_PATH = "/yuuki/resource/images/";
+	
+	/**
+	 * The path to the image definitions file.
+	 */
+	public static final String IMAGE_FILE = "graphics.csv";
+	
+	/**
 	 * The name of the world definitions file.
 	 */
 	public static final String WORLD_FILE = "world.csv";
@@ -198,7 +210,25 @@ public class Engine implements Runnable, UiExecutor {
 	private void createInterface() {
 		Map<String, byte[]> effectData = loadSoundEffects();
 		Map<String, byte[]> musicData = loadMusic();
-		ui = new GraphicalInterface(this, options, effectData, musicData);
+		ImageFactory imageFactory = loadImages();
+		ui = new GraphicalInterface(this, options, effectData, musicData,
+				imageFactory);
+	}
+	
+	/**
+	 * Loads the images from disk.
+	 * 
+	 * @return The ImageFactory with the loaded images.
+	 */
+	private ImageFactory loadImages() {
+		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
+		ImageFactory factory = null;
+		try {
+			factory = loader.load(IMAGE_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load image file!");
+		}
+		return factory;
 	}
 	
 	/**
@@ -208,8 +238,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * index.
 	 */
 	private Map<String, byte[]> loadMusic() {
-		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
-				MUSIC_PATH);
+		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
 		Map<String, byte[]> soundData = null;
 		try {
 			soundData = loader.load(MUSIC_FILE);
