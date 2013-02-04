@@ -42,16 +42,6 @@ public abstract class Character implements Movable, Displayable {
 	}
 	
 	/**
-	 * The display character for this entity.
-	 */
-	private char displayChar;
-	
-	@Override
-	public char getDisplayChar() {
-		return displayChar;
-	}
-	
-	/**
 	 * Modifies percent chance to hit.
 	 */
 	private Stat accuracy;
@@ -70,6 +60,11 @@ public abstract class Character implements Movable, Displayable {
 	 * Modifies damage taken.
 	 */
 	private Stat defense;
+	
+	/**
+	 * The display character for this entity.
+	 */
+	private char displayChar;
 	
 	/**
 	 * The buffs that have just ended on this Character.
@@ -420,6 +415,11 @@ public abstract class Character implements Movable, Displayable {
 	@Override
 	public Displayable getDisplayable() {
 		return this;
+	}
+	
+	@Override
+	public char getDisplayChar() {
+		return displayChar;
 	}
 	
 	/**

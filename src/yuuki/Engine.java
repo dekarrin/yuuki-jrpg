@@ -84,16 +84,6 @@ public class Engine implements Runnable, UiExecutor {
 	public static final String ACTIONS_FILE = "actions.csv";
 	
 	/**
-	 * The location of the file containing the music definitions.
-	 */
-	public static final String MUSIC_FILE = "music.csv";
-	
-	/**
-	 * The location of music files.
-	 */
-	public static final String MUSIC_PATH = "/yuuki/resource/audio/bgm/";
-	
-	/**
 	 * The path to definitions files.
 	 */
 	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
@@ -105,25 +95,9 @@ public class Engine implements Runnable, UiExecutor {
 	public static final String ENTITIES_FILE = "monsters.csv";
 	
 	/**
-	 * The path to sound effect files.
+	 * The path to the image definitions file.
 	 */
-	public static final String SOUND_EFFECT_PATH =
-			"/yuuki/resource/audio/sfx/";
-	
-	/**
-	 * The path to the sound effect definitions file.
-	 */
-	public static final String SOUND_EFFECT_FILE = "effects.csv";
-	
-	/**
-	 * The path to land files.
-	 */
-	public static final String LAND_PATH = "/yuuki/resource/land/";
-	
-	/**
-	 * The name of the tile definitions file.
-	 */
-	public static final String TILE_FILE = "tiles.csv";
+	public static final String IMAGE_FILE = "graphics.csv";
 	
 	/**
 	 * The path to image files.
@@ -131,9 +105,35 @@ public class Engine implements Runnable, UiExecutor {
 	public static final String IMAGE_PATH = "/yuuki/resource/images/";
 	
 	/**
-	 * The path to the image definitions file.
+	 * The path to land files.
 	 */
-	public static final String IMAGE_FILE = "graphics.csv";
+	public static final String LAND_PATH = "/yuuki/resource/land/";
+	
+	/**
+	 * The location of the file containing the music definitions.
+	 */
+	public static final String MUSIC_FILE = "music.csv";
+	
+	/**
+	 * The location of music files.
+	 */
+	public static final String MUSIC_PATH = "/yuuki/resource/audio/bgm/";
+	
+	/**
+	 * The path to the sound effect definitions file.
+	 */
+	public static final String SOUND_EFFECT_FILE = "effects.csv";
+	
+	/**
+	 * The path to sound effect files.
+	 */
+	public static final String SOUND_EFFECT_PATH =
+			"/yuuki/resource/audio/sfx/";
+	
+	/**
+	 * The name of the tile definitions file.
+	 */
+	public static final String TILE_FILE = "tiles.csv";
 	
 	/**
 	 * The name of the world definitions file.
@@ -202,68 +202,6 @@ public class Engine implements Runnable, UiExecutor {
 		String[] lands = world.getAllLandNames();
 		world.changeLand(lands[0]); // always load the first land in world
 		applyOptions();
-	}
-	
-	/**
-	 * Creates the user interface for this Engine.
-	 */
-	private void createInterface() {
-		Map<String, byte[]> effectData = loadSoundEffects();
-		Map<String, byte[]> musicData = loadMusic();
-		ImageFactory imageFactory = loadImages();
-		ui = new GraphicalInterface(this, options, effectData, musicData,
-				imageFactory);
-	}
-	
-	/**
-	 * Loads the images from disk.
-	 * 
-	 * @return The ImageFactory with the loaded images.
-	 */
-	private ImageFactory loadImages() {
-		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
-		ImageFactory factory = null;
-		try {
-			factory = loader.load(IMAGE_FILE);
-		} catch (IOException e) {
-			System.err.println("Could not load image file!");
-		}
-		return factory;
-	}
-	
-	/**
-	 * Loads the background music from disk.
-	 * 
-	 * @return A map that contains the background music data mapped to a sound
-	 * index.
-	 */
-	private Map<String, byte[]> loadMusic() {
-		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
-		Map<String, byte[]> soundData = null;
-		try {
-			soundData = loader.load(MUSIC_FILE);
-		} catch (IOException e) {
-			System.err.println("Could not load music!");
-		}
-		return soundData;
-	}
-	
-	/**
-	 * Loads the sound effects from disk.
-	 * 
-	 * @return A map that contains the sound effect data mapped to a sound
-	 * index.
-	 */
-	private Map<String, byte[]> loadSoundEffects() {
-		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
-				SOUND_EFFECT_PATH);
-		Map<String, byte[]> soundData = null;
-		try {
-			soundData = loader.load(SOUND_EFFECT_FILE);
-		} catch (IOException e) {
-			System.err.println("Could not load sound effects!");
-		}
-		return soundData;
 	}
 	
 	/**
@@ -413,6 +351,17 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Creates the user interface for this Engine.
+	 */
+	private void createInterface() {
+		Map<String, byte[]> effectData = loadSoundEffects();
+		Map<String, byte[]> musicData = loadMusic();
+		ImageFactory imageFactory = loadImages();
+		ui = new GraphicalInterface(this, options, effectData, musicData,
+				imageFactory);
+	}
+	
+	/**
 	 * Switches to the overworld screen and begins overworld advancement.
 	 */
 	private void enterOverworldMode() {
@@ -473,6 +422,57 @@ public class Engine implements Runnable, UiExecutor {
 			System.err.println("Could not load entity definitions!");
 		}
 		return factory;
+	}
+	
+	/**
+	 * Loads the images from disk.
+	 * 
+	 * @return The ImageFactory with the loaded images.
+	 */
+	private ImageFactory loadImages() {
+		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
+		ImageFactory factory = null;
+		try {
+			factory = loader.load(IMAGE_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load image file!");
+		}
+		return factory;
+	}
+	
+	/**
+	 * Loads the background music from disk.
+	 * 
+	 * @return A map that contains the background music data mapped to a sound
+	 * index.
+	 */
+	private Map<String, byte[]> loadMusic() {
+		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
+		Map<String, byte[]> soundData = null;
+		try {
+			soundData = loader.load(MUSIC_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load music!");
+		}
+		return soundData;
+	}
+	
+	/**
+	 * Loads the sound effects from disk.
+	 * 
+	 * @return A map that contains the sound effect data mapped to a sound
+	 * index.
+	 */
+	private Map<String, byte[]> loadSoundEffects() {
+		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
+				SOUND_EFFECT_PATH);
+		Map<String, byte[]> soundData = null;
+		try {
+			soundData = loader.load(SOUND_EFFECT_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load sound effects!");
+		}
+		return soundData;
 	}
 	
 	/**

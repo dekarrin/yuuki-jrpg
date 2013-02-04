@@ -25,6 +25,16 @@ public class ImageFactory {
 	}
 	
 	/**
+	 * Adds an image definition.
+	 * 
+	 * @param index The index to map the image to.
+	 * @param imageData The bytes that make up the image.
+	 */
+	public void addDefinition(String index, byte[] imageData) {
+		images.put(index, imageData);
+	}
+	
+	/**
 	 * Gets the image for an index.
 	 * 
 	 * @param index The index for the Image to get.
@@ -40,16 +50,6 @@ public class ImageFactory {
 			image = icon.getImage();
 		}
 		return image;
-	}
-	
-	/**
-	 * Adds an image definition.
-	 * 
-	 * @param index The index to map the image to.
-	 * @param imageData The bytes that make up the image.
-	 */
-	public void addDefinition(String index, byte[] imageData) {
-		images.put(index, imageData);
 	}
 	
 }

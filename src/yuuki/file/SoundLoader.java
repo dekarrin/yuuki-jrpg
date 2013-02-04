@@ -11,7 +11,7 @@ public class SoundLoader extends CsvResourceLoader {
 	
 	/**
 	 * The path to the directory containing the sound files that are referenced
-	 * by the resource files. 
+	 * by the resource files.
 	 */
 	private ByteArrayLoader soundLoader;
 	

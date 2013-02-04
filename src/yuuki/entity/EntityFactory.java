@@ -19,11 +19,6 @@ public class EntityFactory {
 	private static class EntityDefinition implements Cloneable {
 		
 		/**
-		 * The display character.
-		 */
-		public char disp;
-		
-		/**
 		 * The accuracy of the Character.
 		 */
 		public Stat acc;
@@ -37,6 +32,11 @@ public class EntityFactory {
 		 * The defense of the Character.
 		 */
 		public Stat def;
+		
+		/**
+		 * The display character.
+		 */
+		public char disp;
 		
 		/**
 		 * The hit points of the Character.

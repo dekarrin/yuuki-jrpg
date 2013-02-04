@@ -9,16 +9,6 @@ import java.util.Map;
 public class MusicEngine extends AudioEngine {
 	
 	/**
-	 * Creates a new MusicEngine.
-	 * 
-	 * @param soundData A map of string indexes to byte arrays containing sound
-	 * data. Such a map can be easily obtained using a SoundLoader object.
-	 */
-	public MusicEngine(Map<String, byte[]> soundData) {
-		super(soundData);
-	}
-
-	/**
 	 * The currently playing music.
 	 */
 	private SoundPlayerThread musicPlayer;
@@ -27,6 +17,16 @@ public class MusicEngine extends AudioEngine {
 	 * The name of the currently playing track.
 	 */
 	private String track = null;
+	
+	/**
+	 * Creates a new MusicEngine.
+	 * 
+	 * @param soundData A map of string indexes to byte arrays containing sound
+	 * data. Such a map can be easily obtained using a SoundLoader object.
+	 */
+	public MusicEngine(Map<String, byte[]> soundData) {
+		super(soundData);
+	}
 	
 	/**
 	 * Spawns a player thread.

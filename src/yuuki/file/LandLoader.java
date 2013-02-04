@@ -27,6 +27,11 @@ public class LandLoader extends ResourceLoader {
 	private static class MetaData {
 		
 		/**
+		 * The number of entities in the map.
+		 */
+		public int entities;
+		
+		/**
 		 * The name of the map.
 		 */
 		public String name;
@@ -35,11 +40,6 @@ public class LandLoader extends ResourceLoader {
 		 * The number of portals in the map.
 		 */
 		public int portals;
-		
-		/**
-		 * The number of entities in the map.
-		 */
-		public int entities;
 		
 		/**
 		 * The size of the map.
@@ -57,16 +57,16 @@ public class LandLoader extends ResourceLoader {
 	 * The sections of the file that need to be parsed in different ways.
 	 */
 	private enum ParserMode {
+		ENTITIES,
 		MAP,
 		METADATA,
-		PORTALS,
-		ENTITIES
+		PORTALS
 	}
 	
 	/**
-	 * Generates tiles from tile definitions.
+	 * The loaded entities.
 	 */
-	private final TileFactory tileFactory;
+	private ArrayList<Movable> entities;
 	
 	/**
 	 * Generates entities from entity definitions.
@@ -89,14 +89,14 @@ public class LandLoader extends ResourceLoader {
 	private ArrayList<Portal> portals;
 	
 	/**
-	 * The loaded entities.
-	 */
-	private ArrayList<Movable> entities;
-	
-	/**
 	 * Reads from the resource file.
 	 */
 	private BufferedReader reader;
+	
+	/**
+	 * Generates tiles from tile definitions.
+	 */
+	private final TileFactory tileFactory;
 	
 	/**
 	 * Creates a new LandLoader for land files at the specified location.
@@ -277,6 +277,22 @@ public class LandLoader extends ResourceLoader {
 	}
 	
 	/**
+	 * Reads a line containing entity data.
+	 * 
+	 * @param line The line with the entity data.
+	 */
+	private void readEntityData(String line) {
+		String[] parts = line.split(";");
+		Point location = parsePoint(parts[0]);
+		String name = parts[1];
+		int level = parseInt(parts[2]);
+		NonPlayerCharacter npc;
+		npc = entityFactory.createNpc(name, level);
+		npc.setLocation(location);
+		entities.add(npc);
+	}
+	
+	/**
 	 * Parses a line of meta data into the actual meta data.
 	 * 
 	 * @param line The line to parse.
@@ -315,22 +331,6 @@ public class LandLoader extends ResourceLoader {
 		Portal p = new Portal(name, land, link);
 		p.setLocation(location);
 		portals.add(p);
-	}
-	
-	/**
-	 * Reads a line containing entity data.
-	 * 
-	 * @param line The line with the entity data.
-	 */
-	private void readEntityData(String line) {
-		String[] parts = line.split(";");
-		Point location = parsePoint(parts[0]);
-		String name = parts[1];
-		int level = parseInt(parts[2]);
-		NonPlayerCharacter npc;
-		npc = entityFactory.createNpc(name, level);
-		npc.setLocation(location);
-		entities.add(npc);
 	}
 	
 }

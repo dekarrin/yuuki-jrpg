@@ -8,7 +8,7 @@ import java.io.InputStream;
  * Loads a file directly into a byte array
  */
 public class ByteArrayLoader extends ResourceLoader {
-
+	
 	/**
 	 * Creates a new ByteArrayLoader for resource files at the specified
 	 * location.

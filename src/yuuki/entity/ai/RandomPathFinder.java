@@ -8,7 +8,7 @@ import yuuki.world.WalkGraph;
  * Randomly finds a path.
  */
 public class RandomPathFinder extends OverworldPathFinder {
-
+	
 	@Override
 	public Point getNextMove(WalkGraph graph) {
 		int choice = (int) Math.floor((Math.random() * 8));

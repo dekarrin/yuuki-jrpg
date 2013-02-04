@@ -17,7 +17,7 @@ public class EffectEngine extends AudioEngine {
 	public EffectEngine(Map<String, byte[]> soundData) {
 		super(soundData);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
