@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -188,14 +189,21 @@ OptionsScreenListener, MenuBarListener {
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
 	 * @param options The options of the program.
+	 * @param effectData A map of string indexes to byte arrays containing
+	 * sound data for music. Such a map can be easily obtained using a
+	 * SoundLoader object.
+	 * @param musicData A map of string indexes to byte arrays containing sound
+	 * data for music. Such a map can be easily obtained using a SoundLoader
+	 * object.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram, Options options) {
+	public GraphicalInterface(UiExecutor mainProgram, Options options,
+			Map<String, byte[]> effectData, Map<String, byte[]> musicData) {
 		this.options = options;
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
-		this.soundEngine = new DualSoundEngine();
+		this.soundEngine = new DualSoundEngine(effectData, musicData);
 		this.imageEngine = new ImageFactory();
 	}
 	

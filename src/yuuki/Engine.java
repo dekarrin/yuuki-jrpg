@@ -2,6 +2,7 @@ package yuuki;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -15,6 +16,7 @@ import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.file.ActionLoader;
 import yuuki.file.EntityLoader;
+import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
 import yuuki.ui.GraphicalInterface;
@@ -80,6 +82,16 @@ public class Engine implements Runnable, UiExecutor {
 	public static final String ACTIONS_FILE = "actions.csv";
 	
 	/**
+	 * The location of the file containing the music definitions.
+	 */
+	public static final String MUSIC_FILE = "music.csv";
+	
+	/**
+	 * The location of music files.
+	 */
+	public static final String MUSIC_PATH = "/yuuki/resource/audio/bgm/";
+	
+	/**
 	 * The path to definitions files.
 	 */
 	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
@@ -89,6 +101,17 @@ public class Engine implements Runnable, UiExecutor {
 	 * location is relative to the package structure.
 	 */
 	public static final String ENTITIES_FILE = "monsters.csv";
+	
+	/**
+	 * The path to sound effect files.
+	 */
+	public static final String SOUND_EFFECT_PATH =
+			"/yuuki/resource/audio/sfx/";
+	
+	/**
+	 * The path to the sound effect definitions file.
+	 */
+	public static final String SOUND_EFFECT_FILE = "effects.csv";
 	
 	/**
 	 * The path to land files.
@@ -161,12 +184,57 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	public Engine() {
 		options = new Options();
-		ui = new GraphicalInterface(this, options);
+		createInterface();
 		entityMaker = loadEntities();
 		world = loadWorld();
 		String[] lands = world.getAllLandNames();
 		world.changeLand(lands[0]); // always load the first land in world
 		applyOptions();
+	}
+	
+	/**
+	 * Creates the user interface for this Engine.
+	 */
+	private void createInterface() {
+		Map<String, byte[]> effectData = loadSoundEffects();
+		Map<String, byte[]> musicData = loadMusic();
+		ui = new GraphicalInterface(this, options, effectData, musicData);
+	}
+	
+	/**
+	 * Loads the background music from disk.
+	 * 
+	 * @return A map that contains the background music data mapped to a sound
+	 * index.
+	 */
+	private Map<String, byte[]> loadMusic() {
+		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
+				MUSIC_PATH);
+		Map<String, byte[]> soundData = null;
+		try {
+			soundData = loader.load(MUSIC_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load music!");
+		}
+		return soundData;
+	}
+	
+	/**
+	 * Loads the sound effects from disk.
+	 * 
+	 * @return A map that contains the sound effect data mapped to a sound
+	 * index.
+	 */
+	private Map<String, byte[]> loadSoundEffects() {
+		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
+				SOUND_EFFECT_PATH);
+		Map<String, byte[]> soundData = null;
+		try {
+			soundData = loader.load(SOUND_EFFECT_FILE);
+		} catch (IOException e) {
+			System.err.println("Could not load sound effects!");
+		}
+		return soundData;
 	}
 	
 	/**

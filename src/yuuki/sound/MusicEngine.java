@@ -1,11 +1,23 @@
 package yuuki.sound;
 
+import java.util.Map;
+
 /**
  * An AudioEngine intended for playing long tracks that loop. Only one track
  * at a time is allowed.
  */
 public class MusicEngine extends AudioEngine {
 	
+	/**
+	 * Creates a new MusicEngine.
+	 * 
+	 * @param soundData A map of string indexes to byte arrays containing sound
+	 * data. Such a map can be easily obtained using a SoundLoader object.
+	 */
+	public MusicEngine(Map<String, byte[]> soundData) {
+		super(soundData);
+	}
+
 	/**
 	 * The currently playing music.
 	 */
@@ -19,18 +31,18 @@ public class MusicEngine extends AudioEngine {
 	/**
 	 * Spawns a player thread.
 	 * 
-	 * @param soundFile The name of the file to play.
+	 * @param index The index of the sound to play.
 	 * @param restart Whether to restart the current player if the requested
 	 * sound file is already playing.
 	 */
-	public void playSound(String soundFile, boolean restart) {
-		if (track == null || !track.equals(soundFile) || restart) {
-			playSound(soundFile);
+	public void playSound(String index, boolean restart) {
+		if (track == null || !track.equals(index) || restart) {
+			playSound(index);
 		}
 	}
 	
 	/**
-	 * Change the volume of the currently playing music.
+	 * Changes the volume of the currently playing music.
 	 * 
 	 * @param volume The new volume.
 	 */
@@ -57,7 +69,7 @@ public class MusicEngine extends AudioEngine {
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
 		track = soundFile;
-		byte[] data = sounds.get(soundFile);
+		byte[] data = getAudioData(soundFile);
 		stopSound();
 		musicPlayer = new SoundPlayerThread(data, getVolume(), true);
 		(new Thread(musicPlayer, "MusicPlayer")).start();
