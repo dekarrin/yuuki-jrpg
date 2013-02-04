@@ -14,6 +14,11 @@ public class StandingPathFinder extends OverworldPathFinder {
 	 */
 	private Point location;
 	
+	@Override
+	public Point getNextMove(WalkGraph graph) {
+		return new Point(location);
+	}
+	
 	/**
 	 * Sets the current location.
 	 * 
@@ -21,11 +26,6 @@ public class StandingPathFinder extends OverworldPathFinder {
 	 */
 	public void setLocation(Point location) {
 		this.location = new Point(location);
-	}
-	
-	@Override
-	public Point getNextMove(WalkGraph graph) {
-		return new Point(location);
 	}
 	
 }

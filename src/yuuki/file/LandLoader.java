@@ -24,6 +24,11 @@ public class LandLoader extends ResourceLoader {
 	private static class MetaData {
 		
 		/**
+		 * The name of the map.
+		 */
+		public String name;
+		
+		/**
 		 * The number of portals in the map.
 		 */
 		public int portals;
@@ -37,11 +42,6 @@ public class LandLoader extends ResourceLoader {
 		 * Where the player starts.
 		 */
 		public Point start;
-		
-		/**
-		 * The name of the map.
-		 */
-		public String name;
 		
 	};
 	

@@ -27,6 +27,11 @@ import yuuki.util.Grid;
 public class Land {
 	
 	/**
+	 * The transfers that are waiting to come in.
+	 */
+	private List<Movable> incomingTransfers;
+	
+	/**
 	 * The name of this Land.
 	 */
 	private String name;
@@ -35,11 +40,6 @@ public class Land {
 	 * The position that the player starts at.
 	 */
 	private Point playerStart;
-	
-	/**
-	 * The residents that were transfered out in the last advancement.
-	 */
-	private List<Movable> transfers;
 	
 	/**
 	 * The Portals that link this Land to different areas.
@@ -52,14 +52,14 @@ public class Land {
 	private Map<Point, Movable> residents;
 	
 	/**
-	 * The transfers that are waiting to come in.
-	 */
-	private List<Movable> incomingTransfers;
-	
-	/**
 	 * The tiles that make up this Land.
 	 */
 	private Grid<Tile> tiles;
+	
+	/**
+	 * The residents that were transfered out in the last advancement.
+	 */
+	private List<Movable> transfers;
 	
 	/**
 	 * Creates a new Land.
@@ -91,17 +91,6 @@ public class Land {
 	}
 	
 	/**
-	 * Gets the portal at a specific location.
-	 * 
-	 * @param p The point that the portal is at.
-	 * 
-	 * @return The portal at the given location, or null if there is no portal.
-	 */
-	public Portal portalAt(Point p) {
-		return portals.get(p);
-	}
-	
-	/**
 	 * Adds a resident to this Land if it has not already been added.
 	 * 
 	 * @param r The resident to add.
@@ -122,17 +111,6 @@ public class Land {
 		processIncomingTransfers();
 		moveResidents();
 		transferOutResidents();
-	}
-	
-	/**
-	 * Adds waiting incoming transfers if they can be added.
-	 */
-	private void processIncomingTransfers() {
-		Movable[] incoming = incomingTransfers.toArray(new Movable[0]);
-		incomingTransfers.clear();
-		for (Movable m : incoming) {
-			transferInResident(m, m.getLocation());
-		}
 	}
 	
 	/**
@@ -188,6 +166,16 @@ public class Land {
 	}
 	
 	/**
+	 * Gets the list of residents who transfered out during the last
+	 * advancement.
+	 * 
+	 * @return The list of residents.
+	 */
+	public List<Movable> getTransfers() {
+		return transfers;
+	}
+	
+	/**
 	 * Gets the WalkGraph for a given point.
 	 * 
 	 * @param center The coordinates of the center of the WalkGraph.
@@ -214,6 +202,17 @@ public class Land {
 	public boolean isOccupied(Point location) {
 		Tile toCheck = tiles.itemAt(location);
 		return toCheck.isOccupied();
+	}
+	
+	/**
+	 * Gets the portal at a specific location.
+	 * 
+	 * @param p The point that the portal is at.
+	 * 
+	 * @return The portal at the given location, or null if there is no portal.
+	 */
+	public Portal portalAt(Point p) {
+		return portals.get(p);
 	}
 	
 	/**
@@ -257,6 +256,21 @@ public class Land {
 	}
 	
 	/**
+	 * Transfers in a resident to a specific point.
+	 * 
+	 * @param r The resident to transfer in.
+	 * @param p The point to transfer to.
+	 */
+	public void transferInResident(Movable r, Point p) {
+		r.setLocation(p);
+		if (!residents.containsKey(p)) {
+			addResident(r);
+		} else {
+			incomingTransfers.add(r);
+		}
+	}
+	
+	/**
 	 * Clears the resident map and moves all residents to their new positions.
 	 * 
 	 * @param moveList An array containing the updated residents.
@@ -265,6 +279,17 @@ public class Land {
 		residents.clear();
 		for (Movable r: moveList) {
 			residents.put(r.getLocation(), r);
+		}
+	}
+	
+	/**
+	 * Applies all of the transfers in the given list.
+	 * 
+	 * @param transfers The residents that need to be transfered.
+	 */
+	private void applyTransfers(List<Movable> transfers) {
+		for (Movable r : transfers) {
+			removeResident(r);
 		}
 	}
 	
@@ -284,6 +309,17 @@ public class Land {
 	}
 	
 	/**
+	 * Adds waiting incoming transfers if they can be added.
+	 */
+	private void processIncomingTransfers() {
+		Movable[] incoming = incomingTransfers.toArray(new Movable[0]);
+		incomingTransfers.clear();
+		for (Movable m : incoming) {
+			transferInResident(m, m.getLocation());
+		}
+	}
+	
+	/**
 	 * Moves transferable residents that have stepped on a portal.
 	 */
 	private void transferOutResidents() {
@@ -297,42 +333,6 @@ public class Land {
 		}
 		applyTransfers(transfers);
 		this.transfers = transfers;
-	}
-	
-	/**
-	 * Gets the list of residents who transfered out during the last
-	 * advancement.
-	 * 
-	 * @return The list of residents.
-	 */
-	public List<Movable> getTransfers() {
-		return transfers;
-	}
-	
-	/**
-	 * Applies all of the transfers in the given list.
-	 * 
-	 * @param transfers The residents that need to be transfered.
-	 */
-	private void applyTransfers(List<Movable> transfers) {
-		for (Movable r : transfers) {
-			removeResident(r);
-		}
-	}
-	
-	/**
-	 * Transfers in a resident to a specific point.
-	 * 
-	 * @param r The resident to transfer in.
-	 * @param p The point to transfer to.
-	 */
-	public void transferInResident(Movable r, Point p) {
-		r.setLocation(p);
-		if (!residents.containsKey(p)) {
-			addResident(r);
-		} else {
-			incomingTransfers.add(r);
-		}
 	}
 	
 }

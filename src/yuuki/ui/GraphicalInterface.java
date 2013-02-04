@@ -65,11 +65,6 @@ OptionsScreenListener, MenuBarListener {
 	public static final int MESSAGE_DISPLAY_TIME = 5000;
 	
 	/**
-	 * The content pane of the window.
-	 */
-	private BackgroundPane contentPane;
-	
-	/**
 	 * The delay, in milliseconds, between each letter printed on the message
 	 * box.
 	 */
@@ -98,11 +93,11 @@ OptionsScreenListener, MenuBarListener {
 			SwingUtilities.invokeLater(doRun);
 		}
 	}
+	
 	/**
 	 * The animation engine.
 	 */
 	private Animator animationEngine;
-	
 	/**
 	 * The battle screen.
 	 */
@@ -112,6 +107,11 @@ OptionsScreenListener, MenuBarListener {
 	 * The screen where character creation is done.
 	 */
 	private CharacterCreationScreen charCreationScreen;
+	
+	/**
+	 * The content pane of the window.
+	 */
+	private BackgroundPane contentPane;
 	
 	/**
 	 * The screen that the interface is currently on.

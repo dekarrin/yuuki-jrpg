@@ -62,8 +62,8 @@ public class WorldLoader extends CsvResourceLoader {
 	 */
 	private void loadLands(World world, String[] paths)
 			throws IOException {
-		for (int i = 0; i < paths.length; i++) {
-			Land land = landLoader.load(paths[i]);
+		for (String path: paths) {
+			Land land = landLoader.load(path);
 			if (land != null) {
 				world.addLand(land);
 			}
