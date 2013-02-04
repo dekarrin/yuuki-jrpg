@@ -9,6 +9,11 @@ import java.io.InputStream;
 public class CsvResourceLoader extends ResourceLoader {
 	
 	/**
+	 * Separates multiple values in a single field.
+	 */
+	private static final String MULTIVALUE_DELIMITER = ":";
+	
+	/**
 	 * Parses data from the resource files.
 	 */
 	private CsvParser parser;
@@ -42,6 +47,18 @@ public class CsvResourceLoader extends ResourceLoader {
 			records = parser.read();
 		}
 		return records;
+	}
+	
+	/**
+	 * Splits a multiple-value field into its individual values. Each value is
+	 * delimited by the MULTIVALUE_DELIMITER.
+	 * 
+	 * @param field The entire field as a String.
+	 * 
+	 * @return An array containing each of the field's values.
+	 */
+	protected String[] splitMultiField(String field) {
+		return field.split(MULTIVALUE_DELIMITER);
 	}
 	
 }
