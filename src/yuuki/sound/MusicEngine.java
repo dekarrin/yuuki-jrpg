@@ -9,7 +9,7 @@ public class MusicEngine extends AudioEngine {
 	/**
 	 * The currently playing music.
 	 */
-	private SoundPlayer musicPlayer;
+	private SoundPlayerThread musicPlayer;
 	
 	/**
 	 * The name of the currently playing track.
@@ -59,7 +59,7 @@ public class MusicEngine extends AudioEngine {
 		track = soundFile;
 		byte[] data = sounds.get(soundFile);
 		stopSound();
-		musicPlayer = new SoundPlayer(data, getVolume(), true);
+		musicPlayer = new SoundPlayerThread(data, getVolume(), true);
 		(new Thread(musicPlayer, "MusicPlayer")).start();
 	}
 	

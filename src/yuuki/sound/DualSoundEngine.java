@@ -2,9 +2,9 @@ package yuuki.sound;
 
 /**
  * Combines the functionality of a MusicEngine and an EffectEngine into one
- * class.
+ * class for easy access.
  */
-public class SoundEngine {
+public class DualSoundEngine {
 	
 	/**
 	 * The location of sound effect files.
@@ -39,7 +39,7 @@ public class SoundEngine {
 	/**
 	 * Creates a new SoundEngine.
 	 */
-	public SoundEngine() {
+	public DualSoundEngine() {
 		musicEngine = new MusicEngine();
 		effectEngine = new EffectEngine();
 		database = new SoundDatabase();

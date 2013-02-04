@@ -20,7 +20,7 @@ import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
-import yuuki.sound.SoundEngine;
+import yuuki.sound.DualSoundEngine;
 import yuuki.ui.menu.FileMenu;
 import yuuki.ui.menu.MenuBar;
 import yuuki.ui.menu.MenuBarListener;
@@ -181,7 +181,7 @@ OptionsScreenListener, MenuBarListener {
 	/**
 	 * Plays all sounds.
 	 */
-	private SoundEngine soundEngine;
+	private DualSoundEngine soundEngine;
 	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
@@ -195,7 +195,7 @@ OptionsScreenListener, MenuBarListener {
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
-		this.soundEngine = new SoundEngine();
+		this.soundEngine = new DualSoundEngine();
 		this.imageEngine = new ImageFactory();
 	}
 	

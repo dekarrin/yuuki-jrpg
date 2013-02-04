@@ -17,7 +17,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 /**
  * Plays sound data in a thread.
  */
-class SoundPlayer implements Runnable {
+class SoundPlayerThread implements Runnable {
 	
 	/**
 	 * The amount of time in milliseconds to for the player thread to wait
@@ -83,7 +83,7 @@ class SoundPlayer implements Runnable {
 	 * @param volume The volume to play the sound data at.
 	 * @param loop Whether to loop play back until stopped.
 	 */
-	public SoundPlayer(byte[] soundData, int volume, boolean loop) {
+	public SoundPlayerThread(byte[] soundData, int volume, boolean loop) {
 		data = Arrays.copyOf(soundData, soundData.length);
 		this.volume = volume;
 		this.looping = loop;

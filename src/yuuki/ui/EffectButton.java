@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 
-import yuuki.sound.SoundEngine;
+import yuuki.sound.DualSoundEngine;
 
 /**
  * A JButton that does special effects for mouse events.
@@ -27,7 +27,7 @@ public class EffectButton extends JButton implements MouseListener {
 	/**
 	 * The sound effect engine for the game.
 	 */
-	private SoundEngine soundEngine;
+	private DualSoundEngine soundEngine;
 	
 	/**
 	 * Creates a Button with the specified text.
@@ -37,7 +37,7 @@ public class EffectButton extends JButton implements MouseListener {
 	 * @param soundEngine The sound engine to play sound effects through.
 	 */
 	public EffectButton(String text, Color hoverColor,
-			SoundEngine soundEngine) {
+			DualSoundEngine soundEngine) {
 		super(text);
 		this.hoverColor = hoverColor;
 		this.soundEngine = soundEngine;

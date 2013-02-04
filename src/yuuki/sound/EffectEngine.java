@@ -12,7 +12,7 @@ public class EffectEngine extends AudioEngine {
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
 		byte[] data = sounds.get(soundFile);
-		SoundPlayer player = new SoundPlayer(data, getVolume(), false);
+		SoundPlayerThread player = new SoundPlayerThread(data, getVolume(), false);
 		(new Thread(player, "SFXPlayer")).start();
 	}
 	

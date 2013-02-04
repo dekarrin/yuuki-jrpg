@@ -12,7 +12,7 @@ import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.JLabel;
 
-import yuuki.sound.SoundEngine;
+import yuuki.sound.DualSoundEngine;
 import yuuki.ui.EffectButton;
 
 /**
@@ -83,7 +83,7 @@ MouseListener {
 	 * @param height The height of the screen.
 	 * @param sound The game sound engine.
 	 */
-	public IntroScreen(int width, int height, SoundEngine sound) {
+	public IntroScreen(int width, int height, DualSoundEngine sound) {
 		super(width, height);
 		newGameButton = new EffectButton("New Game", EFFECT_COLOR, sound);
 		loadGameButton = new EffectButton("Load Game", EFFECT_COLOR, sound);
