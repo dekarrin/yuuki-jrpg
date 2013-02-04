@@ -10,9 +10,9 @@ import yuuki.world.TileFactory;
 public class TileLoader extends CsvResourceLoader {
 	
 	/**
-	 * Creates a new TileLoader for land files at the specified location.
+	 * Creates a new TileLoader for tile files at the specified location.
 	 * 
-	 * @param location The path to the directory containing the land files to
+	 * @param location The path to the directory containing the tile files to
 	 * be loaded, relative to the package structure.
 	 */
 	public TileLoader(String location) {

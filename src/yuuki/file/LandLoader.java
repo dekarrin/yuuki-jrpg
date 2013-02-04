@@ -45,6 +45,9 @@ public class LandLoader extends ResourceLoader {
 		
 	};
 	
+	/**
+	 * The sections of the file that need to be parsed in different ways.
+	 */
 	private enum ParserMode {
 		MAP,
 		METADATA,
@@ -61,6 +64,9 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private MetaData meta;
 	
+	/**
+	 * The section of the land file that is being parsed.
+	 */
 	private ParserMode mode;
 	
 	/**

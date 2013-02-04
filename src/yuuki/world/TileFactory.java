@@ -51,10 +51,10 @@ public class TileFactory {
 	 * @param walkable Whether the tile is walkable.
 	 */
 	public void addDefinition(int id, String name, boolean walkable) {
-		TileDefinition td = new TileDefinition();
-		td.name = name;
-		td.walkable = walkable;
-		definitions.put(id, td);
+		TileDefinition def = new TileDefinition();
+		def.name = name;
+		def.walkable = walkable;
+		definitions.put(id, def);
 	}
 	
 	/**
