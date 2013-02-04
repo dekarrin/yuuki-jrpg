@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import yuuki.action.Action;
+import yuuki.entity.ai.StandingPathFinder;
 import yuuki.world.Land;
 import yuuki.world.WalkGraph;
 
@@ -17,6 +18,11 @@ public class NonPlayerCharacter extends Character {
 	 * Used in calculating experience given on death.
 	 */
 	protected static final int DEATH_XP_BASE = 2;
+	
+	/**
+	 * The AI for path finding.
+	 */
+	private StandingPathFinder overworldAi;
 	
 	/**
 	 * Used to calculate experience given on death.
@@ -39,15 +45,17 @@ public class NonPlayerCharacter extends Character {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
+	 * @param display The display character.
 	 * @param xpBase Used for calculating given XP on death.
 	 */
 	public NonPlayerCharacter(String name, int level, Action[] moves,
 			VariableStat hp, VariableStat mp, Stat strength,
 			Stat defense, Stat agility, Stat accuracy,
-			Stat magic, Stat luck, int xpBase) {
+			Stat magic, Stat luck, char display, int xpBase) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
-				magic, luck);
+				magic, luck, display);
 		this.xpBase = xpBase;
+		overworldAi = new StandingPathFinder();
 	}
 	
 	@Override
@@ -65,63 +73,15 @@ public class NonPlayerCharacter extends Character {
 		return (int) Math.floor(xpBase * level * power);
 	}
 	
-	@Override
-	public char getDisplayChar() {
-		return 'x';
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("fallthrough")
 	public Point getNextMove(Land land) {
 		WalkGraph graph = land.getWalkGraph(getLocation());
-		int choice = (int) Math.floor((Math.random() * 8));
-		Point dest = null;
-		switch (choice) {
-			case 0:
-				dest = graph.getNorth();
-				if (dest != null) {
-					break;
-				}
-			case 1:
-				dest = graph.getNorthEast();
-				if (dest != null) {
-					break;
-				}
-			case 2:
-				dest = graph.getEast();
-				if (dest != null) {
-					break;
-				}
-			case 3:
-				dest = graph.getSouthEast();
-				if (dest != null) {
-					break;
-				}
-			case 4:
-				dest = graph.getSouth();
-				if (dest != null) {
-					break;
-				}
-			case 5:
-				dest = graph.getSouthWest();
-				if (dest != null) {
-					break;
-				}
-			case 6:
-				dest = graph.getWest();
-				if (dest != null) {
-					break;
-				}
-			case 7:
-				dest = graph.getNorthWest();
-				if (dest != null) {
-					break;
-				}
-		}
-		return dest;
+		overworldAi.setLocation(getLocation());
+		Point p = overworldAi.getNextMove(graph);
+		return p;
 	}
 	
 	@Override

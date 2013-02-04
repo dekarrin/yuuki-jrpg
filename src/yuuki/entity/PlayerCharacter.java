@@ -14,11 +14,6 @@ import yuuki.world.WalkGraph;
 public class PlayerCharacter extends Character {
 	
 	/**
-	 * The representation of the PlayerCharacter as a single character.
-	 */
-	public static final int DISPLAY_CHAR = '@';
-	
-	/**
 	 * A reference to the user interface for this PC to get its moves from.
 	 */
 	private Interactable ui;
@@ -40,25 +35,21 @@ public class PlayerCharacter extends Character {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
+	 * @param display The display character.
 	 * @param ui The interface that this Character should get input from.
 	 */
 	public PlayerCharacter(String name, int level, Action[] moves,
 			VariableStat hp, VariableStat mp, Stat strength,
 			Stat defense, Stat agility, Stat accuracy, Stat magic,
-			Stat luck, Interactable ui) {
+			Stat luck, char display, Interactable ui) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
-				magic, luck);
+				magic, luck, display);
 		this.ui = ui;
 	}
 	
 	@Override
 	public String getBattleImage() {
 		return null;
-	}
-	
-	@Override
-	public char getDisplayChar() {
-		return DISPLAY_CHAR;
 	}
 	
 	/**

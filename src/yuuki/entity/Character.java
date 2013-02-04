@@ -42,6 +42,16 @@ public abstract class Character implements Movable, Displayable {
 	}
 	
 	/**
+	 * The display character for this entity.
+	 */
+	private char displayChar;
+	
+	@Override
+	public char getDisplayChar() {
+		return displayChar;
+	}
+	
+	/**
 	 * Modifies percent chance to hit.
 	 */
 	private Stat accuracy;
@@ -148,10 +158,11 @@ public abstract class Character implements Movable, Displayable {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
+	 * @param display The display character.
 	 */
 	public Character(String name, int level, Action[] moves, VariableStat hp,
 			VariableStat mp, Stat strength, Stat defense, Stat agility,
-			Stat accuracy, Stat magic, Stat luck) {
+			Stat accuracy, Stat magic, Stat luck, char display) {
 		if (level < 1) {
 			throw new IllegalArgumentException("Character level too low.");
 		}
@@ -172,6 +183,7 @@ public abstract class Character implements Movable, Displayable {
 		this.xp = Character.getRequiredXP(level);
 		this.fighterId = -1;
 		this.teamId = -1;
+		this.displayChar = display;
 		for (Action move: moves) {
 			move.setOrigin(this);
 		}

@@ -19,6 +19,11 @@ public class EntityFactory {
 	private static class EntityDefinition implements Cloneable {
 		
 		/**
+		 * The display character.
+		 */
+		public char disp;
+		
+		/**
 		 * The accuracy of the Character.
 		 */
 		public Stat acc;
@@ -145,12 +150,13 @@ public class EntityFactory {
 	 * @param luk The base luck.
 	 * @param lukg The luck gained per level.
 	 * @param moves The actions that this character may perform.
+	 * @param disp The display character.
 	 * @param xp The experienced gained when this character is defeated.
 	 */
 	public void addDefinition(String name, int hp, int hpg, int mp, int mpg,
 			int str, int strg, int def, int defg, int agl, int aglg, int acc,
 			int accg, int mag, int magg, int luk, int lukg, Action[] moves,
-			int xp) {
+			char disp, int xp) {
 		EntityDefinition ed = new EntityDefinition();
 		ed.name = name;
 		ed.hp = new VariableStat("health", hp, hpg);
@@ -161,6 +167,7 @@ public class EntityFactory {
 		ed.acc = new Stat("accuracy", acc, accg);
 		ed.mag = new Stat("magic", mag, magg);
 		ed.luk = new Stat("luck", luk, lukg);
+		ed.disp = disp;
 		ed.moves = moves;
 		ed.xp = xp;
 		definitions.put(name.toLowerCase(), ed);
@@ -178,7 +185,7 @@ public class EntityFactory {
 		EntityDefinition d = getDefinition(name);
 		NonPlayerCharacter m;
 		m = new NonPlayerCharacter(d.name, level, d.moves, d.hp, d.mp, d.str,
-				d.def, d.agl, d.acc, d.mag, d.luk, d.xp);
+				d.def, d.agl, d.acc, d.mag, d.luk, d.disp, d.xp);
 		return m;
 	}
 	
@@ -196,7 +203,7 @@ public class EntityFactory {
 		EntityDefinition d = getDefinition(PLAYER_CHARACTER_NAME);
 		PlayerCharacter m;
 		m = new PlayerCharacter(name, level, d.moves, d.hp, d.mp, d.str, d.def,
-				d.agl, d.acc, d.mag, d.luk, ui);
+				d.agl, d.acc, d.mag, d.luk, d.disp, ui);
 		return m;
 	}
 	
