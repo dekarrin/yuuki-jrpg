@@ -25,8 +25,7 @@ public class TileLoader extends CsvResourceLoader {
 	 * @param resource The location of the file to load, relative to the
 	 * resource root.
 	 * 
-	 * @return A TileFactory with the definitions from the file, or null if the
-	 * definitions file does not exist.
+	 * @return A TileFactory with the definitions from the file.
 	 * 
 	 * @throws IOException If an IOException occurs.
 	 */
