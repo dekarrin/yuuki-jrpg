@@ -29,9 +29,6 @@ public abstract class TimedAnimation extends Animation {
 		startTime = 0;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void advance(int fps) {
 		if (isOnFirstPulse()) {

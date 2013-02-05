@@ -100,9 +100,6 @@ public class Sprite implements Animatable, AnimationOwner {
 		return add(s.getComponent(), false);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addAnim(Animatable a) {
 		if (a.isControlled()) {
@@ -113,9 +110,6 @@ public class Sprite implements Animatable, AnimationOwner {
 		ownedAnims.add(a);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void advanceFrame(int fps) {
 		for (Animatable a : ownedAnims) {
@@ -170,9 +164,6 @@ public class Sprite implements Animatable, AnimationOwner {
 		return y;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isControlled() {
 		return controlled;
@@ -202,9 +193,6 @@ public class Sprite implements Animatable, AnimationOwner {
 		updateBounds();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeAnim(Animatable a) {
 		if (ownedAnims.remove(a)) {
@@ -234,9 +222,6 @@ public class Sprite implements Animatable, AnimationOwner {
 		setComponentProperties();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;

@@ -63,9 +63,6 @@ public class MusicEngine extends AudioEngine {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
 		track = soundFile;

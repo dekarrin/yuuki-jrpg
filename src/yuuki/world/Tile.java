@@ -40,17 +40,11 @@ public class Tile implements Displayable {
 		occupied = false;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getBattleImage() {
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public char getDisplayChar() {
 		return ((char) id);
@@ -65,9 +59,6 @@ public class Tile implements Displayable {
 		return name.toLowerCase();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getOverworldImage() {
 		return null;

@@ -18,9 +18,6 @@ public class EffectEngine extends AudioEngine {
 		super(soundData);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void spawnPlayerThread(String soundFile) {
 		byte[] data = getAudioData(soundFile);

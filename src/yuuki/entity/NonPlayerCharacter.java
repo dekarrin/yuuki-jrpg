@@ -32,8 +32,6 @@ public class NonPlayerCharacter extends Character {
 	/**
 	 * Allocates a new NonPlayerCharacter.
 	 *
-	 * {@inheritDoc}
-	 *
 	 * @param name The name of the Character
 	 * @param level The level of the new Character. XP is set to match this.
 	 * @param moves The moves this Character knows.
@@ -73,9 +71,6 @@ public class NonPlayerCharacter extends Character {
 		return (int) Math.floor(xpBase * level * power);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Point getNextMove(Land land) {
 		WalkGraph graph = land.getWalkGraph(getLocation(), false);
@@ -89,9 +84,6 @@ public class NonPlayerCharacter extends Character {
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isTransferrable() {
 		return false;

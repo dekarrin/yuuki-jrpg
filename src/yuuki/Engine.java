@@ -197,9 +197,6 @@ public class Engine implements Runnable, UiExecutor {
 		ui = new GraphicalInterface(this, options);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestBattle(boolean isMain, Character[] t1, Character[] t2) {
 		Character[][] fighters = {t1, t2};
@@ -211,9 +208,6 @@ public class Engine implements Runnable, UiExecutor {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestBattleEnd() {
 		Character winner = mainBattle.getFighters(0).get(0);
@@ -224,17 +218,11 @@ public class Engine implements Runnable, UiExecutor {
 		player.restoreMP();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestBattleStart() {
 		spawnBattleThread(mainBattle, true);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
@@ -243,60 +231,39 @@ public class Engine implements Runnable, UiExecutor {
 		enterOverworldMode();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestCloseGame() {
 		exitOverworldMode();
 		ui.switchToIntroScreen();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestLoadGame() {
 		ui.display(null, "Loading hasn't yet been implemented", false);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestNewGame() {
 		exitOverworldMode();
 		ui.switchToCharacterCreationScreen();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestOptionApplication() {
 		applyOptions();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestOptionsScreen() {
 		ui.switchToOptionsScreen();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestOptionsSubmission() {
 		// TODO: do not depend on Interactable to set options
 		ui.switchToLastScreen();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestQuit() {
 		boolean quit = ui.showConfirmDialog("Are you sure you want to quit?");
@@ -306,17 +273,11 @@ public class Engine implements Runnable, UiExecutor {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void requestSaveGame() {
 		ui.display(null, "Saving hasn't yet been implemented", false);
 	}
 	
-	/**
-	 * Initializes the engine. The UI is started and the intro screen is shown.
-	 */
 	@Override
 	public void run() {
 		ui.initialize();

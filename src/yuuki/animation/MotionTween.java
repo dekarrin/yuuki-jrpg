@@ -23,9 +23,6 @@ public class MotionTween extends Tween {
 		addTweenedProperty("y", dy);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void animateSprite(Map<String, Integer> propChanges) {
 		int dx = propChanges.get("x");

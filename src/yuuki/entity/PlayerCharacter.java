@@ -52,9 +52,6 @@ public class PlayerCharacter extends Character {
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Point getNextMove(Land land) {
 		WalkGraph graph = land.getWalkGraph(getLocation(), true);
@@ -66,9 +63,6 @@ public class PlayerCharacter extends Character {
 		return null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isTransferrable() {
 		return true;

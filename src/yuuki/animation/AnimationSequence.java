@@ -40,9 +40,6 @@ public class AnimationSequence extends Animation {
 		sequence.add(animation);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void advance(int fps) {
 		Animation current = sequence.get(position);
@@ -54,9 +51,6 @@ public class AnimationSequence extends Animation {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected boolean isAtEnd() {
 		boolean atLastAnimation = (position == (sequence.size() - 1));
@@ -64,9 +58,6 @@ public class AnimationSequence extends Animation {
 		return (atLastAnimation && currentIsComplete);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void resetProperties() {
 		for (int i = 0; i <= position; i++) {

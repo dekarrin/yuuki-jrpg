@@ -89,9 +89,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 		setOpaque(false);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean addListener(L listener) {
 		return listeners.add(listener);
@@ -115,9 +112,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 		return bgmIndex;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
@@ -149,9 +143,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 		return getPreferredSize();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Dimension getPreferredSize() {
 		return size;
@@ -186,9 +177,6 @@ JPanel implements yuuki.ui.Listenable<L> {
 		return getPreferredSize();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);

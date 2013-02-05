@@ -40,17 +40,11 @@ yuuki.ui.Listenable<L> {
 		addItems();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean addListener(L listener) {
 		return listeners.add(listener);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
@@ -60,9 +54,6 @@ yuuki.ui.Listenable<L> {
 		return listenersList;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);

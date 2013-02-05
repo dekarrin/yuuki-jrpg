@@ -16,9 +16,6 @@ public class Rectangle extends Shape {
 	@SuppressWarnings("serial")
 	protected static class RectangleComponent extends ShapeComponent {
 		
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		protected void drawBorder(Graphics g, Color color) {
 			if (color != null) {
@@ -27,9 +24,6 @@ public class Rectangle extends Shape {
 			}
 		}
 		
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		protected void drawFill(Graphics g, Color color) {
 			if (color != null) {

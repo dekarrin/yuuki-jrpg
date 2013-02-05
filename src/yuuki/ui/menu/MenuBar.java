@@ -41,17 +41,11 @@ MenuListener {
 		addMenus();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean addListener(MenuBarListener listener) {
 		return listeners.add(listener);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<MenuBarListener> getElementListeners() {
 		List<MenuBarListener> listenersList =
@@ -62,9 +56,6 @@ MenuListener {
 		return listenersList;
 	}
 	
-	/**
-	 * {{@inheritDoc}}
-	 */
 	@Override
 	public void menuItemTriggered(Menu<?> source, int itemId) {
 		int menuId = -1;
@@ -74,9 +65,6 @@ MenuListener {
 		fireMenuItemTriggered(menuId, itemId);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);

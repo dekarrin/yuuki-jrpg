@@ -237,9 +237,6 @@ public class MessageBox extends Sprite implements MouseListener {
 		showTextPrompt(prompt);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getComponent() == enterButton) {
@@ -251,27 +248,15 @@ public class MessageBox extends Sprite implements MouseListener {
 		
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mouseExited(MouseEvent arg0) {}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mousePressed(MouseEvent arg0) {}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mouseReleased(MouseEvent arg0) {}
 	

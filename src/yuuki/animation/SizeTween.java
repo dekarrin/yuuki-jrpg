@@ -23,9 +23,6 @@ public class SizeTween extends Tween {
 		addTweenedProperty("height", dh);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void animateSprite(Map<String, Integer> propChanges) {
 		int dw = propChanges.get("width");

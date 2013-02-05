@@ -219,18 +219,12 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		addWorldLocatables(portals, OverworldScreen.Z_INDEX_PORTAL_LAYER);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void applyOptions(Options options) {
 		soundEngine.setEffectVolume(options.sfxVolume);
 		soundEngine.setMusicVolume(options.bgmVolume);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void bgmVolumeChanged(int volume) {
 		options.bgmVolume = volume;
@@ -247,9 +241,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		});
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean confirm(String prompt, String yes, String no) {
 		String[] ops = {yes, no};
@@ -257,9 +248,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return (choice.equals(yes));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void createCharacterClicked() {
 		String name = charCreationScreen.getEnteredName();
@@ -271,42 +259,27 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void destroy() {
 		mainWindow.dispose();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void display(Character speaker, String message, boolean animated) {
 		long letterTime = (animated) ? MESSAGE_LETTER_DELAY : 0;
 		messageBox.display(speaker, message, letterTime, MESSAGE_DISPLAY_TIME);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void exitClicked() {
 		mainProgram.requestQuit();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Object getChoice(Object[] options) {
 		return getChoice("Select an option", options);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Object getChoice(String prompt, Object[] options) {
 		class Runner implements Runnable, MessageBoxInputListener {
@@ -344,25 +317,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return r.value;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public double getDouble() {
 		return getDouble("Enter an integer");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public double getDouble(double min, double max) {
 		return getDouble("Enter an integer", min, max);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public double getDouble(String prompt) {
 		Double answer = null;
@@ -372,9 +336,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return answer.doubleValue();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public double getDouble(String prompt, double min, double max) {
 		double answer = 0;
@@ -388,25 +349,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return answer;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int getInt() {
 		return getInt("Enter an integer");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int getInt(int min, int max) {
 		return getInt("Enter an integer", min, max);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int getInt(String prompt) {
 		Integer answer = null;
@@ -416,9 +368,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return answer.intValue();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int getInt(String prompt, int min, int max) {
 		int answer = 0;
@@ -432,17 +381,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return answer;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getString() {
 		return getString("Enter a value");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getString(String prompt) {
 		class Runner implements MessageBoxInputListener, Runnable {
@@ -512,9 +455,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		introScreen.setSoundEngine(soundEngine);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void loadGameClicked() {
 		mainProgram.requestLoadGame();
@@ -553,17 +493,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void newGameClicked() {
 		mainProgram.requestNewGame();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void optionsClicked() {
 		mainProgram.requestOptionsScreen();
@@ -581,9 +515,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void playSound(String effectIndex) {
 		if (soundEngine != null) {
@@ -591,17 +522,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Action selectAction(Action[] actions) {
 		return (Action) getChoice("Select an action", actions);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Point selectMove(WalkGraph graph) {
 		class Runner implements Runnable, OverworldMovementListener {
@@ -635,9 +560,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return r.move;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters) {
 		ArrayList<Character> chars = new ArrayList<Character>();
@@ -651,9 +573,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return (Character) getChoice("Select a target", charsArr);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setWorldView(Grid<Tile> view) {
 		class Runner implements Runnable {
@@ -681,9 +600,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		mainProgram.requestOptionApplication();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showActionFailure(Action action) {
 		class Runner implements Runnable {
@@ -698,9 +614,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showActionPreperation(Action action) {
 		class Runner implements Runnable {
@@ -715,9 +628,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showActionUse(Action action) {
 		class Runner implements Runnable {
@@ -737,9 +647,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		JOptionPane.showMessageDialog(null, msg);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showBuffActivation(Buff buff) {
 		class Runner implements Runnable {
@@ -754,9 +661,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showBuffApplication(Buff buff) {
 		class Runner implements Runnable {
@@ -771,9 +675,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showBuffDeactivation(Buff buff) {
 		class Runner implements Runnable {
@@ -788,9 +689,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showCharacterRemoval(Character c) {
 		class Runner implements Runnable {
@@ -805,9 +703,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showCharacterVictory(Character[] cs) {
 		class Runner implements Runnable {
@@ -829,9 +724,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		return (response == JOptionPane.YES_OPTION);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, double damage) {
 		if (stat.getName().equalsIgnoreCase("health")) {
@@ -840,9 +732,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		battleScreen.showDamage(fighter, stat, damage);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showDamage(Character fighter, Stat stat, int damage) {
 		if (stat.getName().equalsIgnoreCase("health")) {
@@ -851,25 +740,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		battleScreen.showDamage(fighter, stat, damage);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, double amount) {
 		battleScreen.showRecovery(fighter, stat, amount);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showRecovery(Character fighter, Stat stat, int amount) {
 		battleScreen.showRecovery(fighter, stat, amount);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void showStatUpdate(Character fighter) {
 		class Runner implements Runnable {
@@ -891,9 +771,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		display(null, "That feature has not yet been implemented.", true);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToBattleScreen(Character[][] fighters) {
 		class Runner implements Runnable {
@@ -911,35 +788,23 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToCharacterCreationScreen() {
 		charCreationScreen.addListener(this);
 		switchWindow(charCreationScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToEndingScreen() {
 		switchWindow(endingScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToIntroScreen() {
 		introScreen.addListener(this);
 		switchWindow(introScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToLastScreen() {
 		switchWindow(formerScreen);
@@ -950,9 +815,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		switchWindow(loadingScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToOptionsScreen() {
 		optionsScreen.addListener(this);
@@ -960,18 +822,12 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		switchWindow(optionsScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToOverworldScreen() {
 		overworldScreen.addListener(this);
 		switchWindow(overworldScreen);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void switchToPauseScreen() {
 		switchWindow(pauseScreen);
@@ -992,9 +848,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(new Runner(percent));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void updateWorldView(Point center) {
 		class Runner implements Runnable {
@@ -1011,9 +864,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void waitForDisplay() {
 		messageBox.waitForClean();

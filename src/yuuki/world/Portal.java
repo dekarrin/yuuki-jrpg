@@ -48,9 +48,6 @@ public class Portal implements Locatable, Displayable {
 		this.open = true;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getBattleImage() {
 		return null;
@@ -61,9 +58,6 @@ public class Portal implements Locatable, Displayable {
 		return this;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public char getDisplayChar() {
 		return 'P';
@@ -87,9 +81,6 @@ public class Portal implements Locatable, Displayable {
 		return land;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Point getLocation() {
 		return position;
@@ -104,9 +95,6 @@ public class Portal implements Locatable, Displayable {
 		return name;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getOverworldImage() {
 		return null;
@@ -121,9 +109,6 @@ public class Portal implements Locatable, Displayable {
 		return open;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setLocation(Point l) {
 		position = l;

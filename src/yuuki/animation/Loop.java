@@ -22,17 +22,11 @@ public class Loop extends Animation {
 		loopedAnimation = animation;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void resetProperties() {
 		loopedAnimation.reset();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void advance(int fps) {
 		loopedAnimation.advanceFrame(fps);

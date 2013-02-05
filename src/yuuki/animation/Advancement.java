@@ -40,9 +40,6 @@ public class Advancement extends Animation {
 		return hasAdvanced;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void resetProperties() {
 		hasAdvanced = false;

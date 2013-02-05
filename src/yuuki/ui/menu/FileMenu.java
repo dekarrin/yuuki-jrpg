@@ -127,9 +127,6 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		exitItem.addActionListener(this);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void addItems() {
 		add(newItem);
@@ -142,9 +139,6 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		add(exitItem);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void buildItems() {
 		newItem = new JMenuItem("New Game");
@@ -155,17 +149,11 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		exitItem = new JMenuItem("Exit");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void setItemAccelerators() {
 		// TODO: add accelerators
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void setItemDescriptions() {
 		String newHelp = "Starts a new game";
@@ -182,9 +170,6 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 		exitItem.getAccessibleContext().setAccessibleDescription(exitHelp);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void setItemMnemonics() {
 		newItem.setMnemonic(KeyEvent.VK_N);

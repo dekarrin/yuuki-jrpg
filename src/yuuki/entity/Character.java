@@ -467,9 +467,6 @@ public abstract class Character implements Movable, Displayable {
 		return level;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Point getLocation() {
 		return position;
@@ -828,9 +825,6 @@ public abstract class Character implements Movable, Displayable {
 		fighterId = id;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setLocation(Point l) {
 		this.position = l;

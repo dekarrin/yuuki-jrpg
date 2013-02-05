@@ -48,9 +48,6 @@ public class TextTween extends Tween {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void resetProperties() {
 		super.resetProperties();

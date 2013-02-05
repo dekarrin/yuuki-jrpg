@@ -34,9 +34,6 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		animationThread = null;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addAnim(Animatable a) {
 		if (a.isControlled()) {
@@ -65,9 +62,6 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		return (animationThread != null);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removeAnim(Animatable a) {
 		if (anims.remove(a)) {

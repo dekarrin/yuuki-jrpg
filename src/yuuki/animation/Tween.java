@@ -139,9 +139,6 @@ public abstract class Tween extends TimedAnimation {
 		return (super.isAtEnd() && propertiesAtTargets());
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected void resetProperties() {
 		for (int i = 0; i < propertyTotals.size(); i++) {

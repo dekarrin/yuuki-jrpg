@@ -67,9 +67,6 @@ public abstract class Animation implements Animatable {
 		listeners.add(l);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void advanceFrame(int fps) {
 		if (!isComplete()) {
@@ -107,9 +104,6 @@ public abstract class Animation implements Animatable {
 		return (isAtEnd() || forcedComplete);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isControlled() {
 		return controlled;
@@ -145,9 +139,6 @@ public abstract class Animation implements Animatable {
 		resetProperties();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;

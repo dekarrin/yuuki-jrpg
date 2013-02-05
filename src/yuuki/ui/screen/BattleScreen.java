@@ -59,9 +59,6 @@ public class BattleScreen extends Screen<ScreenListener> {
 		refreshSprites();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setInitialProperties() {}
 	
