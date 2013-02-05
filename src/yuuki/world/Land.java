@@ -28,9 +28,24 @@ import yuuki.util.Grid;
 public class Land {
 	
 	/**
+	 * The bumps that happened on the last advancement.
+	 */
+	private Map<Movable, Movable> bumps;
+	
+	/**
+	 * The transfers that are waiting to come in.
+	 */
+	private List<Movable> incomingResidents;
+	
+	/**
 	 * The name of this Land.
 	 */
 	private String name;
+	
+	/**
+	 * The residents that were transfered out in the last advancement.
+	 */
+	private List<Movable> outgoingResidents;
 	
 	/**
 	 * The position that the player starts at.
@@ -46,16 +61,6 @@ public class Land {
 	 * The Movable objects in this Land.
 	 */
 	private List<Movable> residents;
-	
-	/**
-	 * The transfers that are waiting to come in.
-	 */
-	private List<Movable> incomingResidents;
-	
-	/**
-	 * The residents that were transfered out in the last advancement.
-	 */
-	private List<Movable> outgoingResidents;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -78,6 +83,7 @@ public class Land {
 		portals = new HashMap<Point, Portal>();
 		incomingResidents = new ArrayList<Movable>();
 		outgoingResidents = new ArrayList<Movable>();
+		bumps = new HashMap<Movable, Movable>();
 	}
 	
 	/**
@@ -114,6 +120,19 @@ public class Land {
 		processIncomingResidents();
 		moveResidents();
 		processOutgoingResidents();
+	}
+	
+	/**
+	 * Gets the resident that another resident bumped into during the last
+	 * advancement.
+	 * 
+	 * @param resident The resident who bumped into the other.
+	 * 
+	 * @return The resident that the given resident bumped into, or null if
+	 * there wasn't one.
+	 */
+	public Movable getLastBump(Movable resident) {
+		return bumps.get(resident);
 	}
 	
 	/**
@@ -276,16 +295,41 @@ public class Land {
 	}
 	
 	/**
+	 * Gets the occupant at a location.
+	 * 
+	 * @param p The point to get the occupant from.
+	 * 
+	 * @return The resident occupying the given location, or null if there
+	 * isn't one.
+	 */
+	private Movable getOccupantAt(Point p) {
+		Movable occupant = null;
+		for (Movable r : residents) {
+			if (r.getLocation().equals(p)) {
+				occupant = r;
+				break;
+			}
+		}
+		return occupant;
+	}
+	
+	/**
 	 * Moves all residents. Each resident is asked where it wishes to move, and
 	 * is then moved there.
 	 */
 	private void moveResidents() {
+		bumps.clear();
 		for (Movable r : residents) {
 			Point current = r.getLocation();
 			Point destination = r.getNextMove(this);
-			tiles.itemAt(current).setOccupied(false);
-			tiles.itemAt(destination).setOccupied(true);
-			r.setLocation(destination);
+			if (!hasOccupantAt(destination)) {
+				tiles.itemAt(current).setOccupied(false);
+				tiles.itemAt(destination).setOccupied(true);
+				r.setLocation(destination);
+			} else {
+				Movable bumpee = getOccupantAt(destination);
+				bumps.put(r, bumpee);
+			}
 		}
 	}
 	
