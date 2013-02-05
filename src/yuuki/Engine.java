@@ -339,6 +339,14 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void advanceWorld() {
 		world.advance();
+		yuuki.world.Movable bumped = world.getLastBump(player);
+		if (bumped != null) {
+			(new Thread(new Runnable() {
+				public void run() {
+					requestBattle(true);
+				}
+			}, "WorldCommunication")).start();
+		}
 		ui.updateWorldView(player.getLocation());
 	}
 	

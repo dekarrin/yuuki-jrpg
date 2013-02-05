@@ -42,6 +42,19 @@ public class World {
 	}
 	
 	/**
+	 * Gets the resident that another resident bumped into during the last
+	 * world advancement.
+	 * 
+	 * @param resident The resident who bumped into another.
+	 * 
+	 * @return The resident that the given resident bumped into, or null if the
+	 * given resident did not bump into another.
+	 */
+	public Movable getLastBump(Movable resident) {
+		return activeLand.getLastBump(resident);
+	}
+	
+	/**
 	 * Adds a resident to the active land.
 	 * 
 	 * @param resident The resident to add.
