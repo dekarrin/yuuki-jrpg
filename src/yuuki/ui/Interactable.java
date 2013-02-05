@@ -252,6 +252,13 @@ public interface Interactable {
 	public void showActionUse(Action action);
 	
 	/**
+	 * Pops up an alert dialog box above all windows.
+	 * 
+	 * @param msg The message to alert the user with.
+	 */
+	public void showAlertDialog(String msg);
+	
+	/**
 	 * Shows a buff activating.
 	 *
 	 * @param buff The buff to show.
@@ -285,6 +292,15 @@ public interface Interactable {
 	 * @param fighters The characters to show as victorious.
 	 */
 	public void showCharacterVictory(Character[] fighters);
+	
+	/**
+	 * Pops up a confirmation dialog box above all windows.
+	 * 
+	 * @param msg The message to alert the user with.
+	 * 
+	 * @return True if the user clicks the yes button; false otherwise.
+	 */
+	public boolean showConfirmDialog(String msg);
 	
 	/**
 	 * Shows that damage occurred to a character.

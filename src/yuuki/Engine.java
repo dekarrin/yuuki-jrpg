@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import yuuki.action.Action;
 import yuuki.battle.Battle;
 import yuuki.buff.Buff;
@@ -307,10 +305,8 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestQuit() {
-		int quit = JOptionPane.showConfirmDialog(null,
-				"Are you sure you want to quit?", "Quit Confirmation",
-				JOptionPane.YES_NO_OPTION);
-		if (quit == JOptionPane.YES_OPTION) {
+		boolean quit = ui.showConfirmDialog("Are you sure you want to quit?");
+		if (quit) {
 			ui.destroy();
 			System.exit(0);
 		}
@@ -342,6 +338,7 @@ public class Engine implements Runnable, UiExecutor {
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
 			(new Thread(new Runnable() {
+				@Override
 				public void run() {
 					requestBattle(true);
 				}

@@ -267,7 +267,7 @@ OptionsScreenListener, MenuBarListener {
 		if (!name.equals("")) {
 			mainProgram.requestCharacterCreation(name, level);
 		} else {
-			alert("You must enter a name!");
+			showAlertDialog("You must enter a name!");
 		}
 	}
 	
@@ -711,6 +711,11 @@ OptionsScreenListener, MenuBarListener {
 		SwingUtilities.invokeLater(r);
 	}
 	
+	@Override
+	public void showAlertDialog(String msg) {
+		JOptionPane.showMessageDialog(null, msg);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -794,6 +799,13 @@ OptionsScreenListener, MenuBarListener {
 		Runner r = new Runner();
 		r.cs = cs;
 		SwingUtilities.invokeLater(r);
+	}
+	
+	@Override
+	public boolean showConfirmDialog(String msg) {
+		int response = JOptionPane.showConfirmDialog(null, msg, "Confirmation",
+				JOptionPane.YES_NO_OPTION);
+		return (response == JOptionPane.YES_OPTION);
 	}
 	
 	/**
@@ -997,15 +1009,6 @@ OptionsScreenListener, MenuBarListener {
 		}
 		Runner r = new Runner(list, zIndex);
 		SwingUtilities.invokeLater(r);
-	}
-	
-	/**
-	 * Shows an alert dialog box.
-	 * 
-	 * @param msg The message to alert the user with.
-	 */
-	private void alert(String msg) {
-		JOptionPane.showMessageDialog(null, msg);
 	}
 	
 	/**
