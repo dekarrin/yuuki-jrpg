@@ -10,6 +10,7 @@ import yuuki.world.WalkGraph;
 public class RandomPathFinder extends OverworldPathFinder {
 	
 	@Override
+	@SuppressWarnings("fallthrough")
 	public Point getNextMove(WalkGraph graph) {
 		int choice = (int) Math.floor((Math.random() * 8));
 		Point dest = null;

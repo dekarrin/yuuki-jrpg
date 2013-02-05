@@ -174,6 +174,7 @@ public class LandLoader extends ResourceLoader {
 	 * 
 	 * @throws IOException If an IOException occurs.
 	 */
+	@SuppressWarnings("fallthrough")
 	private Land loadLand() throws IOException {
 		ArrayList<Tile> tileData = new ArrayList<Tile>();
 		String line = null;
