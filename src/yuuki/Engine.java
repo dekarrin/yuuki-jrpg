@@ -207,8 +207,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	@Override
 	public void requestBattle(boolean isMain, Character[] t1, Character[] t2) {
-		NonPlayerCharacter slime = entityMaker.createNpc("slime", 2);
-		Character[][] fighters = {{player}, {slime}};
+		Character[][] fighters = {t1, t2};
 		Battle battle = new Battle(fighters);
 		if (isMain) {
 			mainBattle = battle;
