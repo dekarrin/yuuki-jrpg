@@ -208,11 +208,16 @@ public class WalkGraph {
 	 * @param grid The grid of tiles to check.
 	 * @param p The point to check.
 	 * 
-	 * @return True if a tile exists at the given coordinates and it is
-	 * walkable; otherwise, false.
+	 * @return True if a tile exists at the given coordinates, it is walkable,
+	 * and has no occupants on it; otherwise, false.
 	 */
 	private boolean checkTile(Grid<Tile> grid, Point p) {
-		return (grid.contains(p)) && (grid.itemAt(p).isWalkable());
+		boolean valid = false;
+		if (grid.contains(p)) {
+			Tile t = grid.itemAt(p);
+			valid = (t.isWalkable() && !t.isOccupied());
+		}
+		return valid;
 	}
 	
 	/**

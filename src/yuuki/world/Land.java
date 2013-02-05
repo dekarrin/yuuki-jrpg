@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -97,8 +98,9 @@ public class Land {
 	 */
 	public void addResident(Movable r) {
 		Point pos = r.getLocation();
-		if (residents.get(pos) == null) {
+		if (!hasOccupantAt(pos)) {
 			residents.put(pos, r);
+			tiles.itemAt(pos).setOccupied(true);
 		}
 	}
 	
@@ -199,7 +201,7 @@ public class Land {
 	 * @return True if the tile at the given point has a resident standing on
 	 * it; otherwise, false.
 	 */
-	public boolean isOccupied(Point location) {
+	public boolean hasOccupantAt(Point location) {
 		Tile toCheck = tiles.itemAt(location);
 		return toCheck.isOccupied();
 	}
@@ -263,7 +265,7 @@ public class Land {
 	 */
 	public void transferInResident(Movable r, Point p) {
 		r.setLocation(p);
-		if (!residents.containsKey(p)) {
+		if (!hasOccupantAt(p)) {
 			addResident(r);
 		} else {
 			residentsIncoming.add(r);
@@ -272,12 +274,19 @@ public class Land {
 	
 	/**
 	 * Clears the resident map and moves all residents to their new positions.
-	 * 
-	 * @param moveList An array containing the updated residents.
 	 */
-	private void applyMove(Movable[] moveList) {
+	private void applyMove() {
+		ArrayList<Movable> updates = new ArrayList<Movable>();
+		Iterator<Map.Entry<Point, Movable>> i;
+		i = residents.entrySet().iterator();
+		Map.Entry<Point, Movable> e;
+		while (i.hasNext()) {
+			e = i.next();
+			tiles.itemAt(e.getKey()).setOccupied(false);
+			updates.add(e.getValue());
+		}
 		residents.clear();
-		for (Movable r : moveList) {
+		for (Movable r : updates) {
 			residents.put(r.getLocation(), r);
 		}
 	}
@@ -298,14 +307,13 @@ public class Land {
 	 * is then moved there.
 	 */
 	private void moveResidents() {
-		Movable[] moveList = residents.values().toArray(new Movable[0]);
-		for (Movable r : moveList) {
+		for (Movable r : residents.values()) {
 			Point destination = r.getNextMove(this);
 			if (destination != null) {
 				r.setLocation(destination);
 			}
 		}
-		applyMove(moveList);
+		applyMove();
 	}
 	
 	/**
