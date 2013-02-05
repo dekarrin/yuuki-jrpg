@@ -874,14 +874,6 @@ OptionsScreenListener, MenuBarListener {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void startBattleClicked() {
-		mainProgram.requestBattle(true);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void switchToBattleScreen(Character[][] fighters) {
 		class Runner implements Runnable {
 			public Character[][] fighters;

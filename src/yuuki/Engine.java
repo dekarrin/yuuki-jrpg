@@ -206,11 +206,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void requestBattle(boolean display) {
+	public void requestBattle(boolean isMain, Character[] t1, Character[] t2) {
 		NonPlayerCharacter slime = entityMaker.createNpc("slime", 2);
 		Character[][] fighters = {{player}, {slime}};
 		Battle battle = new Battle(fighters);
-		if (display) {
+		if (isMain) {
 			mainBattle = battle;
 			exitOverworldMode();
 			ui.switchToBattleScreen(fighters);
@@ -337,12 +337,19 @@ public class Engine implements Runnable, UiExecutor {
 		world.advance();
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
-			(new Thread(new Runnable() {
-				@Override
-				public void run() {
-					requestBattle(true);
+			class Runner implements Runnable {
+				private Character[] t2;
+				public Runner(Character[] t2) {
+					this.t2 = t2;
 				}
-			}, "WorldCommunication")).start();
+				public void run() {
+					Character[] t1 = {player};
+					requestBattle(true, t1, t2);
+				}
+			};
+			Character[] npcs = {(NonPlayerCharacter) bumped};
+			Runner r = new Runner(npcs);
+			(new Thread(r, "WorldCommunication")).start();
 		}
 		ui.updateWorldView(player.getLocation());
 	}

@@ -1,5 +1,7 @@
 package yuuki.ui;
 
+import yuuki.entity.Character;
+
 /**
  * The class that performs the game logic as requested by the user interface.
  * It is not guaranteed that a worker thread will be spawned to call any of
@@ -15,8 +17,10 @@ public interface UiExecutor {
 	 * include the player character as a participant cannot be non-main.
 	 * 
 	 * @param visible Whether the battle should be considered the main battle.
+	 * @param t1 The characters on the bottom team.
+	 * @param t2 The characters on the top team.
 	 */
-	public void requestBattle(boolean isMain);
+	public void requestBattle(boolean isMain, Character[] t1, Character[] t2);
 	
 	/**
 	 * Requests that the battle be finished and the game return to the

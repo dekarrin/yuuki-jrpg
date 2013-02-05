@@ -15,7 +15,6 @@ import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 
 import yuuki.ui.WorldViewer;
 import yuuki.util.Grid;
@@ -63,9 +62,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Component c = (Component) e.getSource();
-			if (c == startButton) {
-				fireStartClicked();
-			} else if (c == moveSouthWestButton || c == moveSouthButton ||
+			if (c == moveSouthWestButton || c == moveSouthButton ||
 					c == moveSouthEastButton || c == moveWestButton ||
 					c == moveNullButton || c == moveEastButton ||
 					c == moveNorthWestButton || c == moveNorthButton ||
@@ -176,11 +173,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	};
 	
 	/**
-	 * The button that advances to the battle screen.
-	 */
-	private JButton startButton;
-	
-	/**
 	 * Used to calculate where the user wishes to go when a button is clicked.
 	 */
 	private WalkGraph walkGraph;
@@ -200,21 +192,9 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	public OverworldScreen(int width, int height) {
 		super(width, height);
 		movementListeners = new HashSet<OverworldMovementListener>();
-		KeyListener enterListener = new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					fireStartClicked();
-				}
-			}
-		};
 		addKeyListener(numpadListener);
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
-		startButton = new JButton("Start");
-		startButton.addActionListener(hitListener);
-		startButton.addKeyListener(enterListener);
-		startButton.setFocusable(false);
 		createMovementButtons();
 		addElements();
 	}
@@ -313,14 +293,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private void addElements() {
 		Box moveBox = createMovementBox();
 		Box vertBox = Box.createVerticalBox();
-		Box fieldBox = Box.createHorizontalBox();
-		fieldBox.add(new JLabel("The overworld!"));
-		fieldBox.add(Box.createHorizontalStrut(2));
-		fieldBox.add(new JLabel("Hit the button to start a battle ==>"));
-		fieldBox.add(Box.createHorizontalStrut(2));
-		fieldBox.add(startButton);
 		vertBox.add(worldViewer);
-		vertBox.add(fieldBox);
 		vertBox.add(Box.createVerticalStrut(10));
 		vertBox.add(moveBox);
 		add(vertBox);
@@ -393,15 +366,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 			for (OverworldMovementListener l : ls) {
 				l.movementButtonClicked(p);
 			}
-		}
-	}
-	
-	/**
-	 * Calls the startBattleClicked() method on all listeners.
-	 */
-	private void fireStartClicked() {
-		for (OverworldScreenListener l : getElementListeners()) {
-			l.startBattleClicked();
 		}
 	}
 	
