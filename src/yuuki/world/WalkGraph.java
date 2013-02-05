@@ -62,10 +62,11 @@ public class WalkGraph {
 	 * relative to the Land that it came from.
 	 * @param tiles An array containing the center tile and the surrounding
 	 * eight tiles.
+	 * @param occupied Whether to include the occupied tiles.
 	 */
-	public WalkGraph(Point position, Grid<Tile> tiles) {
+	public WalkGraph(Point position, Grid<Tile> tiles, boolean occupied) {
 		this.p = position;
-		setValidity(tiles);
+		setValidity(tiles, occupied);
 	}
 	
 	/**
@@ -207,15 +208,16 @@ public class WalkGraph {
 	 * 
 	 * @param grid The grid of tiles to check.
 	 * @param p The point to check.
+	 * @param occupied Whether to include the occupied tiles.
 	 * 
 	 * @return True if a tile exists at the given coordinates, it is walkable,
 	 * and has no occupants on it; otherwise, false.
 	 */
-	private boolean checkTile(Grid<Tile> grid, Point p) {
+	private boolean checkTile(Grid<Tile> grid, Point p, boolean occupied) {
 		boolean valid = false;
 		if (grid.contains(p)) {
 			Tile t = grid.itemAt(p);
-			valid = (t.isWalkable() && !t.isOccupied());
+			valid = (t.isWalkable() && (occupied || !t.isOccupied()));
 		}
 		return valid;
 	}
@@ -226,19 +228,20 @@ public class WalkGraph {
 	 * 
 	 * @param tiles An array containing the center tile and the surrounding
 	 * eight tiles.
+	 * @param occ Whether to include the occupied tiles.
 	 */
-	private void setValidity(Grid<Tile> tiles) {
+	private void setValidity(Grid<Tile> tiles, boolean occ) {
 		Dimension d = tiles.getSize();
 		int xOff = 3 - d.width;
 		int yOff = 3 - d.height;
-		hasNorthWest	= checkTile(tiles, new Point(0 - xOff, 0 - yOff));
-		hasNorth		= checkTile(tiles, new Point(1 - xOff, 0 - yOff));
-		hasNorthEast	= checkTile(tiles, new Point(2 - xOff, 0 - yOff));
-		hasWest			= checkTile(tiles, new Point(0 - xOff, 1 - yOff));
-		hasEast			= checkTile(tiles, new Point(2 - xOff, 1 - yOff));
-		hasSouthWest	= checkTile(tiles, new Point(0 - xOff, 2 - yOff));
-		hasSouth		= checkTile(tiles, new Point(1 - xOff, 2 - yOff));
-		hasSouthEast	= checkTile(tiles, new Point(2 - xOff, 2 - yOff));
+		hasNorthWest	= checkTile(tiles, new Point(0 - xOff, 0 - yOff), occ);
+		hasNorth		= checkTile(tiles, new Point(1 - xOff, 0 - yOff), occ);
+		hasNorthEast	= checkTile(tiles, new Point(2 - xOff, 0 - yOff), occ);
+		hasWest			= checkTile(tiles, new Point(0 - xOff, 1 - yOff), occ);
+		hasEast			= checkTile(tiles, new Point(2 - xOff, 1 - yOff), occ);
+		hasSouthWest	= checkTile(tiles, new Point(0 - xOff, 2 - yOff), occ);
+		hasSouth		= checkTile(tiles, new Point(1 - xOff, 2 - yOff), occ);
+		hasSouthEast	= checkTile(tiles, new Point(2 - xOff, 2 - yOff), occ);
 	}
 	
 }

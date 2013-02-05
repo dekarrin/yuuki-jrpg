@@ -45,17 +45,17 @@ public class Land {
 	/**
 	 * The Movable objects in this Land.
 	 */
-	private Map<Point, Movable> residents;
+	private List<Movable> residents;
 	
 	/**
 	 * The transfers that are waiting to come in.
 	 */
-	private List<Movable> residentsIncoming;
+	private List<Movable> incomingResidents;
 	
 	/**
 	 * The residents that were transfered out in the last advancement.
 	 */
-	private List<Movable> residentsOutgoing;
+	private List<Movable> outgoingResidents;
 	
 	/**
 	 * The tiles that make up this Land.
@@ -74,9 +74,10 @@ public class Land {
 		this.name = name;
 		playerStart = start;
 		tiles = new ElementGrid<Tile>(size, tileData);
-		residents = new HashMap<Point, Movable>();
+		residents = new ArrayList<Movable>();
 		portals = new HashMap<Point, Portal>();
-		this.residentsIncoming = new ArrayList<Movable>();
+		incomingResidents = new ArrayList<Movable>();
+		outgoingResidents = new ArrayList<Movable>();
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public class Land {
 	public void addResident(Movable r) {
 		Point pos = r.getLocation();
 		if (!hasOccupantAt(pos)) {
-			residents.put(pos, r);
+			residents.add(r);
 			tiles.itemAt(pos).setOccupied(true);
 		}
 	}
@@ -146,7 +147,7 @@ public class Land {
 	 * @return The residents.
 	 */
 	public ArrayList<Movable> getResidents() {
-		return new ArrayList<Movable>(residents.values());
+		return new ArrayList<Movable>(residents);
 	}
 	
 	/**
@@ -174,22 +175,23 @@ public class Land {
 	 * @return The list of residents.
 	 */
 	public List<Movable> getTransfers() {
-		return residentsOutgoing;
+		return outgoingResidents;
 	}
 	
 	/**
 	 * Gets the WalkGraph for a given point.
 	 * 
 	 * @param center The coordinates of the center of the WalkGraph.
+	 * @param occupied Whether to include occupied tiles.
 	 * 
 	 * @return The WalkGraph for the given point.
 	 */
-	public WalkGraph getWalkGraph(Point center) {
+	public WalkGraph getWalkGraph(Point center, boolean occupied) {
 		Point graphCenter = new Point(center.x - 1, center.y - 1);
 		Dimension size = new Dimension(3, 3);
 		Rectangle box = new Rectangle(graphCenter, size);
 		Grid<Tile> grid = tiles.getSubGrid(box);
-		WalkGraph graph = new WalkGraph(center, grid);
+		WalkGraph graph = new WalkGraph(center, grid, occupied);
 		return graph;
 	}
 	
@@ -232,7 +234,8 @@ public class Land {
 	 * @param r The resident to remove.
 	 */
 	public void removeResident(Movable r) {
-		residents.remove(r.getLocation());
+		residents.remove(r);
+		tiles.itemAt(r.getLocation()).setOccupied(false);
 	}
 	
 	/**
@@ -268,37 +271,7 @@ public class Land {
 		if (!hasOccupantAt(p)) {
 			addResident(r);
 		} else {
-			residentsIncoming.add(r);
-		}
-	}
-	
-	/**
-	 * Clears the resident map and moves all residents to their new positions.
-	 */
-	private void applyMove() {
-		ArrayList<Movable> updates = new ArrayList<Movable>();
-		Iterator<Map.Entry<Point, Movable>> i;
-		i = residents.entrySet().iterator();
-		Map.Entry<Point, Movable> e;
-		while (i.hasNext()) {
-			e = i.next();
-			tiles.itemAt(e.getKey()).setOccupied(false);
-			updates.add(e.getValue());
-		}
-		residents.clear();
-		for (Movable r : updates) {
-			residents.put(r.getLocation(), r);
-		}
-	}
-	
-	/**
-	 * Applies all of the transfers in the given list.
-	 * 
-	 * @param transfers The residents that need to be transfered.
-	 */
-	private void applyTransfers(List<Movable> transfers) {
-		for (Movable r : transfers) {
-			removeResident(r);
+			incomingResidents.add(r);
 		}
 	}
 	
@@ -307,21 +280,21 @@ public class Land {
 	 * is then moved there.
 	 */
 	private void moveResidents() {
-		for (Movable r : residents.values()) {
+		for (Movable r : residents) {
+			Point current = r.getLocation();
 			Point destination = r.getNextMove(this);
-			if (destination != null) {
-				r.setLocation(destination);
-			}
+			tiles.itemAt(current).setOccupied(false);
+			tiles.itemAt(destination).setOccupied(true);
+			r.setLocation(destination);
 		}
-		applyMove();
 	}
 	
 	/**
 	 * Adds waiting incoming transfers if they can be added.
 	 */
 	private void processIncomingResidents() {
-		Movable[] incoming = residentsIncoming.toArray(new Movable[0]);
-		residentsIncoming.clear();
+		Movable[] incoming = incomingResidents.toArray(new Movable[0]);
+		incomingResidents.clear();
 		for (Movable m : incoming) {
 			transferInResident(m, m.getLocation());
 		}
@@ -331,16 +304,18 @@ public class Land {
 	 * Moves transferable residents that have stepped on a portal.
 	 */
 	private void processOutgoingResidents() {
-		Movable[] moveList = residents.values().toArray(new Movable[0]);
-		List<Movable> transfers = new ArrayList<Movable>();
-		for (Movable r : moveList) {
-			Point p = r.getLocation();
-			if (portals.containsKey(p) && r.isTransferrable()) {
-				transfers.add(r);
+		outgoingResidents.clear();
+		Iterator<Movable> it = residents.iterator();
+		Movable resident;
+		while (it.hasNext()) {
+			resident = it.next();
+			Point p = resident.getLocation();
+			if (portals.containsKey(p) && resident.isTransferrable()) {
+				tiles.itemAt(p).setOccupied(false);
+				outgoingResidents.add(resident);
+				it.remove();
 			}
 		}
-		applyTransfers(transfers);
-		this.residentsOutgoing = transfers;
 	}
 	
 }

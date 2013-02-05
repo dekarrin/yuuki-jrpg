@@ -57,7 +57,7 @@ public class PlayerCharacter extends Character {
 	 */
 	@Override
 	public Point getNextMove(Land land) {
-		WalkGraph graph = land.getWalkGraph(getLocation());
+		WalkGraph graph = land.getWalkGraph(getLocation(), true);
 		return ui.selectMove(graph);
 	}
 	

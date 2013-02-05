@@ -78,7 +78,7 @@ public class NonPlayerCharacter extends Character {
 	 */
 	@Override
 	public Point getNextMove(Land land) {
-		WalkGraph graph = land.getWalkGraph(getLocation());
+		WalkGraph graph = land.getWalkGraph(getLocation(), false);
 		overworldAi.setLocation(getLocation());
 		Point p = overworldAi.getNextMove(graph);
 		return p;
