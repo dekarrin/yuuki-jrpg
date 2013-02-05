@@ -224,7 +224,7 @@ public class EntityFactory {
 		Set<String> validNames = definitions.keySet();
 		if (names != null) {
 			Set<String> wantedNames = new HashSet<String>();
-			for (String n: names) {
+			for (String n : names) {
 				wantedNames.add(n);
 			}
 			validNames.retainAll(wantedNames);

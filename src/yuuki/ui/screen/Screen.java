@@ -121,7 +121,7 @@ JPanel implements yuuki.ui.Listenable<L> {
 	@Override
 	public List<L> getElementListeners() {
 		List<L> listenersList = new LinkedList<L>();
-		for (L listener: listeners) {
+		for (L listener : listeners) {
 			listenersList.add(listener);
 		}
 		return listenersList;

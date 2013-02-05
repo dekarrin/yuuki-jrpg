@@ -598,7 +598,7 @@ public class Engine implements Runnable, UiExecutor {
 	private void outputBuffApplication(Battle battle) {
 		Character currentFighter = battle.getCurrentFighter();
 		ArrayList<Buff> buffs = currentFighter.getBuffs();
-		for (Buff b: buffs) {
+		for (Buff b : buffs) {
 			ui.showBuffApplication(b);
 			ui.showStatUpdate(currentFighter);
 		}
@@ -612,7 +612,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void outputDeathCheck(Battle battle) {
 		ArrayList<Character> removed = battle.getRemovedFighters();
-		for (Character c: removed) {
+		for (Character c : removed) {
 			ui.showCharacterRemoval(c);
 		}
 	}
@@ -644,7 +644,7 @@ public class Engine implements Runnable, UiExecutor {
 		int recoveredMana = battle.getRegeneratedMana();
 		ui.display(c, "It looks like I'm up next.", true);
 		ArrayList<Buff> expiredBuffs = c.getExpiredBuffs();
-		for (Buff expired: expiredBuffs) {
+		for (Buff expired : expiredBuffs) {
 			ui.showBuffDeactivation(expired);
 		}
 		if (recoveredMana != 0) {

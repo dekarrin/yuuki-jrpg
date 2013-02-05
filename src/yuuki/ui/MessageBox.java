@@ -359,7 +359,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
 		MessageBoxInputListener[] listenersList = listeners.toArray(ls);
-		for (MessageBoxInputListener l: listenersList) {
+		for (MessageBoxInputListener l : listenersList) {
 			l.enterClicked(rawInput);
 		}
 	}
@@ -376,7 +376,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		// make a copy in case listeners remove themselves during iteration
 		MessageBoxInputListener[] ls = new MessageBoxInputListener[0];
 		MessageBoxInputListener[] listenersList = listeners.toArray(ls);
-		for (MessageBoxInputListener l: listenersList) {
+		for (MessageBoxInputListener l : listenersList) {
 			l.optionClicked(optValue);
 		}
 	}
@@ -390,7 +390,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	private void showChoicePrompt(String prompt, Object[] options) {
 		component.removeAll();
 		add(new JLabel(prompt));
-		for (Object opt: options) {
+		for (Object opt : options) {
 			JButton button = new JButton(opt.toString());
 			optionValues.put(button, opt);
 			button.addMouseListener(this);

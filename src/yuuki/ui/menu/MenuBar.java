@@ -56,7 +56,7 @@ MenuListener {
 	public List<MenuBarListener> getElementListeners() {
 		List<MenuBarListener> listenersList =
 				new LinkedList<MenuBarListener>();
-		for (MenuBarListener listener: listeners) {
+		for (MenuBarListener listener : listeners) {
 			listenersList.add(listener);
 		}
 		return listenersList;
@@ -103,7 +103,7 @@ MenuListener {
 	 * @param itemId The ID of the item that was triggered.
 	 */
 	private void fireMenuItemTriggered(int menuId, int itemId) {
-		for (MenuBarListener l: getElementListeners()) {
+		for (MenuBarListener l : getElementListeners()) {
 			l.menuItemTriggered(menuId, itemId);
 		}
 	}

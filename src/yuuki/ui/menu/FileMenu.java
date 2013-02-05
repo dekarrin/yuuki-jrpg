@@ -110,7 +110,7 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	 * @param id The ID of the item that was selected.
 	 */
 	public void fireItemTriggered(int id) {
-		for (MenuListener l: getElementListeners()) {
+		for (MenuListener l : getElementListeners()) {
 			l.menuItemTriggered(this, id);
 		}
 	}

@@ -122,7 +122,7 @@ public class CsvParser {
 	private String[] parseLine(String line) {
 		ArrayList<String> fields = new ArrayList<String>();
 		String[] rawFields = line.split("" + fieldSeparator);
-		for (String rf: rawFields) {
+		for (String rf : rawFields) {
 			fields.add(parseField(rf));
 		}
 		return fields.toArray(new String[0]);

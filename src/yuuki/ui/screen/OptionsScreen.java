@@ -161,7 +161,7 @@ ChangeListener {
 	 */
 	private void fireBgmLevelChanged() {
 		int volume = bgmVolumeSlider.getValue();
-		for (OptionsScreenListener l: getElementListeners()) {
+		for (OptionsScreenListener l : getElementListeners()) {
 			l.bgmVolumeChanged(volume);
 		}
 	}
@@ -170,7 +170,7 @@ ChangeListener {
 	 * Calls optionsSubmitted() on all listeners.
 	 */
 	private void fireEnterClicked() {
-		for (OptionsScreenListener l: getElementListeners()) {
+		for (OptionsScreenListener l : getElementListeners()) {
 			l.optionsSubmitted();
 		}
 	}
@@ -179,7 +179,7 @@ ChangeListener {
 	 * Calls sfxTestClicked() on all listeners.
 	 */
 	private void fireSfxClicked() {
-		for (OptionsScreenListener l: getElementListeners()) {
+		for (OptionsScreenListener l : getElementListeners()) {
 			l.sfxTestClicked();
 		}
 	}
@@ -189,7 +189,7 @@ ChangeListener {
 	 */
 	private void fireSfxLevelChanged() {
 		int volume = sfxVolumeSlider.getValue();
-		for (OptionsScreenListener l: getElementListeners()) {
+		for (OptionsScreenListener l : getElementListeners()) {
 			l.sfxVolumeChanged(volume);
 		}
 	}

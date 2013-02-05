@@ -128,7 +128,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 * Animates all objects in the animation list.
 	 */
 	private void advanceAnimation() {
-		for (Animatable a: anims) {
+		for (Animatable a : anims) {
 			a.advanceFrame(fps);
 		}
 	}

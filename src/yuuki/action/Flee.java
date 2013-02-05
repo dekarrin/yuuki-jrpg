@@ -59,7 +59,7 @@ public class Flee extends Action implements Cloneable {
 		Random rand;
 		int playerLevel = origin.getLevel();
 		int monsterLevel = 0;
-		for (Character c: targets) {
+		for (Character c : targets) {
 			monsterLevel += c.getLevel();
 		}
 		double advantageLevel = (double) playerLevel / monsterLevel;

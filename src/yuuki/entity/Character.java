@@ -179,7 +179,7 @@ public abstract class Character implements Movable, Displayable {
 		this.fighterId = -1;
 		this.teamId = -1;
 		this.displayChar = display;
-		for (Action move: moves) {
+		for (Action move : moves) {
 			move.setOrigin(this);
 		}
 	}
@@ -283,7 +283,7 @@ public abstract class Character implements Movable, Displayable {
 	 * Applies all current buffs to this Character.
 	 */
 	public void applyBuffs() {
-		for (Buff b: buffs) {
+		for (Buff b : buffs) {
 			b.apply();
 		}
 	}

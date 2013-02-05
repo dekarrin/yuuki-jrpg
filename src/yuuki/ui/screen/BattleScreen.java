@@ -153,7 +153,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * @param cs The characters to show the animation for.
 	 */
 	public void showCharacterVictory(Character[] cs) {
-		for (Character element: cs) {
+		for (Character element : cs) {
 			FighterSprite sprite = (FighterSprite) element.getSprite();
 			sprite.showCharacterVictory();
 		}
@@ -233,7 +233,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 */
 	private void addBottomTeam() {
 		int x = 0, y = 0;
-		for (FighterSprite fs: fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
+		for (FighterSprite fs : fighterGraphics.get(BOTTOM_TEAM_INDEX)) {
 			y = getSetHeight() - fs.getHeight();
 			fs.moveTo(x, y);
 			add(fs.getComponent());
@@ -255,7 +255,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 */
 	private void addTopTeam() {
 		int x = 0, y = 0;
-		for (FighterSprite fs: fighterGraphics.get(TOP_TEAM_INDEX)) {
+		for (FighterSprite fs : fighterGraphics.get(TOP_TEAM_INDEX)) {
 			fs.moveTo(x, y);
 			add(fs.getComponent());
 			x += fs.getWidth() + SPRITE_HGAP;

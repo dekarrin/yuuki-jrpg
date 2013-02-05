@@ -158,7 +158,7 @@ public abstract class Animation implements Animatable {
 	 */
 	private void fireAnimationComplete() {
 		AnimationListener[] list = listeners.toArray(new AnimationListener[0]);
-		for (AnimationListener l: list) {
+		for (AnimationListener l : list) {
 			l.animationComplete(this);
 		}
 	}

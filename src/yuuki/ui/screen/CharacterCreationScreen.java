@@ -149,7 +149,7 @@ Screen<CharacterCreationScreenListener> implements MouseListener {
 	 * this screen.
 	 */
 	private void fireCreateCharacterClicked() {
-		for (CharacterCreationScreenListener l: getElementListeners()) {
+		for (CharacterCreationScreenListener l : getElementListeners()) {
 			l.createCharacterClicked();
 		}
 	}

@@ -76,7 +76,7 @@ public abstract class Tween extends TimedAnimation {
 	 */
 	private boolean propertiesAtTargets() {
 		boolean atTargets = true;
-		for (Integer p: propertyRemainings) {
+		for (Integer p : propertyRemainings) {
 			if (p.intValue() != 0) {
 				atTargets = false;
 				break;

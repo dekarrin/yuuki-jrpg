@@ -118,7 +118,7 @@ public class Sprite implements Animatable, AnimationOwner {
 	 */
 	@Override
 	public void advanceFrame(int fps) {
-		for (Animatable a: ownedAnims) {
+		for (Animatable a : ownedAnims) {
 			a.advanceFrame(fps);
 		}
 		advance(fps);

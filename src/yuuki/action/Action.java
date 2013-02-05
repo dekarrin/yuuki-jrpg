@@ -209,7 +209,7 @@ public abstract class Action implements Cloneable {
 	public int[] getAffectedTeams() {
 		int[] teams = new int[affectedTeams.size()];
 		int k = 0;
-		for (Integer i: affectedTeams) {
+		for (Integer i : affectedTeams) {
 			teams[k++] = i.intValue();
 		}
 		return teams;
@@ -333,7 +333,7 @@ public abstract class Action implements Cloneable {
 	 * teams if it isn't there already.
 	 */
 	private void setAffectedTeams() {
-		for (Character t: targets) {
+		for (Character t : targets) {
 			affectedTeams.add(t.getTeamId());
 		}
 	}

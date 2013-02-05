@@ -400,7 +400,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 * Calls the startBattleClicked() method on all listeners.
 	 */
 	private void fireStartClicked() {
-		for (OverworldScreenListener l: getElementListeners()) {
+		for (OverworldScreenListener l : getElementListeners()) {
 			l.startBattleClicked();
 		}
 	}

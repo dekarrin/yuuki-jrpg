@@ -277,7 +277,7 @@ public class Land {
 	 */
 	private void applyMove(Movable[] moveList) {
 		residents.clear();
-		for (Movable r: moveList) {
+		for (Movable r : moveList) {
 			residents.put(r.getLocation(), r);
 		}
 	}
@@ -299,7 +299,7 @@ public class Land {
 	 */
 	private void moveResidents() {
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
-		for (Movable r: moveList) {
+		for (Movable r : moveList) {
 			Point destination = r.getNextMove(this);
 			if (destination != null) {
 				r.setLocation(destination);
@@ -325,7 +325,7 @@ public class Land {
 	private void processOutgoingResidents() {
 		Movable[] moveList = residents.values().toArray(new Movable[0]);
 		List<Movable> transfers = new ArrayList<Movable>();
-		for (Movable r: moveList) {
+		for (Movable r : moveList) {
 			Point p = r.getLocation();
 			if (portals.containsKey(p) && r.isTransferrable()) {
 				transfers.add(r);

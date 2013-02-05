@@ -277,9 +277,9 @@ public class Battle {
 	 */
 	private void assignToFighters(Character[][] teams) {
 		this.fighters = new ArrayList<ArrayList<Character>>(teams.length);
-		for (Character[] t: teams) {
+		for (Character[] t : teams) {
 			ArrayList<Character> team = new ArrayList<Character>(t.length);
-			for (Character c: t) {
+			for (Character c : t) {
 				c.startFighting(team.size(), fighters.size());
 				team.add(c);
 			}
@@ -309,7 +309,7 @@ public class Battle {
 	 */
 	private void checkDeath() {
 		ArrayList<Character> targets = lastAction.getTargets();
-		for (Character c: targets) {
+		for (Character c : targets) {
 			if (!c.isAlive()) {
 				removeFighter(c);
 			}
@@ -334,7 +334,7 @@ public class Battle {
 	 */
 	private void checkTeamStatus() {
 		int[] affectedTeams = lastAction.getAffectedTeams();
-		for (int t: affectedTeams) {
+		for (int t : affectedTeams) {
 			if (fighters.get(t).size() == 0) {
 				removeTeam(t);
 			}
@@ -358,7 +358,7 @@ public class Battle {
 	private void orderFighters() {
 		turnOrder = new ArrayList<Character>();
 		for (ArrayList<Character> team: fighters) {
-			for (Character c: team) {
+			for (Character c : team) {
 				turnOrder.add(c);
 			}
 		}
@@ -373,7 +373,7 @@ public class Battle {
 	 */
 	private void reassignIds(int teamId, int id) {
 		ArrayList<Character> team = fighters.get(teamId);
-		for (Character c: team) {
+		for (Character c : team) {
 			if (c.getFighterId() > id) {
 				c.setFighterId(c.getFighterId() - 1);
 			}
@@ -389,7 +389,7 @@ public class Battle {
 	private void reassignTeams(int teamId) {
 		for (int i = teamId; i < fighters.size(); i++) {
 			ArrayList<Character> team = fighters.get(i);
-			for (Character c: team) {
+			for (Character c : team) {
 				c.setTeamId(i);
 			}
 		}
