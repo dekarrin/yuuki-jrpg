@@ -81,14 +81,13 @@ MouseListener {
 	 * 
 	 * @param width The width of the screen.
 	 * @param height The height of the screen.
-	 * @param sound The game sound engine.
 	 */
-	public IntroScreen(int width, int height, DualSoundEngine sound) {
+	public IntroScreen(int width, int height) {
 		super(width, height);
-		newGameButton = new EffectButton("New Game", EFFECT_COLOR, sound);
-		loadGameButton = new EffectButton("Load Game", EFFECT_COLOR, sound);
-		optionsButton = new EffectButton("Options", EFFECT_COLOR, sound);
-		exitButton = new EffectButton("Exit", EFFECT_COLOR, sound);
+		newGameButton = new EffectButton("New Game", EFFECT_COLOR);
+		loadGameButton = new EffectButton("Load Game", EFFECT_COLOR);
+		optionsButton = new EffectButton("Options", EFFECT_COLOR);
+		exitButton = new EffectButton("Exit", EFFECT_COLOR);
 		newGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		loadGameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		optionsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -143,6 +142,18 @@ MouseListener {
 		loadGameButton.clearHoverEffects();
 		optionsButton.clearHoverEffects();
 		exitButton.clearHoverEffects();
+	}
+	
+	/**
+	 * Sets the sound engine.
+	 * 
+	 * @param soundEngine The sound engine to play sound effects through.
+	 */
+	public void setSoundEngine(DualSoundEngine soundEngine) {
+		newGameButton.setSoundEngine(soundEngine);
+		loadGameButton.setSoundEngine(soundEngine);
+		optionsButton.setSoundEngine(soundEngine);
+		exitButton.setSoundEngine(soundEngine);
 	}
 	
 	/**

@@ -26,7 +26,7 @@ import yuuki.world.WalkGraph;
  * The screen displayed when at the overworld.
  */
 @SuppressWarnings("serial")
-public class OverworldScreen extends Screen<OverworldScreenListener> {
+public class OverworldScreen extends Screen<ScreenListener> {
 	
 	/**
 	 * The height of the world viewer, in tiles.

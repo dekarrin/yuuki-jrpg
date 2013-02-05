@@ -2,11 +2,13 @@ package yuuki.ui;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Map;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.graphic.ImageFactory;
 import yuuki.util.Grid;
 import yuuki.world.Movable;
 import yuuki.world.Portal;
@@ -190,9 +192,32 @@ public interface Interactable {
 	public void initialize();
 	
 	/**
+	 * Initializes the image system.
+	 * 
+	 * @param imageFactory The ImageFactory to use for the image system.
+	 */
+	public void initializeImages(ImageFactory factory);
+	
+	/**
+	 * Initializes the sound system.
+	 * 
+	 * @param effectData The sound effect data.
+	 * @param musicData The background music data.
+	 */
+	public void initializeSounds(Map<String, byte[]> effectData,
+			Map<String, byte[]> musicData);
+	
+	/**
+	 * Plays background music.
+	 * 
+	 * @param musicIndex The index of the music.
+	 */
+	public void playMusic(String musicEffect);
+	
+	/**
 	 * Plays a sound effect.
 	 *
-	 * @param path The index of the sound.
+	 * @param effectIndex The index of the sound.
 	 */
 	public void playSound(String effectIndex);
 	
@@ -373,6 +398,11 @@ public interface Interactable {
 	public void switchToLastScreen();
 	
 	/**
+	 * Shows the loading screen.
+	 */
+	public void switchToLoadingScreen();
+	
+	/**
 	 * Shows the options screen.
 	 */
 	public void switchToOptionsScreen();
@@ -386,6 +416,13 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
+	
+	/**
+	 * Updates the loading progress display.
+	 * 
+	 * @param percent The percentage of time.
+	 */
+	public void updateLoadingProgress(int percent);
 	
 	/**
 	 * Updates the world view to show a certain position.

@@ -34,13 +34,10 @@ public class EffectButton extends JButton implements MouseListener {
 	 * 
 	 * @param text The text to show on the button.
 	 * @param hoverColor The color to change the text to when hovering.
-	 * @param soundEngine The sound engine to play sound effects through.
 	 */
-	public EffectButton(String text, Color hoverColor,
-			DualSoundEngine soundEngine) {
+	public EffectButton(String text, Color hoverColor) {
 		super(text);
 		this.hoverColor = hoverColor;
-		this.soundEngine = soundEngine;
 		normalColor = getForeground();
 		addMouseListener(this);
 	}
@@ -73,5 +70,14 @@ public class EffectButton extends JButton implements MouseListener {
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+	
+	/**
+	 * Sets the sound engine.
+	 * 
+	 * @param soundEngine The sound engine to play sound effects through.
+	 */
+	public void setSoundEngine(DualSoundEngine soundEngine) {
+		this.soundEngine = soundEngine;
+	}
 	
 }

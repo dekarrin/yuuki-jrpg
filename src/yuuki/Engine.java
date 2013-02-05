@@ -194,12 +194,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	public Engine() {
 		options = new Options();
-		createInterface();
-		entityMaker = loadEntities();
-		world = loadWorld();
-		String[] lands = world.getAllLandNames();
-		world.changeLand(lands[0]); // always load the first land in world
-		applyOptions();
+		ui = new GraphicalInterface(this, options);
 	}
 	
 	/**
@@ -325,6 +320,10 @@ public class Engine implements Runnable, UiExecutor {
 	@Override
 	public void run() {
 		ui.initialize();
+		ui.switchToLoadingScreen();
+		loadAssets();
+		applyOptions();
+		setInitialWorld();
 		ui.switchToIntroScreen();
 	}
 	
@@ -341,6 +340,7 @@ public class Engine implements Runnable, UiExecutor {
 				public Runner(Character[] t2) {
 					this.t2 = t2;
 				}
+				@Override
 				public void run() {
 					Character[] t1 = {player};
 					requestBattle(true, t1, t2);
@@ -359,17 +359,6 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void applyOptions() {
 		ui.applyOptions(options);
-	}
-	
-	/**
-	 * Creates the user interface for this Engine.
-	 */
-	private void createInterface() {
-		Map<String, byte[]> effectData = loadSoundEffects();
-		Map<String, byte[]> musicData = loadMusic();
-		ImageFactory imageFactory = loadImages();
-		ui = new GraphicalInterface(this, options, effectData, musicData,
-				imageFactory);
 	}
 	
 	/**
@@ -403,6 +392,24 @@ public class Engine implements Runnable, UiExecutor {
 			System.err.println("Could not load action definitions!");
 		}
 		return factory;
+	}
+	
+	/**
+	 * Loads all game assets and updates the loading screen as they are loaded.
+	 */
+	private void loadAssets() {
+		Map<String, byte[]> effectData = loadSoundEffects();
+		ui.updateLoadingProgress(20);
+		Map<String, byte[]> musicData = loadMusic();
+		ui.updateLoadingProgress(40);
+		ImageFactory imageFactory = loadImages();
+		ui.updateLoadingProgress(60);
+		entityMaker = loadEntities();
+		ui.updateLoadingProgress(80);
+		world = loadWorld();
+		ui.updateLoadingProgress(100);
+		ui.initializeSounds(effectData, musicData);
+		ui.initializeImages(imageFactory);
 	}
 	
 	/**
@@ -733,6 +740,14 @@ public class Engine implements Runnable, UiExecutor {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Sets the world to use the initial land.
+	 */
+	private void setInitialWorld() {
+		String[] lands = world.getAllLandNames();
+		world.changeLand(lands[0]);
 	}
 	
 	/**

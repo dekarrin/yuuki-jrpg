@@ -30,11 +30,11 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.LoadingScreen;
 import yuuki.ui.screen.OptionsScreen;
 import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
-import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
@@ -47,8 +47,7 @@ import yuuki.world.WalkGraph;
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OverworldScreenListener,
-OptionsScreenListener, MenuBarListener {
+CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	
 	/**
 	 * The speed of game animation.
@@ -99,11 +98,11 @@ OptionsScreenListener, MenuBarListener {
 	 * The animation engine.
 	 */
 	private Animator animationEngine;
+	
 	/**
 	 * The battle screen.
 	 */
 	private BattleScreen battleScreen;
-	
 	/**
 	 * The screen where character creation is done.
 	 */
@@ -138,6 +137,11 @@ OptionsScreenListener, MenuBarListener {
 	 * The intro screen.
 	 */
 	private IntroScreen introScreen;
+	
+	/**
+	 * The loading screen.
+	 */
+	private LoadingScreen loadingScreen;
 	
 	/**
 	 * The object performing the actual work.
@@ -197,16 +201,12 @@ OptionsScreenListener, MenuBarListener {
 	 * object.
 	 * @param imageFactory The ImageFactory for creating images.
 	 */
-	public GraphicalInterface(UiExecutor mainProgram, Options options,
-			Map<String, byte[]> effectData, Map<String, byte[]> musicData,
-			ImageFactory imageFactory) {
+	public GraphicalInterface(UiExecutor mainProgram, Options options) {
 		this.options = options;
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
 		this.animationEngine = new Animator(ANIMATION_FPS);
-		this.soundEngine = new DualSoundEngine(effectData, musicData);
-		this.imageEngine = imageFactory;
 	}
 	
 	@Override
@@ -500,6 +500,18 @@ OptionsScreenListener, MenuBarListener {
 		}
 	}
 	
+	@Override
+	public void initializeImages(ImageFactory factory) {
+		this.imageEngine = factory;
+	}
+	
+	@Override
+	public void initializeSounds(Map<String, byte[]> effectData,
+			Map<String, byte[]> musicData) {
+		this.soundEngine = new DualSoundEngine(effectData, musicData);
+		introScreen.setSoundEngine(soundEngine);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -562,12 +574,21 @@ OptionsScreenListener, MenuBarListener {
 		mainProgram.requestOptionsSubmission();
 	}
 	
+	@Override
+	public void playMusic(String musicIndex) {
+		if (soundEngine != null) {
+			soundEngine.playMusic(musicIndex, false);
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void playSound(String effectIndex) {
-		soundEngine.playEffect(effectIndex);
+		if (soundEngine != null) {
+			soundEngine.playEffect(effectIndex);
+		}
 	}
 	
 	/**
@@ -651,7 +672,7 @@ OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void sfxTestClicked() {
-		soundEngine.playEffect("SFX_TEST");
+		playSound("SFX_TEST");
 	}
 	
 	@Override
@@ -814,7 +835,7 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void showDamage(Character fighter, Stat stat, double damage) {
 		if (stat.getName().equalsIgnoreCase("health")) {
-			soundEngine.playEffect("HIT");
+			playSound("HIT");
 		}
 		battleScreen.showDamage(fighter, stat, damage);
 	}
@@ -825,7 +846,7 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void showDamage(Character fighter, Stat stat, int damage) {
 		if (stat.getName().equalsIgnoreCase("health")) {
-			soundEngine.playEffect("HIT");
+			playSound("HIT");
 		}
 		battleScreen.showDamage(fighter, stat, damage);
 	}
@@ -924,6 +945,11 @@ OptionsScreenListener, MenuBarListener {
 		switchWindow(formerScreen);
 	}
 	
+	@Override
+	public void switchToLoadingScreen() {
+		switchWindow(loadingScreen);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -949,6 +975,21 @@ OptionsScreenListener, MenuBarListener {
 	@Override
 	public void switchToPauseScreen() {
 		switchWindow(pauseScreen);
+	}
+	
+	@Override
+	public void updateLoadingProgress(int percent) {
+		class Runner implements Runnable {
+			private int percent;
+			public Runner(int percent) {
+				this.percent = percent;
+			}
+			@Override
+			public void run() {
+				loadingScreen.updateProgress(percent);
+			}
+		}
+		SwingUtilities.invokeLater(new Runner(percent));
 	}
 	
 	/**
@@ -1025,6 +1066,7 @@ OptionsScreenListener, MenuBarListener {
 	private void createComponents() {
 		createContentPane();
 		createMainWindow();
+		createLoadingScreen();
 		createMessageBox();
 		createMenuBar();
 		createIntroScreen();
@@ -1057,9 +1099,20 @@ OptionsScreenListener, MenuBarListener {
 	 */
 	private void createIntroScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
-		introScreen = new IntroScreen(WINDOW_WIDTH, height, soundEngine);
+		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 		introScreen.setBackgroundImage("BG_INTRO_SCREEN");
+	}
+	
+	/**
+	 * Creates the loading screen.
+	 */
+	private void createLoadingScreen() {
+		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		loadingScreen = new LoadingScreen(WINDOW_WIDTH, height,
+				animationEngine);
+		loadingScreen.setBackgroundMusic(null);
+		loadingScreen.setBackgroundImage(null);
 	}
 	
 	/**
@@ -1133,6 +1186,22 @@ OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
+	 * Creates an image if the image engine has been initialized.
+	 * 
+	 * @param index The index of the image to create.
+	 * 
+	 * @return The generated image, or null if the image engine hasn't been
+	 * initialized.
+	 */
+	private Image getImage(String index) {
+		Image img = null;
+		if (imageEngine != null) {
+			img = imageEngine.createImage(index);
+		}
+		return img;
+	}
+	
+	/**
 	 * Packs, revalidates, and repaints the main window.
 	 */
 	private void refreshWindow() {
@@ -1171,15 +1240,14 @@ OptionsScreenListener, MenuBarListener {
 				mainWindow.add(screen, BorderLayout.CENTER);
 				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
 				String index = screen.getBackgroundImage();
-				Image bg = imageEngine.createImage(index);
-				contentPane.setBackgroundImage(bg);
+				contentPane.setBackgroundImage(getImage(index));
 				refreshWindow();
 				mainWindow.setVisible(true);
 				screen.setInitialProperties();
 			}
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
-		soundEngine.playMusic(screen.getBackgroundMusic(), false);
+		playMusic(screen.getBackgroundMusic());
 	}
 	
 }
