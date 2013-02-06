@@ -322,13 +322,15 @@ public class Land {
 		for (Movable r : residents) {
 			Point current = r.getLocation();
 			Point destination = r.getNextMove(this);
-			if (!hasOccupantAt(destination)) {
-				tiles.itemAt(current).setOccupied(false);
-				tiles.itemAt(destination).setOccupied(true);
-				r.setLocation(destination);
-			} else {
-				Movable bumpee = getOccupantAt(destination);
-				bumps.put(r, bumpee);
+			if (!current.equals(destination)) {
+				if (!hasOccupantAt(destination)) {
+					tiles.itemAt(current).setOccupied(false);
+					tiles.itemAt(destination).setOccupied(true);
+					r.setLocation(destination);
+				} else {
+					Movable bumpee = getOccupantAt(destination);
+					bumps.put(r, bumpee);
+				}
 			}
 		}
 	}
