@@ -76,15 +76,14 @@ class SoundPlayerThread implements Runnable {
 	private FloatControl volumeControl;
 	
 	/**
-	 * Allocates a new SoundPlayer with given data. The data is copied from
-	 * the given array to negate access issues.
+	 * Allocates a new SoundPlayer with given data.
 	 * 
 	 * @param soundData The sound data that is to be played.
 	 * @param volume The volume to play the sound data at.
 	 * @param loop Whether to loop play back until stopped.
 	 */
 	public SoundPlayerThread(byte[] soundData, int volume, boolean loop) {
-		data = Arrays.copyOf(soundData, soundData.length);
+		data = soundData;
 		this.volume = volume;
 		this.looping = loop;
 	}
