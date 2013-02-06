@@ -22,6 +22,8 @@ import yuuki.graphic.ImageFactory;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
+import yuuki.util.Progressable;
+import yuuki.util.Progression;
 import yuuki.world.TileFactory;
 import yuuki.world.World;
 
@@ -30,6 +32,39 @@ import yuuki.world.World;
  * directly to run Yuuki.
  */
 public class Engine implements Runnable, UiExecutor {
+	
+	/**
+	 * Handles querying of loading progress and updating of the loading bar.
+	 */
+	private static class LoadingBarUpdater implements Runnable {
+		private Progressable monitor;
+		private Interactable ui;
+		private double lastPercent = 0.0;
+		public LoadingBarUpdater(Progressable monitor, Interactable ui) {
+			this.monitor = monitor;
+			this.ui = ui;
+		}
+		public void run() {
+			try {
+				while (true) {
+					Thread.sleep(100);
+					update();
+				}
+			} catch (InterruptedException e) {
+				update();
+				Thread.currentThread().interrupt();
+			}
+		}
+		private void update() {
+			double percent = monitor.getProgress();
+			double diff = Math.abs(lastPercent - percent);
+			if (diff > Progressable.PROGRESS_PRECISION) {
+				lastPercent = percent;
+				ui.updateLoadingProgress(percent);
+			}
+		}
+		
+	}
 	
 	/**
 	 * Handles the execution of a battle in its own thread.
@@ -50,6 +85,7 @@ public class Engine implements Runnable, UiExecutor {
 				}
 			}
 		}
+		
 	}
 	
 	/**
@@ -73,6 +109,7 @@ public class Engine implements Runnable, UiExecutor {
 		public void setPaused(boolean paused) {
 			this.paused = paused;
 		}
+		
 	}
 	
 	/**
@@ -359,16 +396,20 @@ public class Engine implements Runnable, UiExecutor {
 	 * Loads all game assets and updates the loading screen as they are loaded.
 	 */
 	private void loadAssets() {
+		Progressable monitor = new Progression();
+		LoadingBarUpdater updater = new LoadingBarUpdater(monitor, ui);
+		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		Map<String, byte[]> effectData = loadSoundEffects();
-		ui.updateLoadingProgress(20);
+		monitor.advanceProgress(0.2);
 		Map<String, byte[]> musicData = loadMusic();
-		ui.updateLoadingProgress(40);
+		monitor.advanceProgress(0.2);
 		ImageFactory imageFactory = loadImages();
-		ui.updateLoadingProgress(60);
+		monitor.advanceProgress(0.2);
 		entityMaker = loadEntities();
-		ui.updateLoadingProgress(80);
+		monitor.advanceProgress(0.2);
 		world = loadWorld();
-		ui.updateLoadingProgress(100);
+		monitor.finishProgress();
+		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);
 		ui.initializeImages(imageFactory);
 	}
@@ -438,6 +479,8 @@ public class Engine implements Runnable, UiExecutor {
 	
 	/**
 	 * Loads the sound effects from disk.
+	 * 
+	 * @param monitor Sends progress to a loading bar.
 	 * 
 	 * @return A map that contains the sound effect data mapped to a sound
 	 * index.

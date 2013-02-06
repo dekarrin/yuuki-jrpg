@@ -420,9 +420,9 @@ public interface Interactable {
 	/**
 	 * Updates the loading progress display.
 	 * 
-	 * @param percent The percentage of time.
+	 * @param percent The percentage of loading complete.
 	 */
-	public void updateLoadingProgress(int percent);
+	public void updateLoadingProgress(double percent);
 	
 	/**
 	 * Updates the world view to show a certain position.

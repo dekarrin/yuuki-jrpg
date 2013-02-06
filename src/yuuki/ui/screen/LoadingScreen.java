@@ -1,15 +1,15 @@
 package yuuki.ui.screen;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 
 import yuuki.animation.engine.Animator;
-import yuuki.sprite.ProgressBar;
 
 /**
  * Shows the loading progress and splash screen.
@@ -18,9 +18,10 @@ import yuuki.sprite.ProgressBar;
 public class LoadingScreen extends Screen<ScreenListener> {
 	
 	/**
-	 * The color of the progress bar.
+	 * The amount of ticks in the loading bar. More ticks allow for more
+	 * precision in progress displayed.
 	 */
-	private static final Color PROGRESS_COLOR = new Color(0x87, 0xf5, 0x00);
+	private static final int LOADING_BAR_TICKS = 1000;
 	
 	/**
 	 * The height of the loading bar.
@@ -35,23 +36,27 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	/**
 	 * The loading bar.
 	 */
-	private ProgressBar progress;
+	private JProgressBar progress;
 	
 	/**
 	 * Creates a new screen of a specified size.
 	 * 
-	 * @param width
-	 * @param height
+	 * @param width The width of the new screen.
+	 * @param height The height of the new screen.
 	 * @param Animator The animation engine.
 	 */
 	public LoadingScreen(int width, int height, Animator animator) {
 		super(width, height);
 		setLayout(new FlowLayout());
-		Color color = PROGRESS_COLOR;
 		int progWidth = (int) (width * PROGRESS_WIDTH_MULTIPLIER);
 		int progHeight = PROGRESS_HEIGHT;
-		progress = new ProgressBar(animator, progWidth, progHeight, color,
-				100);
+		Dimension progSize = new Dimension(progWidth, progHeight);
+		progress = new JProgressBar(0, LOADING_BAR_TICKS);
+		progress.setValue(0);
+		progress.setStringPainted(true);
+		progress.setPreferredSize(progSize);
+		progress.setMaximumSize(progSize);
+		progress.setMinimumSize(progSize);
 		Box b = Box.createVerticalBox();
 		JLabel label = new JLabel("Loading...");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -59,9 +64,8 @@ public class LoadingScreen extends Screen<ScreenListener> {
 		b.add(Box.createVerticalStrut(80));
 		b.add(label);
 		b.add(Box.createVerticalStrut(20));
-		b.add(progress.getComponent());
+		b.add(progress);
 		add(b);
-		progress.setValue(0);
 	}
 	
 	@Override
@@ -72,8 +76,9 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	 * 
 	 * @param percent The percent to update it to.
 	 */
-	public void updateProgress(int percent) {
-		progress.setValue(percent);
+	public void updateProgress(double percent) {
+		int val = (int) Math.round(percent * LOADING_BAR_TICKS);
+		progress.setValue(val);
 	}
 	
 }

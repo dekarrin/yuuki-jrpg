@@ -834,10 +834,10 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void updateLoadingProgress(int percent) {
+	public void updateLoadingProgress(double percent) {
 		class Runner implements Runnable {
-			private int percent;
-			public Runner(int percent) {
+			private double percent;
+			public Runner(double percent) {
 				this.percent = percent;
 			}
 			@Override

@@ -2,11 +2,29 @@ package yuuki.file;
 
 import java.io.InputStream;
 
+import yuuki.util.Progressable;
+
 /**
  * Loads resource files into memory. Resource files are the files that are
  * external to the source code. These include images, sounds, and data files.
  */
 public class ResourceLoader {
+	
+	/**
+	 * Records the progress of loading.
+	 */
+	private Progressable monitor;
+	
+	/**
+	 * Advances the progress monitor by a certain percentage.
+	 * 
+	 * @param percent The amount to advance by.
+	 */
+	protected void advanceProgress(double percent) {
+		if (monitor != null) {
+			
+		}
+	}
 	
 	/**
 	 * Separates multiple values in a single field.
