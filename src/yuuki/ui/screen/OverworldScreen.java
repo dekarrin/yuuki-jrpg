@@ -29,6 +29,27 @@ import yuuki.world.WalkGraph;
 public class OverworldScreen extends Screen<ScreenListener> {
 	
 	/**
+	 * Unlocks the buttons after a set amount of time.
+	 */
+	private class Unlocker implements Runnable {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(KEY_LOCK_DURATION);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			OverworldScreen.this.addKeyListener(numpadListener);
+		}
+	}
+	
+	/**
+	 * The amount of time between repetitions of movements when movement keys
+	 * are held down.
+	 */
+	public static final int KEY_LOCK_DURATION = 100;
+	
+	/**
 	 * The height of the world viewer, in tiles.
 	 */
 	public static final int VIEWER_HEIGHT = 10;
@@ -367,6 +388,8 @@ public class OverworldScreen extends Screen<ScreenListener> {
 				l.movementButtonClicked(p);
 			}
 		}
+		this.removeKeyListener(numpadListener);
+		(new Thread(new Unlocker(), "KeyLocker")).start();
 	}
 	
 	/**
