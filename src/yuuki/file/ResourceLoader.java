@@ -11,25 +11,14 @@ import yuuki.util.Progressable;
 public class ResourceLoader {
 	
 	/**
-	 * Records the progress of loading.
-	 */
-	private Progressable monitor;
-	
-	/**
-	 * Advances the progress monitor by a certain percentage.
-	 * 
-	 * @param percent The amount to advance by.
-	 */
-	protected void advanceProgress(double percent) {
-		if (monitor != null) {
-			
-		}
-	}
-	
-	/**
 	 * Separates multiple values in a single field.
 	 */
 	private static final String MULTIVALUE_DELIMITER = ":";
+	
+	/**
+	 * Records the progress of loading.
+	 */
+	private Progressable monitor;
 	
 	/**
 	 * The location of the resource files to be loaded. This is relative to the
@@ -62,6 +51,49 @@ public class ResourceLoader {
 		String actualPath = resourceRoot + resource;
 		InputStream stream = getClass().getResourceAsStream(actualPath);
 		return stream;
+	}
+	
+	/**
+	 * Sets the progress monitor for the next load.
+	 * 
+	 * @param monitor The progress monitor.
+	 */
+	public void setProgressMonitor(Progressable monitor) {
+		this.monitor = monitor;
+	}
+	
+	/**
+	 * Advances the progress monitor by a certain percentage.
+	 * 
+	 * @param percent The amount to advance by.
+	 */
+	protected void advanceProgress(double percent) {
+		if (monitor != null) {
+			monitor.advanceProgress(percent);
+		}
+	}
+	
+	/**
+	 * Sets the progress monitor for this loader to its finished value.
+	 */
+	protected void finishProgress() {
+		if (monitor != null) {
+			monitor.finishProgress();
+		}
+	}
+	
+	/**
+	 * Gets the subsection for the monitor.
+	 * 
+	 * @param length The length in percent of the monitor of the sub-monitor to
+	 * get.
+	 */
+	protected Progressable getProgressSubSection(double length) {
+		Progressable p = null;
+		if (monitor != null) {
+			p = monitor.getSubProgressable(length);
+		}
+		return p;
 	}
 	
 	/**

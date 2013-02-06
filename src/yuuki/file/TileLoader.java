@@ -38,6 +38,7 @@ public class TileLoader extends CsvResourceLoader {
 			String name = r[1];
 			boolean walkable = r[2].equals("1");
 			factory.addDefinition(id, name, walkable);
+			advanceProgress(1.0 / records.length);
 		}
 		return factory;
 	}

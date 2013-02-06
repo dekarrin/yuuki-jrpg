@@ -3,6 +3,7 @@ package yuuki.file;
 import java.io.IOException;
 
 import yuuki.graphic.ImageFactory;
+import yuuki.util.Progressable;
 
 /**
  * Loads image files from a location on disk.
@@ -44,8 +45,14 @@ public class ImageLoader extends CsvResourceLoader {
 		for (String[] r : records) {
 			String index = r[0];
 			String file = r[1];
+			Progressable m = getProgressSubSection(1.0 / records.length);
+			imageLoader.setProgressMonitor(m);
 			byte[] imageData = imageLoader.load(file);
+			if (m != null) {
+				m.finishProgress();
+			}
 			factory.addDefinition(index, imageData);
+			advanceProgress(1.0 / records.length);
 		}
 		return factory;
 	}

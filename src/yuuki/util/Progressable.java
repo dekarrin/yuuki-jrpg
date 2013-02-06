@@ -41,7 +41,7 @@ public interface Progressable {
 	 * 
 	 * @return A ProgressMonitor that updates a subsection of this one.
 	 */
-	public Progressable getProgressSubSection(double length);
+	public Progressable getSubProgressable(double length);
 	
 	/**
 	 * Sets the progress directly.

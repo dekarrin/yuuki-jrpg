@@ -67,7 +67,7 @@ public class SubProgression implements Progressable {
 	}
 	
 	@Override
-	public Progressable getProgressSubSection(double length) {
+	public Progressable getSubProgressable(double length) {
 		Progressable subMonitor = new SubProgression(this, length);
 		return subMonitor;
 	}

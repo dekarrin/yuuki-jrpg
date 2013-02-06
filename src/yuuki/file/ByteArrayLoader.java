@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Loads a file directly into a byte array
+ * Loads a file directly into a byte array.
  */
 public class ByteArrayLoader extends ResourceLoader {
 	
@@ -39,6 +39,7 @@ public class ByteArrayLoader extends ResourceLoader {
 		}
 		buffer.flush();
 		buffer.close();
+		advanceProgress(1.0);
 		return buffer.toByteArray();
 	}
 	

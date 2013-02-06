@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.util.Progressable;
+
 /**
  * Loads all sounds in a resource file.
  */
@@ -45,23 +47,15 @@ public class SoundLoader extends CsvResourceLoader {
 		for (String[] r : records) {
 			String index = r[0];
 			String file = r[1];
-			byte[] data = loadSoundFile(file);
+			Progressable m = getProgressSubSection(1.0 / records.length);
+			soundLoader.setProgressMonitor(m);
+			byte[] data = soundLoader.load(file);
+			if (m != null) {
+				m.finishProgress();
+			}
 			sounds.put(index, data);
 		}
 		return sounds;
-	}
-	
-	/**
-	 * Loads a resource from the sound file directory.
-	 * 
-	 * @param resource The resource to load.
-	 * 
-	 * @return A byte array containing the sound file's data.
-	 * 
-	 * @throws IOException If an IOException occurs.
-	 */
-	private byte[] loadSoundFile(String resource) throws IOException {
-		return soundLoader.load(resource);
 	}
 	
 }

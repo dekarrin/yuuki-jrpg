@@ -49,11 +49,14 @@ public class WorldLoader extends CsvResourceLoader {
 		World world = new World();
 		String[][] records = loadRecords(resource);
 		ArrayList<String> paths = new ArrayList<String>();
-		for (String[] r : records) {
+		double percent = 1.0 / (records.length + 1);
+		for (int i = 0; i < records.length; i++) {
+			String[] r = records[i];
 			paths.add(r[0]);
+			advanceProgress(1.0 / records.length * percent);
 		}
 		String[] pathsArr = paths.toArray(new String[0]);
-		loadLands(world, pathsArr);
+		loadLands(world, pathsArr, percent);
 		return world;
 	}
 	
@@ -62,15 +65,18 @@ public class WorldLoader extends CsvResourceLoader {
 	 * 
 	 * @param world The world to load the lands into.
 	 * @param paths The paths to the land data files.
+	 * @param amount The percent that loading each part should take up.
+	 * 
 	 * @throws IOException
 	 */
-	private void loadLands(World world, String[] paths)
+	private void loadLands(World world, String[] paths, double percent)
 			throws IOException {
 		for (String path : paths) {
 			Land land = landLoader.load(path);
 			if (land != null) {
 				world.addLand(land);
 			}
+			advanceProgress(percent);
 		}
 	}
 	

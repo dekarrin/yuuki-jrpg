@@ -39,6 +39,7 @@ public class ActionLoader extends CsvResourceLoader {
 			String name = r[1];
 			String[] args = splitMultiValue(r[2]);
 			factory.addDefinition(id, name, args);
+			advanceProgress(1.0 / records.length);
 		}
 		return factory;
 	}

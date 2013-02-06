@@ -70,6 +70,7 @@ public class EntityLoader extends CsvResourceLoader {
 			factory.addDefinition(name, hp, hpg, mp, mpg, str, strg, def, defg,
 					agl, aglg, acc, accg, mag, magg, luk, lukg, moves, disp,
 					xp);
+			advanceProgress(1.0 / records.length);
 		}
 		return factory;
 	}

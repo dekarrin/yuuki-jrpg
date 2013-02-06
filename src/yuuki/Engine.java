@@ -47,7 +47,7 @@ public class Engine implements Runnable, UiExecutor {
 		public void run() {
 			try {
 				while (true) {
-					Thread.sleep(100);
+					Thread.sleep(10);
 					update();
 				}
 			} catch (InterruptedException e) {
@@ -379,16 +379,20 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Loads the action definitions from disk.
 	 * 
+	 * @param monitor Monitors the progress of the load.
+	 * 
 	 * @return An ActionFactory containing the loaded definitions.
 	 */
-	private ActionFactory loadActionDefinitions() {
+	private ActionFactory loadActionDefinitions(Progressable monitor) {
 		ActionFactory factory = null;
 		ActionLoader loader = new ActionLoader(DEFINITIONS_PATH);
+		loader.setProgressMonitor(monitor);
 		try {
 			factory = loader.load(ACTIONS_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load action definitions!");
 		}
+		monitor.finishProgress();
 		return factory;
 	}
 	
@@ -399,15 +403,18 @@ public class Engine implements Runnable, UiExecutor {
 		Progressable monitor = new Progression();
 		LoadingBarUpdater updater = new LoadingBarUpdater(monitor, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
-		Map<String, byte[]> effectData = loadSoundEffects();
-		monitor.advanceProgress(0.2);
-		Map<String, byte[]> musicData = loadMusic();
-		monitor.advanceProgress(0.2);
-		ImageFactory imageFactory = loadImages();
-		monitor.advanceProgress(0.2);
-		entityMaker = loadEntities();
-		monitor.advanceProgress(0.2);
-		world = loadWorld();
+		updateThread.start();
+		Progressable m;
+		m = monitor.getSubProgressable(0.2);
+		Map<String, byte[]> effectData = loadSoundEffects(m);
+		m = monitor.getSubProgressable(0.2);
+		Map<String, byte[]> musicData = loadMusic(m);
+		m = monitor.getSubProgressable(0.2);
+		ImageFactory imageFactory = loadImages(m);
+		m = monitor.getSubProgressable(0.2);
+		entityMaker = loadEntities(m);
+		m = monitor.getSubProgressable(0.2);
+		world = loadWorld(m);
 		monitor.finishProgress();
 		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);
@@ -417,11 +424,17 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Loads the entities from disk.
 	 * 
+	 * @param monitor Monitors loading progress.
+	 * 
 	 * @return The loaded EntityFactory.
 	 */
-	private EntityFactory loadEntities() {
-		ActionFactory factory = loadActionDefinitions();
-		EntityFactory entityMaker = loadEntityDefinitions(factory);
+	private EntityFactory loadEntities(Progressable monitor) {
+		Progressable m;
+		m = monitor.getSubProgressable(0.5);
+		ActionFactory factory = loadActionDefinitions(m);
+		m = monitor.getSubProgressable(0.5);
+		EntityFactory entityMaker = loadEntityDefinitions(factory, m);
+		monitor.finishProgress();
 		return entityMaker;
 	}
 	
@@ -431,96 +444,121 @@ public class Engine implements Runnable, UiExecutor {
 	 * @param af The ActionFactory for generating Actions used by the loaded
 	 * entities.
 	 * 
+	 * @param monitor Monitors the progress of the load.
+	 * 
 	 * @return An EntityFactory containing the loaded entity definitions.
 	 */
-	private EntityFactory loadEntityDefinitions(ActionFactory af) {
+	private EntityFactory loadEntityDefinitions(ActionFactory af,
+			Progressable monitor) {
 		EntityFactory factory = null;
 		EntityLoader loader = new EntityLoader(DEFINITIONS_PATH, af);
+		loader.setProgressMonitor(monitor);
 		try {
 			factory = loader.load(ENTITIES_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load entity definitions!");
 		}
+		monitor.finishProgress();
 		return factory;
 	}
 	
 	/**
 	 * Loads the images from disk.
 	 * 
+	 * @param monitor Monitors loading progress.
+	 * 
 	 * @return The ImageFactory with the loaded images.
 	 */
-	private ImageFactory loadImages() {
+	private ImageFactory loadImages(Progressable monitor) {
 		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
 		ImageFactory factory = null;
+		loader.setProgressMonitor(monitor);
 		try {
 			factory = loader.load(IMAGE_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load image file!");
 		}
+		monitor.finishProgress();
 		return factory;
 	}
 	
 	/**
 	 * Loads the background music from disk.
 	 * 
+	 * @param monitor Monitors loading progress.
+	 * 
 	 * @return A map that contains the background music data mapped to a sound
 	 * index.
 	 */
-	private Map<String, byte[]> loadMusic() {
+	private Map<String, byte[]> loadMusic(Progressable monitor) {
 		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
 		Map<String, byte[]> soundData = null;
+		loader.setProgressMonitor(monitor);
 		try {
 			soundData = loader.load(MUSIC_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load music!");
 		}
+		monitor.finishProgress();
 		return soundData;
 	}
 	
 	/**
 	 * Loads the sound effects from disk.
 	 * 
-	 * @param monitor Sends progress to a loading bar.
+	 * @param monitor Monitors loading progress.
 	 * 
 	 * @return A map that contains the sound effect data mapped to a sound
 	 * index.
 	 */
-	private Map<String, byte[]> loadSoundEffects() {
+	private Map<String, byte[]> loadSoundEffects(Progressable monitor) {
 		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
 				SOUND_EFFECT_PATH);
 		Map<String, byte[]> soundData = null;
+		loader.setProgressMonitor(monitor);
 		try {
 			soundData = loader.load(SOUND_EFFECT_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load sound effects!");
 		}
+		monitor.finishProgress();
 		return soundData;
 	}
 	
 	/**
 	 * Loads the tile definitions file from disk.
 	 * 
+	 * @param monitor Monitors the loading progress.
+	 * 
 	 * @return The TileFactory containing the tile definitions.
 	 */
-	private TileFactory loadTileDefinitions() {
+	private TileFactory loadTileDefinitions(Progressable monitor) {
 		TileFactory factory = null;
 		TileLoader loader = new TileLoader(DEFINITIONS_PATH);
+		loader.setProgressMonitor(monitor);
 		try {
 			factory = loader.load(TILE_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load tile file!");
 		}
+		monitor.finishProgress();
 		return factory;
 	}
 	
 	/**
 	 * Loads the world from disk.
 	 * 
+	 * @param monitor The monitor for this loading.
+	 * 
 	 * @return The loaded World.
 	 */
-	private World loadWorld() {
-		TileFactory factory = loadTileDefinitions();
-		World world = loadWorldDefinitions(factory, entityMaker);
+	private World loadWorld(Progressable monitor) {
+		Progressable m;
+		m = monitor.getSubProgressable(0.5);
+		TileFactory factory = loadTileDefinitions(m);
+		m = monitor.getSubProgressable(0.5);
+		World world = loadWorldDefinitions(factory, entityMaker, m);
+		monitor.finishProgress();
 		return world;
 	}
 	
@@ -532,18 +570,22 @@ public class Engine implements Runnable, UiExecutor {
 	 * contained within the World.
 	 * @param ef The factory to use for generating the entities within the
 	 * Lands contained within the World.
+	 * @param monitor Monitors the progress of the load.
 	 * 
 	 * @return The World as read from the data files.
 	 */
-	private World loadWorldDefinitions(TileFactory tf, EntityFactory ef) {
+	private World loadWorldDefinitions(TileFactory tf, EntityFactory ef,
+			Progressable monitor) {
 		World w = null;
 		WorldLoader loader;
 		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf, ef);
+		loader.setProgressMonitor(monitor);
 		try {
 			w = loader.load(WORLD_FILE);
 		} catch (IOException e) {
 			System.err.println("Could not load world file!");
 		}
+		monitor.finishProgress();
 		return w;
 	}
 	
