@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import yuuki.animation.Animation;
 import yuuki.animation.TextTween;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.Character;
@@ -108,6 +109,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * The list of listeners for events fired from this MessageBox.
 	 */
 	private ArrayList<MessageBoxInputListener> listeners;
+	
+	/**
+	 * The animation that is tweening the text display.
+	 */
+	private Animation messageDisplayAnimation;
 	
 	/**
 	 * The values of the options shown during a choice prompt.
@@ -303,6 +309,34 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Freezes any animations on this box and disables everything on it.
+	 */
+	public void freeze() {
+		if (messageDisplayAnimation != null) {
+			messageDisplayAnimation.pause();
+		}
+		MessageBox.invokeNow(new Runnable() {
+			public void run() {
+				getComponent().setEnabled(false);
+			}
+		});
+	}
+	
+	/**
+	 * Unfreezes any animations on this box and enables it.
+	 */
+	public void unfreeze() {
+		if (messageDisplayAnimation != null) {
+			messageDisplayAnimation.unpause();
+		}
+		MessageBox.invokeNow(new Runnable() {
+			public void run() {
+				getComponent().setEnabled(true);
+			}
+		});
+	}
+	
+	/**
 	 * Animates the message and waits for it to complete.
 	 * 
 	 * @param letterDelay The time between each letter.
@@ -310,6 +344,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	private void animateMessage(long letterDelay, String message) {
 		TextTween tween = new TextTween(this, letterDelay, message);
+		messageDisplayAnimation = tween;
 		try {
 			Animator.animateAndWait(animator, tween);
 		} catch (InterruptedException e) {
