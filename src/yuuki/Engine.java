@@ -322,7 +322,11 @@ public class Engine implements Runnable, UiExecutor {
 		loadAssets();
 		applyOptions();
 		setInitialWorld();
-	//	ui.preplay("BGM_MAIN_MENU");
+		try {
+			ui.playMusicAndWait("BGM_MAIN_MENU");
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
 		ui.switchToIntroScreen();
 	}
 	

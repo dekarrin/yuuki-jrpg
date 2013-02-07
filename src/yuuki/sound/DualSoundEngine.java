@@ -118,8 +118,12 @@ public class DualSoundEngine {
 	 * started to play.
 	 * 
 	 * @param musicIndex The index of the music file.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the music to start.
 	 */
-	public void playMusicAndWait(String musicIndex) {
+	public void playMusicAndWait(String musicIndex) throws
+	InterruptedException {
 		musicEngine.playSoundAndWait(musicIndex);
 	}
 	

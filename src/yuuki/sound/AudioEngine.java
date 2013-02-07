@@ -82,19 +82,28 @@ abstract class AudioEngine {
 	 * the sound begins playing.
 	 * 
 	 * @param index The index of the sound to play.
+	 * 
+	 * @throws InterruptedException If the thread is interrupted while waiting
+	 * for the sound to start.
 	 */
-	public void playSoundAndWait(String index) {
-		SoundRunner player = createPlayer(index);
-		class Sleeper implements SoundRunnerListener {
-			public boolean started = false;
+	public void playSoundAndWait(String index) throws InterruptedException {
+		class Delegate implements SoundRunnerListener {
+			public boolean soundStarted = false;
 			@Override
 			public void playbackStarted() {
-				started = true;
+				soundStarted = true;
 			}
 			@Override
 			public void playbackFinished() {}			
 		}
-		Sleeper s = new Sleeper();
+		Delegate d = new Delegate();
+		SoundRunner player = createPlayer(index);
+		player.addListener(d);
+		(new Thread(player, threadName)).start();
+		while (!d.soundStarted) {
+			Thread.sleep(50);
+		}
+		player.removeListener(d);
 	}
 	
 	/**

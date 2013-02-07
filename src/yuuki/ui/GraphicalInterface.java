@@ -518,7 +518,8 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void playMusicAndWait(String musicIndex) {
+	public void playMusicAndWait(String musicIndex) throws
+	InterruptedException {
 		if (soundEngine.isReady()) {
 			soundEngine.playMusicAndWait(musicIndex);
 		}

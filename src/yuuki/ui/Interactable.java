@@ -218,8 +218,12 @@ public interface Interactable {
 	 * Plays background music and then blocks until the music starts playing.
 	 * 
 	 * @param musicIndex The index of the music.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the music to start.
 	 */
-	public void playMusicAndWait(String musicIndex);
+	public void playMusicAndWait(String musicIndex) throws
+	InterruptedException;
 	
 	/**
 	 * Plays a sound effect.
