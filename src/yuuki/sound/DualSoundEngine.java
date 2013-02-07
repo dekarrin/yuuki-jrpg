@@ -20,18 +20,42 @@ public class DualSoundEngine {
 	
 	/**
 	 * Creates a new DualSoundEngine.
+	 */
+	public DualSoundEngine() {
+		effectEngine = new EffectEngine();
+		musicEngine = new MusicEngine();
+	}
+	
+	/**
+	 * Checks whether this DualSoundEngine is ready to have sounds played.
 	 * 
-	 * @param effectData A map of string indexes to byte arrays containing
-	 * sound data for music. Such a map can be easily obtained using a
-	 * SoundLoader object.
+	 * @return True if this sound engine has had both its music data and effect
+	 * data set.
+	 */
+	public boolean isReady() {
+		return (effectEngine.isReady() && musicEngine.isReady());
+	}
+	
+	/**
+	 * Sets the data for the music engine.
+	 * 
 	 * @param musicData A map of string indexes to byte arrays containing sound
 	 * data for music. Such a map can be easily obtained using a SoundLoader
 	 * object.
 	 */
-	public DualSoundEngine(Map<String, byte[]> effectData,
-			Map<String, byte[]> musicData) {
-		effectEngine = new EffectEngine(effectData);
-		musicEngine = new MusicEngine(musicData);
+	public void setMusicData(Map<String, byte[]> musicData) {
+		musicEngine.setData(musicData);
+	}
+	
+	/**
+	 * Sets the data for the effect engine.
+	 * 
+	 * @param effectData A map of string indexes to byte arrays containing
+	 * sound data for music. Such a map can be easily obtained using a
+	 * SoundLoader object.
+	 */
+	public void setEffectData(Map<String, byte[]> effectData) {
+		effectEngine.setData(effectData);
 	}
 	
 	/**
@@ -84,6 +108,19 @@ public class DualSoundEngine {
 	 */
 	public void playMusic(String musicIndex, boolean restart) {
 		musicEngine.playSound(musicIndex, restart);
+	}
+	
+	/**
+	 * Plays the music file associated with a music index. If a music file is
+	 * already playing when this method is called, it is stopped.
+	 * 
+	 * This method causes the current thread to block until the music has
+	 * started to play.
+	 * 
+	 * @param musicIndex The index of the music file.
+	 */
+	public void playMusicAndWait(String musicIndex) {
+		musicEngine.playSoundAndWait(musicIndex);
 	}
 	
 	/**

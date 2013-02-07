@@ -2,7 +2,8 @@ package yuuki.sound;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -46,6 +47,11 @@ class SoundPlayerThread implements Runnable {
 	private byte[] data;
 	
 	/**
+	 * The listeners registered to this SoundPlayerThread.
+	 */
+	private Set<SoundPlayerThreadListener> listeners;
+	
+	/**
 	 * Whether the sound clip will loop continuously.
 	 */
 	private boolean looping;
@@ -86,6 +92,25 @@ class SoundPlayerThread implements Runnable {
 		data = soundData;
 		this.volume = volume;
 		this.looping = loop;
+		this.listeners = new HashSet<SoundPlayerThreadListener>();
+	}
+	
+	/**
+	 * Adds a listener to this SoundPlayerThread.
+	 * 
+	 * @param l The listener to add.
+	 */
+	public void addListener(SoundPlayerThreadListener l) {
+		listeners.add(l);
+	}
+	
+	/**
+	 * Removes a listener from this SoundPlayerThread.
+	 * 
+	 * @param l The listener to remove.
+	 */
+	public void removeListener(Object l) {
+		listeners.remove(l);
 	}
 	
 	/**
@@ -95,27 +120,16 @@ class SoundPlayerThread implements Runnable {
 	public void run() {
 		playerThread = Thread.currentThread();
 		openAudioStream();
-		openAudioClip();
+		openAudioLine();
 		try {
-			clip.open(stream);
-			FloatControl.Type vType = FloatControl.Type.MASTER_GAIN;
-			BooleanControl.Type mType = BooleanControl.Type.MUTE;
-			volumeControl = (FloatControl) clip.getControl(vType);
-			muteControl = (BooleanControl) clip.getControl(mType);
+			openAudioClip();
+			getClipControls();
 			adjustClipVolume();
-			if (looping) {
-				clip.loop(Clip.LOOP_CONTINUOUSLY);
-			} else {
-				clip.start();
-			}
-			while (!clip.isRunning()) {
-				Thread.sleep(AUDIO_THREAD_SLEEP_TIME);
-				adjustClipVolume();
-			}
-			while (clip.isRunning()) {
-				Thread.sleep(AUDIO_THREAD_SLEEP_TIME);
-				adjustClipVolume();
-			}
+			startPlayback();
+			blockUntilPlaybackStarts();
+			firePlaybackStarted();
+			blockUntilPlaybackFinishes();
+			firePlaybackFinished();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (LineUnavailableException e) {
@@ -123,7 +137,7 @@ class SoundPlayerThread implements Runnable {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		} finally {
-			clip.close();
+			closeAudioClip();
 		}
 	}
 	
@@ -163,9 +177,86 @@ class SoundPlayerThread implements Runnable {
 	}
 	
 	/**
-	 * Opens the Clip for playing the audio data with the audio stream.
+	 * Causes the current thread to block until the clip has finished playing.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the clip to finish playing.
 	 */
-	private void openAudioClip() {
+	private void blockUntilPlaybackFinishes() throws InterruptedException {
+		while (clip.isRunning()) {
+			Thread.sleep(AUDIO_THREAD_SLEEP_TIME);
+			adjustClipVolume();
+		}
+	}
+	
+	/**
+	 * Causes the current thread to block until the clip has started playing.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the clip to start playing.
+	 */
+	private void blockUntilPlaybackStarts() throws InterruptedException {
+		while (!clip.isRunning()) {
+			Thread.sleep(AUDIO_THREAD_SLEEP_TIME);
+			adjustClipVolume();
+		}
+	}
+	
+	/**
+	 * Closes the audio clip.
+	 */
+	private void closeAudioClip() {
+		clip.close();
+	}
+	
+	/**
+	 * Calls playbackFinished() on each of the listeners.
+	 */
+	private void firePlaybackFinished() {
+		int size = listeners.size();
+		SoundPlayerThreadListener[] ls = new SoundPlayerThreadListener[size];
+		listeners.toArray(ls);
+		for (SoundPlayerThreadListener l : ls) {
+			l.playbackFinished();
+		}
+	}
+	
+	/**
+	 * Calls playbackStarted() on each of the listeners.
+	 */
+	private void firePlaybackStarted() {
+		int size = listeners.size();
+		SoundPlayerThreadListener[] ls = new SoundPlayerThreadListener[size];
+		listeners.toArray(ls);
+		for (SoundPlayerThreadListener l : ls) {
+			l.playbackStarted();
+		}
+	}
+	
+	/**
+	 * Gets the audio line controls from the open audio clip.
+	 */
+	private void getClipControls() {
+		FloatControl.Type vType = FloatControl.Type.MASTER_GAIN;
+		BooleanControl.Type mType = BooleanControl.Type.MUTE;
+		volumeControl = (FloatControl) clip.getControl(vType);
+		muteControl = (BooleanControl) clip.getControl(mType);
+	}
+	
+	/**
+	 * Opens the audio clip on the audio stream.
+	 * 
+	 * @throws IOException If an IOException occurs.
+	 * @throws LineUnavailableException If the audio line is unavailable.
+	 */
+	private void openAudioClip() throws LineUnavailableException, IOException {
+		clip.open(stream);
+	}
+	
+	/**
+	 * Opens an audio line for playing the audio data with the audio stream.
+	 */
+	private void openAudioLine() {
 		try {
 			AudioFormat format = stream.getFormat();
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
@@ -188,6 +279,17 @@ class SoundPlayerThread implements Runnable {
 			e.printStackTrace();
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Starts playing the data in the open audio clip.
+	 */
+	private void startPlayback() {
+		if (looping) {
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+		} else {
+			clip.start();
 		}
 	}
 	

@@ -206,7 +206,8 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
-		this.animationEngine = new Animator(ANIMATION_FPS);
+		animationEngine = new Animator(ANIMATION_FPS);
+		soundEngine = new DualSoundEngine();
 	}
 	
 	@Override
@@ -451,7 +452,8 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void initializeSounds(Map<String, byte[]> effectData,
 			Map<String, byte[]> musicData) {
-		this.soundEngine = new DualSoundEngine(effectData, musicData);
+		this.soundEngine.setEffectData(effectData);
+		this.soundEngine.setMusicData(musicData);
 		introScreen.setSoundEngine(soundEngine);
 	}
 	
@@ -510,14 +512,21 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void playMusic(String musicIndex) {
-		if (soundEngine != null) {
+		if (soundEngine.isReady()) {
 			soundEngine.playMusic(musicIndex, false);
 		}
 	}
 	
 	@Override
+	public void playMusicAndWait(String musicIndex) {
+		if (soundEngine.isReady()) {
+			soundEngine.playMusicAndWait(musicIndex);
+		}
+	}
+	
+	@Override
 	public void playSound(String effectIndex) {
-		if (soundEngine != null) {
+		if (soundEngine.isReady()) {
 			soundEngine.playEffect(effectIndex);
 		}
 	}

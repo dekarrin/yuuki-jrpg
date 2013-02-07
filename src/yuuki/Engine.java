@@ -322,6 +322,7 @@ public class Engine implements Runnable, UiExecutor {
 		loadAssets();
 		applyOptions();
 		setInitialWorld();
+	//	ui.preplay("BGM_MAIN_MENU");
 		ui.switchToIntroScreen();
 	}
 	
@@ -406,15 +407,15 @@ public class Engine implements Runnable, UiExecutor {
 		updateThread.start();
 		Progressable m;
 		m = monitor.getSubProgressable(0.2);
-		Map<String, byte[]> effectData = loadSoundEffects(m);
+		Map<String, byte[]> effectData	= loadSoundEffects(m);
 		m = monitor.getSubProgressable(0.2);
-		Map<String, byte[]> musicData = loadMusic(m);
+		Map<String, byte[]> musicData	= loadMusic(m);
 		m = monitor.getSubProgressable(0.2);
-		ImageFactory imageFactory = loadImages(m);
+		ImageFactory imageFactory		= loadImages(m);
 		m = monitor.getSubProgressable(0.2);
-		entityMaker = loadEntities(m);
+		entityMaker						= loadEntities(m);
 		m = monitor.getSubProgressable(0.2);
-		world = loadWorld(m);
+		world							= loadWorld(m);
 		monitor.finishProgress();
 		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);

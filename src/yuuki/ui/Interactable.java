@@ -212,7 +212,14 @@ public interface Interactable {
 	 * 
 	 * @param musicIndex The index of the music.
 	 */
-	public void playMusic(String musicEffect);
+	public void playMusic(String musicIndex);
+	
+	/**
+	 * Plays background music and then blocks until the music starts playing.
+	 * 
+	 * @param musicIndex The index of the music.
+	 */
+	public void playMusicAndWait(String musicIndex);
 	
 	/**
 	 * Plays a sound effect.
