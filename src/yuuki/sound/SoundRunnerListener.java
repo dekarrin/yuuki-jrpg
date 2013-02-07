@@ -3,7 +3,7 @@ package yuuki.sound;
 /**
  * Listens for events fired from a SoundPlayerThread.
  */
-interface SoundPlayerThreadListener {
+interface SoundRunnerListener {
 	
 	/**
 	 * Fired when the sound player begins playing its clip.

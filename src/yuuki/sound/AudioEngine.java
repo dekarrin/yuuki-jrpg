@@ -25,34 +25,26 @@ abstract class AudioEngine {
 	private Map<String, byte[]> sounds;
 	
 	/**
+	 * The name of player threads started by this AudioEngine.
+	 */
+	private final String threadName;
+	
+	/**
 	 * The volume percentage of the sounds.
 	 */
 	private int volume;
 	
 	/**
 	 * Creates a new AudioEngine.
+	 * 
+	 * @param threadName The name of player threads started by this
+	 * AudioEngine.
 	 */
-	public AudioEngine() {
+	public AudioEngine(String threadName) {
 		sounds = null;
 		volume = 50;
-		initializeAudio();
-	}
-	
-	/**
-	 * Gets the bytes for a blank audio file.
-	 */
-	private byte[] getBlankData() {
-		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-		DataOutputStream dataStream = new DataOutputStream(byteStream);
-		try {
-			for (int i = 0; i < BLANK_DATA.length; i++) {
-				dataStream.write(BLANK_DATA[i]);
-			}
-			dataStream.flush();
-		} catch (IOException e) {
-			System.err.println("Failed to get audio initialization data");
-		}
-		return byteStream.toByteArray();
+		this.threadName = threadName;
+		initializeAudioApi();
 	}
 	
 	/**
@@ -81,7 +73,28 @@ abstract class AudioEngine {
 	 * @param index The index of the sound resource.
 	 */
 	public void playSound(String index) {
-		spawnPlayerThread(index);
+		SoundRunner player = createPlayer(index);
+		(new Thread(player, threadName)).start();
+	}
+	
+	/**
+	 * Plays a sound file. This method causes the current thread to block until
+	 * the sound begins playing.
+	 * 
+	 * @param index The index of the sound to play.
+	 */
+	public void playSoundAndWait(String index) {
+		SoundRunner player = createPlayer(index);
+		class Sleeper implements SoundRunnerListener {
+			public boolean started = false;
+			@Override
+			public void playbackStarted() {
+				started = true;
+			}
+			@Override
+			public void playbackFinished() {}			
+		}
+		Sleeper s = new Sleeper();
 	}
 	
 	/**
@@ -104,20 +117,27 @@ abstract class AudioEngine {
 	}
 	
 	/**
-	 * Plays a silent track to initialize the audio API.
+	 * Gets the bytes for a blank audio file.
 	 */
-	private void initializeAudio() {
-		spawnEmptyPlayerThread();
+	private byte[] getBlankData() {
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		DataOutputStream dataStream = new DataOutputStream(byteStream);
+		try {
+			for (short element : BLANK_DATA) {
+				dataStream.write(element);
+			}
+			dataStream.flush();
+		} catch (IOException e) {
+			System.err.println("Failed to get audio initialization data");
+		}
+		return byteStream.toByteArray();
 	}
 	
 	/**
-	 * Plays a sound file. This method causes the current thread to block until
-	 * the sound begins playing.
-	 * 
-	 * @param index The index of the sound to play.
+	 * Plays a silent track to initialize the audio API.
 	 */
-	public void playSoundAndWait(String index) {
-		
+	private void initializeAudioApi() {
+		spawnEmptyPlayerThread();
 	}
 	
 	/**
@@ -126,10 +146,19 @@ abstract class AudioEngine {
 	 */
 	private void spawnEmptyPlayerThread() {
 		byte[] data = getBlankData();
-		SoundPlayerThread player;
-		player = new SoundPlayerThread(data, 0, false);
+		SoundRunner player;
+		player = new SoundRunner(data, 0, false);
 		(new Thread(player, "AudioInit")).start();
 	}
+	
+	/**
+	 * Creates a sound player.
+	 * 
+	 * @param index The index of the sound that the player is to play.
+	 * 
+	 * @return The newly-created SoundRunner.
+	 */
+	protected abstract SoundRunner createPlayer(String index);
 	
 	/**
 	 * Gets a byte array of audio data for a sound index.
@@ -141,14 +170,5 @@ abstract class AudioEngine {
 	protected byte[] getAudioData(String index) {
 		return sounds.get(index);
 	}
-	
-	/**
-	 * Creates a thread for playing a sound.
-	 * 
-	 * @param index The index of the sound to start playing.
-	 * 
-	 * @return The newly-created SoundPlayerThread.
-	 */
-	protected abstract void spawnPlayerThread(String index);
 	
 }

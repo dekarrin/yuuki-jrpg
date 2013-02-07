@@ -9,12 +9,19 @@ public class MusicEngine extends AudioEngine {
 	/**
 	 * The currently playing music.
 	 */
-	private SoundPlayerThread musicPlayer;
+	private SoundRunner musicPlayer;
 	
 	/**
 	 * The name of the currently playing track.
 	 */
 	private String track = null;
+	
+	/**
+	 * Creates a new MusicEngine.
+	 */
+	public MusicEngine() {
+		super("MusicPlayer");
+	}
 	
 	/**
 	 * Spawns a player thread.
@@ -52,12 +59,12 @@ public class MusicEngine extends AudioEngine {
 	}
 	
 	@Override
-	protected void spawnPlayerThread(String index) {
+	protected SoundRunner createPlayer(String index) {
 		track = index;
 		byte[] data = getAudioData(index);
 		stopSound();
-		musicPlayer = new SoundPlayerThread(data, getVolume(), true);
-		(new Thread(musicPlayer, "MusicPlayer")).start();
+		musicPlayer = new SoundRunner(data, getVolume(), true);
+		return musicPlayer;
 	}
 	
 }

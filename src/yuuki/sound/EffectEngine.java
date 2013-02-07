@@ -6,12 +6,17 @@ package yuuki.sound;
  */
 public class EffectEngine extends AudioEngine {
 	
+	/**
+	 * Creates a new EffectEngine.
+	 */
+	public EffectEngine() {
+		super("SFXPlayer");
+	}
+	
 	@Override
-	protected void spawnPlayerThread(String index) {
+	protected SoundRunner createPlayer(String index) {
 		byte[] data = getAudioData(index);
-		SoundPlayerThread player;
-		player = new SoundPlayerThread(data, getVolume(), false);
-		(new Thread(player, "SFXPlayer")).start();
+		return new SoundRunner(data, getVolume(), false);
 	}
 	
 }
