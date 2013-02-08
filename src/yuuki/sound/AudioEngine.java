@@ -90,11 +90,11 @@ abstract class AudioEngine {
 		class Delegate implements SoundRunnerListener {
 			public boolean soundStarted = false;
 			@Override
+			public void playbackFinished() {}
+			@Override
 			public void playbackStarted() {
 				soundStarted = true;
 			}
-			@Override
-			public void playbackFinished() {}			
 		}
 		Delegate d = new Delegate();
 		SoundRunner player = createPlayer(index);

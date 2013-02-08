@@ -13,12 +13,6 @@ import yuuki.animation.Animation;
 public class AnimationManager implements Runnable {
 	
 	/**
-	 * The amount of time, in milliseconds, that the animator thread sleeps
-	 * for in between each check for additional animations.
-	 */
-	private static final int ANIMATOR_SLEEP_TIME = 10;
-	
-	/**
 	 * Contains the animation that is to be added and the name of the driver
 	 * that is to run it.
 	 */
@@ -57,9 +51,15 @@ public class AnimationManager implements Runnable {
 	}
 	
 	/**
-	 * Handles driver animation events.
+	 * The name of the default animation driver.
 	 */
-	private DriverEventHandler handler = new DriverEventHandler();
+	public static final String DEFAULT_DRIVER_NAME = "__DEFAULT";
+	
+	/**
+	 * The amount of time, in milliseconds, that the animator thread sleeps
+	 * for in between each check for additional animations.
+	 */
+	private static final int ANIMATOR_SLEEP_TIME = 10;
 	
 	/**
 	 * Starts an animation and blocks until the animation is complete.
@@ -106,6 +106,11 @@ public class AnimationManager implements Runnable {
 	private final int fps;
 	
 	/**
+	 * Handles driver animation events.
+	 */
+	private DriverEventHandler handler = new DriverEventHandler();
+	
+	/**
 	 * Creates a new Animator.
 	 * 
 	 * @param fps The speed to run animation at.
@@ -119,9 +124,18 @@ public class AnimationManager implements Runnable {
 	}
 	
 	/**
-	 * The name of the default animation driver.
+	 * Adds an animation to an animation driver.
+	 * 
+	 * @param a The Animation to add.
+	 * @param driver The name of the driver to add the animation to. Set this
+	 * to null to use the default animation driver.
 	 */
-	public static final String DEFAULT_DRIVER_NAME = "__DEFAULT";
+	public void addAnimation(Animation a, String driver) {
+		AnimationQueueItem item = new AnimationQueueItem();
+		item.anim = a;
+		item.driver = driver;
+		animationQueue.offer(item);
+	}
 	
 	/**
 	 * Creates a new driver in this animation manager. If a driver with the
@@ -151,31 +165,6 @@ public class AnimationManager implements Runnable {
 	}
 	
 	/**
-	 * Adds an animation to an animation driver.
-	 * 
-	 * @param a The Animation to add.
-	 * @param driver The name of the driver to add the animation to. Set this
-	 * to null to use the default animation driver.
-	 */
-	public void addAnimation(Animation a, String driver) {
-		AnimationQueueItem item = new AnimationQueueItem();
-		item.anim = a;
-		item.driver = driver;
-		animationQueue.offer(item);
-	}
-	
-	/**
-	 * Gets a driver.
-	 * 
-	 * @param name The name of the driver. Set this to null to get the default
-	 * driver.
-	 */
-	private AnimationDriver getDriver(String name) {
-		name = (name != null) ? name : DEFAULT_DRIVER_NAME;
-		return drivers.get(name);
-	}
-	
-	/**
 	 * Processes animations added to the queue.
 	 */
 	@Override
@@ -192,6 +181,17 @@ public class AnimationManager implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Gets a driver.
+	 * 
+	 * @param name The name of the driver. Set this to null to get the default
+	 * driver.
+	 */
+	private AnimationDriver getDriver(String name) {
+		name = (name != null) ? name : DEFAULT_DRIVER_NAME;
+		return drivers.get(name);
 	}
 	
 }

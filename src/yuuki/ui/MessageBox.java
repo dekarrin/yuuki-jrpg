@@ -227,6 +227,15 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Immediately finishes the message being tweened.
+	 */
+	public void finishAnimating() {
+		if (messageDisplayAnimation != null) {
+			messageDisplayAnimation.finish();
+		}
+	}
+	
+	/**
 	 * Freezes any animations on this box and disables everything on it.
 	 */
 	public void freeze() {
@@ -237,15 +246,6 @@ public class MessageBox extends Sprite implements MouseListener {
 				getComponent().setEnabled(false);
 			}
 		});
-	}
-	
-	/**
-	 * Immediately finishes the message being tweened.
-	 */
-	public void finishAnimating() {
-		if (messageDisplayAnimation != null) {
-			messageDisplayAnimation.finish();
-		}
 	}
 	
 	/**

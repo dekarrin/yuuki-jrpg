@@ -8,6 +8,13 @@ package yuuki.animation.engine;
 public interface Animatable {
 	
 	/**
+	 * Adds a listener for AnimationEvents.
+	 * 
+	 * @param l The listener to add.
+	 */
+	public void addAnimationListener(AnimationListener l);
+	
+	/**
 	 * Advances animation by one frame.
 	 * 
 	 * @param fps The speed in frames-per-second that the controlling object is
@@ -25,24 +32,17 @@ public interface Animatable {
 	public boolean isControlled();
 	
 	/**
-	 * Sets whether this Animatable is being driven by another object.
-	 * 
-	 * @param controlled Whether this Animatable is being animated.
-	 */
-	public void setControlled(boolean controlled);
-	
-	/**
-	 * Adds a listener for AnimationEvents.
-	 * 
-	 * @param l The listener to add.
-	 */
-	public void addAnimationListener(AnimationListener l);
-	
-	/**
 	 * Removes a listener for AnimationEvents.
 	 * 
 	 * @param l The listener to remove.
 	 */
 	public void removeAnimationListener(Object l);
+	
+	/**
+	 * Sets whether this Animatable is being driven by another object.
+	 * 
+	 * @param controlled Whether this Animatable is being animated.
+	 */
+	public void setControlled(boolean controlled);
 	
 }

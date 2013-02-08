@@ -27,38 +27,6 @@ public class DualSoundEngine {
 	}
 	
 	/**
-	 * Checks whether this DualSoundEngine is ready to have sounds played.
-	 * 
-	 * @return True if this sound engine has had both its music data and effect
-	 * data set.
-	 */
-	public boolean isReady() {
-		return (effectEngine.isReady() && musicEngine.isReady());
-	}
-	
-	/**
-	 * Sets the data for the music engine.
-	 * 
-	 * @param musicData A map of string indexes to byte arrays containing sound
-	 * data for music. Such a map can be easily obtained using a SoundLoader
-	 * object.
-	 */
-	public void setMusicData(Map<String, byte[]> musicData) {
-		musicEngine.setData(musicData);
-	}
-	
-	/**
-	 * Sets the data for the effect engine.
-	 * 
-	 * @param effectData A map of string indexes to byte arrays containing
-	 * sound data for music. Such a map can be easily obtained using a
-	 * SoundLoader object.
-	 */
-	public void setEffectData(Map<String, byte[]> effectData) {
-		effectEngine.setData(effectData);
-	}
-	
-	/**
 	 * Gets the sound effect volume.
 	 * 
 	 * @return The current volume of sound effects.
@@ -74,6 +42,16 @@ public class DualSoundEngine {
 	 */
 	public int getMusicVolume() {
 		return musicEngine.getVolume();
+	}
+	
+	/**
+	 * Checks whether this DualSoundEngine is ready to have sounds played.
+	 * 
+	 * @return True if this sound engine has had both its music data and effect
+	 * data set.
+	 */
+	public boolean isReady() {
+		return (effectEngine.isReady() && musicEngine.isReady());
 	}
 	
 	/**
@@ -128,12 +106,34 @@ public class DualSoundEngine {
 	}
 	
 	/**
+	 * Sets the data for the effect engine.
+	 * 
+	 * @param effectData A map of string indexes to byte arrays containing
+	 * sound data for music. Such a map can be easily obtained using a
+	 * SoundLoader object.
+	 */
+	public void setEffectData(Map<String, byte[]> effectData) {
+		effectEngine.setData(effectData);
+	}
+	
+	/**
 	 * Sets the sound effect volume.
 	 * 
 	 * @param volume The new volume for sound effects.
 	 */
 	public void setEffectVolume(int volume) {
 		effectEngine.setVolume(volume);
+	}
+	
+	/**
+	 * Sets the data for the music engine.
+	 * 
+	 * @param musicData A map of string indexes to byte arrays containing sound
+	 * data for music. Such a map can be easily obtained using a SoundLoader
+	 * object.
+	 */
+	public void setMusicData(Map<String, byte[]> musicData) {
+		musicEngine.setData(musicData);
 	}
 	
 	/**

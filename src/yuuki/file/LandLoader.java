@@ -168,6 +168,16 @@ public class LandLoader extends ResourceLoader {
 	}
 	
 	/**
+	 * Gets the number of lines that this land loader will need to read.
+	 * 
+	 * @return The number of lines.
+	 */
+	private int getLineCount() {
+		int count = 1 + meta.portals + meta.entities + meta.size.height;
+		return count;
+	}
+	
+	/**
 	 * Loads land data from the reader.
 	 * 
 	 * @return The Land object.
@@ -217,16 +227,6 @@ public class LandLoader extends ResourceLoader {
 		tileData.toArray(tiles);
 		Land land = new Land(meta.name, meta.size, meta.start, tiles);
 		return land;
-	}
-	
-	/**
-	 * Gets the number of lines that this land loader will need to read.
-	 * 
-	 * @return The number of lines.
-	 */
-	private int getLineCount() {
-		int count = 1 + meta.portals + meta.entities + meta.size.height;
-		return count;
 	}
 	
 	/**

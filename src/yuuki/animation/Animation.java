@@ -64,6 +64,7 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @param l The listener to add.
 	 */
+	@Override
 	public void addAnimationListener(AnimationListener l) {
 		listeners.add(l);
 	}
@@ -125,6 +126,7 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @param l The listener to remove.
 	 */
+	@Override
 	public void removeAnimationListener(Object l) {
 		listeners.remove(l);
 	}

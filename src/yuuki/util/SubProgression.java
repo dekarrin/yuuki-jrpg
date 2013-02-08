@@ -6,15 +6,15 @@ package yuuki.util;
 public class SubProgression implements Progressable {
 	
 	/**
-	 * The ProgressMonitor that this SubMonitor is running on a portion of.
-	 */
-	private final Progressable monitor;
-	
-	/**
 	 * The percent that the parent monitor will be at when this SubMonitor is
 	 * complete.
 	 */
 	private final double end;
+	
+	/**
+	 * The ProgressMonitor that this SubMonitor is running on a portion of.
+	 */
+	private final Progressable monitor;
 	
 	/**
 	 * The percent that the parent monitor was at when this SubMonitor was
@@ -48,6 +48,11 @@ public class SubProgression implements Progressable {
 	}
 	
 	@Override
+	public void finishProgress() {
+		monitor.setProgress(end);
+	}
+	
+	@Override
 	public double getProgress() {
 		double absoluteProgress = monitor.getProgress() - start;
 		double percentProgress = absoluteProgress / getLength();
@@ -55,21 +60,16 @@ public class SubProgression implements Progressable {
 	}
 	
 	@Override
+	public Progressable getSubProgressable(double length) {
+		Progressable subMonitor = new SubProgression(this, length);
+		return subMonitor;
+	}
+	
+	@Override
 	public void setProgress(double percent) {
 		double absoluteProgress = percent * getLength();
 		double actualPercent = absoluteProgress + start;
 		monitor.setProgress(actualPercent);
-	}
-	
-	@Override
-	public void finishProgress() {
-		monitor.setProgress(end);
-	}
-	
-	@Override
-	public Progressable getSubProgressable(double length) {
-		Progressable subMonitor = new SubProgression(this, length);
-		return subMonitor;
 	}
 	
 	/**

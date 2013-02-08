@@ -24,6 +24,11 @@ public class BattleRunner implements Runnable {
 	private Battle battle;
 	
 	/**
+	 * The thread that this BattleRunner runs in.
+	 */
+	private Thread battleThread;
+	
+	/**
 	 * The handler for executing tasks for the UI.
 	 */
 	private UiExecutor main;
@@ -32,11 +37,6 @@ public class BattleRunner implements Runnable {
 	 * The interface to run the battle on.
 	 */
 	private Interactable ui;
-	
-	/**
-	 * The thread that this BattleRunner runs in.
-	 */
-	private Thread battleThread;
 	
 	/**
 	 * Creates the new BattleRunner.
@@ -69,6 +69,13 @@ public class BattleRunner implements Runnable {
 	}
 	
 	/**
+	 * Sets whether or not this battle is paused.
+	 */
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+	
+	/**
 	 * Ends the battle currently running. If no battle is currently running,
 	 * this method has no effect.
 	 */
@@ -76,13 +83,6 @@ public class BattleRunner implements Runnable {
 		if (battleThread != null && battleThread.isAlive()) {
 			battleThread.interrupt();
 		}
-	}
-	
-	/**
-	 * Sets whether or not this battle is paused.
-	 */
-	public void setPaused(boolean paused) {
-		this.paused = paused;
 	}
 	
 	/**

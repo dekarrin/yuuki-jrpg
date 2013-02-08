@@ -37,11 +37,6 @@ class SoundRunner implements Runnable {
 	private static final float MINIMUM_VOLUME = -40f;
 	
 	/**
-	 * The thread that plays the sounds.
-	 */
-	private Thread playerThread;
-	
-	/**
 	 * The Clip that plays the audio data.
 	 */
 	private Clip clip;
@@ -65,6 +60,11 @@ class SoundRunner implements Runnable {
 	 * The control for muting this clip.
 	 */
 	private BooleanControl muteControl;
+	
+	/**
+	 * The thread that plays the sounds.
+	 */
+	private Thread playerThread;
 	
 	/**
 	 * The audio stream for playing the audio data.

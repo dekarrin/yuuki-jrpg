@@ -16,12 +16,6 @@ public class Progression implements Progressable {
 	}
 	
 	@Override
-	public void setProgress(double percent) {
-		progress = percent;
-		approximateProgress();
-	}
-	
-	@Override
 	public void finishProgress() {
 		progress = 1.0;
 	}
@@ -35,6 +29,12 @@ public class Progression implements Progressable {
 	public Progressable getSubProgressable(double length) {
 		Progressable subMonitor = new SubProgression(this, length);
 		return subMonitor;
+	}
+	
+	@Override
+	public void setProgress(double percent) {
+		progress = percent;
+		approximateProgress();
 	}
 	
 	/**

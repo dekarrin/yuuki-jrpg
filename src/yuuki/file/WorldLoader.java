@@ -50,8 +50,7 @@ public class WorldLoader extends CsvResourceLoader {
 		String[][] records = loadRecords(resource);
 		ArrayList<String> paths = new ArrayList<String>();
 		double percent = 1.0 / (records.length + 1);
-		for (int i = 0; i < records.length; i++) {
-			String[] r = records[i];
+		for (String[] r : records) {
 			paths.add(r[0]);
 			advanceProgress(1.0 / records.length * percent);
 		}
