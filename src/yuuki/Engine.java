@@ -234,12 +234,16 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestBattlePause() {
-		battleRunner.setPaused(true);
+		if (battleRunner != null) {
+			battleRunner.setPaused(true);
+		}
 	}
 	
 	@Override
 	public void requestBattleResume() {
-		battleRunner.setPaused(false);
+		if (battleRunner != null) {
+			battleRunner.setPaused(false);
+		}
 	}
 	
 	@Override
