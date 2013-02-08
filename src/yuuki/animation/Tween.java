@@ -51,6 +51,33 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
+	 * Finishes animation immediately.
+	 */
+	@Override
+	public void finish() {
+		super.finish();
+		advanceTween(0.0, 0);
+	}
+	
+	/**
+	 * Advances the tween for the given remaining time.
+	 * 
+	 * @param fpms The number of frames per millisecond.
+	 * @param remianing The amount of time left.
+	 */
+	private void advanceTween(double fpms, long remaining) {
+		HashMap<String, Integer> propChanges = new HashMap<String, Integer>();
+		for (int i = 0; i < propertyTotals.size(); i++) {
+			int pRemain = propertyRemainings.get(i);
+			int dp = getPropertyDifference(pRemain, fpms, remaining);
+			pRemain -= dp;
+			propertyRemainings.set(i, pRemain);
+			propChanges.put(propertyNames.get(i), dp);
+		}
+		animateSprite(propChanges);
+	}
+	
+	/**
 	 * Gets the amount that a property should change.
 	 * 
 	 * @param prop The amount of property remaining.
@@ -59,7 +86,7 @@ public abstract class Tween extends TimedAnimation {
 	 */
 	private int getPropertyDifference(int prop, double fpms, long time) {
 		int dp = 0;
-		if (time == 0) {
+		if (time <= 0) {
 			dp = prop;
 		} else {
 			dp = (int) Math.round(prop / (fpms * time));
@@ -108,15 +135,7 @@ public abstract class Tween extends TimedAnimation {
 	protected void advanceAnimation(int fps) {
 		double fpms = (double) fps / 1000;
 		long remaining = getRemainingTime();
-		HashMap<String, Integer> propChanges = new HashMap<String, Integer>();
-		for (int i = 0; i < propertyTotals.size(); i++) {
-			int pRemain = propertyRemainings.get(i);
-			int dp = getPropertyDifference(pRemain, fpms, remaining);
-			pRemain -= dp;
-			propertyRemainings.set(i, pRemain);
-			propChanges.put(propertyNames.get(i), dp);
-		}
-		animateSprite(propChanges);
+		advanceTween(fpms, remaining);
 	}
 	
 	/**

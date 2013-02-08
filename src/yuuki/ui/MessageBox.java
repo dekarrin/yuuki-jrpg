@@ -13,8 +13,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import yuuki.animation.Animation;
 import yuuki.animation.TextTween;
+import yuuki.animation.TimedAnimation;
 import yuuki.animation.engine.Animator;
 import yuuki.entity.Character;
 import yuuki.sprite.Sprite;
@@ -101,6 +101,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	private JButton enterButton;
 	
 	/**
+	 * Whether this MessageBox is inactive and non-responsive.
+	 */
+	private boolean frozen;
+	
+	/**
 	 * The input field used when a text prompt is displayed.
 	 */
 	private JTextField input;
@@ -113,7 +118,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	/**
 	 * The animation that is tweening the text display.
 	 */
-	private Animation messageDisplayAnimation;
+	private TimedAnimation messageDisplayAnimation;
 	
 	/**
 	 * The values of the options shown during a choice prompt.
@@ -156,6 +161,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param c The character to add.
 	 */
 	public void addChar(char c) {
+		checkFreeze();
 		textBox.setText(textBox.getText() + c);
 	}
 	
@@ -173,6 +179,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * is interrupted.
 	 */
 	public void clear() {
+		checkFreeze();
 		if (textCleaner != null && textCleaner.isAlive()) {
 			textCleaner.interrupt();
 		}
@@ -193,6 +200,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	public void display(Character speaker, String message, long letterDelay,
 			long displayTime) {
+		checkFreeze();
 		String msg = composeMessage(speaker, message);
 		clear();
 		showMessage(msg, letterDelay);
@@ -206,6 +214,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * get the entered data first, as this method will remove it.
 	 */
 	public void exitPrompt() {
+		checkFreeze();
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {
@@ -215,6 +224,28 @@ public class MessageBox extends Sprite implements MouseListener {
 		};
 		MessageBox.invokeNow(r);
 		optionValues = null;
+	}
+	
+	/**
+	 * Freezes any animations on this box and disables everything on it.
+	 */
+	public void freeze() {
+		frozen = true;
+		MessageBox.invokeNow(new Runnable() {
+			@Override
+			public void run() {
+				getComponent().setEnabled(false);
+			}
+		});
+	}
+	
+	/**
+	 * Immediately finishes the message being tweened.
+	 */
+	public void finishAnimating() {
+		if (messageDisplayAnimation != null) {
+			messageDisplayAnimation.finish();
+		}
 	}
 	
 	/**
@@ -228,6 +259,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * overridden.
 	 */
 	public void getChoice(String prompt, Object[] options) {
+		checkFreeze();
 		optionValues = new HashMap<JButton, Object>(options.length);
 		showChoicePrompt(prompt, options);
 	}
@@ -240,7 +272,17 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param prompt The text prompt to show to the user.
 	 */
 	public void getString(String prompt) {
+		checkFreeze();
 		showTextPrompt(prompt);
+	}
+	
+	/**
+	 * Checks whether this message box is frozen.
+	 * 
+	 * @return True if this MessageBox is frozen; otherwise, false.
+	 */
+	public boolean isFrozen() {
+		return frozen;
 	}
 	
 	@Override
@@ -281,6 +323,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param t The String to set the text box's contents to.
 	 */
 	public void setText(String t) {
+		checkFreeze();
 		class Runner implements Runnable {
 			private String t;
 			public Runner(String t) {
@@ -296,9 +339,23 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Unfreezes any animations on this box and enables it.
+	 */
+	public void unfreeze() {
+		MessageBox.invokeNow(new Runnable() {
+			@Override
+			public void run() {
+				getComponent().setEnabled(true);
+			}
+		});
+		frozen = false;
+	}
+	
+	/**
 	 * Joins the current thread with the cleaner thread.
 	 */
 	public void waitForClean() {
+		checkFreeze();
 		if (textCleaner != null && textCleaner.isAlive()) {
 			try {
 				textCleaner.join();
@@ -306,34 +363,6 @@ public class MessageBox extends Sprite implements MouseListener {
 				Thread.currentThread().interrupt();
 			}
 		}
-	}
-	
-	/**
-	 * Freezes any animations on this box and disables everything on it.
-	 */
-	public void freeze() {
-		if (messageDisplayAnimation != null) {
-			messageDisplayAnimation.pause();
-		}
-		MessageBox.invokeNow(new Runnable() {
-			public void run() {
-				getComponent().setEnabled(false);
-			}
-		});
-	}
-	
-	/**
-	 * Unfreezes any animations on this box and enables it.
-	 */
-	public void unfreeze() {
-		if (messageDisplayAnimation != null) {
-			messageDisplayAnimation.unpause();
-		}
-		MessageBox.invokeNow(new Runnable() {
-			public void run() {
-				getComponent().setEnabled(true);
-			}
-		});
 	}
 	
 	/**
@@ -349,6 +378,18 @@ public class MessageBox extends Sprite implements MouseListener {
 			Animator.animateAndWait(animator, tween);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		}
+	}
+	
+	/**
+	 * Checks whether this message box has been frozen, and if it has, throws
+	 * an exception.
+	 * 
+	 * @throws FrozenException If this message box has been frozen.
+	 */
+	private void checkFreeze() throws FrozenException {
+		if (frozen) {
+			throw new FrozenException();
 		}
 	}
 	

@@ -1,12 +1,10 @@
 package yuuki;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
-import yuuki.action.Action;
 import yuuki.battle.Battle;
-import yuuki.buff.Buff;
+import yuuki.battle.BattleRunner;
 import yuuki.entity.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
@@ -67,26 +65,9 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Handles the execution of a battle in its own thread.
+	 * The main battle.
 	 */
-	private class BattleRunner implements Runnable {
-		private Battle battle;
-		private boolean display;
-		public BattleRunner(Battle battle, boolean display) {
-			this.battle = battle;
-			this.display = display;
-		}
-		@Override
-		public void run() {
-			runBattle(battle, display);
-			if (display) {
-				if (!Thread.currentThread().isInterrupted()) {
-					requestBattleEnd();
-				}
-			}
-		}
-		
-	}
+	private Battle mainBattle;
 	
 	/**
 	 * Handles the execution of a world in its own thread.
@@ -194,12 +175,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * The current battle.
 	 */
-	private Battle mainBattle;
-	
-	/**
-	 * The thread running the currently displayed battle.
-	 */
-	private Thread mainBattleThread;
+	private BattleRunner battleRunner;
 	
 	/**
 	 * The options for the game.
@@ -253,6 +229,11 @@ public class Engine implements Runnable, UiExecutor {
 		ui.display(null, "Your health has been restored.", false);
 		player.restoreHP();
 		player.restoreMP();
+	}
+	
+	@Override
+	public void requestBattlePause() {
+	//	mainBattle
 	}
 	
 	@Override
@@ -594,203 +575,13 @@ public class Engine implements Runnable, UiExecutor {
 		return w;
 	}
 	
-	/**
-	 * Outputs the results of a battle's action application phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputActionApplication(Battle battle) {
-		Action a = battle.getLastAction();
-		if (a.wasSuccessful()) {
-			if (a.getCostStat() != null) {
-				outputActionCost(a);
-			}
-			ui.showActionUse(a);
-			if (a.getEffectStat() != null) {
-				outputActionEffects(a);
-			}
-			if (a.getOriginBuff() != null) {
-				ui.showBuffActivation(a.getOriginBuff());
-			}
-			if (a.getTargetBuff() != null) {
-				ui.showBuffActivation(a.getTargetBuff());
-			}
-		} else {
-			ui.showActionFailure(a);
-		}
-	}
 	
-	/**
-	 * Outputs the results of an action cost to the user interface.
-	 *
-	 * @param action The Action to output.
-	 */
-	private void outputActionCost(Action a) {
-		ui.showDamage(a.getOrigin(), a.getCostStat(), (int)a.getCost());
-		ui.showStatUpdate(a.getOrigin());
-	}
-	
-	/**
-	 * Outputs the effects of an action to the user interface.
-	 *
-	 * @param a The Action to output.
-	 */
-	private void outputActionEffects(Action a) {
-		int[] effects = a.getActualEffects();
-		ArrayList<Character> targets = a.getTargets();
-		for (int i = 0; i < effects.length; i++) {
-			Character t = targets.get(i);
-			int damage = effects[i];
-			ui.showDamage(t, a.getEffectStat(), damage);
-			ui.showStatUpdate(t);
-		}
-	}
-	
-	/**
-	 * Outputs the results of a battle's action get phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputActionGet(Battle battle) {
-		Action a = battle.getLastAction();
-		ui.showActionPreperation(a);
-	}
-	
-	/**
-	 * Outputs the results of a battle's buff application phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputBuffApplication(Battle battle) {
-		Character currentFighter = battle.getCurrentFighter();
-		ArrayList<Buff> buffs = currentFighter.getBuffs();
-		for (Buff b : buffs) {
-			ui.showBuffApplication(b);
-			ui.showStatUpdate(currentFighter);
-		}
-	}
-	
-	/**
-	 * Outputs the results of a battle's death check phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputDeathCheck(Battle battle) {
-		ArrayList<Character> removed = battle.getRemovedFighters();
-		for (Character c : removed) {
-			ui.showCharacterRemoval(c);
-		}
-	}
-	
-	/**
-	 * Outputs the results of a battle's loot calculation phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputLoot(Battle battle) {}
-	
-	/**
-	 * Outputs the results of a battle's team death check phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputTeamDeathCheck(Battle battle) {}
-	
-	/**
-	 * Outputs the results of a battle's turn start phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputTurnStart(Battle battle) {
-		Character c = battle.getCurrentFighter();
-		int recoveredMana = battle.getRegeneratedMana();
-		ui.display(c, "It looks like I'm up next.", true);
-		ArrayList<Buff> expiredBuffs = c.getExpiredBuffs();
-		for (Buff expired : expiredBuffs) {
-			ui.showBuffDeactivation(expired);
-		}
-		if (recoveredMana != 0) {
-			ui.showRecovery(c, c.getMPStat(), recoveredMana);
-		}
-		ui.showStatUpdate(c);
-		ui.waitForDisplay();
-	}
-	
-	/**
-	 * Outputs the results of a battle's victory check phase to the user
-	 * interface.
-	 *
-	 * @param battle The battle to output the state of.
-	 */
-	private void outputVictory(Battle battle) {}
 	
 	/**
 	 * Pauses the thread running the world.
 	 */
 	private void pauseWorldThread() {
 		worldRunner.setPaused(true);
-	}
-	
-	/**
-	 * Runs a battle to completion.
-	 *
-	 * @param battle The battle to run
-	 * @param display Whether the battle should be displayed.
-	 */
-	private void runBattle(Battle battle, boolean display) {
-		while (battle.advance()) {
-			if (Thread.currentThread().isInterrupted()) {
-				break;
-			}
-			if (display) {
-				switch (battle.getLastState()) {
-					case STARTING_TURN:
-						outputTurnStart(battle);
-						break;
-						
-					case GETTING_ACTION:
-						outputActionGet(battle);
-						break;
-						
-					case APPLYING_ACTION:
-						outputActionApplication(battle);
-						break;
-						
-					case APPLYING_BUFFS:
-						outputBuffApplication(battle);
-						break;
-						
-					case CHECKING_DEATH:
-						outputDeathCheck(battle);
-						break;
-						
-					case ENDING_TURN:
-						outputTeamDeathCheck(battle);
-						break;
-						
-					case CHECKING_VICTORY:
-						// not sure we care about this state
-						break;
-						
-					case LOOTING:
-						outputLoot(battle);
-						break;
-						
-					default:
-						break;
-				}
-				if (battle.getState() == Battle.State.ENDING) {
-					outputVictory(battle);
-				}
-			}
-		}
 	}
 	
 	/**
@@ -808,13 +599,14 @@ public class Engine implements Runnable, UiExecutor {
 	 * @param display Whether the battle should be displayed on the GUI.
 	 */
 	private void spawnBattleThread(Battle battle, boolean display) {
-		BattleRunner r = new BattleRunner(battle, display);
+		Interactable i = ((display) ? ui : null);
+		BattleRunner r = new BattleRunner(battle, i, this);
 		Thread t = new Thread(r);
 		if (display) {
-			if (mainBattleThread != null && mainBattleThread.isAlive()) {
-				mainBattleThread.interrupt();
+			if (battleRunner != null) {
+				battleRunner.stop();
 			}
-			mainBattleThread = t;
+			battleRunner = r;
 			t.setName("MainBattle");
 		} else {
 			t.setName("Battle");

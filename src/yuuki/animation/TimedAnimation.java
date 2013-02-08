@@ -29,6 +29,13 @@ public abstract class TimedAnimation extends Animation {
 		startTime = 0;
 	}
 	
+	/**
+	 * Immediately finishes animation.
+	 */
+	public void finish() {
+		startTime = (System.currentTimeMillis() - duration - 1000);
+	}
+	
 	@Override
 	protected void advance(int fps) {
 		if (isOnFirstPulse()) {

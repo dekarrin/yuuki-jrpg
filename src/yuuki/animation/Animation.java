@@ -40,11 +40,6 @@ public abstract class Animation implements Animatable {
 	private Set<AnimationListener> listeners;
 	
 	/**
-	 * Whether this animation has been paused.
-	 */
-	private volatile boolean paused = false;
-	
-	/**
 	 * The sprite that this Animation has the parameters for animating.
 	 */
 	protected Sprite sprite;
@@ -74,14 +69,12 @@ public abstract class Animation implements Animatable {
 	
 	@Override
 	public void advanceFrame(int fps) {
-		if (!paused) {
-			if (!isComplete()) {
-				advance(fps);
-				firstPulse = false;
-			} else if (!endEventFired) {
-				fireAnimationComplete();
-				endEventFired = true;
-			}
+		if (!isComplete()) {
+			advance(fps);
+			firstPulse = false;
+		} else if (!endEventFired) {
+			fireAnimationComplete();
+			endEventFired = true;
 		}
 	}
 	
@@ -127,14 +120,6 @@ public abstract class Animation implements Animatable {
 	}
 	
 	/**
-	 * Pauses this animation. Subsequent calls to advanceFrame() will have no
-	 * effect until this animation has been unpaused.
-	 */
-	public void pause() {
-		this.paused = true;
-	}
-	
-	/**
 	 * Removes a listener from this Animation if it has been added.
 	 * 
 	 * @param l The listener to remove.
@@ -157,13 +142,6 @@ public abstract class Animation implements Animatable {
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;
-	}
-	
-	/**
-	 * Unpauses this animation.
-	 */
-	public void unpause() {
-		this.paused = false;
 	}
 	
 	/**

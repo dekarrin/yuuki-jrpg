@@ -830,6 +830,9 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		optionsScreen.addListener(this);
 		optionsScreen.setValues(options);
 		switchWindow(optionsScreen);
+		mainProgram.requestBattlePause();
+		messageBox.finishAnimating();
+		messageBox.freeze();
 	}
 	
 	@Override
@@ -1015,7 +1018,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	private void createOptionsScreen() {
 		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
 		optionsScreen = new OptionsScreen(WINDOW_WIDTH, height);
-		optionsScreen.setBackgroundMusic("BGM_MAIN_MENU");
+		optionsScreen.setBackgroundMusic(null);
 	}
 	
 	/**
@@ -1107,7 +1110,13 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			}
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
-		playMusic(screen.getBackgroundMusic());
+		String music = screen.getBackgroundMusic();
+		if (music != null) {
+			playMusic(music);
+		}
+		if (messageBox.isFrozen()) {
+			messageBox.unfreeze();
+		}
 	}
 	
 }

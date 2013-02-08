@@ -73,6 +73,11 @@ public interface UiExecutor {
 	public void requestOptionsSubmission();
 	
 	/**
+	 * Requests that the battle be paused.
+	 */
+	public void requestBattlePause();
+	
+	/**
 	 * Requests that the game be exited.
 	 */
 	public void requestQuit();
