@@ -35,13 +35,14 @@ public class Engine implements Runnable, UiExecutor {
 	 * Handles querying of loading progress and updating of the loading bar.
 	 */
 	private static class LoadingBarUpdater implements Runnable {
+		private double lastPercent = 0.0;
 		private Progressable monitor;
 		private Interactable ui;
-		private double lastPercent = 0.0;
 		public LoadingBarUpdater(Progressable monitor, Interactable ui) {
 			this.monitor = monitor;
 			this.ui = ui;
 		}
+		@Override
 		public void run() {
 			try {
 				while (true) {
@@ -63,11 +64,6 @@ public class Engine implements Runnable, UiExecutor {
 		}
 		
 	}
-	
-	/**
-	 * The main battle.
-	 */
-	private Battle mainBattle;
 	
 	/**
 	 * Handles the execution of a world in its own thread.
@@ -168,14 +164,19 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The current battle.
+	 */
+	private BattleRunner battleRunner;
+	
+	/**
 	 * Creates all entities.
 	 */
 	private EntityFactory entityMaker;
 	
 	/**
-	 * The current battle.
+	 * The main battle.
 	 */
-	private BattleRunner battleRunner;
+	private Battle mainBattle;
 	
 	/**
 	 * The options for the game.
@@ -233,7 +234,12 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestBattlePause() {
-	//	mainBattle
+		battleRunner.setPaused(true);
+	}
+	
+	@Override
+	public void requestBattleResume() {
+		battleRunner.setPaused(false);
 	}
 	
 	@Override

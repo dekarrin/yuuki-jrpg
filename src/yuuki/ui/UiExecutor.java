@@ -29,6 +29,16 @@ public interface UiExecutor {
 	public void requestBattleEnd();
 	
 	/**
+	 * Requests that the battle be paused.
+	 */
+	public void requestBattlePause();
+	
+	/**
+	 * Requests that the battle be resumed.
+	 */
+	public void requestBattleResume();
+	
+	/**
 	 * Requests that the main battle be run through.
 	 */
 	public void requestBattleStart();
@@ -71,11 +81,6 @@ public interface UiExecutor {
 	 * Called when the options have been submitted.
 	 */
 	public void requestOptionsSubmission();
-	
-	/**
-	 * Requests that the battle be paused.
-	 */
-	public void requestBattlePause();
 	
 	/**
 	 * Requests that the game be exited.

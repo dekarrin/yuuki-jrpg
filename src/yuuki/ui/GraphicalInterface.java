@@ -1117,6 +1117,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		if (messageBox.isFrozen()) {
 			messageBox.unfreeze();
 		}
+		mainProgram.requestBattleResume();
 	}
 	
 }
