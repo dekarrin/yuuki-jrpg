@@ -3,7 +3,7 @@ package yuuki.sprite;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 
 /**
  * A sprite in the shape of a rectangle.
@@ -41,7 +41,7 @@ public class Rectangle extends Shape {
 	 * @param width The width of the rectangle.
 	 * @param height The height of the rectangle.
 	 */
-	public Rectangle(Animator animator, int width, int height) {
+	public Rectangle(AnimationManager animator, int width, int height) {
 		super(animator, width, height);
 	}
 	

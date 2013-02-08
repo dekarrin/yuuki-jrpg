@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 
 import yuuki.Options;
 import yuuki.action.Action;
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -97,7 +97,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	/**
 	 * The animation engine.
 	 */
-	private Animator animationEngine;
+	private AnimationManager animationEngine;
 	
 	/**
 	 * The battle screen.
@@ -206,7 +206,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		this.mainProgram = mainProgram;
 		currentScreen = null;
 		formerScreen = null;
-		animationEngine = new Animator(ANIMATION_FPS);
+		animationEngine = new AnimationManager(ANIMATION_FPS);
 		soundEngine = new DualSoundEngine();
 	}
 	
@@ -1008,7 +1008,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the message box.
 	 */
 	private void createMessageBox() {
-		Animator a = animationEngine;
+		AnimationManager a = animationEngine;
 		messageBox = new MessageBox(a, WINDOW_WIDTH, MESSAGE_BOX_HEIGHT);
 	}
 	

@@ -9,7 +9,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import yuuki.action.Action;
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -87,7 +87,7 @@ public class FighterSprite extends Sprite {
 	 * @param animator The Animator that will drive this Sprite's animation.
 	 * @param fighter The Character to make the sprite for.
 	 */
-	public FighterSprite(Character fighter, Animator animator) {
+	public FighterSprite(Character fighter, AnimationManager animator) {
 		super(animator, SPRITE_WIDTH,
 				BUFF_HEIGHT + 2*BAR_HEIGHT + N_SIZE + IMAGE_HEIGHT);
 		createComponents();

@@ -9,7 +9,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 
 /**
  * Shows the loading progress and splash screen.
@@ -45,7 +45,7 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	 * @param height The height of the new screen.
 	 * @param Animator The animation engine.
 	 */
-	public LoadingScreen(int width, int height, Animator animator) {
+	public LoadingScreen(int width, int height, AnimationManager animator) {
 		super(width, height);
 		setLayout(new FlowLayout());
 		int progWidth = (int) (width * PROGRESS_WIDTH_MULTIPLIER);

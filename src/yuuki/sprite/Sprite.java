@@ -4,13 +4,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import yuuki.animation.engine.Animatable;
+import yuuki.animation.engine.AnimationListener;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.animation.engine.AnimationOwner;
-import yuuki.animation.engine.Animator;
 
 /**
  * A graphical object that can be animated. A Sprite may have other Animatable
@@ -28,6 +30,11 @@ public class Sprite implements Animatable, AnimationOwner {
 	 * The height of this Sprite.
 	 */
 	private int height;
+	
+	/**
+	 * Listeners for AnimationEvents.
+	 */
+	private Set<AnimationListener> listeners;
 	
 	/**
 	 * The Animatable instances that are child components of this Sprite.
@@ -52,7 +59,7 @@ public class Sprite implements Animatable, AnimationOwner {
 	/**
 	 * The animation engine that is driving the animation of this Sprite.
 	 */
-	protected Animator animator;
+	protected AnimationManager animator;
 	
 	/**
 	 * The graphical component that this Sprite controls.
@@ -66,7 +73,7 @@ public class Sprite implements Animatable, AnimationOwner {
 	 * @param width The width of the Sprite
 	 * @param height The height of the Sprite.
 	 */
-	public Sprite(Animator animator, int width, int height) {
+	public Sprite(AnimationManager animator, int width, int height) {
 		x = 0;
 		y = 0;
 		this.animator = animator;
@@ -108,6 +115,11 @@ public class Sprite implements Animatable, AnimationOwner {
 		}
 		a.setControlled(true);
 		ownedAnims.add(a);
+	}
+	
+	@Override
+	public void addAnimationListener(AnimationListener l) {
+		listeners.add(l);
 	}
 	
 	@Override
@@ -198,6 +210,11 @@ public class Sprite implements Animatable, AnimationOwner {
 		if (ownedAnims.remove(a)) {
 			a.setControlled(false);
 		}
+	}
+	
+	@Override
+	public void removeAnimationListener(Object l) {
+		listeners.remove(l);
 	}
 	
 	/**

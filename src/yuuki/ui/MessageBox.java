@@ -15,7 +15,7 @@ import javax.swing.SwingUtilities;
 
 import yuuki.animation.TextTween;
 import yuuki.animation.TimedAnimation;
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.entity.Character;
 import yuuki.sprite.Sprite;
 
@@ -143,7 +143,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param width The width of this MessageBox.
 	 * @param height The height of this MessageBox.
 	 */
-	public MessageBox(Animator animator, int width, int height) {
+	public MessageBox(AnimationManager animator, int width, int height) {
 		super(animator, width, height);
 		component.setLayout(new FlowLayout());
 		listeners = new ArrayList<MessageBoxInputListener>();
@@ -375,7 +375,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		TextTween tween = new TextTween(this, letterDelay, message);
 		messageDisplayAnimation = tween;
 		try {
-			Animator.animateAndWait(animator, tween);
+			AnimationManager.animateAndWait(animator, tween);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}

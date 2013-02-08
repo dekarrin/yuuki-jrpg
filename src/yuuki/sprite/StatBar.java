@@ -6,7 +6,7 @@ import javax.swing.JLayeredPane;
 
 import yuuki.animation.Animation;
 import yuuki.animation.SizeTween;
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.entity.VariableStat;
 
 /**
@@ -58,7 +58,8 @@ public class StatBar extends Sprite {
 	 * @param height The total height of the StatBar in pixels.
 	 * @param barColor The color of the filled portion of the StatBar.
 	 */
-	public StatBar(Animator animator, int width, int height, Color barColor) {
+	public StatBar(AnimationManager animator, int width, int height,
+			Color barColor) {
 		super(animator, width, height);
 		this.stat = null;
 		this.value = 0;
@@ -129,7 +130,7 @@ public class StatBar extends Sprite {
 			Animation updateAnimation;
 			updateAnimation = new SizeTween(foreground, 1000, dw, 0);
 			try {
-				Animator.animateAndWait(animator, updateAnimation);
+				AnimationManager.animateAndWait(animator, updateAnimation);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

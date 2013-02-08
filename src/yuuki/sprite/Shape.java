@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 
 /**
  * A sprite in a specific shape that has a background and a border.
@@ -68,7 +68,7 @@ public abstract class Shape extends Sprite {
 	 * @param width The width of the shape's bounding box.
 	 * @param height The height of the shape's bounding box.
 	 */
-	public Shape(Animator animator, int width, int height) {
+	public Shape(AnimationManager animator, int width, int height) {
 		super(animator, width, height);
 		((ShapeComponent) component).border = null;
 		((ShapeComponent) component).fill = null;

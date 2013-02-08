@@ -31,4 +31,18 @@ public interface Animatable {
 	 */
 	public void setControlled(boolean controlled);
 	
+	/**
+	 * Adds a listener for AnimationEvents.
+	 * 
+	 * @param l The listener to add.
+	 */
+	public void addAnimationListener(AnimationListener l);
+	
+	/**
+	 * Removes a listener for AnimationEvents.
+	 * 
+	 * @param l The listener to remove.
+	 */
+	public void removeAnimationListener(Object l);
+	
 }

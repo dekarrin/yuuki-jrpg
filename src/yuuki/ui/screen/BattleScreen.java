@@ -3,7 +3,7 @@ package yuuki.ui.screen;
 import java.util.ArrayList;
 
 import yuuki.action.Action;
-import yuuki.animation.engine.Animator;
+import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
@@ -33,7 +33,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	/**
 	 * The animation engine for the game.
 	 */
-	private Animator animationEngine;
+	private AnimationManager animationEngine;
 	
 	/**
 	 * The graphics displayed on the screen.
@@ -43,7 +43,8 @@ public class BattleScreen extends Screen<ScreenListener> {
 	/**
 	 * Creates this BattleScreen and makes it visible.
 	 */
-	public BattleScreen(int width, int height, Animator animationEngine) {
+	public BattleScreen(int width, int height,
+			AnimationManager animationEngine) {
 		super(width, height);
 		setLayout(null); // can't be fighting an LM for control of sprites
 		this.animationEngine = animationEngine;
@@ -271,7 +272,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 			ArrayList<FighterSprite> teamGraphics =
 					new ArrayList<FighterSprite>(fighters[i].length);
 			for (int j = 0; j < fighters[i].length; j++) {
-				Animator a = animationEngine;
+				AnimationManager a = animationEngine;
 				FighterSprite fs = new FighterSprite(fighters[i][j], a);
 				teamGraphics.add(fs);
 				fighters[i][j].setSprite(fs);

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import yuuki.animation.engine.Animatable;
+import yuuki.animation.engine.AnimationEvent;
 import yuuki.animation.engine.AnimationListener;
 import yuuki.sprite.Sprite;
 
@@ -63,7 +64,7 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @param l The listener to add.
 	 */
-	public void addListener(AnimationListener l) {
+	public void addAnimationListener(AnimationListener l) {
 		listeners.add(l);
 	}
 	
@@ -124,7 +125,7 @@ public abstract class Animation implements Animatable {
 	 * 
 	 * @param l The listener to remove.
 	 */
-	public void removeListener(AnimationListener l) {
+	public void removeAnimationListener(Object l) {
 		listeners.remove(l);
 	}
 	
@@ -150,7 +151,7 @@ public abstract class Animation implements Animatable {
 	private void fireAnimationComplete() {
 		AnimationListener[] list = listeners.toArray(new AnimationListener[0]);
 		for (AnimationListener l : list) {
-			l.animationComplete(this);
+			l.animationComplete(new AnimationEvent(this, this));
 		}
 	}
 	
