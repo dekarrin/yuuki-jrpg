@@ -375,7 +375,7 @@ public class MessageBox extends Sprite implements MouseListener {
 		TextTween tween = new TextTween(this, letterDelay, message);
 		messageDisplayAnimation = tween;
 		try {
-			animator.animateAndWait(null, tween);
+			animator.animateAndWait(tween, null);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}

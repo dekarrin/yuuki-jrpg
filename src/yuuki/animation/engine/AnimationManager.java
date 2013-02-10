@@ -41,15 +41,52 @@ public class AnimationManager {
 	private static final int ANIMATOR_SLEEP_TIME = 10;
 	
 	/**
-	 * Starts an animation and blocks until the animation is complete.
+	 * Drives the actual animations.
+	 */
+	private Map<String, AnimationDriver> drivers;
+	
+	/**
+	 * The FPS that all drivers run at.
+	 */
+	private final int fps;
+	
+	/**
+	 * Handles driver animation events.
+	 */
+	private DriverEventHandler handler = new DriverEventHandler();
+	
+	/**
+	 * Creates a new Animator.
 	 * 
-	 * @param animator The name of the driver to use for animation.
+	 * @param fps The speed to run animation at.
+	 */
+	public AnimationManager(int fps) {
+		this.fps = fps;
+		drivers = new HashMap<String, AnimationDriver>();
+		createDriver(DEFAULT_DRIVER_NAME);
+		startDriver(DEFAULT_DRIVER_NAME);
+	}
+	
+	/**
+	 * Adds an animation to an animation driver.
+	 * 
+	 * @param a The Animation to add.
+	 * @param driver The name of the driver to add the animation to. Set this
+	 * to null to use the default animation driver.
+	 */
+	public void addAnimation(Animation a, String driver) {
+		getDriver(driver).addAnim(a);
+	}
+	
+	/**
+	 * Starts an animation and blocks until the animation is complete.
 	 * @param animation The animation to run.
+	 * @param animator The name of the driver to use for animation.
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while
 	 * blocking.
 	 */
-	public void animateAndWait(String driver, Animation animation)
+	public void animateAndWait(Animation animation, String driver)
 			throws InterruptedException {
 		class AnimationRunner implements AnimationListener {
 			public boolean complete = false;
@@ -77,43 +114,6 @@ public class AnimationManager {
 	}
 	
 	/**
-	 * Drives the actual animations.
-	 */
-	private Map<String, AnimationDriver> drivers;
-	
-	/**
-	 * The FPS that all drivers run at.
-	 */
-	private final int fps;
-	
-	/**
-	 * Handles driver animation events.
-	 */
-	private DriverEventHandler handler = new DriverEventHandler();
-	
-	/**
-	 * Creates a new Animator.
-	 * 
-	 * @param fps The speed to run animation at.
-	 */
-	public AnimationManager(int fps) {
-		this.fps = fps;
-		drivers = new HashMap<String, AnimationDriver>();
-		createDriver(DEFAULT_DRIVER_NAME);
-	}
-	
-	/**
-	 * Adds an animation to an animation driver.
-	 * 
-	 * @param a The Animation to add.
-	 * @param driver The name of the driver to add the animation to. Set this
-	 * to null to use the default animation driver.
-	 */
-	public void addAnimation(Animation a, String driver) {
-		getDriver(driver).addAnim(a);
-	}
-	
-	/**
 	 * Creates a new driver in this animation manager. If a driver with the
 	 * given name already exists, it is immediately deleted.
 	 * 
@@ -138,6 +138,46 @@ public class AnimationManager {
 		driver.stop();
 		driver.removeListener(handler);
 		drivers.remove(name);
+	}
+	
+	/**
+	 * Resumes a driver.
+	 * 
+	 * @param driver The name of the driver to resume. Set to null for the
+	 * default driver.
+	 */
+	public void resumeDriver(String driver) {
+		getDriver(driver).resume();
+	}
+	
+	/**
+	 * Starts animating a driver.
+	 * 
+	 * @param driver The name of the driver to start. Set to null for the
+	 * default driver.
+	 */
+	public void startDriver(String driver) {
+		getDriver(driver).start();
+	}
+	
+	/**
+	 * Stops animating a driver.
+	 * 
+	 * @param driver The name of the driver stop. Set to null for the default
+	 * driver.
+	 */
+	public void stopDriver(String driver) {
+		getDriver(driver).stop();
+	}
+	
+	/**
+	 * Suspends a driver.
+	 * 
+	 * @param driver The name of the driver to suspend. Set to null for the
+	 * default driver.
+	 */
+	public void suspendDriver(String driver) {
+		getDriver(driver).suspend();
 	}
 	
 	/**
