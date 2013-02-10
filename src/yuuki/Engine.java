@@ -234,7 +234,6 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestBattleKill() {
-		System.out.println("GE");
 		ui.resetPrompt();
 		if (battleRunner != null) {
 			battleRunner.stop();
@@ -262,6 +261,8 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCharacterCreation(String name, int level) {
+		world = loadWorld(new Progression());
+		setInitialWorld();
 		player = entityMaker.createPlayer(name, level, ui);
 		player.setLocation(world.getPlayerStart());
 		world.addResident(player);
@@ -321,7 +322,6 @@ public class Engine implements Runnable, UiExecutor {
 		ui.switchToLoadingScreen();
 		loadAssets();
 		applyOptions();
-		setInitialWorld();
 		try {
 			ui.playMusicAndWait("BGM_MAIN_MENU");
 		} catch (InterruptedException e) {
@@ -410,16 +410,14 @@ public class Engine implements Runnable, UiExecutor {
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		updateThread.start();
 		Progressable m;
-		m = monitor.getSubProgressable(0.2);
+		m = monitor.getSubProgressable(0.25);
 		Map<String, byte[]> effectData	= loadSoundEffects(m);
-		m = monitor.getSubProgressable(0.2);
+		m = monitor.getSubProgressable(0.25);
 		Map<String, byte[]> musicData	= loadMusic(m);
-		m = monitor.getSubProgressable(0.2);
+		m = monitor.getSubProgressable(0.25);
 		ImageFactory imageFactory		= loadImages(m);
-		m = monitor.getSubProgressable(0.2);
+		m = monitor.getSubProgressable(0.25);
 		entityMaker						= loadEntities(m);
-		m = monitor.getSubProgressable(0.2);
-		world							= loadWorld(m);
 		monitor.finishProgress();
 		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);
@@ -640,6 +638,7 @@ public class Engine implements Runnable, UiExecutor {
 			(new Thread(worldRunner, "World")).start();
 		}
 		worldRunner.setPaused(false);
+		ui.clearWorldLocatables();
 		ui.setWorldView(world.getTiles());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
