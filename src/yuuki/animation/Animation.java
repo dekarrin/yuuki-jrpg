@@ -93,7 +93,7 @@ public abstract class Animation implements Animatable {
 	 * Forces the animation to stop. The next time animation is attempted to be
 	 * driven on this Animation, it will immediately complete.
 	 */
-	public void halt() {
+	public void stop() {
 		forcedComplete = true;
 	}
 	

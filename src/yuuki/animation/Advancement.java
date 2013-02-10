@@ -23,6 +23,27 @@ public class Advancement extends Animation {
 		hasAdvanced = false;
 	}
 	
+	@Override
+	public void finish() {
+		sprite.finish();
+	}
+	
+	@Override
+	public void pause() {
+		sprite.pause();
+	}
+	
+	@Override
+	public void resume() {
+		sprite.resume();
+	}
+	
+	/**
+	 * Has no effect, as Advancement has no clock.
+	 */
+	@Override
+	public void start() {}
+	
 	/**
 	 * Advances the owned Sprite through one of its frames.
 	 */

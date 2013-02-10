@@ -24,12 +24,23 @@ public interface Animatable {
 	public void advanceFrame(int fps);
 	
 	/**
+	 * Immediately jumps the animation to its finished position, if there is a
+	 * finished position.
+	 */
+	public void finish();
+	
+	/**
 	 * Checks whether this Animatable is being driven by another object.
 	 * 
 	 * @return True if this Animatable is already being animated by some
 	 * object; otherwise, false.
 	 */
 	public boolean isControlled();
+	
+	/**
+	 * Pauses the animation clock, if there is one.
+	 */
+	public void pause();
 	
 	/**
 	 * Removes a listener for AnimationEvents.
@@ -39,10 +50,31 @@ public interface Animatable {
 	public void removeAnimationListener(Object l);
 	
 	/**
+	 * Resets this animation to its initial position.
+	 */
+	public void reset();
+	
+	/**
+	 * Resumes the animation clock, if there is one.
+	 */
+	public void resume();
+	
+	/**
 	 * Sets whether this Animatable is being driven by another object.
 	 * 
 	 * @param controlled Whether this Animatable is being animated.
 	 */
 	public void setControlled(boolean controlled);
+	
+	/**
+	 * Starts the animation.
+	 */
+	public void start();
+	
+	/**
+	 * Forces the animation to stop. The next time animation is attempted to be
+	 * driven on this Animatable, it will immediately complete.
+	 */
+	public void stop();
 	
 }

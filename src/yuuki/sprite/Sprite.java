@@ -27,9 +27,51 @@ public class Sprite implements Animatable, AnimationOwner {
 	private boolean controlled;
 	
 	/**
+	 * Whether this Sprite has been paused.
+	 */
+	private boolean paused = false;
+	
+	/**
+	 * Whether this Sprite's advancement has started.
+	 */
+	private boolean advancing = false;
+	
+	/**
 	 * The height of this Sprite.
 	 */
 	private int height;
+	
+	@Override
+	public void pause() {
+		paused = true;
+	}
+	
+	@Override
+	public void resume() {
+		paused = false;
+	}
+	
+	@Override
+	public void stop() {
+		advancing = false;
+	}
+	
+	/**
+	 * Has no effect, as sprites do not have an initial position.
+	 */
+	@Override
+	public void reset() {}
+	
+	/**
+	 * Has no effect, as sprites do not have a final position.
+	 */
+	@Override
+	public void finish() {}
+	
+	@Override
+	public void start() {
+		advancing = true;
+	}
 	
 	/**
 	 * Listeners for AnimationEvents.
@@ -124,11 +166,13 @@ public class Sprite implements Animatable, AnimationOwner {
 	
 	@Override
 	public void advanceFrame(int fps) {
-		for (Animatable a : ownedAnims) {
-			a.advanceFrame(fps);
+		if (advancing && !paused) {
+			for (Animatable a : ownedAnims) {
+				a.advanceFrame(fps);
+			}
+			advance(fps);
+			component.repaint();
 		}
-		advance(fps);
-		component.repaint();
 	}
 	
 	/**

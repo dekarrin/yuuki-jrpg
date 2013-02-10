@@ -21,6 +21,37 @@ public class AnimationSequence extends Animation {
 	private ArrayList<Animation> sequence;
 	
 	/**
+	 * Resumes the current animation.
+	 */
+	public void resume() {
+		Animation current = sequence.get(position);
+		current.resume();
+	}
+	
+	/**
+	 * Pauses the current animation.
+	 */
+	public void pause() {
+		Animation current = sequence.get(position);
+		current.pause();
+	}
+	
+	/**
+	 * Starts animation.
+	 */
+	public void start() {}
+	
+	/**
+	 * Finishes every remaining animation in the sequence.
+	 */
+	public void finish() {
+		for (int i = position; i < sequence.size(); i++) {
+			sequence.get(i).finish();
+		}
+		position = (sequence.size() - 1);
+	}
+	
+	/**
 	 * Allocates a new AnimationSequence.
 	 * 
 	 * @param sprite The Sprite to animate.

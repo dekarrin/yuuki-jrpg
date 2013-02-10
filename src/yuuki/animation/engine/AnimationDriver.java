@@ -69,6 +69,11 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	private Set<AnimationListener> listeners;
 	
 	/**
+	 * Whether the animation is currently paused.
+	 */
+	private volatile boolean paused = false;
+	
+	/**
 	 * Allocates a new Animator.
 	 * 
 	 * @param fps The speed that the Animator is to animate at.
@@ -136,19 +141,28 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	}
 	
 	/**
+	 * Resumes the animation of objects.
+	 */
+	public void resume() {
+		this.paused = false;
+	}
+	
+	/**
 	 * Animates each of the items on the animation list, then sleeps for
 	 * an appropriate amount of time depending on the parent's FPS.
 	 */
 	@Override
 	public void run() {
-		while (fps != 0) {
-			int ms = (int) Math.round((double) 1000 / fps);
-			try {
+		try {
+			while (fps != 0) {
+				int ms = (int) Math.round((double) 1000 / fps);
 				Thread.sleep(ms);
-			} catch (InterruptedException e) {
-				break;
+				checkPaused();
+				advanceAnimation();
+				checkPaused();
 			}
-			advanceAnimation();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 	
@@ -185,12 +199,34 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	}
 	
 	/**
+	 * Pauses the animation of objects.
+	 */
+	public void suspend() {
+		this.paused = true;
+	}
+	
+	/**
 	 * Animates all objects in the animation list.
 	 */
 	private void advanceAnimation() {
 		for (Animatable a : anims) {
 			a.advanceFrame(fps);
 		}
+	}
+	
+	/**
+	 * Checks whether the animation has been paused, and if it has, instructs
+	 * all animations to pause until the pause has been ended.
+	 * 
+	 * @throws InterruptedException If the thread is interrupted while waiting
+	 * for the pause to be over.
+	 */
+	private void checkPaused() throws InterruptedException {
+		while (paused) {
+			pauseAnimations();
+			Thread.sleep(10);
+		}
+		unpauseAnimations();
 	}
 	
 	/**
@@ -203,6 +239,24 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		listeners.toArray(ls);
 		for (AnimationListener l : ls) {
 			l.animationComplete(e);
+		}
+	}
+	
+	/**
+	 * Instructs all animations to pause.
+	 */
+	private void pauseAnimations() {
+		for (Animatable a : anims) {
+			a.pause();
+		}
+	}
+	
+	/**
+	 * Instructs all animations to resumes.
+	 */
+	private void unpauseAnimations() {
+		for (Animatable a : anims) {
+			a.resume();
 		}
 	}
 	

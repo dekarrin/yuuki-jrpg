@@ -130,7 +130,7 @@ public class StatBar extends Sprite {
 			Animation updateAnimation;
 			updateAnimation = new SizeTween(foreground, 1000, dw, 0);
 			try {
-				AnimationManager.animateAndWait(animator, updateAnimation);
+				animator.animateAndWait(null, updateAnimation);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

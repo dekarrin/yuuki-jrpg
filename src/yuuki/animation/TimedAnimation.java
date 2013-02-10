@@ -13,6 +13,16 @@ public abstract class TimedAnimation extends Animation {
 	private long duration;
 	
 	/**
+	 * Whether this animation is paused.
+	 */
+	private boolean paused = false;
+	
+	/**
+	 * The time that this animation was paused at.
+	 */
+	private long pauseTime = 0;
+	
+	/**
 	 * The time that animation started at.
 	 */
 	private long startTime;
@@ -32,16 +42,44 @@ public abstract class TimedAnimation extends Animation {
 	/**
 	 * Immediately finishes animation.
 	 */
+	@Override
 	public void finish() {
 		startTime = (System.currentTimeMillis() - duration - 1000);
 	}
 	
+	/**
+	 * Pauses this animation.
+	 */
+	@Override
+	public void pause() {
+		paused = true;
+		pauseTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * Resumes this animation.
+	 */
+	@Override
+	public void resume() {
+		if (paused) {
+			paused = false;
+			long pauseDuration = System.currentTimeMillis() - pauseTime;
+			startTime += pauseDuration;
+			pauseTime = 0;
+		}
+	}
+	
+	@Override
+	public void start() {}
+	
 	@Override
 	protected void advance(int fps) {
-		if (isOnFirstPulse()) {
-			startTime = System.currentTimeMillis();
+		if (!paused) {
+			if (isOnFirstPulse()) {
+				startTime = System.currentTimeMillis();
+			}
+			advanceAnimation(fps);
 		}
-		advanceAnimation(fps);
 	}
 	
 	/**

@@ -23,9 +23,27 @@ public class Loop extends Animation {
 	}
 	
 	@Override
+	public void finish() {
+		loopedAnimation.finish();
+	}
+	
+	@Override
+	public void pause() {
+		loopedAnimation.pause();
+	}
+	
+	@Override
 	public void resetProperties() {
 		loopedAnimation.reset();
 	}
+	
+	@Override
+	public void resume() {
+		loopedAnimation.resume();
+	}
+	
+	@Override
+	public void start() {}
 	
 	@Override
 	protected void advance(int fps) {

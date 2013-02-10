@@ -1,35 +1,14 @@
 package yuuki.animation.engine;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 import yuuki.animation.Animation;
 
 /**
  * Controls a number of AnimationDrivers and manages their animation.
  */
-public class AnimationManager implements Runnable {
-	
-	/**
-	 * Contains the animation that is to be added and the name of the driver
-	 * that is to run it.
-	 */
-	private static class AnimationQueueItem {
-		
-		/**
-		 * The animation that is to be added.
-		 */
-		public Animation anim = null;
-		
-		/**
-		 * The name of the animation driver that the animation will be driven
-		 * by.
-		 */
-		public String driver = null;
-		
-	}
+public class AnimationManager {
 	
 	/**
 	 * Removes an animation from a driver when it completes.
@@ -64,24 +43,31 @@ public class AnimationManager implements Runnable {
 	/**
 	 * Starts an animation and blocks until the animation is complete.
 	 * 
-	 * @param animator The animator to use for animation.
+	 * @param animator The name of the driver to use for animation.
 	 * @param animation The animation to run.
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while
 	 * blocking.
 	 */
-	public static void animateAndWait(AnimationManager animator,
-			Animation animation) throws InterruptedException {
+	public void animateAndWait(String driver, Animation animation)
+			throws InterruptedException {
 		class AnimationRunner implements AnimationListener {
 			public boolean complete = false;
+			private Animation animation = null;
+			public AnimationRunner(Animation a) {
+				animation = a;
+			}
 			@Override
 			public void animationComplete(AnimationEvent e) {
-				this.complete = true;
+				if (e.getSource() == animation) {
+					((AnimationDriver) e.getCause()).removeListener(this);
+					this.complete = true;
+				}
 			}
 		};
-		AnimationRunner l = new AnimationRunner();
-		animation.addAnimationListener(l);
-		animator.addAnimation(animation, null);
+		AnimationRunner l = new AnimationRunner(animation);
+		getDriver(driver).addListener(l);
+		addAnimation(animation, driver);
 		while (true) {
 			if (l.complete) {
 				break;
@@ -89,11 +75,6 @@ public class AnimationManager implements Runnable {
 			Thread.sleep(ANIMATOR_SLEEP_TIME);
 		}
 	}
-	
-	/**
-	 * The list of animations waiting to be added to an AnimationDriver.
-	 */
-	private Queue<AnimationQueueItem> animationQueue;
 	
 	/**
 	 * Drives the actual animations.
@@ -118,9 +99,7 @@ public class AnimationManager implements Runnable {
 	public AnimationManager(int fps) {
 		this.fps = fps;
 		drivers = new HashMap<String, AnimationDriver>();
-		animationQueue = new LinkedList<AnimationQueueItem>();
 		createDriver(DEFAULT_DRIVER_NAME);
-		(new Thread(this, "MasterAnimator")).start();
 	}
 	
 	/**
@@ -131,10 +110,7 @@ public class AnimationManager implements Runnable {
 	 * to null to use the default animation driver.
 	 */
 	public void addAnimation(Animation a, String driver) {
-		AnimationQueueItem item = new AnimationQueueItem();
-		item.anim = a;
-		item.driver = driver;
-		animationQueue.offer(item);
+		getDriver(driver).addAnim(a);
 	}
 	
 	/**
@@ -162,25 +138,6 @@ public class AnimationManager implements Runnable {
 		driver.stop();
 		driver.removeListener(handler);
 		drivers.remove(name);
-	}
-	
-	/**
-	 * Processes animations added to the queue.
-	 */
-	@Override
-	public void run() {
-		while (true) {
-			if (!animationQueue.isEmpty()) {
-				AnimationQueueItem item = animationQueue.poll();
-				Animation a = item.anim;
-				getDriver(item.driver).addAnim(a);
-			}
-			try {
-				Thread.sleep(ANIMATOR_SLEEP_TIME);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**
