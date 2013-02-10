@@ -233,6 +233,15 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestBattleKill() {
+		System.out.println("GE");
+		ui.resetPrompt();
+		if (battleRunner != null) {
+			battleRunner.stop();
+		}
+	}
+	
+	@Override
 	public void requestBattlePause() {
 		if (battleRunner != null) {
 			battleRunner.setPaused(true);
@@ -613,9 +622,6 @@ public class Engine implements Runnable, UiExecutor {
 		BattleRunner r = new BattleRunner(battle, i, this);
 		Thread t = new Thread(r);
 		if (display) {
-			if (battleRunner != null) {
-				battleRunner.stop();
-			}
 			battleRunner = r;
 			t.setName("MainBattle");
 		} else {

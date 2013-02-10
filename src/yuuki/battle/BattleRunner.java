@@ -86,13 +86,33 @@ public class BattleRunner implements Runnable {
 	}
 	
 	/**
-	 * Blocks until this battle has been unpaused.
+	 * Checks whether this battle has been paused or halted.
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while paused.
+	 */
+	private void checkHalted() throws InterruptedException {
+		checkPause();
+		checkInterrupted();
+	}
+	
+	/**
+	 * Blocks until this battle is not paused.
 	 */
 	private void checkPause() throws InterruptedException {
 		while (paused) {
 			Thread.sleep(50);
+			checkInterrupted();
+		}
+	}
+	
+	/**
+	 * Throws an exception if this thread has been interrupted.
+	 * 
+	 * @throws InterruptedException 
+	 */
+	private void checkInterrupted() throws InterruptedException {
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException();
 		}
 	}
 	
@@ -110,7 +130,7 @@ public class BattleRunner implements Runnable {
 				outputActionCost(a);
 			}
 			ui.showActionUse(a);
-			checkPause();
+			checkHalted();
 			if (a.getEffectStat() != null) {
 				outputActionEffects(a);
 			}
@@ -123,7 +143,7 @@ public class BattleRunner implements Runnable {
 		} else {
 			ui.showActionFailure(a);
 		}
-		checkPause();
+		checkHalted();
 	}
 	
 	/**
@@ -133,9 +153,9 @@ public class BattleRunner implements Runnable {
 	 */
 	private void outputActionCost(Action a) throws InterruptedException {
 		ui.showDamage(a.getOrigin(), a.getCostStat(), (int)a.getCost());
-		checkPause();
+		checkHalted();
 		ui.showStatUpdate(a.getOrigin());
-		checkPause();
+		checkHalted();
 	}
 	
 	/**
@@ -150,9 +170,9 @@ public class BattleRunner implements Runnable {
 			Character t = targets.get(i);
 			int damage = effects[i];
 			ui.showDamage(t, a.getEffectStat(), damage);
-			checkPause();
+			checkHalted();
 			ui.showStatUpdate(t);
-			checkPause();
+			checkHalted();
 		}
 	}
 	
@@ -165,7 +185,7 @@ public class BattleRunner implements Runnable {
 	private void outputActionGet(Battle battle) throws InterruptedException {
 		Action a = battle.getLastAction();
 		ui.showActionPreperation(a);
-		checkPause();
+		checkHalted();
 	}
 	
 	/**
@@ -180,9 +200,9 @@ public class BattleRunner implements Runnable {
 		ArrayList<Buff> buffs = currentFighter.getBuffs();
 		for (Buff b : buffs) {
 			ui.showBuffApplication(b);
-			checkPause();
+			checkHalted();
 			ui.showStatUpdate(currentFighter);
-			checkPause();
+			checkHalted();
 		}
 	}
 	
@@ -196,7 +216,7 @@ public class BattleRunner implements Runnable {
 		ArrayList<Character> removed = battle.getRemovedFighters();
 		for (Character c : removed) {
 			ui.showCharacterRemoval(c);
-			checkPause();
+			checkHalted();
 		}
 	}
 	
@@ -229,16 +249,16 @@ public class BattleRunner implements Runnable {
 		ArrayList<Buff> expiredBuffs = c.getExpiredBuffs();
 		for (Buff expired : expiredBuffs) {
 			ui.showBuffDeactivation(expired);
-			checkPause();
+			checkHalted();
 		}
 		if (recoveredMana != 0) {
 			ui.showRecovery(c, c.getMPStat(), recoveredMana);
-			checkPause();
+			checkHalted();
 		}
 		ui.showStatUpdate(c);
-		checkPause();
+		checkHalted();
 		ui.waitForDisplay();
-		checkPause();
+		checkHalted();
 	}
 	
 	/**

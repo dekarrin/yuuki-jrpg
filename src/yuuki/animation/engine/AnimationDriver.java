@@ -225,9 +225,11 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 * for the pause to be over.
 	 */
 	private void checkPaused() throws InterruptedException {
-		while (paused) {
+		if (paused) {
 			pauseAnimations();
-			Thread.sleep(10);
+			while (paused) {
+				Thread.sleep(10);
+			}
 		}
 		resumeAnimations();
 	}

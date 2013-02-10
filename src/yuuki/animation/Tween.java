@@ -51,15 +51,6 @@ public abstract class Tween extends TimedAnimation {
 	}
 	
 	/**
-	 * Finishes animation immediately.
-	 */
-	@Override
-	public void finish() {
-		super.finish();
-		advanceTween(0.0, 0);
-	}
-	
-	/**
 	 * Advances the tween for the given remaining time.
 	 * 
 	 * @param fpms The number of frames per millisecond.

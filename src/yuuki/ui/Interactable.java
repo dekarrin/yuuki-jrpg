@@ -28,6 +28,11 @@ public interface Interactable {
 	public void addWorldEntities(ArrayList<Movable> characters);
 	
 	/**
+	 * Resets the active prompt.
+	 */
+	public void resetPrompt();
+	
+	/**
 	 * Adds portals to the world viewer.
 	 * 
 	 * @param portals The portals to add.

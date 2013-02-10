@@ -45,6 +45,7 @@ public abstract class TimedAnimation extends Animation {
 	@Override
 	public void finish() {
 		startTime = (System.currentTimeMillis() - duration - 1000);
+		advance(1000000);
 	}
 	
 	/**
