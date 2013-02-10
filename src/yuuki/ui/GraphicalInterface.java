@@ -1081,7 +1081,9 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 */
 	private void refreshWindow() {
 		mainWindow.pack();
-		mainWindow.revalidate();
+		// revalidate is incompatible with JRE 6
+		mainWindow.invalidate();
+		mainWindow.validate();
 		mainWindow.repaint();
 	}
 	
