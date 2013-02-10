@@ -26,11 +26,6 @@ public abstract class Animation implements Animatable {
 	private boolean endEventFired;
 	
 	/**
-	 * Whether this animation is on its first pulse.
-	 */
-	private boolean firstPulse;
-	
-	/**
 	 * Whether this Animation is being forced to end.
 	 */
 	private boolean forcedComplete;
@@ -39,6 +34,11 @@ public abstract class Animation implements Animatable {
 	 * The objects listening for the animation to be complete.
 	 */
 	private Set<AnimationListener> listeners;
+	
+	/**
+	 * Whether this animation has been started.
+	 */
+	private boolean started;
 	
 	/**
 	 * The sprite that this Animation has the parameters for animating.
@@ -56,7 +56,7 @@ public abstract class Animation implements Animatable {
 		this.controlled = false;
 		this.forcedComplete = false;
 		this.endEventFired = false;
-		this.firstPulse = true;
+		this.started = false;
 	}
 	
 	/**
@@ -73,10 +73,12 @@ public abstract class Animation implements Animatable {
 	public void advanceFrame(int fps) {
 		if (!isComplete()) {
 			advance(fps);
-			firstPulse = false;
-		} else if (!endEventFired) {
-			fireAnimationComplete();
-			endEventFired = true;
+		} else {
+			stop();
+			if (!endEventFired) {
+				fireAnimationComplete();
+				endEventFired = true;
+			}
 		}
 	}
 	
@@ -90,11 +92,12 @@ public abstract class Animation implements Animatable {
 	}
 	
 	/**
-	 * Forces the animation to stop. The next time animation is attempted to be
-	 * driven on this Animation, it will immediately complete.
+	 * Whether animation has started.
+	 * 
+	 * @return True if animation has started.
 	 */
-	public void stop() {
-		forcedComplete = true;
+	public boolean hasStarted() {
+		return started;
 	}
 	
 	/**
@@ -112,13 +115,13 @@ public abstract class Animation implements Animatable {
 	}
 	
 	/**
-	 * Whether animation has started.
+	 * Whether animation is running.
 	 * 
 	 * @return True if advanceFrame() has already been called on this Animation
 	 * at least once and if the animation is not complete; otherwise, false.
 	 */
 	public boolean isRunning() {
-		return !(isOnFirstPulse() || isComplete());
+		return hasStarted() && !isComplete();
 	}
 	
 	/**
@@ -135,16 +138,31 @@ public abstract class Animation implements Animatable {
 	 * Restores this animation to its beginning so it is ready to play again.
 	 * This will not restore the original properties of the animated sprite.
 	 */
+	@Override
 	public void reset() {
 		forcedComplete = false;
 		endEventFired = false;
-		firstPulse = true;
+		started = false;
 		resetProperties();
 	}
 	
 	@Override
 	public void setControlled(boolean controlled) {
 		this.controlled = controlled;
+	}
+	
+	@Override
+	public void start() {
+		started = true;
+	}
+	
+	/**
+	 * Forces the animation to stop. The next time animation is attempted to be
+	 * driven on this Animation, it will immediately complete.
+	 */
+	@Override
+	public void stop() {
+		forcedComplete = true;
 	}
 	
 	/**
@@ -172,17 +190,6 @@ public abstract class Animation implements Animatable {
 	 * @return True if the animation has run to the end; otherwise, false.
 	 */
 	protected abstract boolean isAtEnd();
-	
-	
-	/**
-	 * Whether the animation is on its first pulse.
-	 * 
-	 * @return True if advance() has already been called at least once before;
-	 * otherwise, false.
-	 */
-	protected boolean isOnFirstPulse() {
-		return firstPulse;
-	}
 	
 	/**
 	 * Resets the properties of this animation back to their original values so

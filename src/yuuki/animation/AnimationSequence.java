@@ -37,11 +37,6 @@ public class AnimationSequence extends Animation {
 	}
 	
 	/**
-	 * Starts animation.
-	 */
-	public void start() {}
-	
-	/**
 	 * Finishes every remaining animation in the sequence.
 	 */
 	public void finish() {
@@ -74,6 +69,9 @@ public class AnimationSequence extends Animation {
 	@Override
 	protected void advance(int fps) {
 		Animation current = sequence.get(position);
+		if (!current.hasStarted()) {
+			current.start();
+		}
 		if (!current.isComplete()) {
 			current.advanceFrame(fps);
 		}

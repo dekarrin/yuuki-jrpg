@@ -38,11 +38,17 @@ public class Advancement extends Animation {
 		sprite.resume();
 	}
 	
-	/**
-	 * Has no effect, as Advancement has no clock.
-	 */
 	@Override
-	public void start() {}
+	public void start() {
+		super.start();
+		sprite.start();
+	}
+	
+	@Override
+	public void stop() {
+		super.stop();
+		sprite.stop();
+	}
 	
 	/**
 	 * Advances the owned Sprite through one of its frames.

@@ -70,14 +70,14 @@ public abstract class TimedAnimation extends Animation {
 	}
 	
 	@Override
-	public void start() {}
+	public void start() {
+		super.start();
+		startTime = System.currentTimeMillis();
+	}
 	
 	@Override
 	protected void advance(int fps) {
 		if (!paused) {
-			if (isOnFirstPulse()) {
-				startTime = System.currentTimeMillis();
-			}
 			advanceAnimation(fps);
 		}
 	}

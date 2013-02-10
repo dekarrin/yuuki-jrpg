@@ -43,13 +43,17 @@ public class Loop extends Animation {
 	}
 	
 	@Override
-	public void start() {}
+	public void start() {
+		super.start();
+		loopedAnimation.start();
+	}
 	
 	@Override
 	protected void advance(int fps) {
 		loopedAnimation.advanceFrame(fps);
 		if (loopedAnimation.isComplete()) {
 			loopedAnimation.reset();
+			loopedAnimation.start();
 		}
 	}
 	
