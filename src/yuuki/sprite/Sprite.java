@@ -22,56 +22,19 @@ import yuuki.animation.engine.AnimationOwner;
 public class Sprite implements Animatable, AnimationOwner {
 	
 	/**
-	 * Whether this Sprite has an animation controller.
-	 */
-	private boolean controlled;
-	
-	/**
-	 * Whether this Sprite has been paused.
-	 */
-	private boolean paused = false;
-	
-	/**
 	 * Whether this Sprite's advancement has started.
 	 */
 	private boolean advancing = false;
 	
 	/**
+	 * Whether this Sprite has an animation controller.
+	 */
+	private boolean controlled;
+	
+	/**
 	 * The height of this Sprite.
 	 */
 	private int height;
-	
-	@Override
-	public void pause() {
-		paused = true;
-	}
-	
-	@Override
-	public void resume() {
-		paused = false;
-	}
-	
-	@Override
-	public void stop() {
-		advancing = false;
-	}
-	
-	/**
-	 * Has no effect, as sprites do not have an initial position.
-	 */
-	@Override
-	public void reset() {}
-	
-	/**
-	 * Has no effect, as sprites do not have a final position.
-	 */
-	@Override
-	public void finish() {}
-	
-	@Override
-	public void start() {
-		advancing = true;
-	}
 	
 	/**
 	 * Listeners for AnimationEvents.
@@ -82,6 +45,11 @@ public class Sprite implements Animatable, AnimationOwner {
 	 * The Animatable instances that are child components of this Sprite.
 	 */
 	private ArrayList<Animatable> ownedAnims;
+	
+	/**
+	 * Whether this Sprite has been paused.
+	 */
+	private boolean paused = false;
 	
 	/**
 	 * The width of this Sprite.
@@ -176,6 +144,12 @@ public class Sprite implements Animatable, AnimationOwner {
 	}
 	
 	/**
+	 * Has no effect, as sprites do not have a final position.
+	 */
+	@Override
+	public void finish() {}
+	
+	/**
 	 * Gets this Sprite's component.
 	 * 
 	 * @return The component.
@@ -250,6 +224,11 @@ public class Sprite implements Animatable, AnimationOwner {
 	}
 	
 	@Override
+	public void pause() {
+		paused = true;
+	}
+	
+	@Override
 	public void removeAnim(Animatable a) {
 		if (ownedAnims.remove(a)) {
 			a.setControlled(false);
@@ -262,6 +241,12 @@ public class Sprite implements Animatable, AnimationOwner {
 	}
 	
 	/**
+	 * Has no effect, as sprites do not have an initial position.
+	 */
+	@Override
+	public void reset() {}
+	
+	/**
 	 * Changes the size of this Sprite by a specific amount.
 	 * 
 	 * @param dw The amount to resize the width by.
@@ -271,6 +256,11 @@ public class Sprite implements Animatable, AnimationOwner {
 		this.width += dw;
 		this.height += dh;
 		updateBounds();
+	}
+	
+	@Override
+	public void resume() {
+		paused = false;
 	}
 	
 	/**
@@ -338,6 +328,16 @@ public class Sprite implements Animatable, AnimationOwner {
 	public void setY(int y) {
 		this.y = y;
 		updateBounds();
+	}
+	
+	@Override
+	public void start() {
+		advancing = true;
+	}
+	
+	@Override
+	public void stop() {
+		advancing = false;
 	}
 	
 	/**

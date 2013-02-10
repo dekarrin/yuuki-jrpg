@@ -21,32 +21,6 @@ public class AnimationSequence extends Animation {
 	private ArrayList<Animation> sequence;
 	
 	/**
-	 * Resumes the current animation.
-	 */
-	public void resume() {
-		Animation current = sequence.get(position);
-		current.resume();
-	}
-	
-	/**
-	 * Pauses the current animation.
-	 */
-	public void pause() {
-		Animation current = sequence.get(position);
-		current.pause();
-	}
-	
-	/**
-	 * Finishes every remaining animation in the sequence.
-	 */
-	public void finish() {
-		for (int i = position; i < sequence.size(); i++) {
-			sequence.get(i).finish();
-		}
-		position = (sequence.size() - 1);
-	}
-	
-	/**
 	 * Allocates a new AnimationSequence.
 	 * 
 	 * @param sprite The Sprite to animate.
@@ -64,6 +38,35 @@ public class AnimationSequence extends Animation {
 	 */
 	public void add(Animation animation) {
 		sequence.add(animation);
+	}
+	
+	/**
+	 * Finishes every remaining animation in the sequence.
+	 */
+	@Override
+	public void finish() {
+		for (int i = position; i < sequence.size(); i++) {
+			sequence.get(i).finish();
+		}
+		position = (sequence.size() - 1);
+	}
+	
+	/**
+	 * Pauses the current animation.
+	 */
+	@Override
+	public void pause() {
+		Animation current = sequence.get(position);
+		current.pause();
+	}
+	
+	/**
+	 * Resumes the current animation.
+	 */
+	@Override
+	public void resume() {
+		Animation current = sequence.get(position);
+		current.resume();
 	}
 	
 	@Override
