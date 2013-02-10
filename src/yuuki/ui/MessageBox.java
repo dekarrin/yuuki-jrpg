@@ -34,6 +34,16 @@ public class MessageBox extends Sprite implements MouseListener {
 		private Thread cleanerThread;
 		
 		/**
+		 * Whether this cleaner has been paused.
+		 */
+		private volatile boolean paused;
+		
+		/**
+		 * The time that this cleaner was paused at.
+		 */
+		private long pauseTime;
+		
+		/**
 		 * The time that thread's waiting started at.
 		 */
 		private long startTime;
@@ -56,6 +66,24 @@ public class MessageBox extends Sprite implements MouseListener {
 		}
 		
 		/**
+		 * Joins with the cleaner thread.
+		 */
+		public void joinWithThread() throws InterruptedException {
+			cleanerThread.join();
+		}
+		
+		/**
+		 * Resumes the cleaner.
+		 */
+		public void resume() {
+			if (paused) {
+				paused = false;
+				long pauseDuration = System.currentTimeMillis() - pauseTime;
+				startTime += pauseDuration;
+			}
+		}
+		
+		/**
 		 * Waits, and then cleans the text area.
 		 */
 		@Override
@@ -70,45 +98,6 @@ public class MessageBox extends Sprite implements MouseListener {
 				}
 			}
 			setText("");
-		}
-		
-		/**
-		 * Checks whether this cleaner has been paused, and if so, waits until
-		 * it is unpaused.
-		 */
-		private void checkPause() throws InterruptedException {
-			while (paused) {
-				Thread.sleep(10);
-			}
-		}
-		
-		/**
-		 * Whether this cleaner has been paused.
-		 */
-		private volatile boolean paused;
-		
-		/**
-		 * Pauses the cleaner.
-		 */
-		public void suspend() {
-			paused = true;
-			pauseTime = System.currentTimeMillis();
-		}
-		
-		/**
-		 * The time that this cleaner was paused at.
-		 */
-		private long pauseTime;
-		
-		/**
-		 * Resumes the cleaner.
-		 */
-		public void resume() {
-			if (paused) {
-				paused = false;
-				long pauseDuration = System.currentTimeMillis() - pauseTime;
-				startTime += pauseDuration;
-			}
 		}
 		
 		/**
@@ -130,18 +119,29 @@ public class MessageBox extends Sprite implements MouseListener {
 		}
 		
 		/**
-		 * Joins with the cleaner thread.
+		 * Pauses the cleaner.
 		 */
-		public void joinWithThread() throws InterruptedException {
-			cleanerThread.join();
+		public void suspend() {
+			paused = true;
+			pauseTime = System.currentTimeMillis();
+		}
+		
+		/**
+		 * Checks whether this cleaner has been paused, and if so, waits until
+		 * it is unpaused.
+		 */
+		private void checkPause() throws InterruptedException {
+			while (paused) {
+				Thread.sleep(10);
+			}
 		}
 		
 	}
 	
 	/**
-	 * The cleaner.
+	 * The name of this MessageBox's animation driver.
 	 */
-	private Cleaner cleaner;
+	private static final String DRIVER = "MessageBox";
 	
 	/**
 	 * Executes a Runnable synchronously on the EDT. This method is
@@ -172,6 +172,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * The cleaner.
+	 */
+	private Cleaner cleaner;
+	
+	/**
 	 * The enter button used when a text prompt is displayed.
 	 */
 	private JButton enterButton;
@@ -185,6 +190,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * The input field used when a text prompt is displayed.
 	 */
 	private JTextField input;
+	
+	/**
+	 * The label for a prompt.
+	 */
+	private JLabel label;
 	
 	/**
 	 * The list of listeners for events fired from this MessageBox.
@@ -224,11 +234,6 @@ public class MessageBox extends Sprite implements MouseListener {
 		label = new JLabel();
 		showTextArea();
 	}
-	
-	/**
-	 * The name of this MessageBox's animation driver.
-	 */
-	private static final String DRIVER = "MessageBox";
 	
 	/**
 	 * Adds one character to the text of this MessageBox.
@@ -422,22 +427,6 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
-	 * Sets the enabled status of each child component.
-	 */
-	private void setComponentsEnabled(boolean enabled) {
-		getComponent().setEnabled(enabled);
-		input.setEnabled(enabled);
-		label.setEnabled(enabled);
-		enterButton.setEnabled(enabled);
-		textBox.setEnabled(enabled);
-		if (optionValues != null) {
-			for (JButton b : optionValues.keySet()) {
-				b.setEnabled(enabled);
-			}
-		}
-	}
-	
-	/**
 	 * Joins the current thread with the cleaner thread.
 	 */
 	public void waitForClean() {
@@ -528,6 +517,22 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Sets the enabled status of each child component.
+	 */
+	private void setComponentsEnabled(boolean enabled) {
+		getComponent().setEnabled(enabled);
+		input.setEnabled(enabled);
+		label.setEnabled(enabled);
+		enterButton.setEnabled(enabled);
+		textBox.setEnabled(enabled);
+		if (optionValues != null) {
+			for (JButton b : optionValues.keySet()) {
+				b.setEnabled(enabled);
+			}
+		}
+	}
+	
+	/**
 	 * Shows a choice prompt.
 	 * 
 	 * @param prompt The text prompt to show the user.
@@ -546,11 +551,6 @@ public class MessageBox extends Sprite implements MouseListener {
 		component.revalidate();
 		component.repaint();
 	}
-	
-	/**
-	 * The label for a prompt.
-	 */
-	private JLabel label;
 	
 	/**
 	 * Shows a message on the text area. If letter delay is not 0, it will be

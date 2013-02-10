@@ -28,11 +28,6 @@ public interface Interactable {
 	public void addWorldEntities(ArrayList<Movable> characters);
 	
 	/**
-	 * Resets the active prompt.
-	 */
-	public void resetPrompt();
-	
-	/**
 	 * Adds portals to the world viewer.
 	 * 
 	 * @param portals The portals to add.
@@ -236,6 +231,11 @@ public interface Interactable {
 	 * @param effectIndex The index of the sound.
 	 */
 	public void playSound(String effectIndex);
+	
+	/**
+	 * Resets the active prompt.
+	 */
+	public void resetPrompt();
 	
 	/**
 	 * Gets the action that a player wishes to do.

@@ -96,23 +96,23 @@ public class BattleRunner implements Runnable {
 	}
 	
 	/**
+	 * Throws an exception if this thread has been interrupted.
+	 * 
+	 * @throws InterruptedException
+	 */
+	private void checkInterrupted() throws InterruptedException {
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException();
+		}
+	}
+	
+	/**
 	 * Blocks until this battle is not paused.
 	 */
 	private void checkPause() throws InterruptedException {
 		while (paused) {
 			Thread.sleep(50);
 			checkInterrupted();
-		}
-	}
-	
-	/**
-	 * Throws an exception if this thread has been interrupted.
-	 * 
-	 * @throws InterruptedException 
-	 */
-	private void checkInterrupted() throws InterruptedException {
-		if (Thread.currentThread().isInterrupted()) {
-			throw new InterruptedException();
 		}
 	}
 	

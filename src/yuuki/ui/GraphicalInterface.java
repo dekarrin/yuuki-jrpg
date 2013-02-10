@@ -540,6 +540,12 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void resetPrompt() {
+		messageBox.exitPrompt();
+		messageBox.clear();
+	}
+	
+	@Override
 	public Action selectAction(Action[] actions) {
 		return (Action) getChoice("Select an action", actions);
 	}
@@ -839,12 +845,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		switchWindow(optionsScreen);
 		mainProgram.requestBattlePause();
 		messageBox.freeze();
-	}
-	
-	@Override
-	public void resetPrompt() {
-		messageBox.exitPrompt();
-		messageBox.clear();
 	}
 	
 	@Override

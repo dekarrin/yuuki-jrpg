@@ -29,6 +29,11 @@ public interface UiExecutor {
 	public void requestBattleEnd();
 	
 	/**
+	 * Requests that the battle immediately be terminated without resolving it.
+	 */
+	public void requestBattleKill();
+	
+	/**
 	 * Requests that the battle be paused.
 	 */
 	public void requestBattlePause();
@@ -37,11 +42,6 @@ public interface UiExecutor {
 	 * Requests that the battle be resumed.
 	 */
 	public void requestBattleResume();
-	
-	/**
-	 * Requests that the battle immediately be terminated without resolving it.
-	 */
-	public void requestBattleKill();
 	
 	/**
 	 * Requests that the main battle be run through.
