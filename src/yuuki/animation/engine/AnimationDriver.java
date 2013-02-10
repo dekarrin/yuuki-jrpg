@@ -93,6 +93,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		}
 		a.setControlled(true);
 		a.addAnimationListener(handler);
+		a.start();
 		anims.add(a);
 	}
 	
@@ -158,7 +159,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 				int ms = (int) Math.round((double) 1000 / fps);
 				Thread.sleep(ms);
 				checkPaused();
-				advanceAnimation();
+				advanceAnimations();
 				checkPaused();
 			}
 		} catch (InterruptedException e) {
@@ -183,6 +184,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 */
 	public void start() {
 		if (!isAnimating()) {
+			startAnimations();
 			animationThread = new Thread(this, "AnimationDriver");
 			animationThread.start();
 		}
@@ -193,6 +195,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 */
 	public void stop() {
 		if (isAnimating()) {
+			stopAnimations();
 			animationThread.interrupt();
 			animationThread = null;
 		}
@@ -208,7 +211,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	/**
 	 * Animates all objects in the animation list.
 	 */
-	private void advanceAnimation() {
+	private void advanceAnimations() {
 		for (Animatable a : anims) {
 			a.advanceFrame(fps);
 		}
@@ -226,7 +229,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			pauseAnimations();
 			Thread.sleep(10);
 		}
-		unpauseAnimations();
+		resumeAnimations();
 	}
 	
 	/**
@@ -254,9 +257,27 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	/**
 	 * Instructs all animations to resumes.
 	 */
-	private void unpauseAnimations() {
+	private void resumeAnimations() {
 		for (Animatable a : anims) {
 			a.resume();
+		}
+	}
+	
+	/**
+	 * Instructs all animations to start.
+	 */
+	private void startAnimations() {
+		for (Animatable a : anims) {
+			a.start();
+		}
+	}
+	
+	/**
+	 * Instructs all animations to stop.
+	 */
+	private void stopAnimations() {
+		for (Animatable a : anims) {
+			a.stop();
 		}
 	}
 	
