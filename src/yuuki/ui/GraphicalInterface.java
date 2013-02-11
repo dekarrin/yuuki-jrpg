@@ -923,9 +923,20 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the battle screen.
 	 */
 	private void createBattleScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		battleScreen = new BattleScreen(WINDOW_WIDTH, height, animationEngine);
 		battleScreen.setBackgroundMusic("BGM_BATTLE");
+	}
+	
+	/**
+	 * Gets the height of a screen.
+	 * 
+	 * @return The height of a screen.
+	 */
+	private int getScreenHeight() {
+		int menuHeight = menuBar.getPreferredSize().height;
+		int height = WINDOW_HEIGHT - menuHeight - MESSAGE_BOX_HEIGHT;
+		return height;
 	}
 	
 	/**
@@ -934,9 +945,9 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	private void createComponents() {
 		createContentPane();
 		createMainWindow();
+		createMenuBar(); // must come before any screen creation
 		createLoadingScreen();
 		createMessageBox();
-		createMenuBar();
 		createIntroScreen();
 		createOptionsScreen();
 		createBattleScreen();
@@ -957,7 +968,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the ending screen.
 	 */
 	private void createEndingScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		endingScreen = Screen.getInstance(WINDOW_WIDTH, height);
 		endingScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
@@ -966,7 +977,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the intro screen.
 	 */
 	private void createIntroScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 		introScreen.setBackgroundImage("BG_INTRO_SCREEN");
@@ -976,7 +987,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the loading screen.
 	 */
 	private void createLoadingScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		loadingScreen = new LoadingScreen(WINDOW_WIDTH, height,
 				animationEngine);
 		loadingScreen.setBackgroundMusic(null);
@@ -1021,7 +1032,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the options screen.
 	 */
 	private void createOptionsScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		optionsScreen = new OptionsScreen(WINDOW_WIDTH, height);
 		optionsScreen.setBackgroundMusic(null);
 	}
@@ -1030,7 +1041,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the overworld screen.
 	 */
 	private void createOverworldScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		overworldScreen = new OverworldScreen(WINDOW_WIDTH, height);
 		overworldScreen.setBackgroundMusic("BGM_OVERWORLD");
 	}
@@ -1039,7 +1050,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the pause screen.
 	 */
 	private void createPauseScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		pauseScreen = Screen.getInstance(WINDOW_WIDTH, height);
 		pauseScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
@@ -1048,7 +1059,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the player creation screen.
 	 */
 	private void createPlayerCreationScreen() {
-		int height = WINDOW_HEIGHT - MESSAGE_BOX_HEIGHT;
+		int height = getScreenHeight();
 		charCreationScreen = new CharacterCreationScreen(WINDOW_WIDTH, height);
 		charCreationScreen.setBackgroundMusic("BGM_MAIN_MENU");
 	}
