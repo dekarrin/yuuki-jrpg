@@ -3,32 +3,10 @@
 	<!-- magic properties -->
 	<property name="ant.build.javac.source" value="1.7" />
 	<property name="ant.build.javac.target" value="1.7" />
-
-	<!-- dir definitions -->
-	<property name="dir.root.source" value="src" />
-	<property name="dir.root.dist" value="dist"/>
-	<property name="dir.root.build" value="${dir.root.dist}/bin" />
-	<property name="dir.root.doc" value="${dir.root.dist}/doc" />
-	<property name="dir.package.battle" value="yuuki/battle" />
-	<property name="dir.package.buff" value="yuuki/buff" />
-	<property name="dir.package.action" value="yuuki/action" />
-	<property name="dir.package.entity" value="yuuki/entity" />
-	<property name="dir.package.ui" value="yuuki/ui" />
-	<property name="dir.package.screen" value="yuuki/ui/screen" />
-	<property name="dir.package.resource" value="yuuki/resource" />
-	<property name="dir.package.sound" value="yuuki/sound" />
-	<property name="dir.package.animation" value="yuuki/animation" />
-	<property name="dir.package.animation-engine" value="yuuki/animation/engine" />
-	<property name="dir.package.sprite" value="yuuki/sprite" />
-	<property name="dir.package.graphics" value="yuuki/graphic" />
-	<property name="dir.package.world" value="yuuki/world" />
-	<property name="dir.package.util" value="yuuki/util" />
-	<property name="dir.package.ai" value="yuuki/entity/ai" />
 	
-	<property name="dir.root.lib" value="lib" />
-	
-	<property name="class.main" value="Engine" />
-	<property name="class.main.qualified" value="yuuki.${class.main}" />
+	<property file="ant/rootdirs.properties" />
+	<property file="ant/packages.properties" />
+	<property file="ant/build.properties" />
 	
 	<!-- other properties -->
 	<property name="warnings" value="all" />
