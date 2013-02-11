@@ -39,15 +39,9 @@
 		</jar>
 	</target>
 	
-	<target name="test-main" depends="debug,main">
+	<target name="test" depends="debug,main">
 		<antcall target="-test">
 			<param name="TEST_CLASS" value="${class.main.qualified}" />
-		</antcall>
-	</target>
-	
-	<target name="test-battle" depends="debug,battle">
-		<antcall target="-test">
-			<param name="TEST_CLASS" value="yuuki.battle.BattleTest" />
 		</antcall>
 	</target>
 	
