@@ -194,7 +194,7 @@ public interface Interactable {
 	/**
 	 * Initializes the image system.
 	 * 
-	 * @param imageFactory The ImageFactory to use for the image system.
+	 * @param factory The ImageFactory to use for the image system.
 	 */
 	public void initializeImages(ImageFactory factory);
 	
@@ -267,7 +267,7 @@ public interface Interactable {
 	/**
 	 * Sets the world view to the given tile grid.
 	 * 
-	 * @param tiles The tiles that make up the world view.
+	 * @param view The tiles that make up the world view.
 	 */
 	public void setWorldView(Grid<Tile> view);
 	

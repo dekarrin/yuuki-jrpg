@@ -103,7 +103,7 @@ public abstract class Animation implements Animatable {
 	/**
 	 * Checks whether this animation is done running.
 	 * 
-	 * @param True if the animation is no longer running; false otherwise.
+	 * @return True if the animation is no longer running; false otherwise.
 	 */
 	public boolean isComplete() {
 		return (isAtEnd() || forcedComplete);

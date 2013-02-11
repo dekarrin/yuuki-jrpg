@@ -193,13 +193,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * 
 	 * @param mainProgram The class that executes requests made by the GUI.
 	 * @param options The options of the program.
-	 * @param effectData A map of string indexes to byte arrays containing
-	 * sound data for music. Such a map can be easily obtained using a
-	 * SoundLoader object.
-	 * @param musicData A map of string indexes to byte arrays containing sound
-	 * data for music. Such a map can be easily obtained using a SoundLoader
-	 * object.
-	 * @param imageFactory The ImageFactory for creating images.
 	 */
 	public GraphicalInterface(UiExecutor mainProgram, Options options) {
 		this.options = options;
@@ -898,7 +891,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Adds a list of Locatables to one of the layers in the world viewer.
 	 * 
 	 * @param l The list of Locatables to add.
-	 * @param z The Z-index of the layer to add the Locatables to.
+	 * @param zIndex The Z-index of the layer to add the Locatables to.
 	 */
 	private void addWorldLocatables(ArrayList<? extends Locatable> l,
 			int zIndex) {

@@ -221,7 +221,7 @@ public class Battle {
 	/**
 	 * Gets the amount of mana last regenerated.
 	 *
-	 * @param The amount of mana.
+	 * @return The amount of mana.
 	 */
 	public int getRegeneratedMana() {
 		return regeneratedMana;

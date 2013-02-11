@@ -11,7 +11,7 @@ public class Bounce extends AnimationSequence {
 	 * Creates a new Bounce.
 	 * 
 	 * @param sprite The Sprite to animate.
-	 * @param The amount of time of one bounce, in milliseconds.
+	 * @param time The amount of time of one bounce, in milliseconds.
 	 * @param xBounce The amount to bounce the sprite on the x-coordinate.
 	 * Negative values start bouncing up, positive values start bouncing down.
 	 * @param yBounce The amount to bounce the sprite on the y-coordinate.

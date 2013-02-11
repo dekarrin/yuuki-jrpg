@@ -149,7 +149,7 @@ public class BattleRunner implements Runnable {
 	/**
 	 * Outputs the results of an action cost to the user interface.
 	 *
-	 * @param action The Action to output.
+	 * @param a The Action to output.
 	 */
 	private void outputActionCost(Action a) throws InterruptedException {
 		ui.showDamage(a.getOrigin(), a.getCostStat(), (int)a.getCost());

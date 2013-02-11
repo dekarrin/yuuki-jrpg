@@ -16,7 +16,7 @@ public interface UiExecutor {
 	 * Non-main battles are run through as fast as possible. Battles that
 	 * include the player character as a participant cannot be non-main.
 	 * 
-	 * @param visible Whether the battle should be considered the main battle.
+	 * @param isMain Whether the battle should be considered the main battle.
 	 * @param t1 The characters on the bottom team.
 	 * @param t2 The characters on the top team.
 	 */

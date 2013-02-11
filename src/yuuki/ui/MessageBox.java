@@ -597,7 +597,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * Spawns a thread that waits a certain amount of time before clearing the
 	 * display.
 	 * 
-	 * @param time The time to display the message before clearing it.
+	 * @param displayTime The time to display the message before clearing it.
 	 */
 	private void spawnCleanerThread(long displayTime) {
 		cleaner.start(displayTime);

@@ -16,7 +16,7 @@ public class Advancement extends Animation {
 	/**
 	 * Creates a new AdvancementLoop that animates the specified Sprite.
 	 * 
-	 * @param Sprite The Sprite that this animation animates.
+	 * @param sprite The Sprite that this animation animates.
 	 */
 	public Advancement(Sprite sprite) {
 		super(sprite);

@@ -81,7 +81,7 @@ public class AnimationManager {
 	/**
 	 * Starts an animation and blocks until the animation is complete.
 	 * @param animation The animation to run.
-	 * @param animator The name of the driver to use for animation.
+	 * @param driver The name of the driver to use for animation.
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while
 	 * blocking.

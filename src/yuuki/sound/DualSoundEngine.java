@@ -58,7 +58,7 @@ public class DualSoundEngine {
 	 * Plays the sound effect file associated with a music index. The file is
 	 * loaded if it hasn't yet been loaded, and then it is played.
 	 * 
-	 * @param musicIndex The index of the sound effect file.
+	 * @param effectIndex The index of the sound effect.
 	 */
 	public void playEffect(String effectIndex) {
 		effectEngine.playSound(effectIndex);

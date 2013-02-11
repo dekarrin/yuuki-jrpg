@@ -64,9 +64,9 @@ public class WorldLoader extends CsvResourceLoader {
 	 * 
 	 * @param world The world to load the lands into.
 	 * @param paths The paths to the land data files.
-	 * @param amount The percent that loading each part should take up.
+	 * @param percent The percent that loading each part should take up.
 	 * 
-	 * @throws IOException
+	 * @throws IOException If an IOException occurs.
 	 */
 	private void loadLands(World world, String[] paths, double percent)
 			throws IOException {

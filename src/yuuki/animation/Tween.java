@@ -54,7 +54,7 @@ public abstract class Tween extends TimedAnimation {
 	 * Advances the tween for the given remaining time.
 	 * 
 	 * @param fpms The number of frames per millisecond.
-	 * @param remianing The amount of time left.
+	 * @param remaining The amount of time left.
 	 */
 	private void advanceTween(double fpms, long remaining) {
 		HashMap<String, Integer> propChanges = new HashMap<String, Integer>();

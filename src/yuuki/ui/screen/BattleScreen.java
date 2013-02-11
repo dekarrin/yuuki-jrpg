@@ -189,7 +189,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * 
 	 * @param fighter The fighter that recovered.
 	 * @param stat The stat that was recovered.
-	 * @param damage The amount of recovery.
+	 * @param amount The amount of recovery.
 	 */
 	public void showRecovery(Character fighter, Stat stat, double amount) {
 		FighterSprite sprite = (FighterSprite) fighter.getSprite();
@@ -202,7 +202,7 @@ public class BattleScreen extends Screen<ScreenListener> {
 	 * 
 	 * @param fighter The fighter that recovered.
 	 * @param stat The stat that was recovered.
-	 * @param damage The amount of recovery.
+	 * @param amount The amount of recovery.
 	 */
 	public void showRecovery(Character fighter, Stat stat, int amount) {
 		FighterSprite sprite = (FighterSprite) fighter.getSprite();

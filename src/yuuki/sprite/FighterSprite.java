@@ -256,7 +256,7 @@ public class FighterSprite extends Sprite {
 	 * Sets the properties of this FighterSprite's components to their proper
 	 * values from the given Character.
 	 * 
-	 * @param Character fighter The fighter to set the properties from.
+	 * @param fighter The fighter to set the properties from.
 	 */
 	private void initializeComponents(Character fighter) {
 		initializeBuffPanel();

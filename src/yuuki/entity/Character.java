@@ -819,7 +819,7 @@ public abstract class Character implements Movable, Displayable {
 	/**
 	 * Sets fighter Id.
 	 *
-	 * @param Id The new fighter ID.
+	 * @param id The new fighter ID.
 	 */
 	public void setFighterId(int id) {
 		fighterId = id;
@@ -842,7 +842,7 @@ public abstract class Character implements Movable, Displayable {
 	/**
 	 * Sets team Id.
 	 *
-	 * @param Id The new team ID.
+	 * @param id The new team ID.
 	 */
 	public void setTeamId(int id) {
 		teamId = id;

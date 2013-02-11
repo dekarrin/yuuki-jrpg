@@ -43,7 +43,7 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	 * 
 	 * @param width The width of the new screen.
 	 * @param height The height of the new screen.
-	 * @param Animator The animation engine.
+	 * @param animator The animation engine.
 	 */
 	public LoadingScreen(int width, int height, AnimationManager animator) {
 		super(width, height);
