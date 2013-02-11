@@ -457,15 +457,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void menuItemTriggered(int menuId, int itemId) {
-		boolean inBattle = (currentScreen == battleScreen);
 		switch (menuId) {
 			case MenuBar.FILE_MENU_ID:
 				switch (itemId) {
 					case FileMenu.NEW_ITEM_ID:
 						mainProgram.requestNewGame();
-						if (inBattle) {
-							mainProgram.requestBattleKill();
-						}
 						break;
 						
 					case FileMenu.LOAD_ITEM_ID:
@@ -478,9 +474,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 						
 					case FileMenu.CLOSE_ITEM_ID:
 						mainProgram.requestCloseGame();
-						if (inBattle) {
-							mainProgram.requestBattleKill();
-						}
 						break;
 						
 					case FileMenu.OPTIONS_ITEM_ID:

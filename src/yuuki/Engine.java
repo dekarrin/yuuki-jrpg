@@ -92,6 +92,7 @@ public class Engine implements Runnable, UiExecutor {
 			worldThread = null;
 		}
 		public void start() {
+			setPaused(false);
 			worldThread = new Thread(this, "World");
 			worldThread.start();
 		}
@@ -283,6 +284,7 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCloseGame() {
+		requestBattleKill();
 		if (worldRunner.isRunning()) {
 			worldRunner.stop();
 		}
@@ -296,6 +298,7 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestNewGame() {
+		requestBattleKill();
 		if (worldRunner.isRunning()) {
 			worldRunner.stop();
 		}
