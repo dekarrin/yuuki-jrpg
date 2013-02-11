@@ -38,6 +38,7 @@ public class Engine implements Runnable, UiExecutor {
 		private double lastPercent = 0.0;
 		private Progressable monitor;
 		private Interactable ui;
+		private String text;
 		public LoadingBarUpdater(Progressable monitor, Interactable ui) {
 			this.monitor = monitor;
 			this.ui = ui;
