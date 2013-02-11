@@ -245,7 +245,7 @@ public class BattleRunner implements Runnable {
 	private void outputTurnStart(Battle battle) throws InterruptedException {
 		Character c = battle.getCurrentFighter();
 		int recoveredMana = battle.getRegeneratedMana();
-		ui.display(c, "It looks like I'm up next.", true);
+		ui.display(null, c.getName() + " is up next.", true);
 		ArrayList<Buff> expiredBuffs = c.getExpiredBuffs();
 		for (Buff expired : expiredBuffs) {
 			ui.showBuffDeactivation(expired);
