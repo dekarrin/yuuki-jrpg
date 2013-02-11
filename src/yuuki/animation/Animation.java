@@ -163,15 +163,26 @@ public abstract class Animation implements Animatable {
 	@Override
 	public void stop() {
 		forcedComplete = true;
+		fireAnimationStopped();
 	}
 	
 	/**
-	 * Calls animationComplete on all listeners.
+	 * Calls animationComplete() on all listeners.
 	 */
 	private void fireAnimationComplete() {
 		AnimationListener[] list = listeners.toArray(new AnimationListener[0]);
 		for (AnimationListener l : list) {
 			l.animationComplete(new AnimationEvent(this, this));
+		}
+	}
+	
+	/**
+	 * Calls animationStopped() on all listeners.
+	 */
+	private void fireAnimationStopped() {
+		AnimationListener[] list = listeners.toArray(new AnimationListener[0]);
+		for (AnimationListener l : list) {
+			l.animationStopped(new AnimationEvent(this, this));
 		}
 	}
 	

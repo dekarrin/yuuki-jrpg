@@ -303,6 +303,7 @@ public class MessageBox extends Sprite implements MouseListener {
 			}
 		};
 		MessageBox.invokeNow(r);
+		animator.resetDriver(DRIVER);
 		optionValues = null;
 	}
 	

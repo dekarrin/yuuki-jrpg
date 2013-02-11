@@ -13,7 +13,7 @@ public class AnimationManager {
 	/**
 	 * Removes an animation from a driver when it completes.
 	 */
-	private static class DriverEventHandler implements AnimationListener {
+	private static class DriverEventHandler extends AnimationAdapter {
 		
 		/**
 		 * Removes an Animation from its driver once its animation is complete.
@@ -101,6 +101,10 @@ public class AnimationManager {
 					this.complete = true;
 				}
 			}
+			@Override
+			public void animationStopped(AnimationEvent e) {
+				animationComplete(e);
+			}
 		};
 		AnimationRunner l = new AnimationRunner(animation);
 		getDriver(driver).addListener(l);
@@ -138,6 +142,17 @@ public class AnimationManager {
 		driver.stop();
 		driver.removeListener(handler);
 		drivers.remove(name);
+	}
+	
+	/**
+	 * Stops and then immediately restarts an animation driver, which has the
+	 * effect of completing any animations that were being waited on.
+	 * 
+	 * @param name The name of the animation driver to reset.
+	 */
+	public void resetDriver(String name) {
+		stopDriver(name);
+		startDriver(name);
 	}
 	
 	/**

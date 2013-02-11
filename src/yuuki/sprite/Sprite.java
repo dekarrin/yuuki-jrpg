@@ -18,6 +18,8 @@ import yuuki.animation.engine.AnimationOwner;
  * A graphical object that can be animated. A Sprite may have other Animatable
  * instances contained within it, which are advanced every time the owner
  * Sprite is.
+ * 
+ * Sprite instances do not fire animation events.
  */
 public class Sprite implements Animatable, AnimationOwner {
 	

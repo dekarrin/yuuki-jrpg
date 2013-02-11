@@ -922,17 +922,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	/**
-	 * Gets the height of a screen.
-	 * 
-	 * @return The height of a screen.
-	 */
-	private int getScreenHeight() {
-		int menuHeight = menuBar.getPreferredSize().height;
-		int height = WINDOW_HEIGHT - menuHeight - MESSAGE_BOX_HEIGHT;
-		return height;
-	}
-	
-	/**
 	 * Creates the screens used in this GUI.
 	 */
 	private void createComponents() {
@@ -1071,6 +1060,17 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			img = imageEngine.createImage(index);
 		}
 		return img;
+	}
+	
+	/**
+	 * Gets the height of a screen.
+	 * 
+	 * @return The height of a screen.
+	 */
+	private int getScreenHeight() {
+		int menuHeight = menuBar.getPreferredSize().height;
+		int height = WINDOW_HEIGHT - menuHeight - MESSAGE_BOX_HEIGHT;
+		return height;
 	}
 	
 	/**

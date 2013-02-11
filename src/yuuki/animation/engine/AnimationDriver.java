@@ -24,6 +24,12 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			fireAnimationComplete(firedEvent);
 		}
 		
+		@Override
+		public void animationStopped(AnimationEvent e) {
+			AnimationEvent firedEvent = getRefiredEvent(e);
+			fireAnimationStopped(firedEvent);
+		}
+		
 		/**
 		 * Gets the AnimationEvent that adds this AnimationDriver as the cause
 		 * of the event.
@@ -244,6 +250,19 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		listeners.toArray(ls);
 		for (AnimationListener l : ls) {
 			l.animationComplete(e);
+		}
+	}
+	
+	/**
+	 * Calls animationStopped() on all listeners.
+	 * 
+	 * @param e The original event.
+	 */
+	private void fireAnimationStopped(AnimationEvent e) {
+		AnimationListener[] ls = new AnimationListener[listeners.size()];
+		listeners.toArray(ls);
+		for (AnimationListener l : ls) {
+			l.animationStopped(e);
 		}
 	}
 	
