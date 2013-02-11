@@ -7,8 +7,15 @@ public interface AnimationListener {
 	/**
 	 * Fired when the animation is complete.
 	 * 
-	 * @param e Information on the event that occurred.
+	 * @param e Information about the event that occurred.
 	 */
 	public void animationComplete(AnimationEvent e);
+	
+	/**
+	 * Fired when the animation is stopped.
+	 * 
+	 * @param e Information about the event that occurred.
+	 */
+	public void animationStopped(AnimationEvent e);
 	
 }
