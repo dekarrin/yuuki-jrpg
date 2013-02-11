@@ -15,8 +15,11 @@ public interface Movable extends Locatable {
 	 * @param land The land that this Locatable is to move on.
 	 * 
 	 * @return This Locatable's next move.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the next move.
 	 */
-	public Point getNextMove(Land land);
+	public Point getNextMove(Land land) throws InterruptedException;
 	
 	/**
 	 * Checks whether this Movable will transfer to another world if it walks

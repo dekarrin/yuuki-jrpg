@@ -457,15 +457,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void menuItemTriggered(int menuId, int itemId) {
-		boolean inBattle = (currentScreen == battleScreen);
 		switch (menuId) {
 			case MenuBar.FILE_MENU_ID:
 				switch (itemId) {
 					case FileMenu.NEW_ITEM_ID:
 						mainProgram.requestNewGame();
-						if (inBattle) {
-							mainProgram.requestBattleKill();
-						}
 						break;
 						
 					case FileMenu.LOAD_ITEM_ID:
@@ -478,9 +474,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 						
 					case FileMenu.CLOSE_ITEM_ID:
 						mainProgram.requestCloseGame();
-						if (inBattle) {
-							mainProgram.requestBattleKill();
-						}
 						break;
 						
 					case FileMenu.OPTIONS_ITEM_ID:
@@ -544,7 +537,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public Point selectMove(WalkGraph graph) {
+	public Point selectMove(WalkGraph graph) throws InterruptedException {
 		class Runner implements Runnable, OverworldMovementListener {
 			public Point move = null;
 			private WalkGraph graph;
@@ -571,7 +564,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		} catch (InterruptedException e) {
 			overworldScreen.setWalkGraph(null);
 			overworldScreen.removeMovementListener(r);
-			Thread.currentThread().interrupt();
+			throw e;
 		}
 		return r.move;
 	}

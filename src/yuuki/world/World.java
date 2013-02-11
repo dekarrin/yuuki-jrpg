@@ -53,8 +53,11 @@ public class World {
 	/**
 	 * Advances the world by one tick. The current Land is instructed to
 	 * advance.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for a move from the player.
 	 */
-	public void advance() {
+	public void advance() throws InterruptedException {
 		activeLand.advance();
 		moveTransfers();
 	}

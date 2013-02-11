@@ -69,24 +69,36 @@ public class Engine implements Runnable, UiExecutor {
 	 * Handles the execution of a world in its own thread.
 	 */
 	private class WorldRunner implements Runnable {
+		private Thread worldThread = null;
 		private volatile boolean paused = false;
 		@Override
 		public void run() {
-			while (true) {
-				try {
+			try {
+				while (true) {
 					while (paused) {
 						Thread.sleep(10);
 					}
 					advanceWorld();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
 				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 			}
 		}
 		public void setPaused(boolean paused) {
 			this.paused = paused;
 		}
-		
+		public void stop() {
+			worldThread.interrupt();
+			worldThread = null;
+		}
+		public void start() {
+			setPaused(false);
+			worldThread = new Thread(this, "World");
+			worldThread.start();
+		}
+		public boolean isRunning() {
+			return (worldThread != null);
+		}
 	}
 	
 	/**
@@ -209,6 +221,7 @@ public class Engine implements Runnable, UiExecutor {
 	public Engine() {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
+		worldRunner = new WorldRunner();
 	}
 	
 	@Override
@@ -217,7 +230,7 @@ public class Engine implements Runnable, UiExecutor {
 		Battle battle = new Battle(fighters);
 		if (isMain) {
 			mainBattle = battle;
-			exitOverworldMode();
+			worldRunner.setPaused(true);
 			ui.switchToBattleScreen(fighters);
 		}
 	}
@@ -271,7 +284,10 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCloseGame() {
-		exitOverworldMode();
+		requestBattleKill();
+		if (worldRunner.isRunning()) {
+			worldRunner.stop();
+		}
 		ui.switchToIntroScreen();
 	}
 	
@@ -282,7 +298,10 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestNewGame() {
-		exitOverworldMode();
+		requestBattleKill();
+		if (worldRunner.isRunning()) {
+			worldRunner.stop();
+		}
 		ui.switchToCharacterCreationScreen();
 	}
 	
@@ -333,8 +352,11 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Advances the world by one tick and updates the GUI with the new world
 	 * data.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for the player to select a move.
 	 */
-	private void advanceWorld() {
+	private void advanceWorld() throws InterruptedException {
 		world.advance();
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
@@ -368,17 +390,13 @@ public class Engine implements Runnable, UiExecutor {
 	 * Switches to the overworld screen and begins overworld advancement.
 	 */
 	private void enterOverworldMode() {
-		ui.switchToOverworldScreen();
-		startWorldThread();
-	}
-	
-	/**
-	 * Sets the world advancer to stop clicking through the world.
-	 */
-	private void exitOverworldMode() {
-		if (worldRunner != null) {
-			pauseWorldThread();
+		if (worldRunner.isRunning()) {
+			worldRunner.setPaused(false);
+		} else {
+			worldRunner.start();
 		}
+		updateWorldViewer();
+		ui.switchToOverworldScreen();
 	}
 	
 	/**
@@ -592,15 +610,6 @@ public class Engine implements Runnable, UiExecutor {
 		return w;
 	}
 	
-	
-	
-	/**
-	 * Pauses the thread running the world.
-	 */
-	private void pauseWorldThread() {
-		worldRunner.setPaused(true);
-	}
-	
 	/**
 	 * Sets the world to use the initial land.
 	 */
@@ -632,12 +641,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * Starts the thread running the world. If the thread has not yet been
 	 * created, it is created.
 	 */
-	private void startWorldThread() {
-		if (worldRunner == null) {
-			worldRunner = new WorldRunner();
-			(new Thread(worldRunner, "World")).start();
-		}
-		worldRunner.setPaused(false);
+	private void updateWorldViewer() {
 		ui.clearWorldLocatables();
 		ui.setWorldView(world.getTiles());
 		ui.addWorldPortals(world.getPortals());

@@ -53,7 +53,7 @@ public class PlayerCharacter extends Character {
 	}
 	
 	@Override
-	public Point getNextMove(Land land) {
+	public Point getNextMove(Land land) throws InterruptedException {
 		WalkGraph graph = land.getWalkGraph(getLocation(), true);
 		return ui.selectMove(graph);
 	}
