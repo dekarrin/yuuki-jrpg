@@ -252,8 +252,11 @@ public interface Interactable {
 	 * @param graph The graph of available places to walk to.
 	 * 
 	 * @return The point that the user wants to move to.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for input.
 	 */
-	public Point selectMove(WalkGraph graph);
+	public Point selectMove(WalkGraph graph) throws InterruptedException;
 	
 	/**
 	 * Gets the target of a move.

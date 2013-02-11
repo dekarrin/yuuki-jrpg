@@ -115,8 +115,11 @@ public class Land {
 	 * Advances this Land by one tick. All residents are queried for where they
 	 * wish to move, and if they make a valid request, they are moved to where
 	 * they requested.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting for a move from the player.
 	 */
-	public void advance() {
+	public void advance() throws InterruptedException {
 		processIncomingResidents();
 		moveResidents();
 		processOutgoingResidents();
@@ -316,8 +319,11 @@ public class Land {
 	/**
 	 * Moves all residents. Each resident is asked where it wishes to move, and
 	 * is then moved there.
+	 * 
+	 * @throws InterruptedException If the current thread is interrupted while
+	 * waiting on input from the player.
 	 */
-	private void moveResidents() {
+	private void moveResidents() throws InterruptedException {
 		bumps.clear();
 		for (Movable r : residents) {
 			Point current = r.getLocation();
