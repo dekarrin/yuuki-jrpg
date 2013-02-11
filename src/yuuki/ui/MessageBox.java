@@ -260,6 +260,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	public void clear() {
 		checkFreeze();
+		// TODO: halt animation driver
 		if (cleaner.isWaiting()) {
 			cleaner.stop();
 		}
