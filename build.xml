@@ -1,19 +1,38 @@
 <project name="Yuuki" basedir="." default="build">
+
+	<!-- ****************************************************************** -->
+	<!-- YUUKI BUILD SCRIPT                                                 -->
+	<!-- ****************************************************************** -->
+	<!-- Command line arguments:                                            -->
+	<!--     -Dwarnings=<warn_level>    - The warning level to use when     -->
+	<!--                                  building.                         -->
+	<!--     -Djdk=<jdk_version>        - The version of the JDK to build   -->
+	<!--                                  with/for. If using previous       -->
+	<!--                                  versions of the JDK, JAVA_HOME    -->
+	<!--                                  may need to be set to point to a  -->
+	<!--                                  JDK of that version.              -->
+	<!-- ****************************************************************** -->
 	
-	<!-- magic properties -->
-	<property name="ant.build.javac.source" value="1.7" />
-	<property name="ant.build.javac.target" value="1.7" />
 	
-	<property file="ant/rootdirs.properties" />
-	<property file="ant/packages.properties" />
-	<property file="ant/build.properties" />
 	
-	<!-- other properties -->
-	<property name="warnings" value="all" />
+	<!-- ****************************************************************** -->
+	<!-- PROPERTIES                                                         -->
+	<!-- ****************************************************************** -->
+	<condition property="ant.build.javac.source" value="${jdk}" else="1.7">
+		<isset property="jdk" />
+	</condition>
+	
+	<condition property="ant.build.javac.target" value="${jdk}" else="1.7">
+		<isset property="jdk" />
+	</condition>
 	
 	<condition property="warning_count" value="${warnings}" else="all">
 		<isset property="warnings"/>
 	</condition>
+	
+	<property file="ant/rootdirs.properties" />
+	<property file="ant/packages.properties" />
+	<property file="ant/build.properties" />
 	
 	
 	<!-- ****************************************************************** -->
