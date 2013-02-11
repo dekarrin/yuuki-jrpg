@@ -368,8 +368,8 @@ public class Engine implements Runnable, UiExecutor {
 	 * Switches to the overworld screen and begins overworld advancement.
 	 */
 	private void enterOverworldMode() {
-		ui.switchToOverworldScreen();
 		startWorldThread();
+		ui.switchToOverworldScreen();
 	}
 	
 	/**
