@@ -5,26 +5,27 @@
 	<property name="ant.build.javac.target" value="1.7" />
 
 	<!-- dir definitions -->
-	<property name="SOURCE_ROOT" value="src" />
-	<property name="DIST_ROOT" value="dist"/>
-	<property name="BUILD_ROOT" value="${DIST_ROOT}/bin" />
-	<property name="DOC_ROOT" value="${DIST_ROOT}/doc" />
-	<property name="BATTLE" value="yuuki/battle" />
-	<property name="BUFF" value="yuuki/buff" />
-	<property name="ACTION" value="yuuki/action" />
-	<property name="ENTITY" value="yuuki/entity" />
-	<property name="UI" value="yuuki/ui" />
-	<property name="SCREEN" value="yuuki/ui/screen" />
-	<property name="RESOURCE" value="yuuki/resource" />
-	<property name="SOUND" value="yuuki/sound" />
-	<property name="ANIMATION" value="yuuki/animation" />
-	<property name="SPRITE" value="yuuki/sprite" />
-	<property name="GRAPHIC" value="yuuki/graphic" />
-	<property name="WORLD" value="yuuki/world" />
-	<property name="UTIL" value="yuuki/util" />
-	<property name="AI" value="yuuki/entity/ai" />
+	<property name="dir.root.source" value="src" />
+	<property name="dir.root.dist" value="dist"/>
+	<property name="dir.root.build" value="${dir.root.dist}/bin" />
+	<property name="dir.root.doc" value="${dir.root.dist}/doc" />
+	<property name="dir.package.battle" value="yuuki/battle" />
+	<property name="dir.package.buff" value="yuuki/buff" />
+	<property name="dir.package.action" value="yuuki/action" />
+	<property name="dir.package.entity" value="yuuki/entity" />
+	<property name="dir.package.ui" value="yuuki/ui" />
+	<property name="dir.package.screen" value="yuuki/ui/screen" />
+	<property name="dir.package.resource" value="yuuki/resource" />
+	<property name="dir.package.sound" value="yuuki/sound" />
+	<property name="dir.package.animation" value="yuuki/animation" />
+	<property name="dir.package.animation-engine" value="yuuki/animation/engine" />
+	<property name="dir.package.sprite" value="yuuki/sprite" />
+	<property name="dir.package.graphics" value="yuuki/graphic" />
+	<property name="dir.package.world" value="yuuki/world" />
+	<property name="dir.package.util" value="yuuki/util" />
+	<property name="dir.package.ai" value="yuuki/entity/ai" />
 	
-	<property name="LIB" value="lib" />
+	<property name="dir.root.lib" value="lib" />
 	
 	<property name="class.main" value="Engine" />
 	<property name="class.main.qualified" value="yuuki.${class.main}" />
@@ -40,21 +41,21 @@
 	<!-- PUBLIC TARGETS -->
 	
 	<target name="dist-jar" depends="clean,dep-jar,all">
-		<jar destfile="${DIST_ROOT}/yuuki.jar" filesetmanifest="mergewithoutmain">
-			<fileset dir="${BUILD_ROOT}" />
-			<zipfileset src="${DIST_ROOT}/dependencies.jar">
+		<jar destfile="${dir.root.dist}/yuuki.jar" filesetmanifest="mergewithoutmain">
+			<fileset dir="${dir.root.build}" />
+			<zipfileset src="${dir.root.dist}/dependencies.jar">
 				<exclude name="META-INF/*.SF" />
 			</zipfileset>
 			<manifest>
 				<attribute name="Main-Class" value="${class.main.qualified}" />
 			</manifest>
 		</jar>
-		<delete file="${DIST_ROOT}/dependencies.jar" />
+		<delete file="${dir.root.dist}/dependencies.jar" />
 	</target>
 	
 	<target name="dep-jar">
-		<jar destfile="${DIST_ROOT}/dependencies.jar" filesetmanifest="mergewithoutmain">
-			<zipgroupfileset dir="${LIB}">
+		<jar destfile="${dir.root.dist}/dependencies.jar" filesetmanifest="mergewithoutmain">
+			<zipgroupfileset dir="${dir.root.lib}">
 				<include name="*.jar" />
 			</zipgroupfileset>
 		</jar>
@@ -77,7 +78,7 @@
 	</target>
 	
 	<target name="clean">
-		<delete dir="${DIST_ROOT}" />
+		<delete dir="${dir.root.dist}" />
 	</target>
 	
 	<target name="all" depends="main,resource,lib"></target>
@@ -91,120 +92,126 @@
 	
 	<target name="ai">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${AI}" />
+			<param name="PACKAGE" value="${dir.package.ai}" />
 		</antcall>
 	</target>
 	
 	<target name="util">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${UTIL}" />
+			<param name="PACKAGE" value="${dir.package.util}" />
 		</antcall>
 	</target>
 	
 	<target name="graphic">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${GRAPHIC}" />
+			<param name="PACKAGE" value="${dir.package.graphics}" />
 		</antcall>
 	</target>
 	
 	<target name="world">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${WORLD}" />
+			<param name="PACKAGE" value="${dir.package.world}" />
 		</antcall>
 	</target>
 	
 	<target name="sprite">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${SPRITE}" />
+			<param name="PACKAGE" value="${dir.package.sprite}" />
 		</antcall>
 	</target>
 	
 	<target name="sound">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${SOUND}" />
+			<param name="PACKAGE" value="${dir.package.sound}" />
 		</antcall>
 	</target>
 	
-	<target name="animation">
+	<target name="animation" depends="animation-engine">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${ANIMATION}" />
+			<param name="PACKAGE" value="${dir.package.animation}" />
+		</antcall>
+	</target>
+	
+	<target name="animation-engine">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${dir.package.animation-engine}" />
 		</antcall>
 	</target>
 	
 	<target name="ui" depends="screen,buff,action,entity">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${UI}" />
+			<param name="PACKAGE" value="${dir.package.ui}" />
 		</antcall>
 	</target>
 	
 	<target name="screen" depends="buff,action,entity">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${SCREEN}" />
+			<param name="PACKAGE" value="${dir.package.screen}" />
 		</antcall>
 	</target>
 	
 	<target name="battle" depends="buff,action,entity">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${BATTLE}" />
+			<param name="PACKAGE" value="${dir.package.battle}" />
 		</antcall>
 	</target>
 	
 	<target name="entity" depends="action,buff">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${ENTITY}" />
+			<param name="PACKAGE" value="${dir.package.entity}" />
 		</antcall>
 	</target>
 	
 	<target name="action" depends="buff">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${ACTION}" />
+			<param name="PACKAGE" value="${dir.package.action}" />
 		</antcall>
 	</target>
 	
 	<target name="buff">
 		<antcall target="-build">
-			<param name="PACKAGE" value="${BUFF}" />
+			<param name="PACKAGE" value="${dir.package.buff}" />
 		</antcall>
 	</target>
 	
 	<target name="doc-all" depends="doc-battle"></target>
 	
 	<target name="resource">
-		<copy todir="${BUILD_ROOT}/${RESOURCE}">
-			<fileset dir="${SOURCE_ROOT}/${RESOURCE}" />
+		<copy todir="${dir.root.build}/${dir.package.resource}">
+			<fileset dir="${dir.root.source}/${dir.package.resource}" />
 		</copy>
 	</target>
 	
 	<target name="lib">
-		<copy todir="${DIST_ROOT}/${LIB}">
-			<fileset dir="${LIB}" />
+		<copy todir="${dir.root.dist}/${dir.root.lib}">
+			<fileset dir="${dir.root.lib}" />
 		</copy>
 	</target>
 	
 	<target name="doc-battle" depends="doc-buff,doc-action,doc-entity">
 		<antcall target="-doc">
-			<param name="PACKAGE" value="${BATTLE}" />
+			<param name="PACKAGE" value="${dir.package.battle}" />
 			<param name="ACCESS" value="private" />
 		</antcall>
 	</target>
 	
 	<target name="doc-buff">
 		<antcall target="-doc">
-			<param name="PACKAGE" value="${BUFF}" />
+			<param name="PACKAGE" value="${dir.package.buff}" />
 			<param name="ACCESS" value="private" />
 		</antcall>
 	</target>
 	
 	<target name="doc-action" depends="doc-buff">
 		<antcall target="-doc">
-			<param name="PACKAGE" value="${ACTION}" />
+			<param name="PACKAGE" value="${dir.package.action}" />
 			<param name="ACCESS" value="private" />
 		</antcall>
 	</target>
 	
 	<target name="doc-entity" depends="doc-action,doc-buff">
 		<antcall target="-doc">
-			<param name="PACKAGE" value="${ENTITY}" />
+			<param name="PACKAGE" value="${dir.package.entity}" />
 			<param name="ACCESS" value="private" />
 		</antcall>
 	</target>
@@ -215,7 +222,7 @@
 	<!-- PACKAGE - The path of the package to build -->
 	<!-- NAME - The name of the source file. Leave blank for all in package -->
 	<target name="-build">
-		<mkdir dir="${BUILD_ROOT}" />
+		<mkdir dir="${dir.root.build}" />
 		<condition property="debug.on" value="on" else="off">
 			<isset property="DEBUG_TYPE" />
 		</condition>
@@ -225,7 +232,7 @@
 		<condition property="source.name" value="${NAME}" else="*">
 			<isset property="NAME" />
 		</condition>
-		<javac includeantruntime="false" srcdir="${SOURCE_ROOT}" destdir="${BUILD_ROOT}" debug="${debug.on}" debuglevel="${debug.level}">
+		<javac includeantruntime="false" srcdir="${dir.root.source}" destdir="${dir.root.build}" debug="${debug.on}" debuglevel="${debug.level}">
 			<!-- <compilerarg value="-Werror" /> -->
 			<compilerarg value="-Xlint:${warning_count}" />
 			<include name="${PACKAGE}/${source.name}.java" />
@@ -234,7 +241,7 @@
 	
 	<!-- TEST_CLASS - The class to test -->
 	<target name="-test">
-         <java classname="${TEST_CLASS}" classpath="${BUILD_ROOT}" fork="false" />
+         <java classname="${TEST_CLASS}" classpath="${dir.root.build}" fork="false" />
 		<!-- <echo message="${RUN_ERR}" /> -->
 	</target>
 	
@@ -242,8 +249,8 @@
 	<!-- PACKAGE - The path of the package to document -->
 	<!-- ACCESS - The access modifier to use; defaults to protected -->
 	<target name="-doc">
-		<property name="SRC" value="${SOURCE_ROOT}/${PACKAGE}" />
-		<property name="DEST" value="${DOC_ROOT}" />
+		<property name="SRC" value="${dir.root.source}/${PACKAGE}" />
+		<property name="DEST" value="${dir.root.doc}" />
 		<condition property="ACC" value="${ACCESS}" else="protected">
 			<isset property="ACCESS" />
 		</condition>
