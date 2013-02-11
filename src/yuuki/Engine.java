@@ -73,15 +73,15 @@ public class Engine implements Runnable, UiExecutor {
 		private volatile boolean paused = false;
 		@Override
 		public void run() {
-			while (true) {
-				try {
+			try {
+				while (true) {
 					while (paused) {
 						Thread.sleep(10);
 					}
 					advanceWorld();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
 				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 			}
 		}
 		public void setPaused(boolean paused) {
