@@ -66,10 +66,20 @@ public class SubProgression implements Progressable {
 	}
 	
 	@Override
+	public String getText() {
+		return monitor.getText();
+	}
+	
+	@Override
 	public void setProgress(double percent) {
 		double absoluteProgress = percent * getLength();
 		double actualPercent = absoluteProgress + start;
 		monitor.setProgress(actualPercent);
+	}
+	
+	@Override
+	public void setText(String text) {
+		monitor.setText(text);
 	}
 	
 	/**

@@ -8,6 +8,7 @@ import java.awt.Font;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 import yuuki.animation.engine.AnimationManager;
 
@@ -39,6 +40,11 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	private JProgressBar progress;
 	
 	/**
+	 * The text label.
+	 */
+	private JLabel label;
+	
+	/**
 	 * Creates a new screen of a specified size.
 	 * 
 	 * @param width The width of the new screen.
@@ -58,7 +64,7 @@ public class LoadingScreen extends Screen<ScreenListener> {
 		progress.setMaximumSize(progSize);
 		progress.setMinimumSize(progSize);
 		Box b = Box.createVerticalBox();
-		JLabel label = new JLabel("Loading...");
+		label = new JLabel("Loading...");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
 		b.add(Box.createVerticalStrut(80));
@@ -75,10 +81,30 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	 * Updates the progress bar.
 	 * 
 	 * @param percent The percent to update it to.
+	 * @param text What to show in the label.
 	 */
-	public void updateProgress(double percent) {
+	public void updateProgress(double percent, String text) {
 		int val = (int) Math.round(percent * LOADING_BAR_TICKS);
 		progress.setValue(val);
+		setText(text);
+	}
+	
+	/**
+	 * Sets the text of this LoadingScreen.
+	 * 
+	 * @param text The text to change it to.
+	 */
+	public void setText(String text) {
+		class Runner implements Runnable {
+			private String text;
+			public Runner(String text) {
+				this.text = text;
+			}
+			public void run() {
+				label.setText(text);
+			}
+		}
+		SwingUtilities.invokeLater(new Runner(text));
 	}
 	
 }

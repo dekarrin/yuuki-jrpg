@@ -852,18 +852,20 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void updateLoadingProgress(double percent) {
+	public void updateLoadingProgress(double percent, String text) {
 		class Runner implements Runnable {
 			private double percent;
-			public Runner(double percent) {
+			private String text;
+			public Runner(double percent, String text) {
 				this.percent = percent;
+				this.text = text;
 			}
 			@Override
 			public void run() {
-				loadingScreen.updateProgress(percent);
+				loadingScreen.updateProgress(percent, text);
 			}
 		}
-		SwingUtilities.invokeLater(new Runner(percent));
+		SwingUtilities.invokeLater(new Runner(percent, text));
 	}
 	
 	@Override
