@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.Dimension;
+
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -18,6 +19,7 @@ import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
 import yuuki.world.TileFactory;
+
 /**
  * Displays the overworld graphically.
  */
