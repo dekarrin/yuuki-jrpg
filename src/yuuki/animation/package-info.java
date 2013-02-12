@@ -44,5 +44,37 @@
  * time on the animated {@code Sprite}. {@code Advancement} is typically used
  * as the looped animation in {@link yuuki.animation.Loop} in order to allow
  * the animated {@code Sprite} to define its own animation behavior.
+ * </p><p>
+ * The {@link yuuki.animation.AnimationSequence} class is composed of a series
+ * of other animations that are run through sequentially. It can be extended to
+ * create a pre-defined animation sequence.
+ * </p><p>
+ * {@link yuuki.animation.Bounce} is an {@code AnimationSequence} that is
+ * composed of two {@code MotionTween} instances.
+ * </p><p>
+ * {@link yuuki.animation.Loop} wraps another animation and runs through it to
+ * the end before repeating it. By definition, a loop is never complete, and so
+ * {@code Loop.isAtEnd()} never returns true. To stop a loop, {@code stop()}
+ * must be explicitly called on it.
+ * </p><p>
+ * The {@link yuuki.animation.TimedAnimation} branch of the {@code Animation}
+ * hierarchy contains animations that take a specific amount of time to
+ * complete. Sub-classes of {@code TimedAnimation} implement
+ * {@code advanceAnimation(int)} with actual animation behavior.
+ * </p><p>
+ * The {@link yuuki.animation.Tween} class is a specialization of
+ * {@code TimedAnimation} that performs a linear tween across a set of named
+ * properties. Properties to be tweened can be added with the
+ * {@link yuuki.animation.Tween#addTweenedProperty(String, int)} method.
+ * </p><p>
+ * {@link yuuki.animation.SizeTween}, {@link yuuki.animation.MotionTween}, and
+ * {@link yuuki.animation.TextTween} are all specializations of {@code Tween}
+ * that tween specific properties, though {@code TextTween} is only applicable
+ * to {@link yuuki.ui.MessageBox} instances.
+ * </p><p>
+ * {@link yuuki.animation.Pause} is a {@code TimedAnimation} that does nothing
+ * for a specified amount of time. This could be useful when used as an element
+ * in an {@code AnimationSequence}.
+ * </p>
  */
 package yuuki.animation;
