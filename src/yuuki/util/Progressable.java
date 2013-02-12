@@ -44,10 +44,26 @@ public interface Progressable {
 	public Progressable getSubProgressable(double length);
 	
 	/**
+	 * Gets the current text of the monitor. Visual displays can use this text
+	 * to display the progress.
+	 * 
+	 * @return The current text.
+	 */
+	public String getText();
+	
+	/**
 	 * Sets the progress directly.
 	 * 
 	 * @param percent The percent to set it to, in the range of (0, 1].
 	 */
 	public void setProgress(double percent);
+	
+	/**
+	 * Sets the current text of the monitor. Visual displays can use this text
+	 * to display the progress.
+	 * 
+	 * @param text What to set the current text to.
+	 */
+	public void setText(String text);
 	
 }

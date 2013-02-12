@@ -38,6 +38,7 @@ public class Engine implements Runnable, UiExecutor {
 		private double lastPercent = 0.0;
 		private Progressable monitor;
 		private Interactable ui;
+		private String lastText = "Loading...";
 		public LoadingBarUpdater(Progressable monitor, Interactable ui) {
 			this.monitor = monitor;
 			this.ui = ui;
@@ -56,10 +57,13 @@ public class Engine implements Runnable, UiExecutor {
 		}
 		private void update() {
 			double percent = monitor.getProgress();
+			String text = monitor.getText();
 			double diff = Math.abs(lastPercent - percent);
-			if (diff > Progressable.PROGRESS_PRECISION) {
+			if (diff > Progressable.PROGRESS_PRECISION ||
+					!lastText.equals(text)) {
 				lastPercent = percent;
-				ui.updateLoadingProgress(percent);
+				lastText = text;
+				ui.updateLoadingProgress(percent, text);
 			}
 		}
 		
@@ -274,11 +278,19 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCharacterCreation(String name, int level) {
-		world = loadWorld(new Progression());
+		ui.updateLoadingProgress(0.0, "Loading...");
+		ui.switchToLoadingScreen();
+		Progressable monitor = new Progression();
+		monitor.setText("Loading World...");
+		LoadingBarUpdater updater = new LoadingBarUpdater(monitor, ui);
+		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
+		updateThread.start();
+		world = loadWorld(monitor);
 		setInitialWorld();
 		player = entityMaker.createPlayer(name, level, ui);
 		player.setLocation(world.getPlayerStart());
 		world.addResident(player);
+		updateThread.interrupt();
 		enterOverworldMode();
 	}
 	
@@ -429,12 +441,16 @@ public class Engine implements Runnable, UiExecutor {
 		updateThread.start();
 		Progressable m;
 		m = monitor.getSubProgressable(0.25);
+		m.setText("Loading SFX...");
 		Map<String, byte[]> effectData	= loadSoundEffects(m);
 		m = monitor.getSubProgressable(0.25);
+		m.setText("Loading Music...");
 		Map<String, byte[]> musicData	= loadMusic(m);
 		m = monitor.getSubProgressable(0.25);
+		m.setText("Loading Images...");
 		ImageFactory imageFactory		= loadImages(m);
 		m = monitor.getSubProgressable(0.25);
+		m.setText("Loading Entities...");
 		entityMaker						= loadEntities(m);
 		monitor.finishProgress();
 		updateThread.interrupt();

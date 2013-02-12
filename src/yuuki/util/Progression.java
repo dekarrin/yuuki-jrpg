@@ -10,6 +10,11 @@ public class Progression implements Progressable {
 	 */
 	private double progress = 0.0;
 	
+	/**
+	 * The current display for text.
+	 */
+	private String text = "";
+	
 	@Override
 	public void advanceProgress(double percent) {
 		setProgress(progress + percent);
@@ -32,9 +37,19 @@ public class Progression implements Progressable {
 	}
 	
 	@Override
+	public String getText() {
+		return text;
+	}
+	
+	@Override
 	public void setProgress(double percent) {
 		progress = percent;
 		approximateProgress();
+	}
+	
+	@Override
+	public void setText(String text) {
+		this.text = text;
 	}
 	
 	/**
