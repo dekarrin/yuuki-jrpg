@@ -36,9 +36,9 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private static class LoadingBarUpdater implements Runnable {
 		private double lastPercent = 0.0;
+		private String lastText = "Loading...";
 		private Progressable monitor;
 		private Interactable ui;
-		private String lastText = "Loading...";
 		public LoadingBarUpdater(Progressable monitor, Interactable ui) {
 			this.monitor = monitor;
 			this.ui = ui;
@@ -73,8 +73,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * Handles the execution of a world in its own thread.
 	 */
 	private class WorldRunner implements Runnable {
-		private Thread worldThread = null;
 		private volatile boolean paused = false;
+		private Thread worldThread = null;
+		public boolean isRunning() {
+			return (worldThread != null);
+		}
 		@Override
 		public void run() {
 			try {
@@ -91,17 +94,14 @@ public class Engine implements Runnable, UiExecutor {
 		public void setPaused(boolean paused) {
 			this.paused = paused;
 		}
-		public void stop() {
-			worldThread.interrupt();
-			worldThread = null;
-		}
 		public void start() {
 			setPaused(false);
 			worldThread = new Thread(this, "World");
 			worldThread.start();
 		}
-		public boolean isRunning() {
-			return (worldThread != null);
+		public void stop() {
+			worldThread.interrupt();
+			worldThread = null;
 		}
 	}
 	
@@ -281,9 +281,7 @@ public class Engine implements Runnable, UiExecutor {
 		ui.updateLoadingProgress(0.0, "Loading...");
 		ui.switchToLoadingScreen();
 		Progressable monitor = new Progression();
-		monitor.setText("Loading World...");
-		LoadingBarUpdater updater = new LoadingBarUpdater(monitor, ui);
-		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
+		Thread updateThread = getLoadUpdater(monitor, ui);
 		updateThread.start();
 		world = loadWorld(monitor);
 		setInitialWorld();
@@ -412,6 +410,21 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Creates a LoadingBarUpdater for use with the loading screen.
+	 * 
+	 * @param p The Progressable to use for monitoring progress.
+	 * @param ui A reference to the user interface.
+	 * 
+	 * @return The thread containing the LoadingBarUpdater.
+	 */
+	private Thread getLoadUpdater(Progressable b, Interactable ui) {
+		b.setText(("Loading..."));
+		LoadingBarUpdater updater = new LoadingBarUpdater(b, ui);
+		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
+		return updateThread;
+	}
+	
+	/**
 	 * Loads the action definitions from disk.
 	 * 
 	 * @param monitor Monitors the progress of the load.
@@ -436,8 +449,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void loadAssets() {
 		Progressable monitor = new Progression();
-		LoadingBarUpdater updater = new LoadingBarUpdater(monitor, ui);
-		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
+		Thread updateThread = getLoadUpdater(monitor, ui);
 		updateThread.start();
 		Progressable m;
 		m = monitor.getSubProgressable(0.25);
