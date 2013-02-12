@@ -1,4 +1,4 @@
-package yuuki.ui;
+package yuuki.graphic;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -10,7 +10,7 @@ import javax.swing.JComponent;
  * A component with a background image.
  */
 @SuppressWarnings("serial")
-public class BackgroundPane extends JComponent {
+public class ImageComponent extends JComponent {
 	
 	/**
 	 * The background image to display.
@@ -20,7 +20,7 @@ public class BackgroundPane extends JComponent {
 	/**
 	 * Creates a new Background Pane.
 	 */
-	public BackgroundPane() {
+	public ImageComponent() {
 		setLayout(new BorderLayout());
 		this.backgroundImage = null;
 	}
