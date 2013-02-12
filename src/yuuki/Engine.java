@@ -410,16 +410,18 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Creates a LoadingBarUpdater for use with the loading screen.
+	 * Creates a Thread containing a LoadingBarUpdater for use with the loading
+	 * screen.
 	 * 
-	 * @param p The Progressable to use for monitoring progress.
+	 * @param p The {@link yuuki.util.Progressable} to use for monitoring
+	 * progress.
 	 * @param ui A reference to the user interface.
 	 * 
 	 * @return The thread containing the LoadingBarUpdater.
 	 */
-	private Thread getLoadUpdater(Progressable b, Interactable ui) {
-		b.setText(("Loading..."));
-		LoadingBarUpdater updater = new LoadingBarUpdater(b, ui);
+	private Thread getLoadUpdater(Progressable p, Interactable ui) {
+		p.setText(("Loading..."));
+		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		return updateThread;
 	}
