@@ -27,7 +27,7 @@ import yuuki.world.TileFactory;
 public class WorldViewer extends JPanel {
 	
 	/**
-	 * The exact text being displayed.
+	 * The exact images being displayed.
 	 */
 	private Grid<java.lang.Character> buffer;
 	
