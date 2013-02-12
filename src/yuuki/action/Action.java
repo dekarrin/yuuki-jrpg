@@ -10,9 +10,6 @@ import yuuki.entity.Stat;
 /**
  * A character's action during the fight. This gives information on what type
  * of effect it has and who its target is.
- * 
- * Derived classes have several responsibilities. They must set their actual
- * effects, as well as their cost and effect stats.
  */
 public abstract class Action implements Cloneable {
 	
