@@ -96,7 +96,7 @@ public class TileFactory {
 	 */
 	public Tile createTile(int id) {
 		TileDefinition td = definitions.get(id);
-		Tile tile = new Tile(td.name, td.walkable);
+		Tile tile = new Tile(td.name, td.walkable, td.image);
 		tile.setId(id);
 		return tile;
 	}

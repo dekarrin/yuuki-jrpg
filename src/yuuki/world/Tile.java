@@ -1,5 +1,7 @@
 package yuuki.world;
 
+import java.awt.Image;
+
 import yuuki.ui.Displayable;
 
 /**
@@ -19,6 +21,11 @@ public class Tile implements Displayable {
 	private String name;
 	
 	/**
+	 * The image for this tile as displayed in the world viewer.
+	 */
+	private Image image;
+	
+	/**
 	 * Whether this tile currently has occupants.
 	 */
 	private boolean occupied;
@@ -33,15 +40,17 @@ public class Tile implements Displayable {
 	 * 
 	 * @param name The name of the new Tile.
 	 * @param walkable Whether this Tile may be walked on.
+	 * @para image The image to show for this Tile on the overworld.
 	 */
-	public Tile(String name, boolean walkable) {
+	public Tile(String name, boolean walkable, Image image) {
 		this.name = name;
 		this.walkable = walkable;
+		this.image = image;
 		occupied = false;
 	}
 	
 	@Override
-	public String getBattleImage() {
+	public Image getBattleImage() {
 		return null;
 	}
 	
@@ -60,8 +69,8 @@ public class Tile implements Displayable {
 	}
 	
 	@Override
-	public String getOverworldImage() {
-		return null;
+	public Image getOverworldImage() {
+		return image;
 	}
 	
 	/**
