@@ -1,6 +1,5 @@
 package yuuki.world;
 
-import java.awt.Image;
 import java.awt.Point;
 
 import yuuki.ui.Displayable;
@@ -50,7 +49,7 @@ public class Portal implements Locatable, Displayable {
 	}
 	
 	@Override
-	public Image getBattleImage() {
+	public String getBattleImage() {
 		return null;
 	}
 	
@@ -97,7 +96,7 @@ public class Portal implements Locatable, Displayable {
 	}
 	
 	@Override
-	public Image getOverworldImage() {
+	public String getOverworldImage() {
 		return null;
 	}
 	

@@ -1,18 +1,17 @@
 package yuuki.ui;
 
-import java.awt.Image;
-
 /**
  * An object that has a graphical representation.
  */
 public interface Displayable {
 	
 	/**
-	 * Gets the image used for displaying this object in the battle screen.
+	 * Gets the path of the image used for displaying this object in the battle
+	 * screen.
 	 * 
-	 * @return The battle image.
+	 * @return The path to the battle image.
 	 */
-	public Image getBattleImage();
+	public String getBattleImage();
 	
 	/**
 	 * Gets the character used to display this object on a text-console.
@@ -22,10 +21,11 @@ public interface Displayable {
 	public char getDisplayChar();
 	
 	/**
-	 * Gets the Image used for displaying this object in the overworld.
+	 * Gets the path to the Image used for displaying this object in the
+	 * overworld.
 	 * 
-	 * @return The overworld image.
+	 * @return The path to the overworld image.
 	 */
-	public Image getOverworldImage();
+	public String getOverworldImage();
 	
 }

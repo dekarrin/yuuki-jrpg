@@ -1,13 +1,8 @@
 package yuuki.world;
 
-import java.awt.Image;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.ImageIcon;
-
-import yuuki.file.ByteArrayLoader;
 
 /**
  * Contains the definitions for creating tiles.
@@ -32,7 +27,7 @@ public class TileFactory {
 		/**
 		 * The image data for the tile.
 		 */
-		public Image image;
+		public String image;
 		
 	}
 	
@@ -45,11 +40,6 @@ public class TileFactory {
 	 * The image that represents a void tile.
 	 */
 	public static final String VOID_PATH = "tiles/void.png";
-	
-	/**
-	 * Loads image data.
-	 */
-	private ByteArrayLoader imageLoader;
 	
 	/**
 	 * The definitions in this TileFactory.
@@ -78,11 +68,11 @@ public class TileFactory {
 	 * @throws IOException If an IOException occurs.
 	 */
 	public void addDefinition(int id, String name, boolean walkable, String
-			path) throws IOException {
+			path) {
 		TileDefinition def = new TileDefinition();
 		def.name = name;
 		def.walkable = walkable;
-		def.image = (new ImageIcon(imageLoader.load(path))).getImage();
+		def.image = path;
 		definitions.put(id, def);
 	}
 	
