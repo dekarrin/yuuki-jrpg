@@ -8,6 +8,8 @@ import yuuki.entity.ai.StandingPathFinder;
 import yuuki.world.Land;
 import yuuki.world.WalkGraph;
 
+import java.awt.Image;
+
 /**
  * The NPC class provides methods for battle AI and leveling up for non-player
  * characters, such as team-mates and monsters.
@@ -57,7 +59,7 @@ public class NonPlayerCharacter extends Character {
 	}
 	
 	@Override
-	public String getBattleImage() {
+	public Image getBattleImage() {
 		return null;
 	}
 	
@@ -80,7 +82,7 @@ public class NonPlayerCharacter extends Character {
 	}
 	
 	@Override
-	public String getOverworldImage() {
+	public Image getOverworldImage() {
 		return null;
 	}
 	
