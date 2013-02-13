@@ -52,12 +52,12 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	/**
 	 * The height of the world viewer, in tiles.
 	 */
-	public static final int VIEWER_HEIGHT = 10;
+	public static final int VIEWER_HEIGHT = 6;
 	
 	/**
 	 * The width of the world viewer, in tiles.
 	 */
-	public static final int VIEWER_WIDTH = 30;
+	public static final int VIEWER_WIDTH = 6;
 	
 	/**
 	 * The Z-index of the layer that contains the moving characters who are not

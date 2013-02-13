@@ -59,7 +59,7 @@ public class NonPlayerCharacter extends Character {
 	}
 	
 	@Override
-	public Image getBattleImage() {
+	public String getBattleImage() {
 		return null;
 	}
 	
@@ -82,7 +82,7 @@ public class NonPlayerCharacter extends Character {
 	}
 	
 	@Override
-	public Image getOverworldImage() {
+	public String getOverworldImage() {
 		return null;
 	}
 	
