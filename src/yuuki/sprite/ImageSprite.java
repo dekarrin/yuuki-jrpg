@@ -11,7 +11,7 @@ import yuuki.graphic.ImageComponent;
  * A Sprite that consists solely of a background image.
  */
 public class ImageSprite extends Sprite {
-
+	
 	/**
 	 * Creates a new ImageSprite.
 	 * 
@@ -23,11 +23,6 @@ public class ImageSprite extends Sprite {
 		super(animator, width, height);
 	}
 	
-	@Override
-	protected JComponent createComponent() {
-		return new ImageComponent();
-	}
-	
 	/**
 	 * Sets the displayed image of this ImageSprite.
 	 * 
@@ -35,6 +30,11 @@ public class ImageSprite extends Sprite {
 	 */
 	public void setImage(Image image) {
 		((ImageComponent) component).setBackgroundImage(image);
+	}
+	
+	@Override
+	protected JComponent createComponent() {
+		return new ImageComponent();
 	}
 	
 }

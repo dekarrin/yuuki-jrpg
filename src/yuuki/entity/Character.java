@@ -102,6 +102,11 @@ public abstract class Character implements Movable, Displayable {
 	private String name;
 	
 	/**
+	 * The path to the overworld graphic.
+	 */
+	private String overworldArt;
+	
+	/**
 	 * This Character's position in the overworld.
 	 */
 	private Point position;
@@ -135,11 +140,6 @@ public abstract class Character implements Movable, Displayable {
 	 * The experience of this Character.
 	 */
 	protected int xp;
-	
-	/**
-	 * The path to the overworld graphic.
-	 */
-	private String overworldArt;
 	
 	/**
 	 * Allocates a new Character. Most stats are set manually, but experience
@@ -427,11 +427,6 @@ public abstract class Character implements Movable, Displayable {
 		return displayChar;
 	}
 	
-	@Override
-	public String getOverworldImage() {
-		return overworldArt;
-	}
-	
 	/**
 	 * Gets the expired buffs on this Character.
 	 *
@@ -589,6 +584,11 @@ public abstract class Character implements Movable, Displayable {
 			}
 		}
 		return m;
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		return overworldArt;
 	}
 	
 	/**

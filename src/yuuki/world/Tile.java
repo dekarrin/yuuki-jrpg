@@ -13,15 +13,15 @@ public class Tile implements Displayable {
 	private int id;
 	
 	/**
+	 * The image for this tile as displayed in the world viewer.
+	 */
+	private String image;
+	
+	/**
 	 * The name of this tile. This may be used for identifying different types
 	 * of tiles for graphical representation.
 	 */
 	private String name;
-	
-	/**
-	 * The image for this tile as displayed in the world viewer.
-	 */
-	private String image;
 	
 	/**
 	 * Whether this tile currently has occupants.

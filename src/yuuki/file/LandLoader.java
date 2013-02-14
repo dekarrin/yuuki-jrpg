@@ -68,11 +68,6 @@ public class LandLoader extends ResourceLoader {
 	private ArrayList<Movable> entities;
 	
 	/**
-	 * Generates Land population members.
-	 */
-	private final PopulationFactory populator;
-	
-	/**
 	 * The meta data from the land file currently being read.
 	 */
 	private MetaData meta;
@@ -81,6 +76,11 @@ public class LandLoader extends ResourceLoader {
 	 * The section of the land file that is being parsed.
 	 */
 	private ParserMode mode;
+	
+	/**
+	 * Generates Land population members.
+	 */
+	private final PopulationFactory populator;
 	
 	/**
 	 * The loaded portals.

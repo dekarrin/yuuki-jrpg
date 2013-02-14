@@ -28,6 +28,11 @@ import yuuki.world.TileFactory;
 public class WorldViewer extends JPanel {
 	
 	/**
+	 * The size of a tile, in pixels.
+	 */
+	public static final int TILE_SIZE = 32;
+	
+	/**
 	 * The exact images being displayed.
 	 */
 	private Grid<Image> buffer;
@@ -55,14 +60,9 @@ public class WorldViewer extends JPanel {
 	private Grid<Tile> subView;
 	
 	/**
-	 * The current view of this world.
+	 * The height of this viewer, in tiles.
 	 */
-	private Grid<Tile> view;
-	
-	/**
-	 * The size of a tile, in pixels.
-	 */
-	public static final int TILE_SIZE = 32;
+	private int tileHeight;
 	
 	/**
 	 * The width of this viewer, in tiles.
@@ -70,9 +70,9 @@ public class WorldViewer extends JPanel {
 	private int tileWidth;
 	
 	/**
-	 * The height of this viewer, in tiles.
+	 * The current view of this world.
 	 */
-	private int tileHeight;
+	private Grid<Tile> view;
 	
 	/**
 	 * Creates a new WorldViewer that can display the specified number of
@@ -121,56 +121,6 @@ public class WorldViewer extends JPanel {
 	 */
 	public int getLayerCount() {
 		return locatables.size();
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		paintLandTiles(g2);
-		paintLocatables(g2);
-		
-	}
-	
-	/**
-	 * Paints the Locatables in this world viewer.
-	 * 
-	 * @param g The Graphics2D context to paint the Locatables on.
-	 */
-	private void paintLocatables(Graphics2D g) {
-		Rectangle box;
-		box = new Rectangle(view.getLocation(), view.getSize());
-		for (int i : locatables.keySet()) {
-			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
-			for (Locatable l : ls) {
-				Point p = new Point(l.getLocation());
-				p.x -= box.x;
-				p.y -= box.y;
-				p.x *= TILE_SIZE;
-				p.y *= TILE_SIZE;
-				String path = l.getDisplayable().getOverworldImage();
-				Image img = images.createImage(path);
-				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
-				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
-			}
-		}
-	}
-	
-	/**
-	 * Paints the land tiles in this world viewer.
-	 * 
-	 * @param g The Graphics2D context to paint the tile images on.
-	 */
-	private void paintLandTiles(Graphics2D g) {
-		Point p = new Point(0, 0);
-		Point pos = new Point();
-		for (p.y = 0; p.y < tileHeight; p.y++) {
-			for (p.x = 0; p.x < tileWidth; p.x++) {
-				Image img = buffer.itemAt(p);
-				pos.x = TILE_SIZE * p.x;
-				pos.y = TILE_SIZE * p.y;
-				g.drawImage(img, pos.x, pos.y, TILE_SIZE, TILE_SIZE, this);
-			}
-		}
 	}
 	
 	/**
@@ -312,6 +262,48 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Paints the land tiles in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the tile images on.
+	 */
+	private void paintLandTiles(Graphics2D g) {
+		Point p = new Point(0, 0);
+		Point pos = new Point();
+		for (p.y = 0; p.y < tileHeight; p.y++) {
+			for (p.x = 0; p.x < tileWidth; p.x++) {
+				Image img = buffer.itemAt(p);
+				pos.x = TILE_SIZE * p.x;
+				pos.y = TILE_SIZE * p.y;
+				g.drawImage(img, pos.x, pos.y, TILE_SIZE, TILE_SIZE, this);
+			}
+		}
+	}
+	
+	/**
+	 * Paints the Locatables in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the Locatables on.
+	 */
+	private void paintLocatables(Graphics2D g) {
+		Rectangle box;
+		box = new Rectangle(view.getLocation(), view.getSize());
+		for (int i : locatables.keySet()) {
+			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
+			for (Locatable l : ls) {
+				Point p = new Point(l.getLocation());
+				p.x -= box.x;
+				p.y -= box.y;
+				p.x *= TILE_SIZE;
+				p.y *= TILE_SIZE;
+				String path = l.getDisplayable().getOverworldImage();
+				Image img = images.createImage(path);
+				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
+				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
+			}
+		}
+	}
+	
+	/**
 	 * Sets the buffer sub view as the section that matches the draw position
 	 * of the current world sub view.
 	 * 
@@ -349,6 +341,14 @@ public class WorldViewer extends JPanel {
 		Rectangle subBox = new Rectangle(actualLocation, size);
 		subView = view.getSubGrid(subBox);
 		return subBox.getLocation();
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		paintLandTiles(g2);
+		paintLocatables(g2);
+		
 	}
 	
 }
