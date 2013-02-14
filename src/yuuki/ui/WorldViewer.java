@@ -88,7 +88,8 @@ public class WorldViewer extends JPanel {
 		buffer = new ElementGrid<Image>(d);
 		locatables = new HashMap<Integer, Set<Locatable>>();
 		setLayout(null);
-		setBounds(0, 0, width * TILE_SIZE, height * TILE_SIZE);
+		Dimension size = new Dimension(width * TILE_SIZE, height * TILE_SIZE);
+		setPreferredSize(size);
 	}
 	
 	/**
@@ -298,7 +299,6 @@ public class WorldViewer extends JPanel {
 				String path = l.getDisplayable().getOverworldImage();
 				Image img = images.createImage(path);
 				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
-				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
 			}
 		}
 	}
