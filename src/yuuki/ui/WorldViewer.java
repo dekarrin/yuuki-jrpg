@@ -1,7 +1,9 @@
 package yuuki.ui;
 
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -11,13 +13,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
+import yuuki.graphic.ImageFactory;
 import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
 import yuuki.world.TileFactory;
+
 /**
  * Displays the overworld graphically.
  */
@@ -25,14 +28,24 @@ import yuuki.world.TileFactory;
 public class WorldViewer extends JPanel {
 	
 	/**
-	 * The exact text being displayed.
+	 * The size of a tile, in pixels.
 	 */
-	private Grid<java.lang.Character> buffer;
+	public static final int TILE_SIZE = 32;
+	
+	/**
+	 * The exact images being displayed.
+	 */
+	private Grid<Image> buffer;
 	
 	/**
 	 * The section of the buffer that contains the drawn map.
 	 */
-	private Grid<java.lang.Character> bufferView;
+	private Grid<Image> bufferView;
+	
+	/**
+	 * Generates tile graphics.
+	 */
+	private ImageFactory images;
 	
 	/**
 	 * The Locatables on the screen. They are arranged in layers, which specify
@@ -47,9 +60,14 @@ public class WorldViewer extends JPanel {
 	private Grid<Tile> subView;
 	
 	/**
-	 * The main text area for this world viewer.
+	 * The height of this viewer, in tiles.
 	 */
-	private JTextArea textArea;
+	private int tileHeight;
+	
+	/**
+	 * The width of this viewer, in tiles.
+	 */
+	private int tileWidth;
 	
 	/**
 	 * The current view of this world.
@@ -64,14 +82,14 @@ public class WorldViewer extends JPanel {
 	 * @param height The height of this WorldViewer in tiles.
 	 */
 	public WorldViewer(int width, int height) {
+		tileWidth = width;
+		tileHeight = height;
 		Dimension d = new Dimension(width, height);
-		buffer = new ElementGrid<java.lang.Character>(d);
+		buffer = new ElementGrid<Image>(d);
 		locatables = new HashMap<Integer, Set<Locatable>>();
-		textArea = new JTextArea(height, width);
-		textArea.setEditable(false);
-		textArea.setFocusable(false);
-		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		add(textArea);
+		setLayout(null);
+		Dimension size = new Dimension(width * TILE_SIZE, height * TILE_SIZE);
+		setPreferredSize(size);
 	}
 	
 	/**
@@ -126,6 +144,15 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Sets the image factory for tile graphics.
+	 * 
+	 * @param imageFactory The ImageFactory to use.
+	 */
+	public void setImageFactory(ImageFactory imageFactory) {
+		images = imageFactory;
+	}
+	
+	/**
 	 * Sets the view of the world being displayed.
 	 * 
 	 * @param view The view to show.
@@ -145,17 +172,18 @@ public class WorldViewer extends JPanel {
 		setBufferView(requested);
 		drawWorldSubView();
 		drawLocatables();
-		showBuffer();
+		repaint();
 	}
 	
 	/**
 	 * Sets all tiles in the tile buffer to be empty.
 	 */
 	private void clearBuffer() {
+		Image i = images.createImage(TileFactory.VOID_PATH);
 		Point p = new Point();
-		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
-			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
-				buffer.set(p, TileFactory.VOID_CHAR);
+		for (p.y = 0; p.y < tileHeight; p.y++) {
+			for (p.x = 0; p.x < tileWidth; p.x++) {
+				buffer.set(p, i);
 			}
 		}
 	}
@@ -183,7 +211,7 @@ public class WorldViewer extends JPanel {
 				Point p = new Point(l.getLocation());
 				p.x -= box.x;
 				p.y -= box.y;
-				drawOnBuffer(p, l.getDisplayable().getDisplayChar());
+				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
 			}
 		}
 	}
@@ -192,10 +220,11 @@ public class WorldViewer extends JPanel {
 	 * Draws a single item on the buffer.
 	 * 
 	 * @param position The point to draw the item at.
-	 * @param i The item to draw.
+	 * @param i The path of the image to draw.
 	 */
-	private void drawOnBuffer(Point position, char i) {
-		bufferView.set(position, i);
+	private void drawOnBuffer(Point position, String i) {
+		Image img = images.createImage(i);
+		bufferView.set(position, img);
 	}
 	
 	/**
@@ -206,7 +235,7 @@ public class WorldViewer extends JPanel {
 		Dimension size = bufferView.getSize();
 		for (p.x = 0; p.x < size.width; p.x++) {
 			for (p.y = 0; p.y < size.height; p.y++) {
-				drawOnBuffer(p, subView.itemAt(p).getDisplayChar());
+				drawOnBuffer(p, subView.itemAt(p).getOverworldImage());
 			}
 		}
 	}
@@ -231,6 +260,47 @@ public class WorldViewer extends JPanel {
 	 */
 	private boolean layerExists(int zIndex) {
 		return (locatables.containsKey(zIndex));
+	}
+	
+	/**
+	 * Paints the land tiles in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the tile images on.
+	 */
+	private void paintLandTiles(Graphics2D g) {
+		Point p = new Point(0, 0);
+		Point pos = new Point();
+		for (p.y = 0; p.y < tileHeight; p.y++) {
+			for (p.x = 0; p.x < tileWidth; p.x++) {
+				Image img = buffer.itemAt(p);
+				pos.x = TILE_SIZE * p.x;
+				pos.y = TILE_SIZE * p.y;
+				g.drawImage(img, pos.x, pos.y, TILE_SIZE, TILE_SIZE, this);
+			}
+		}
+	}
+	
+	/**
+	 * Paints the Locatables in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the Locatables on.
+	 */
+	private void paintLocatables(Graphics2D g) {
+		Rectangle box;
+		box = new Rectangle(view.getLocation(), view.getSize());
+		for (int i : locatables.keySet()) {
+			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
+			for (Locatable l : ls) {
+				Point p = new Point(l.getLocation());
+				p.x -= box.x;
+				p.y -= box.y;
+				p.x *= TILE_SIZE;
+				p.y *= TILE_SIZE;
+				String path = l.getDisplayable().getOverworldImage();
+				Image img = images.createImage(path);
+				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
+			}
+		}
 	}
 	
 	/**
@@ -273,21 +343,12 @@ public class WorldViewer extends JPanel {
 		return subBox.getLocation();
 	}
 	
-	/**
-	 * Updates the actual display area with the buffer.
-	 */
-	private void showBuffer() {
-		StringBuilder sb = new StringBuilder();
-		Point p = new Point(0, 0);
-		for (p.y = 0; p.y < textArea.getRows(); p.y++) {
-			for (p.x = 0; p.x < textArea.getColumns(); p.x++) {
-				sb.append(buffer.itemAt(p));
-			}
-			if (p.y < textArea.getRows() - 1) {
-				sb.append('\n');
-			}
-		}
-		textArea.setText(sb.toString());
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		paintLandTiles(g2);
+		paintLocatables(g2);
+		
 	}
 	
 }

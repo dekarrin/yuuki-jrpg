@@ -13,6 +13,8 @@ import yuuki.entity.PlayerCharacter;
 import yuuki.file.ActionLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
+import yuuki.file.PortalLoader;
+import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
@@ -22,6 +24,8 @@ import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
+import yuuki.world.PopulationFactory;
+import yuuki.world.PortalFactory;
 import yuuki.world.TileFactory;
 import yuuki.world.World;
 
@@ -146,6 +150,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * The location of music files.
 	 */
 	public static final String MUSIC_PATH = "/yuuki/resource/audio/bgm/";
+	
+	/**
+	 * The name of the portal definitions file.
+	 */
+	public static final String PORTAL_FILE = "portals.csv";
 	
 	/**
 	 * The path to the sound effect definitions file.
@@ -278,18 +287,22 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCharacterCreation(String name, int level) {
-		ui.updateLoadingProgress(0.0, "Loading...");
-		ui.switchToLoadingScreen();
-		Progressable monitor = new Progression();
-		Thread updateThread = getLoadUpdater(monitor, ui);
-		updateThread.start();
-		world = loadWorld(monitor);
-		setInitialWorld();
 		player = entityMaker.createPlayer(name, level, ui);
-		player.setLocation(world.getPlayerStart());
-		world.addResident(player);
-		updateThread.interrupt();
-		enterOverworldMode();
+		(new Thread(new Runnable() {
+			public void run() {
+				ui.updateLoadingProgress(0.0, "Loading...");
+				ui.switchToLoadingScreen();
+				Progressable monitor = new Progression();
+				Thread updateThread = getLoadUpdater(monitor, ui);
+				updateThread.start();
+				world = loadWorld(monitor);
+				setInitialWorld();
+				player.setLocation(world.getPlayerStart());
+				world.addResident(player);
+				updateThread.interrupt();
+				enterOverworldMode();
+			}
+		}, "WorldLoadingThread")).start();
 	}
 	
 	@Override
@@ -438,7 +451,12 @@ public class Engine implements Runnable, UiExecutor {
 		ActionLoader loader = new ActionLoader(DEFINITIONS_PATH);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(ACTIONS_FILE);
+			try {
+				factory = loader.load(ACTIONS_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load action definitions!");
 		}
@@ -505,7 +523,12 @@ public class Engine implements Runnable, UiExecutor {
 		EntityLoader loader = new EntityLoader(DEFINITIONS_PATH, af);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(ENTITIES_FILE);
+			try {
+				factory = loader.load(ENTITIES_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load entity definitions!");
 		}
@@ -525,7 +548,12 @@ public class Engine implements Runnable, UiExecutor {
 		ImageFactory factory = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(IMAGE_FILE);
+			try {
+				factory = loader.load(IMAGE_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load image file!");
 		}
@@ -546,12 +574,42 @@ public class Engine implements Runnable, UiExecutor {
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			soundData = loader.load(MUSIC_FILE);
+			try {
+				soundData = loader.load(MUSIC_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load music!");
 		}
 		monitor.finishProgress();
 		return soundData;
+	}
+	
+	/**
+	 * Loads the portal definitions file from disk.
+	 * 
+	 * @param monitor Monitors the loading progress.
+	 * 
+	 * @return The PortalFactory containing the portal definitions.
+	 */
+	private PortalFactory loadPortalDefinitions(Progressable monitor) {
+		PortalFactory factory = null;
+		PortalLoader loader = new PortalLoader(DEFINITIONS_PATH);
+		loader.setProgressMonitor(monitor);
+		try {
+			try {
+				factory = loader.load(PORTAL_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
+		} catch (IOException e) {
+			System.err.println("Could not load portal file!");
+		}
+		monitor.finishProgress();
+		return factory;
 	}
 	
 	/**
@@ -568,7 +626,12 @@ public class Engine implements Runnable, UiExecutor {
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			soundData = loader.load(SOUND_EFFECT_FILE);
+			try {
+				soundData = loader.load(SOUND_EFFECT_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load sound effects!");
 		}
@@ -588,7 +651,12 @@ public class Engine implements Runnable, UiExecutor {
 		TileLoader loader = new TileLoader(DEFINITIONS_PATH);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(TILE_FILE);
+			try {
+				factory = loader.load(TILE_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load tile file!");
 		}
@@ -605,10 +673,13 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private World loadWorld(Progressable monitor) {
 		Progressable m;
-		m = monitor.getSubProgressable(0.5);
-		TileFactory factory = loadTileDefinitions(m);
-		m = monitor.getSubProgressable(0.5);
-		World world = loadWorldDefinitions(factory, entityMaker, m);
+		m = monitor.getSubProgressable(0.333);
+		PortalFactory pf = loadPortalDefinitions(m);
+		m = monitor.getSubProgressable(0.333);
+		TileFactory tf = loadTileDefinitions(m);
+		m = monitor.getSubProgressable(0.333);
+		PopulationFactory pop = new PopulationFactory(tf, entityMaker, pf);
+		World world = loadWorldDefinitions(pop, m);
 		monitor.finishProgress();
 		return world;
 	}
@@ -617,22 +688,24 @@ public class Engine implements Runnable, UiExecutor {
 	 * Loads the world definitions and all land files within it into a new
 	 * World object.
 	 * 
-	 * @param tf The factory to use for generating the tiles within the Lands
-	 * contained within the World.
-	 * @param ef The factory to use for generating the entities within the
-	 * Lands contained within the World.
+	 * @param pop The factory to use for populating the Lands within the world.
 	 * @param monitor Monitors the progress of the load.
 	 * 
 	 * @return The World as read from the data files.
 	 */
-	private World loadWorldDefinitions(TileFactory tf, EntityFactory ef,
+	private World loadWorldDefinitions(PopulationFactory pop,
 			Progressable monitor) {
 		World w = null;
 		WorldLoader loader;
-		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, tf, ef);
+		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, pop);
 		loader.setProgressMonitor(monitor);
 		try {
-			w = loader.load(WORLD_FILE);
+			try {
+				w = loader.load(WORLD_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load world file!");
 		}

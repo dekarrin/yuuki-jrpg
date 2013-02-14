@@ -3,9 +3,8 @@ package yuuki.file;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import yuuki.entity.EntityFactory;
 import yuuki.world.Land;
-import yuuki.world.TileFactory;
+import yuuki.world.PopulationFactory;
 import yuuki.world.World;
 
 /**
@@ -25,14 +24,12 @@ public class WorldLoader extends CsvResourceLoader {
 	 * be loaded, relative to the package structure.
 	 * @param landsPath The path to the directory containing the land files to
 	 * be loaded, relative to the package structure.
-	 * @param tiles The TileFactory to use for populating the Land objects.
-	 * @param entities The EntityFactory to use for populating the Land
-	 * objects.
+	 * @param populator The factory to use for populating lands.
 	 */
-	public WorldLoader(String location, String landsPath, TileFactory tiles,
-			EntityFactory entities) {
+	public WorldLoader(String location, String landsPath, PopulationFactory
+			populator) {
 		super(location);
-		landLoader = new LandLoader(landsPath, tiles, entities);
+		landLoader = new LandLoader(landsPath, populator);
 	}
 	
 	/**
@@ -43,9 +40,12 @@ public class WorldLoader extends CsvResourceLoader {
 	 * 
 	 * @return The World object if the resource file exists; otherwise, null.
 	 * 
+	 * @throws ResourceNotFoundException If the resource file or a file
+	 * referenced by the resource file does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public World load(String resource) throws IOException {
+	public World load(String resource) throws ResourceNotFoundException,
+	IOException {
 		World world = new World();
 		String[][] records = loadRecords(resource);
 		ArrayList<String> paths = new ArrayList<String>();
@@ -66,10 +66,12 @@ public class WorldLoader extends CsvResourceLoader {
 	 * @param paths The paths to the land data files.
 	 * @param percent The percent that loading each part should take up.
 	 * 
+	 * @throws ResourceNotFoundException If one of the given paths does not
+	 * exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	private void loadLands(World world, String[] paths, double percent)
-			throws IOException {
+	private void loadLands(World world, String[] paths, double percent) throws
+	ResourceNotFoundException, IOException {
 		for (String path : paths) {
 			Land land = landLoader.load(path);
 			if (land != null) {

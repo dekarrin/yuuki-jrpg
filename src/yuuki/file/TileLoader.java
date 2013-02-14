@@ -27,9 +27,11 @@ public class TileLoader extends CsvResourceLoader {
 	 * 
 	 * @return A TileFactory with the definitions from the file.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public TileFactory load(String resource) throws IOException {
+	public TileFactory load(String resource) throws ResourceNotFoundException,
+	IOException {
 		TileFactory factory = null;
 		String[][] records = loadRecords(resource);
 		factory = new TileFactory();
@@ -37,7 +39,8 @@ public class TileLoader extends CsvResourceLoader {
 			int id = r[0].charAt(0);
 			String name = r[1];
 			boolean walkable = r[2].equals("1");
-			factory.addDefinition(id, name, walkable);
+			String path = r[3];
+			factory.addDefinition(id, name, walkable, path);
 			advanceProgress(1.0 / records.length);
 		}
 		return factory;

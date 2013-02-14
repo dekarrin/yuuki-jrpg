@@ -28,9 +28,11 @@ public class ByteArrayLoader extends ResourceLoader {
 	 * 
 	 * @return A byte array with the bytes from the file.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public byte[] load(String resource) throws IOException {
+	public byte[] load(String resource) throws ResourceNotFoundException,
+	IOException {
 		InputStream s = getStream(resource);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		int n = 0;

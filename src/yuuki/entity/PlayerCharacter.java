@@ -35,15 +35,15 @@ public class PlayerCharacter extends Character {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
-	 * @param display The display character.
+	 * @param overworldArt The path to the overworld art.
 	 * @param ui The interface that this Character should get input from.
 	 */
 	public PlayerCharacter(String name, int level, Action[] moves,
 			VariableStat hp, VariableStat mp, Stat strength,
 			Stat defense, Stat agility, Stat accuracy, Stat magic,
-			Stat luck, char display, Interactable ui) {
+			Stat luck, String overworldArt, Interactable ui) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
-				magic, luck, display);
+				magic, luck, overworldArt);
 		this.ui = ui;
 	}
 	
@@ -56,11 +56,6 @@ public class PlayerCharacter extends Character {
 	public Point getNextMove(Land land) throws InterruptedException {
 		WalkGraph graph = land.getWalkGraph(getLocation(), true);
 		return ui.selectMove(graph);
-	}
-	
-	@Override
-	public String getOverworldImage() {
-		return null;
 	}
 	
 	@Override

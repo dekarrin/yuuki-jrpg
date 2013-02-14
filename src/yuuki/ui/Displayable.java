@@ -6,9 +6,8 @@ package yuuki.ui;
 public interface Displayable {
 	
 	/**
-	 * Gets the path to the image used for displaying this object in the battle
-	 * screen. This is relative to the images resource directory in the package
-	 * structure.
+	 * Gets the path of the image used for displaying this object in the battle
+	 * screen.
 	 * 
 	 * @return The path to the battle image.
 	 */
@@ -22,9 +21,8 @@ public interface Displayable {
 	public char getDisplayChar();
 	
 	/**
-	 * Gets the path to the image used for displaying this object in the
-	 * overworld. This is relative to the images resource directory in the
-	 * package structure.
+	 * Gets the path to the Image used for displaying this object in the
+	 * overworld.
 	 * 
 	 * @return The path to the overworld image.
 	 */

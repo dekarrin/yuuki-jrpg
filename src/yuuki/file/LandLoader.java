@@ -8,13 +8,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.world.Land;
 import yuuki.world.Movable;
+import yuuki.world.PopulationFactory;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
-import yuuki.world.TileFactory;
 
 /**
  * Loads a Land resource file.
@@ -69,11 +68,6 @@ public class LandLoader extends ResourceLoader {
 	private ArrayList<Movable> entities;
 	
 	/**
-	 * Generates entities from entity definitions.
-	 */
-	private final EntityFactory entityFactory;
-	
-	/**
 	 * The meta data from the land file currently being read.
 	 */
 	private MetaData meta;
@@ -82,6 +76,11 @@ public class LandLoader extends ResourceLoader {
 	 * The section of the land file that is being parsed.
 	 */
 	private ParserMode mode;
+	
+	/**
+	 * Generates Land population members.
+	 */
+	private final PopulationFactory populator;
 	
 	/**
 	 * The loaded portals.
@@ -94,23 +93,15 @@ public class LandLoader extends ResourceLoader {
 	private BufferedReader reader;
 	
 	/**
-	 * Generates tiles from tile definitions.
-	 */
-	private final TileFactory tileFactory;
-	
-	/**
 	 * Creates a new LandLoader for land files at the specified location.
 	 * 
 	 * @param location The path to the directory containing the land files to
 	 * be loaded, relative to the package structure.
-	 * @param tiles Contains the tile definitions.
-	 * @param entities Contains the entity definitions.
+	 * @param populator The factory to use for populating lands.
 	 */
-	public LandLoader(String location, TileFactory tiles,
-			EntityFactory entities) {
+	public LandLoader(String location, PopulationFactory populator) {
 		super(location);
-		this.tileFactory = tiles;
-		this.entityFactory = entities;
+		this.populator = populator;
 	}
 	
 	/**
@@ -119,11 +110,13 @@ public class LandLoader extends ResourceLoader {
 	 * @param resource The path to the land file to load, relative to the
 	 * resource root.
 	 * 
-	 * @return The Land object if the resource file exists; otherwise, null.
+	 * @return The Land object.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public Land load(String resource) throws IOException {
+	public Land load(String resource) throws ResourceNotFoundException,
+	IOException {
 		meta = null;
 		mode = ParserMode.METADATA;
 		portals = new ArrayList<Portal>();
@@ -163,7 +156,7 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private void fillRemainingWidth(ArrayList<Tile> list, int start) {
 		for (int i = start; i < meta.size.width; i++) {
-			list.add(tileFactory.createTile(TileFactory.VOID_CHAR));
+			list.add(populator.createVoidTile());
 		}
 	}
 	
@@ -268,7 +261,7 @@ public class LandLoader extends ResourceLoader {
 		int limit = Math.min(line.length(), meta.size.width);
 		for (int i = 0; i < limit; i++) {
 			char c = line.charAt(i);
-			tileList.add(tileFactory.createTile(c));
+			tileList.add(populator.createTile(c));
 		}
 		// for the remaining width, add void tiles.
 		fillRemainingWidth(tileList, limit);
@@ -302,7 +295,7 @@ public class LandLoader extends ResourceLoader {
 		String name = parts[1];
 		int level = parseInt(parts[2]);
 		NonPlayerCharacter npc;
-		npc = entityFactory.createNpc(name, level);
+		npc = populator.createNpc(name, level);
 		npc.setLocation(location);
 		entities.add(npc);
 	}
@@ -343,7 +336,7 @@ public class LandLoader extends ResourceLoader {
 		String name = parts[1];
 		Point link = parsePoint(parts[2]);
 		String land = parts[3];
-		Portal p = new Portal(name, land, link);
+		Portal p = populator.createPortal(name, land, link);
 		p.setLocation(location);
 		portals.add(p);
 	}

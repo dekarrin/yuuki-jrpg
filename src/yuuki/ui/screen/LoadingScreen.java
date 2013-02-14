@@ -35,14 +35,14 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	private static final double PROGRESS_WIDTH_MULTIPLIER = 0.6;
 	
 	/**
-	 * The loading bar.
-	 */
-	private JProgressBar progress;
-	
-	/**
 	 * The text label.
 	 */
 	private JLabel label;
+	
+	/**
+	 * The loading bar.
+	 */
+	private JProgressBar progress;
 	
 	/**
 	 * Creates a new screen of a specified size.
@@ -78,18 +78,6 @@ public class LoadingScreen extends Screen<ScreenListener> {
 	public void setInitialProperties() {}
 	
 	/**
-	 * Updates the progress bar.
-	 * 
-	 * @param percent The percent to update it to.
-	 * @param text What to show in the label.
-	 */
-	public void updateProgress(double percent, String text) {
-		int val = (int) Math.round(percent * LOADING_BAR_TICKS);
-		progress.setValue(val);
-		setText(text);
-	}
-	
-	/**
 	 * Sets the text of this LoadingScreen.
 	 * 
 	 * @param text The text to change it to.
@@ -100,11 +88,24 @@ public class LoadingScreen extends Screen<ScreenListener> {
 			public Runner(String text) {
 				this.text = text;
 			}
+			@Override
 			public void run() {
 				label.setText(text);
 			}
 		}
 		SwingUtilities.invokeLater(new Runner(text));
+	}
+	
+	/**
+	 * Updates the progress bar.
+	 * 
+	 * @param percent The percent to update it to.
+	 * @param text What to show in the label.
+	 */
+	public void updateProgress(double percent, String text) {
+		int val = (int) Math.round(percent * LOADING_BAR_TICKS);
+		progress.setValue(val);
+		setText(text);
 	}
 	
 }

@@ -1,3 +1,3 @@
-#id-char,		name,		walkable
-"#",			"wall",		"0"
-".",			"floor",	"1"
+#id-char,		name,		walkable,		graphic
+"#",			"wall",		"0",			"TILE_WALL"
+".",			"floor",	"1",			"TILE_FLOOR"

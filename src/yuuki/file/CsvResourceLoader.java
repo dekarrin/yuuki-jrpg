@@ -29,12 +29,13 @@ public class CsvResourceLoader extends ResourceLoader {
 	 * @param resource The path to the resource to load, relative to the
 	 * resource root.
 	 * 
-	 * @return An array of records retrieved from the CSV file, or null if the
-	 * CSV file does not exist.
+	 * @return An array of records retrieved from the CSV file.
 	 * 
+	 * @throws ResourceNotFoundException If the given resource doesn't exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public String[][] loadRecords(String resource) throws IOException {
+	public String[][] loadRecords(String resource) throws
+	ResourceNotFoundException, IOException {
 		String[][] records = null;
 		InputStream stream = getStream(resource);
 		if (stream != null) {

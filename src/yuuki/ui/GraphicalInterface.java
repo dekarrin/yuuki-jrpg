@@ -20,6 +20,7 @@ import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
+import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
 import yuuki.sound.DualSoundEngine;
 import yuuki.ui.menu.FileMenu;
@@ -111,7 +112,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	/**
 	 * The content pane of the window.
 	 */
-	private BackgroundPane contentPane;
+	private ImageComponent contentPane;
 	
 	/**
 	 * The screen that the interface is currently on.
@@ -440,6 +441,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void initializeImages(ImageFactory factory) {
 		this.imageEngine = factory;
+		overworldScreen.setImageFactory(factory);
 	}
 	
 	@Override
@@ -945,7 +947,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * Creates the main window's content pane.
 	 */
 	private void createContentPane() {
-		contentPane = new BackgroundPane();
+		contentPane = new ImageComponent();
 	}
 	
 	/**

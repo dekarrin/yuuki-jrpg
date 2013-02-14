@@ -102,6 +102,11 @@ public abstract class Character implements Movable, Displayable {
 	private String name;
 	
 	/**
+	 * The path to the overworld graphic.
+	 */
+	private String overworldArt;
+	
+	/**
 	 * This Character's position in the overworld.
 	 */
 	private Point position;
@@ -153,11 +158,11 @@ public abstract class Character implements Movable, Displayable {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
-	 * @param display The display character.
+	 * @param overworldArt The path to the overworld art.
 	 */
 	public Character(String name, int level, Action[] moves, VariableStat hp,
 			VariableStat mp, Stat strength, Stat defense, Stat agility,
-			Stat accuracy, Stat magic, Stat luck, char display) {
+			Stat accuracy, Stat magic, Stat luck, String overworldArt) {
 		if (level < 1) {
 			throw new IllegalArgumentException("Character level too low.");
 		}
@@ -178,7 +183,7 @@ public abstract class Character implements Movable, Displayable {
 		this.xp = Character.getRequiredXP(level);
 		this.fighterId = -1;
 		this.teamId = -1;
-		this.displayChar = display;
+		this.overworldArt = overworldArt;
 		for (Action move : moves) {
 			move.setOrigin(this);
 		}
@@ -579,6 +584,11 @@ public abstract class Character implements Movable, Displayable {
 			}
 		}
 		return m;
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		return overworldArt;
 	}
 	
 	/**

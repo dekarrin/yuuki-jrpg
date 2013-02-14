@@ -13,6 +13,11 @@ public class Tile implements Displayable {
 	private int id;
 	
 	/**
+	 * The image for this tile as displayed in the world viewer.
+	 */
+	private String image;
+	
+	/**
 	 * The name of this tile. This may be used for identifying different types
 	 * of tiles for graphical representation.
 	 */
@@ -33,10 +38,12 @@ public class Tile implements Displayable {
 	 * 
 	 * @param name The name of the new Tile.
 	 * @param walkable Whether this Tile may be walked on.
+	 * @param image The image to show for this Tile on the overworld.
 	 */
-	public Tile(String name, boolean walkable) {
+	public Tile(String name, boolean walkable, String image) {
 		this.name = name;
 		this.walkable = walkable;
+		this.image = image;
 		occupied = false;
 	}
 	
@@ -61,7 +68,7 @@ public class Tile implements Displayable {
 	
 	@Override
 	public String getOverworldImage() {
-		return null;
+		return image;
 	}
 	
 	/**
