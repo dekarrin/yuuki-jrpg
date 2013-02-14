@@ -41,9 +41,11 @@ public class EntityLoader extends CsvResourceLoader {
 	 * @return The EntityFactory object if the resource file exists; otherwise,
 	 * null.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public EntityFactory load(String resource) throws IOException {
+	public EntityFactory load(String resource) throws
+	ResourceNotFoundException, IOException {
 		EntityFactory factory = new EntityFactory();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {

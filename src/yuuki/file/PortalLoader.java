@@ -26,12 +26,13 @@ public class PortalLoader extends CsvResourceLoader {
 	 * @param resource The path to the resource file to load, relative to the
 	 * resource root.
 	 * 
-	 * @return The PortalFactory object if the resource file exists; otherwise,
-	 * null.
+	 * @return The PortalFactory object.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public PortalFactory load(String resource) throws IOException {
+	public PortalFactory load(String resource) throws
+	ResourceNotFoundException, IOException {
 		PortalFactory factory = new PortalFactory();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {

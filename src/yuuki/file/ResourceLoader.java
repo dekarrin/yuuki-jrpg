@@ -44,12 +44,18 @@ public class ResourceLoader {
 	 * @param resource The path to the resource to load, relative to the
 	 * resource root.
 	 * 
-	 * @return An InputStream to the resource, or null if the given path does
-	 * not refer to an existing resource file.
+	 * @return An InputStream to the resource.
+	 * 
+	 * @throws ResourceNotFoundException If the specified resource could not be
+	 * found.
 	 */
-	public InputStream getStream(String resource) {
+	public InputStream getStream(String resource) throws
+	ResourceNotFoundException {
 		String actualPath = resourceRoot + resource;
 		InputStream stream = getClass().getResourceAsStream(actualPath);
+		if (stream == null) {
+			throw new ResourceNotFoundException(actualPath);
+		}
 		return stream;
 	}
 	

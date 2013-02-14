@@ -27,9 +27,11 @@ public class TileLoader extends CsvResourceLoader {
 	 * 
 	 * @return A TileFactory with the definitions from the file.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public TileFactory load(String resource) throws IOException {
+	public TileFactory load(String resource) throws ResourceNotFoundException,
+	IOException {
 		TileFactory factory = null;
 		String[][] records = loadRecords(resource);
 		factory = new TileFactory();

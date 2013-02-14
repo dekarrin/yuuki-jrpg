@@ -110,11 +110,13 @@ public class LandLoader extends ResourceLoader {
 	 * @param resource The path to the land file to load, relative to the
 	 * resource root.
 	 * 
-	 * @return The Land object if the resource file exists; otherwise, null.
+	 * @return The Land object.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public Land load(String resource) throws IOException {
+	public Land load(String resource) throws ResourceNotFoundException,
+	IOException {
 		meta = null;
 		mode = ParserMode.METADATA;
 		portals = new ArrayList<Portal>();
