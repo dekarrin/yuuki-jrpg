@@ -287,18 +287,22 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCharacterCreation(String name, int level) {
-		ui.updateLoadingProgress(0.0, "Loading...");
-		ui.switchToLoadingScreen();
-		Progressable monitor = new Progression();
-		Thread updateThread = getLoadUpdater(monitor, ui);
-		updateThread.start();
-		world = loadWorld(monitor);
-		setInitialWorld();
 		player = entityMaker.createPlayer(name, level, ui);
-		player.setLocation(world.getPlayerStart());
-		world.addResident(player);
-		updateThread.interrupt();
-		enterOverworldMode();
+		(new Thread(new Runnable() {
+			public void run() {
+				ui.updateLoadingProgress(0.0, "Loading...");
+				ui.switchToLoadingScreen();
+				Progressable monitor = new Progression();
+				Thread updateThread = getLoadUpdater(monitor, ui);
+				updateThread.start();
+				world = loadWorld(monitor);
+				setInitialWorld();
+				player.setLocation(world.getPlayerStart());
+				world.addResident(player);
+				updateThread.interrupt();
+				enterOverworldMode();
+			}
+		}, "WorldLoadingThread")).start();
 	}
 	
 	@Override
