@@ -48,7 +48,7 @@ public class EntityLoader extends CsvResourceLoader {
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {
 			String name = r[0];
-			char disp = r[1].charAt(0);
+			//char disp = r[1].charAt(0);
 			Action[] moves = parseMoves(r[2]);
 			int hp = Integer.parseInt(r[3]);
 			int mp = Integer.parseInt(r[4]);
@@ -67,8 +67,9 @@ public class EntityLoader extends CsvResourceLoader {
 			int magg = Integer.parseInt(r[17]);
 			int lukg = Integer.parseInt(r[18]);
 			int xp = Integer.parseInt(r[19]);
+			String overArt = r[20];
 			factory.addDefinition(name, hp, hpg, mp, mpg, str, strg, def, defg,
-					agl, aglg, acc, accg, mag, magg, luk, lukg, moves, disp,
+					agl, aglg, acc, accg, mag, magg, luk, lukg, moves, overArt,
 					xp);
 			advanceProgress(1.0 / records.length);
 		}

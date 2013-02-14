@@ -441,6 +441,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void initializeImages(ImageFactory factory) {
 		this.imageEngine = factory;
+		overworldScreen.setImageFactory(factory);
 	}
 	
 	@Override

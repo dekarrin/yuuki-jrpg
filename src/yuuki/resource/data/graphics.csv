@@ -1,2 +1,7 @@
 #index,					file
 "BG_INTRO_SCREEN",		"joshua_tree.jpg"
+"SPRITE_PLAYER",		"sprites/player.png"
+"SPRITE_SLIME",			"sprites/slime.png"
+"TILE_WALL",			"tiles/wall.png"
+"TILE_FLOOR",			"tiles/floor.png"
+"TILE_VOID",			"tiles/void.png"
