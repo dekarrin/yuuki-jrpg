@@ -15,6 +15,11 @@ public class TileFactory {
 	private static class TileDefinition {
 		
 		/**
+		 * The image data for the tile.
+		 */
+		public String image;
+		
+		/**
 		 * The name of the Tile.
 		 */
 		public String name;
@@ -23,11 +28,6 @@ public class TileFactory {
 		 * Whether the Tile can be walked on.
 		 */
 		public boolean walkable;
-		
-		/**
-		 * The image data for the tile.
-		 */
-		public String image;
 		
 	}
 	

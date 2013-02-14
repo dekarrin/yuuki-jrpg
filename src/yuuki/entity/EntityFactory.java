@@ -34,11 +34,6 @@ public class EntityFactory {
 		public Stat def;
 		
 		/**
-		 * The path to the overworld art for the Character.
-		 */
-		public String overworldArt;
-		
-		/**
 		 * The hit points of the Character.
 		 */
 		public VariableStat hp;
@@ -67,6 +62,11 @@ public class EntityFactory {
 		 * The name of the Character. Not used when creating a PlayerCharacter.
 		 */
 		public String name;
+		
+		/**
+		 * The path to the overworld art for the Character.
+		 */
+		public String overworldArt;
 		
 		/**
 		 * The strength of the Character.
