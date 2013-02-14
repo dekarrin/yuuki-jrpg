@@ -1,7 +1,8 @@
 package yuuki.ui;
 
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -12,10 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
-import javax.swing.JComponent;
 
 import yuuki.graphic.ImageFactory;
-import yuuki.sprite.ImageSprite;
 import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
@@ -122,6 +121,56 @@ public class WorldViewer extends JPanel {
 	 */
 	public int getLayerCount() {
 		return locatables.size();
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		paintLandTiles(g2);
+		paintLocatables(g2);
+		
+	}
+	
+	/**
+	 * Paints the Locatables in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the Locatables on.
+	 */
+	private void paintLocatables(Graphics2D g) {
+		Rectangle box;
+		box = new Rectangle(view.getLocation(), view.getSize());
+		for (int i : locatables.keySet()) {
+			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
+			for (Locatable l : ls) {
+				Point p = new Point(l.getLocation());
+				p.x -= box.x;
+				p.y -= box.y;
+				p.x *= TILE_SIZE;
+				p.y *= TILE_SIZE;
+				String path = l.getDisplayable().getOverworldImage();
+				Image img = images.createImage(path);
+				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
+				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
+			}
+		}
+	}
+	
+	/**
+	 * Paints the land tiles in this world viewer.
+	 * 
+	 * @param g The Graphics2D context to paint the tile images on.
+	 */
+	private void paintLandTiles(Graphics2D g) {
+		Point p = new Point(0, 0);
+		Point pos = new Point();
+		for (p.y = 0; p.y < tileHeight; p.y++) {
+			for (p.x = 0; p.x < tileWidth; p.x++) {
+				Image img = buffer.itemAt(p);
+				pos.x = TILE_SIZE * p.x;
+				pos.y = TILE_SIZE * p.y;
+				g.drawImage(img, pos.x, pos.y, TILE_SIZE, TILE_SIZE, this);
+			}
+		}
 	}
 	
 	/**
@@ -300,26 +349,6 @@ public class WorldViewer extends JPanel {
 		Rectangle subBox = new Rectangle(actualLocation, size);
 		subView = view.getSubGrid(subBox);
 		return subBox.getLocation();
-	}
-	
-	/**
-	 * Paints the images onto this component.
-	 */
-	
-	/**
-	 * Updates the actual display area with the buffer.
-	 */
-	private void showBuffer() {
-		StringBuilder sb = new StringBuilder();
-		Point p = new Point(0, 0);
-		for (p.y = 0; p.y < tileHeight; p.y++) {
-			for (p.x = 0; p.x < tileWidth; p.x++) {
-				sb.append(buffer.itemAt(p));
-			}
-			if (p.y < tileHeight - 1) {
-				sb.append('\n');
-			}
-		}
 	}
 	
 }
