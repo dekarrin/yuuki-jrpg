@@ -39,7 +39,7 @@ public class TileFactory {
 	/**
 	 * The image that represents a void tile.
 	 */
-	public static final String VOID_PATH = "tiles/void.png";
+	public static final String VOID_PATH = "TILE_VOID";
 	
 	/**
 	 * The definitions in this TileFactory.

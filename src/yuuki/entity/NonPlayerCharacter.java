@@ -8,8 +8,6 @@ import yuuki.entity.ai.StandingPathFinder;
 import yuuki.world.Land;
 import yuuki.world.WalkGraph;
 
-import java.awt.Image;
-
 /**
  * The NPC class provides methods for battle AI and leveling up for non-player
  * characters, such as team-mates and monsters.
@@ -45,15 +43,15 @@ public class NonPlayerCharacter extends Character {
 	 * @param accuracy The Character's ability to hit.
 	 * @param magic The magical ability of the Character.
 	 * @param luck The ability of the Character to get a critical hit.
-	 * @param display The display character.
+	 * @param overworldArt The path to the overworld art.
 	 * @param xpBase Used for calculating given XP on death.
 	 */
 	public NonPlayerCharacter(String name, int level, Action[] moves,
 			VariableStat hp, VariableStat mp, Stat strength,
 			Stat defense, Stat agility, Stat accuracy,
-			Stat magic, Stat luck, char display, int xpBase) {
+			Stat magic, Stat luck, String overworldArt, int xpBase) {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
-				magic, luck, display);
+				magic, luck, overworldArt);
 		this.xpBase = xpBase;
 		overworldAi = new StandingPathFinder();
 	}
@@ -79,11 +77,6 @@ public class NonPlayerCharacter extends Character {
 		overworldAi.setLocation(getLocation());
 		Point p = overworldAi.getNextMove(graph);
 		return p;
-	}
-	
-	@Override
-	public String getOverworldImage() {
-		return null;
 	}
 	
 	@Override
