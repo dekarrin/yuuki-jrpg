@@ -14,6 +14,7 @@ import yuuki.file.ActionLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
+import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
@@ -446,7 +447,12 @@ public class Engine implements Runnable, UiExecutor {
 		ActionLoader loader = new ActionLoader(DEFINITIONS_PATH);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(ACTIONS_FILE);
+			try {
+				factory = loader.load(ACTIONS_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load action definitions!");
 		}
@@ -513,7 +519,12 @@ public class Engine implements Runnable, UiExecutor {
 		EntityLoader loader = new EntityLoader(DEFINITIONS_PATH, af);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(ENTITIES_FILE);
+			try {
+				factory = loader.load(ENTITIES_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load entity definitions!");
 		}
@@ -533,7 +544,12 @@ public class Engine implements Runnable, UiExecutor {
 		ImageFactory factory = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(IMAGE_FILE);
+			try {
+				factory = loader.load(IMAGE_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load image file!");
 		}
@@ -554,7 +570,12 @@ public class Engine implements Runnable, UiExecutor {
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			soundData = loader.load(MUSIC_FILE);
+			try {
+				soundData = loader.load(MUSIC_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load music!");
 		}
@@ -574,7 +595,12 @@ public class Engine implements Runnable, UiExecutor {
 		PortalLoader loader = new PortalLoader(DEFINITIONS_PATH);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(PORTAL_FILE);
+			try {
+				factory = loader.load(PORTAL_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load portal file!");
 		}
@@ -596,7 +622,12 @@ public class Engine implements Runnable, UiExecutor {
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(monitor);
 		try {
-			soundData = loader.load(SOUND_EFFECT_FILE);
+			try {
+				soundData = loader.load(SOUND_EFFECT_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load sound effects!");
 		}
@@ -616,7 +647,12 @@ public class Engine implements Runnable, UiExecutor {
 		TileLoader loader = new TileLoader(DEFINITIONS_PATH);
 		loader.setProgressMonitor(monitor);
 		try {
-			factory = loader.load(TILE_FILE);
+			try {
+				factory = loader.load(TILE_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load tile file!");
 		}
@@ -660,7 +696,12 @@ public class Engine implements Runnable, UiExecutor {
 		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, pop);
 		loader.setProgressMonitor(monitor);
 		try {
-			w = loader.load(WORLD_FILE);
+			try {
+				w = loader.load(WORLD_FILE);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not find: " + e.getMessage());
+				throw e;
+			}
 		} catch (IOException e) {
 			System.err.println("Could not load world file!");
 		}

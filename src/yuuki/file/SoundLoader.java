@@ -39,9 +39,12 @@ public class SoundLoader extends CsvResourceLoader {
 	 * 
 	 * @return A map with the loaded sound files.
 	 * 
+	 * @throws ResourceNotFoundException If the resource file or a file
+	 * referenced by the resource file does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public Map<String, byte[]> load(String resource) throws IOException {
+	public Map<String, byte[]> load(String resource) throws
+	ResourceNotFoundException, IOException {
 		Map<String, byte[]> sounds = new HashMap<String, byte[]>();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {

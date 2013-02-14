@@ -37,9 +37,11 @@ public class ImageLoader extends CsvResourceLoader {
 	 * @return The image factory with all loaded files referred to in the
 	 * definitions file.
 	 * 
+	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public ImageFactory load(String resource) throws IOException {
+	public ImageFactory load(String resource) throws ResourceNotFoundException,
+	IOException {
 		ImageFactory factory = new ImageFactory();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {

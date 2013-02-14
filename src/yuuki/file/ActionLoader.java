@@ -26,12 +26,13 @@ public class ActionLoader extends CsvResourceLoader {
 	 * @param resource The location of the file to load, relative to the
 	 * resource root.
 	 * 
-	 * @return An ActionFactory with the definitions from the file, or null if
-	 * the definitions file does not exist.
+	 * @return An ActionFactory with the definitions from the file.
 	 * 
+	 * @throws ResourceNotFoundException If the resource could not be found.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public ActionFactory load(String resource) throws IOException {
+	public ActionFactory load(String resource) throws
+	ResourceNotFoundException, IOException {
 		ActionFactory factory = new ActionFactory();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {
