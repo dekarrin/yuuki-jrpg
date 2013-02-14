@@ -48,11 +48,8 @@ public class TileFactory {
 	
 	/**
 	 * Creates a new TileFactory.
-	 * 
-	 * @throws IOException If an IOException occurs while reading the void tile
-	 * data.
 	 */
-	public TileFactory() throws IOException {
+	public TileFactory() {
 		definitions = new HashMap<Integer, TileDefinition>();
 		addDefinition(VOID_CHAR, "void", false, VOID_PATH);
 	}

@@ -10,6 +10,11 @@ import yuuki.ui.Displayable;
 public class Portal implements Locatable, Displayable {
 	
 	/**
+	 * The index of this Portal's image art.
+	 */
+	private String imageIndex;
+	
+	/**
 	 * The Land that this Portal links to.
 	 */
 	private String land;
@@ -40,11 +45,13 @@ public class Portal implements Locatable, Displayable {
 	 * @param name The name of this Portal.
 	 * @param land The name of the Land to link to.
 	 * @param link The location in the land that this portal links to.
+	 * @param imageIndex The index of the overworld image for this Portal.
 	 */
-	public Portal(String name, String land, Point link) {
+	public Portal(String name, String land, Point link, String imageIndex) {
 		this.name = name;
 		this.land = land;
 		this.link = link;
+		this.imageIndex = imageIndex;
 		this.open = true;
 	}
 	
@@ -97,7 +104,7 @@ public class Portal implements Locatable, Displayable {
 	
 	@Override
 	public String getOverworldImage() {
-		return null;
+		return imageIndex;
 	}
 	
 	/**
