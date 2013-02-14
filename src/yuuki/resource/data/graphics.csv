@@ -5,3 +5,4 @@
 "TILE_WALL",			"tiles/wall.png"
 "TILE_FLOOR",			"tiles/floor.png"
 "TILE_VOID",			"tiles/void.png"
+"PORTAL_TELEPORTER",	"portals/teleporter.png"
