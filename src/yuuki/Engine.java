@@ -3,9 +3,9 @@ package yuuki;
 import java.io.IOException;
 import java.util.Map;
 
+import yuuki.action.ActionFactory;
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
-import yuuki.entity.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;

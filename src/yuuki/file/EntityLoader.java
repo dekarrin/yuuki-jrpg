@@ -3,8 +3,9 @@ package yuuki.file;
 import java.io.IOException;
 
 import yuuki.action.Action;
-import yuuki.entity.ActionFactory;
+import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Loads entity definition files.
@@ -91,7 +92,11 @@ public class EntityLoader extends CsvResourceLoader {
 		int[] actionIds = parseIntArray(moves, 0);
 		Action[] actions = new Action[actionIds.length];
 		for (int i = 0; i < actionIds.length; i++) {
-			actions[i] = actionFactory.createAction(actionIds[i]);
+			try {
+				actions[i] = actionFactory.createAction(actionIds[i]);
+			} catch (InvalidIndexException e) {
+				// TODO: throw the error exception for a bad file
+			}
 		}
 		return actions;
 	}

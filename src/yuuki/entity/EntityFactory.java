@@ -1,12 +1,12 @@
 package yuuki.entity;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import yuuki.action.Action;
 import yuuki.ui.Interactable;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Generates entities based on their names.
@@ -180,8 +180,12 @@ public class EntityFactory {
 	 * @param level The level of the NPC. This must be at least 1.
 	 * 
 	 * @return An NPC with the given name and level.
+	 * 
+	 * @throws InvalidIndexException If the given name does not refer to an
+	 * existing NPC.
 	 */
-	public NonPlayerCharacter createNpc(String name, int level) {
+	public NonPlayerCharacter createNpc(String name, int level) throws
+	InvalidIndexException {
 		EntityDefinition d = getDefinition(name);
 		NonPlayerCharacter m;
 		m = new NonPlayerCharacter(d.name, level, d.moves, d.hp, d.mp, d.str,
@@ -200,7 +204,14 @@ public class EntityFactory {
 	 */
 	public PlayerCharacter createPlayer(String name, int level,
 			Interactable ui) {
-		EntityDefinition d = getDefinition(PLAYER_CHARACTER_NAME);
+		EntityDefinition d = null;
+		try {
+			d = getDefinition(PLAYER_CHARACTER_NAME);
+		} catch (InvalidIndexException e) {
+			// should never happen
+			throw new IllegalArgumentException(
+					"PLAYER_CHARACTER_NAME is invalid", e);
+		}
 		PlayerCharacter m;
 		m = new PlayerCharacter(name, level, d.moves, d.hp, d.mp, d.str, d.def,
 				d.agl, d.acc, d.mag, d.luk, d.overworldArt, ui);
@@ -218,20 +229,12 @@ public class EntityFactory {
 	 * 
 	 * @return A random NPC with one of the names given and with a level in the
 	 * given range.
+	 * 
+	 * @throws InvalidIndexException If one of the given names is invalid.
 	 */
 	public NonPlayerCharacter createRandomNpc(int levelMin, int levelMax,
-			String... names) {
+			String... names) throws InvalidIndexException {
 		Set<String> validNames = definitions.keySet();
-		if (names != null) {
-			Set<String> wantedNames = new HashSet<String>();
-			for (String n : names) {
-				wantedNames.add(n);
-			}
-			validNames.retainAll(wantedNames);
-		}
-		if (validNames.size() == 0) {
-			throw new IllegalArgumentException("no valid names given");
-		}
 		String[] possibleNames =  validNames.toArray(new String[0]);
 		int nameInd = (int) Math.floor(Math.random() * possibleNames.length);
 		int diff = levelMax - levelMin;
@@ -253,9 +256,11 @@ public class EntityFactory {
 	 * 
 	 * @return An array containing the specified number of random NPCs of the
 	 * given types and with levels in the given range.
+	 * 
+	 * @throws InvalidIndexException If one of the given names is invalid.
 	 */
 	public NonPlayerCharacter[] createRandomNpcTeam(int size, int levelMin,
-			int levelMax, String... names) {
+			int levelMax, String... names) throws InvalidIndexException {
 		NonPlayerCharacter[] entities = new NonPlayerCharacter[size];
 		for (int i = 0; i < size; i++) {
 			entities[i] = createRandomNpc(levelMin, levelMax, names);
@@ -281,9 +286,15 @@ public class EntityFactory {
 	 * @param name The name of the entity.
 	 * 
 	 * @return The definition for the named entity.
+	 * 
+	 * @throws InvalidIndexException If the given name doesn't exist.
 	 */
-	private EntityDefinition getDefinition(String name) {
+	private EntityDefinition getDefinition(String name) throws
+	InvalidIndexException {
 		EntityDefinition d = definitions.get(name.toLowerCase());
+		if (d == null) {
+			throw new InvalidIndexException(name);
+		}
 		return d.clone();
 	}
 	

@@ -4,6 +4,7 @@ import java.awt.Point;
 
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Creates instances of classes used to populate a Land. PopulationFactory
@@ -44,9 +45,11 @@ public class PopulationFactory {
 	}
 	
 	/**
+	 * @throws InvalidIndexException If the given name does not exist.
 	 * @see EntityFactory#createNpc(String, int)
 	 */
-	public NonPlayerCharacter createNpc(String name, int level) {
+	public NonPlayerCharacter createNpc(String name, int level) throws
+	InvalidIndexException {
 		return entities.createNpc(name, level);
 	}
 	

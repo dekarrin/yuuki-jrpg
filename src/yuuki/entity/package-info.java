@@ -6,7 +6,7 @@
  * {@link yuuki.entity.Character} classes, and contain the actual entity
  * functionality.
  * 
- * {@link yuuki.entity.ActionFactory} and {@link yuuki.entity.EntityFactory}
+ * {@link yuuki.action.ActionFactory} and {@link yuuki.entity.EntityFactory}
  * are used for creating Character instances. Unless very specific behavior is
  * desired, EntityFactory should always be used to generate instances rather
  * than calling the constructor of either PlayerCharacter or

@@ -2,7 +2,7 @@ package yuuki.file;
 
 import java.io.IOException;
 
-import yuuki.entity.ActionFactory;
+import yuuki.action.ActionFactory;
 
 /**
  * Loads action definition files into an ActionFactory.

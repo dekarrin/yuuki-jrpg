@@ -10,6 +10,6 @@
  * their actual effects, as well as their cost and effect stats.
  * <p>
  * Note that any actions added need to be added to the
- * {@link yuuki.entity.ActionFactory} class' action base definitions list.
+ * {@link yuuki.action.ActionFactory} class' action base definitions list.
  */
 package yuuki.action;

@@ -141,25 +141,6 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Gets the Locatables that fall within a certain rectangle.
-	 * 
-	 * @param box The Rectangle from within the Locatables should be drawn.
-	 * @param zIndex The Z-index of the layer of Locatables to search in.
-	 * 
-	 * @return The Locatables that currently fall within the bounding box.
-	 */
-	public ArrayList<Locatable> getLocatablesInBox(Rectangle box, int zIndex) {
-		ArrayList<Locatable> desired = new ArrayList<Locatable>();
-		Set<Locatable> layer = getLayer(zIndex);
-		for (Locatable l : layer) {
-			if (box.contains(l.getLocation())) {
-				desired.add(l);
-			}
-		}
-		return desired;
-	}
-	
-	/**
 	 * Sets the image factory for tile graphics.
 	 * 
 	 * @param imageFactory The ImageFactory to use.
@@ -267,7 +248,7 @@ public class WorldViewer extends JPanel {
 		Rectangle box;
 		box = new Rectangle(landView.getLocation(), landView.getSize());
 		for (int i : locatables.keySet()) {
-			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
+			ArrayList<Locatable> ls = getResidentsInBox(box, i);
 			for (Locatable l : ls) {
 				Point p = new Point(l.getLocation());
 				p.x -= box.x;
@@ -304,6 +285,25 @@ public class WorldViewer extends JPanel {
 	 */
 	private Set<Locatable> getLayer(int zIndex) {
 		return locatables.get(zIndex);
+	}
+	
+	/**
+	 * Gets the Locatables that fall within a certain rectangle.
+	 * 
+	 * @param box The Rectangle from within the Locatables should be drawn.
+	 * @param zIndex The Z-index of the layer of Locatables to search in.
+	 * 
+	 * @return The Locatables that currently fall within the bounding box.
+	 */
+	private ArrayList<Locatable> getResidentsInBox(Rectangle box, int zIndex) {
+		ArrayList<Locatable> desired = new ArrayList<Locatable>();
+		Set<Locatable> layer = getLayer(zIndex);
+		for (Locatable l : layer) {
+			if (box.contains(l.getLocation())) {
+				desired.add(l);
+			}
+		}
+		return desired;
 	}
 	
 	/**
