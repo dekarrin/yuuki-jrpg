@@ -36,6 +36,20 @@ public class SubGrid<E> implements Grid<E> {
 	}
 	
 	@Override
+	public void clear() {
+		Dimension size = getSize();
+		Point p = new Point(0, 0);
+		Point p2;
+		for (p.y = 0; p.y < size.height; p.y++) {
+			for (p.x = 0; p.x < size.width; p.x++) {
+				p2 = new Point(p);
+				transformRelativeToAbsolute(p2);
+				sourceGrid.set(p2, null);
+			}
+		}
+	}
+	
+	@Override
 	public boolean contains(Point p) {
 		Rectangle box = new Rectangle(getSize());
 		return box.contains(p);

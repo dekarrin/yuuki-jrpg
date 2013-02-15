@@ -60,6 +60,16 @@ public class ElementGrid<E> implements Grid<E> {
 	}
 	
 	@Override
+	public void clear() {
+		Point p = new Point(0, 0);
+		for (p.y = 0; p.y < size.height; p.y++) {
+			for (p.x = 0; p.x < size.width; p.x++) {
+				items.get(p.x).set(p.y, null);
+			}
+		}
+	}
+	
+	@Override
 	public boolean contains(Point point) {
 		Rectangle box = new Rectangle(getSize());
 		return box.contains(point);
