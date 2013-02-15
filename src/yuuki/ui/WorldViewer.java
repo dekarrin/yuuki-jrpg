@@ -102,6 +102,7 @@ public class WorldViewer extends JPanel {
 		tileBuffer = new ElementGrid<Image>(d);
 		locatables = new HashMap<Integer, Set<Locatable>>();
 		resBuffers = new TreeMap<Integer, Grid<Image>>();
+		resBufferViews = new TreeMap<Integer, Grid<Image>>();
 		setLayout(null);
 		Dimension size = new Dimension(width * TILE_SIZE, height * TILE_SIZE);
 		setPreferredSize(size);
