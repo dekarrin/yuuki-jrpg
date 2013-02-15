@@ -12,6 +12,11 @@ import java.awt.Rectangle;
 public interface Grid<E> {
 	
 	/**
+	 * Sets every value in the Grid to null.
+	 */
+	public void clear();
+	
+	/**
 	 * Checks whether this grid contains a specific point.
 	 * 
 	 * @param point The point to check.

@@ -8,7 +8,7 @@ import java.io.IOException;
 public class ResourceNotFoundException extends IOException {
 	
 	private static final long serialVersionUID = -2445716789505483275L;
-
+	
 	/**
 	 * Constructs a new ResourceNotFoundException for the given path.
 	 * 
