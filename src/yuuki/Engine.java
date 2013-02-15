@@ -289,6 +289,7 @@ public class Engine implements Runnable, UiExecutor {
 	public void requestCharacterCreation(String name, int level) {
 		player = entityMaker.createPlayer(name, level, ui);
 		(new Thread(new Runnable() {
+			@Override
 			public void run() {
 				ui.updateLoadingProgress(0.0, "Loading...");
 				ui.switchToLoadingScreen();
