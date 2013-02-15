@@ -306,7 +306,7 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 * @param view The grid with the view to show.
 	 */
 	public void setWorldView(Grid<Tile> view) {
-		worldViewer.setView(view);
+		worldViewer.setLand(view);
 	}
 	
 	/**

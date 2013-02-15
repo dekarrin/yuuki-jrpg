@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.JPanel;
 
@@ -33,19 +35,19 @@ public class WorldViewer extends JPanel {
 	public static final int TILE_SIZE = 32;
 	
 	/**
-	 * The exact images being displayed.
-	 */
-	private Grid<Image> buffer;
-	
-	/**
-	 * The section of the buffer that contains the drawn map.
-	 */
-	private Grid<Image> bufferView;
-	
-	/**
 	 * Generates tile graphics.
 	 */
 	private ImageFactory images;
+	
+	/**
+	 * The grid of tiles that make up the land being displayed.
+	 */
+	private Grid<Tile> land;
+	
+	/**
+	 * The section of the land that is shown in the view port.
+	 */
+	private Grid<Tile> landView;
 	
 	/**
 	 * The Locatables on the screen. They are arranged in layers, which specify
@@ -55,9 +57,26 @@ public class WorldViewer extends JPanel {
 	private Map<Integer, Set<Locatable>> locatables;
 	
 	/**
-	 * The view of the world that is being drawn.
+	 * The exact locatables being displayed. This mirrors the land view. Key
+	 * iteration must be guaranteed to be ordered so that painting routines may
+	 * correctly render lower layers before higher layers.
 	 */
-	private Grid<Tile> subView;
+	private SortedMap<Integer, Grid<Image>> resBuffers;
+	
+	/**
+	 * The sections of the locatables that contain the drawn residents.
+	 */
+	private Map<Integer, Grid<Image>> resBufferViews;
+	
+	/**
+	 * The exact images being displayed. This mirrors the land view.
+	 */
+	private Grid<Image> tileBuffer;
+	
+	/**
+	 * The section of the tile buffer that contains the drawn map.
+	 */
+	private Grid<Image> tileBufferView;
 	
 	/**
 	 * The height of this viewer, in tiles.
@@ -70,11 +89,6 @@ public class WorldViewer extends JPanel {
 	private int tileWidth;
 	
 	/**
-	 * The current view of this world.
-	 */
-	private Grid<Tile> view;
-	
-	/**
 	 * Creates a new WorldViewer that can display the specified number of
 	 * tiles.
 	 * 
@@ -85,18 +99,19 @@ public class WorldViewer extends JPanel {
 		tileWidth = width;
 		tileHeight = height;
 		Dimension d = new Dimension(width, height);
-		buffer = new ElementGrid<Image>(d);
+		tileBuffer = new ElementGrid<Image>(d);
 		locatables = new HashMap<Integer, Set<Locatable>>();
+		resBuffers = new TreeMap<Integer, Grid<Image>>();
 		setLayout(null);
 		Dimension size = new Dimension(width * TILE_SIZE, height * TILE_SIZE);
 		setPreferredSize(size);
 	}
 	
 	/**
-	 * Adds a Locatable to the current display.
+	 * Adds a resident to the current display.
 	 * 
-	 * @param l The Locatable to add.
-	 * @param zIndex The Z-index of the layer to add the locatable to.
+	 * @param l The resident to add.
+	 * @param zIndex The Z-index of the layer to add the resident to.
 	 */
 	public void addLocatable(Locatable l, int zIndex) {
 		if (!layerExists(zIndex)) {
@@ -153,12 +168,12 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Sets the view of the world being displayed.
+	 * Sets the the reference to the tiles of the Land being displayed.
 	 * 
 	 * @param view The view to show.
 	 */
-	public void setView(Grid<Tile> view) {
-		this.view = view;
+	public void setLand(Grid<Tile> view) {
+		this.land = view;
 	}
 	
 	/**
@@ -167,10 +182,11 @@ public class WorldViewer extends JPanel {
 	 * @param center The center of the area to show.
 	 */
 	public void updateDisplay(Point center) {
-		clearBuffer();
-		Point requested = setWorldSubView(center);
-		setBufferView(requested);
-		drawWorldSubView();
+		clearBuffers();
+		Point requested = setLandView(center);
+		setTileBufferView(requested);
+		setResBufferViews(requested);
+		drawTiles();
 		drawLocatables();
 		repaint();
 	}
@@ -178,14 +194,56 @@ public class WorldViewer extends JPanel {
 	/**
 	 * Sets all tiles in the tile buffer to be empty.
 	 */
-	private void clearBuffer() {
+	private void clearBuffers() {
+		clearTileBuffer();
+		clearResBuffers();
+	}
+	
+	/**
+	 * Clears the resident buffers of all content.
+	 */
+	private void clearResBuffers() {
+		for (int i : resBuffers.keySet()) {
+			resBuffers.get(i).clear();
+		}
+	}
+	
+	/**
+	 * Sets all tiles in the tile buffer to be void.
+	 */
+	private void clearTileBuffer() {
 		Image i = images.createImage(TileFactory.VOID_PATH);
 		Point p = new Point();
 		for (p.y = 0; p.y < tileHeight; p.y++) {
 			for (p.x = 0; p.x < tileWidth; p.x++) {
-				buffer.set(p, i);
+				tileBuffer.set(p, i);
 			}
 		}
+	}
+	
+	/**
+	 * Sets a sub view of a buffer as the section that contains land data.
+	 * 
+	 * @param request The requested upper-left corner.
+	 * @param buffer The buffer that the sub view is being set up on.
+	 */
+	private Grid<Image> createBufferView(Point request, Grid<Image> buffer) {
+		Rectangle landBox, bufBox, bufViewBox;
+		landBox = new Rectangle(landView.getLocation(), landView.getSize());
+		bufBox = new Rectangle(buffer.getLocation(), buffer.getSize());
+		bufViewBox = new Rectangle(buffer.getLocation(), buffer.getSize());
+		if (landBox.height < bufBox.height) {
+			int shiftAmount = landBox.y - request.y;
+			bufViewBox.y += shiftAmount;
+			bufViewBox.height -= (bufBox.height - landBox.height);
+		}
+		if (landBox.width < bufBox.width) {
+			int shiftAmount = landBox.x - request.x;
+			bufViewBox.x += shiftAmount;
+			bufViewBox.width -= (bufBox.width - landBox.width);
+		}
+		Grid<Image> bufferView = buffer.getSubGrid(bufViewBox);
+		return bufferView;
 	}
 	
 	/**
@@ -196,7 +254,9 @@ public class WorldViewer extends JPanel {
 	 * @param zIndex The Z-index of the layer to create.
 	 */
 	private void createLayer(int zIndex) {
+		Dimension d = new Dimension(tileWidth, tileHeight);
 		locatables.put(zIndex, new HashSet<Locatable>());
+		resBuffers.put(zIndex, new ElementGrid<Image>(d));
 	}
 	
 	/**
@@ -204,38 +264,32 @@ public class WorldViewer extends JPanel {
 	 */
 	private void drawLocatables() {
 		Rectangle box;
-		box = new Rectangle(subView.getLocation(), subView.getSize());
+		box = new Rectangle(landView.getLocation(), landView.getSize());
 		for (int i : locatables.keySet()) {
 			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
 			for (Locatable l : ls) {
 				Point p = new Point(l.getLocation());
 				p.x -= box.x;
 				p.y -= box.y;
-				drawOnBuffer(p, l.getDisplayable().getOverworldImage());
+				String imgIndex = l.getDisplayable().getOverworldImage();
+				Image img = images.createImage(imgIndex);
+				Grid<Image> bufferView = resBufferViews.get(i);
+				bufferView.set(p, img);
 			}
 		}
 	}
 	
 	/**
-	 * Draws a single item on the buffer.
-	 * 
-	 * @param position The point to draw the item at.
-	 * @param i The path of the image to draw.
+	 * Draws the tiles in the land view onto the tile buffer.
 	 */
-	private void drawOnBuffer(Point position, String i) {
-		Image img = images.createImage(i);
-		bufferView.set(position, img);
-	}
-	
-	/**
-	 * Draws the displayed world view onto the buffer.
-	 */
-	private void drawWorldSubView() {
+	private void drawTiles() {
 		Point p = new Point(0, 0);
-		Dimension size = bufferView.getSize();
+		Dimension size = tileBufferView.getSize();
 		for (p.x = 0; p.x < size.width; p.x++) {
 			for (p.y = 0; p.y < size.height; p.y++) {
-				drawOnBuffer(p, subView.itemAt(p).getOverworldImage());
+				String imgIndex = landView.itemAt(p).getOverworldImage();
+				Image img = images.createImage(imgIndex);
+				tileBufferView.set(p, img);
 			}
 		}
 	}
@@ -263,19 +317,21 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
-	 * Paints the land tiles in this world viewer.
+	 * Paints the elements in a buffer on to a graphical context.
 	 * 
-	 * @param g The Graphics2D context to paint the tile images on.
+	 * @param g The graphical context to paint the elements on to.
+	 * @param buffer The buffer whose elements are to be painted.
 	 */
-	private void paintLandTiles(Graphics2D g) {
+	private void paintElements(Graphics2D g, Grid<Image> buffer) {
+		final int w = TILE_SIZE;
+		final int h = TILE_SIZE;
 		Point p = new Point(0, 0);
-		Point pos = new Point();
 		for (p.y = 0; p.y < tileHeight; p.y++) {
 			for (p.x = 0; p.x < tileWidth; p.x++) {
 				Image img = buffer.itemAt(p);
-				pos.x = TILE_SIZE * p.x;
-				pos.y = TILE_SIZE * p.y;
-				g.drawImage(img, pos.x, pos.y, TILE_SIZE, TILE_SIZE, this);
+				if (img != null) {
+					g.drawImage(img, p.x * w, p.y * h, w, h, this);
+				}
 			}
 		}
 	}
@@ -286,45 +342,19 @@ public class WorldViewer extends JPanel {
 	 * @param g The Graphics2D context to paint the Locatables on.
 	 */
 	private void paintLocatables(Graphics2D g) {
-		Rectangle box;
-		box = new Rectangle(view.getLocation(), view.getSize());
-		for (int i : locatables.keySet()) {
-			ArrayList<Locatable> ls = getLocatablesInBox(box, i);
-			for (Locatable l : ls) {
-				Point p = new Point(l.getLocation());
-				p.x -= box.x;
-				p.y -= box.y;
-				p.x *= TILE_SIZE;
-				p.y *= TILE_SIZE;
-				String path = l.getDisplayable().getOverworldImage();
-				Image img = images.createImage(path);
-				g.drawImage(img, p.x, p.y, TILE_SIZE, TILE_SIZE, this);
-			}
+		for (int i : resBuffers.keySet()) {
+			Grid<Image> buffer = resBuffers.get(i);
+			paintElements(g, buffer);
 		}
 	}
 	
 	/**
-	 * Sets the buffer sub view as the section that matches the draw position
-	 * of the current world sub view.
+	 * Paints the land tiles in this world viewer.
 	 * 
-	 * @param request The requested upper-left corner.
+	 * @param g The Graphics2D context to paint the tile images on.
 	 */
-	private void setBufferView(Point request) {
-		Rectangle subBox, bufBox, bufView;
-		subBox = new Rectangle(subView.getLocation(), subView.getSize());
-		bufBox = new Rectangle(buffer.getLocation(), buffer.getSize());
-		bufView = new Rectangle(buffer.getLocation(), buffer.getSize());
-		if (subBox.height < bufBox.height) {
-			int shiftAmount = subBox.y - request.y;
-			bufView.y += shiftAmount;
-			bufView.height -= (bufBox.height - subBox.height);
-		}
-		if (subBox.width < bufBox.width) {
-			int shiftAmount = subBox.x - request.x;
-			bufView.x += shiftAmount;
-			bufView.width -= (bufBox.width - subBox.width);
-		}
-		bufferView = buffer.getSubGrid(bufView);
+	private void paintTiles(Graphics2D g) {
+		paintElements(g, tileBuffer);
 	}
 	
 	/**
@@ -334,21 +364,44 @@ public class WorldViewer extends JPanel {
 	 * 
 	 * @return The position of the requested upper-left corner.
 	 */
-	private Point setWorldSubView(Point center) {
-		Dimension size = buffer.getSize();
+	private Point setLandView(Point center) {
+		Dimension size = tileBuffer.getSize();
 		Point actualLocation = new Point(center);
 		actualLocation.translate(-(size.width / 2), -(size.height / 2));
 		Rectangle subBox = new Rectangle(actualLocation, size);
-		subView = view.getSubGrid(subBox);
+		landView = land.getSubGrid(subBox);
 		return subBox.getLocation();
+	}
+	
+	/**
+	 * Sets the resident buffer views as the sections of the resident buffers
+	 * that contain land tiles.
+	 * 
+	 * @param request The upper-left corner of the requested buffer view.
+	 */
+	private void setResBufferViews(Point request) {
+		for (int i : resBuffers.keySet()) {
+			Grid<Image> buffer = resBuffers.get(i);
+			Grid<Image> view = createBufferView(request, buffer);
+			resBufferViews.put(i, view);
+		}
+	}
+	
+	/**
+	 * Sets the tile buffer view as the section of the tile buffer that
+	 * contains land tiles.
+	 * 
+	 * @param request The requested upper-left corner.
+	 */
+	private void setTileBufferView(Point request) {
+		tileBufferView = createBufferView(request, tileBuffer);
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		paintLandTiles(g2);
+		paintTiles(g2);
 		paintLocatables(g2);
-		
 	}
 	
 }
