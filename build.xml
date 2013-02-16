@@ -256,6 +256,7 @@
 			<!-- <compilerarg value="-Werror" /> -->
 			<compilerarg value="-Xlint:${warning_count}" />
 			<include name="${PACKAGE}/${source.name}.java" />
+			<exclude name="${PACKAGE}/package-info.java" />
 		</javac>
 	</target>
 	
