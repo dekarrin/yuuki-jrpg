@@ -7,32 +7,19 @@ package yuuki.util;
 public class InvalidIndexException extends Exception {
 	
 	private static final long serialVersionUID = 7070998669198800095L;
-
+	
 	/**
-	 * Creates a new InvalidIndexException.
-	 * 
-	 * @param index The index that caused the exception.
+	 * The invalid index.
 	 */
-	public InvalidIndexException(Object index) {
-		super(index.toString());
-	}
+	private final String index;
 	
 	/**
 	 * Creates a new InvalidIndexException.
 	 * 
 	 * @param index The index that caused the exception.
 	 */
-	public InvalidIndexException(int index) {
-		super(index + "");
-	}
-	
-	/**
-	 * Creates a new InvalidIndexException.
-	 * 
-	 * @param index The index that caused the exception.
-	 */
-	public InvalidIndexException(short index) {
-		super(index + "");
+	public InvalidIndexException(boolean index) {
+		this(index + "");
 	}
 	
 	/**
@@ -41,25 +28,7 @@ public class InvalidIndexException extends Exception {
 	 * @param index The index that caused the exception.
 	 */
 	public InvalidIndexException(byte index) {
-		super(index + "");
-	}
-	
-	/**
-	 * Creates a new InvalidIndexException.
-	 * 
-	 * @param index The index that caused the exception.
-	 */
-	public InvalidIndexException(long index) {
-		super(index + "");
-	}
-	
-	/**
-	 * Creates a new InvalidIndexException.
-	 * 
-	 * @param index The index that caused the exception.
-	 */
-	public InvalidIndexException(float index) {
-		super(index + "");
+		this(index + "");
 	}
 	
 	/**
@@ -68,7 +37,7 @@ public class InvalidIndexException extends Exception {
 	 * @param index The index that caused the exception.
 	 */
 	public InvalidIndexException(char index) {
-		super(index + "");
+		this(index + "");
 	}
 	
 	/**
@@ -76,8 +45,59 @@ public class InvalidIndexException extends Exception {
 	 * 
 	 * @param index The index that caused the exception.
 	 */
-	public InvalidIndexException(boolean index) {
-		super(index + "");
+	public InvalidIndexException(float index) {
+		this(index + "");
+	}
+	
+	/**
+	 * Creates a new InvalidIndexException.
+	 * 
+	 * @param index The index that caused the exception.
+	 */
+	public InvalidIndexException(int index) {
+		this(index + "");
+	}
+	
+	/**
+	 * Creates a new InvalidIndexException.
+	 * 
+	 * @param index The index that caused the exception.
+	 */
+	public InvalidIndexException(long index) {
+		this(index + "");
+	}
+	
+	/**
+	 * Creates a new InvalidIndexException.
+	 * 
+	 * @param index The index that caused the exception.
+	 */
+	public InvalidIndexException(Object index) {
+		super("'" + ((index != null) ? (index.toString()) : ("null")) +
+				"' is an invalid index");
+		if (this.index == null) {
+			this.index = null;
+		} else {
+			this.index = index.toString();
+		}
+	}
+	
+	/**
+	 * Creates a new InvalidIndexException.
+	 * 
+	 * @param index The index that caused the exception.
+	 */
+	public InvalidIndexException(short index) {
+		this(index + "");
+	}
+	
+	/**
+	 * Gets the string value of the index that caused the exception.
+	 * 
+	 * @return The index.
+	 */
+	public String getIndex() {
+		return index;
 	}
 	
 }

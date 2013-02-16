@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import yuuki.graphic.ImageFactory;
 import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
+import yuuki.util.InvalidIndexException;
 import yuuki.world.Locatable;
 import yuuki.world.Tile;
 import yuuki.world.TileFactory;
@@ -194,7 +195,12 @@ public class WorldViewer extends JPanel {
 	 * Sets all tiles in the tile buffer to be void.
 	 */
 	private void clearTileBuffer() {
-		Image i = images.createImage(TileFactory.VOID_PATH);
+		Image i = null;
+		try {
+			i = images.createImage(TileFactory.VOID_PATH);
+		} catch (InvalidIndexException e) {
+			System.err.println(e.getMessage());
+		}
 		Point p = new Point();
 		for (p.y = 0; p.y < tileHeight; p.y++) {
 			for (p.x = 0; p.x < tileWidth; p.x++) {
@@ -254,9 +260,13 @@ public class WorldViewer extends JPanel {
 				p.x -= box.x;
 				p.y -= box.y;
 				String imgIndex = l.getDisplayable().getOverworldImage();
-				Image img = images.createImage(imgIndex);
 				Grid<Image> bufferView = resBufferViews.get(i);
-				bufferView.set(p, img);
+				try {
+					Image img = images.createImage(imgIndex);
+					bufferView.set(p, img);
+				} catch (InvalidIndexException e) {
+					System.err.println(e.getMessage());
+				}
 			}
 		}
 	}
@@ -270,8 +280,12 @@ public class WorldViewer extends JPanel {
 		for (p.x = 0; p.x < size.width; p.x++) {
 			for (p.y = 0; p.y < size.height; p.y++) {
 				String imgIndex = landView.itemAt(p).getOverworldImage();
-				Image img = images.createImage(imgIndex);
-				tileBufferView.set(p, img);
+				try {
+					Image img = images.createImage(imgIndex);
+					tileBufferView.set(p, img);
+				} catch (InvalidIndexException e) {
+					System.err.println(e.getMessage());
+				}
 			}
 		}
 	}

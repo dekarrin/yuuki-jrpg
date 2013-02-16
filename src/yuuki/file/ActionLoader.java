@@ -29,20 +29,45 @@ public class ActionLoader extends CsvResourceLoader {
 	 * @return An ActionFactory with the definitions from the file.
 	 * 
 	 * @throws ResourceNotFoundException If the resource could not be found.
+	 * @throws ResourceFormatException If the resource has invalid contents.
 	 * @throws IOException If an IOException occurs.
 	 */
 	public ActionFactory load(String resource) throws
-	ResourceNotFoundException, IOException {
+	ResourceNotFoundException, ResourceFormatException, IOException {
 		ActionFactory factory = new ActionFactory();
 		String[][] records = loadRecords(resource);
-		for (String[] r : records) {
-			int id = Integer.parseInt(r[0]);
-			String name = r[1];
-			String[] args = splitMultiValue(r[2]);
-			factory.addDefinition(id, name, args);
+		for (int i = 0; i < records.length; i++) {
+			try {
+				parseRecord(records, i, factory);
+			} catch (RecordFormatException e) {
+				throw new ResourceFormatException(resource, e);
+			}
 			advanceProgress(1.0 / records.length);
 		}
 		return factory;
+	}
+	
+	/**
+	 * Parses a record and adds it to the factory.
+	 * 
+	 * @param records The record list to get the record from.
+	 * @param num The index of the record being parsed.
+	 * @param factory The factory to add the record to.
+	 * 
+	 * @throws RecordFormatException If the given record is invalid.
+	 */
+	private void parseRecord(String[][] records, int num,
+			ActionFactory factory) throws RecordFormatException {
+		String[] r = records[num];
+		int id = 0;
+		try {
+			id = parseIntField("ID", r[0]);
+		} catch (FieldFormatException e) {
+			throw new RecordFormatException(num, e);
+		}
+		String name = r[1];
+		String[] args = splitMultiValue(r[2]);
+		factory.addDefinition(id, name, args);
 	}
 	
 }

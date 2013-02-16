@@ -209,8 +209,7 @@ public class EntityFactory {
 			d = getDefinition(PLAYER_CHARACTER_NAME);
 		} catch (InvalidIndexException e) {
 			// should never happen
-			throw new IllegalArgumentException(
-					"PLAYER_CHARACTER_NAME is invalid", e);
+			throw new Error("PLAYER_CHARACTER_NAME is invalid", e);
 		}
 		PlayerCharacter m;
 		m = new PlayerCharacter(name, level, d.moves, d.hp, d.mp, d.str, d.def,

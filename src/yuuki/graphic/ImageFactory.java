@@ -48,7 +48,7 @@ public class ImageFactory {
 	public Image createImage(String index) throws InvalidIndexException {
 		Image image = null;
 		byte[] imageData = images.get(index);
-		if (imageData != null) {
+		if (imageData == null) {
 			throw new InvalidIndexException(index);
 		}
 		ImageIcon icon = new ImageIcon(imageData);

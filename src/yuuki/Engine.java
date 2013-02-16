@@ -14,6 +14,7 @@ import yuuki.file.ActionLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
+import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
@@ -454,11 +455,14 @@ public class Engine implements Runnable, UiExecutor {
 		try {
 			try {
 				factory = loader.load(ACTIONS_FILE);
+			} catch (ResourceFormatException e) {
+				System.err.println(e.getMessage());
+				throw e;
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Could not load action definitions!");
 		}
 		monitor.finishProgress();
@@ -526,11 +530,14 @@ public class Engine implements Runnable, UiExecutor {
 		try {
 			try {
 				factory = loader.load(ENTITIES_FILE);
+			} catch (ResourceFormatException e) {
+				System.err.println(e.getMessage());
+				throw e;
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Could not load entity definitions!");
 		}
 		monitor.finishProgress();

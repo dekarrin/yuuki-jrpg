@@ -1,5 +1,7 @@
 package yuuki.file;
 
+import java.awt.Dimension;
+import java.awt.Point;
 import java.io.InputStream;
 
 import yuuki.util.Progressable;
@@ -103,6 +105,31 @@ public class ResourceLoader {
 	}
 	
 	/**
+	 * Parses a dimension field.
+	 * 
+	 * @param field The name of the field containing the value.
+	 * @param value The field containing the dimension.
+	 * @return The dimension.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * dimension.
+	 */
+	protected Dimension parseDimensionField(String field, String value) throws
+	FieldFormatException {
+		String[] parts = value.split(",");
+		Dimension d = new Dimension();
+		if (parts.length < 2) {
+			throw new FieldFormatException(field, value);
+		}
+		try {
+			d.width = Integer.parseInt(parts[0]);
+			d.height = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException(field, value, e);
+		}
+		return d;
+	}
+	
+	/**
 	 * Parses an array of strings into an array of integers.
 	 * 
 	 * @param str The array of strings to convert.
@@ -116,6 +143,51 @@ public class ResourceLoader {
 			iValues[i - start] = Integer.parseInt(str[i]);
 		}
 		return iValues;
+	}
+	
+	/**
+	 * Parses an integer field.
+	 * 
+	 * @param field The name of the field containing the value.
+	 * @param value The field containing the integer.
+	 * @return The integer.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * integer.
+	 */
+	protected int parseIntField(String field, String value) throws
+	FieldFormatException {
+		int i = 0;
+		try {
+			i = Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException(field, value);
+		}
+		return i;
+	}
+	
+	/**
+	 * Parses a point field.
+	 * 
+	 * @param field The name of the field containing the value.
+	 * @param value The field containing the point.
+	 * @return The point.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * point.
+	 */
+	protected Point parsePointField(String field, String value) throws
+	FieldFormatException {
+		String[] parts = value.split(",");
+		Point p = new Point();
+		if (parts.length < 2) {
+			throw new FieldFormatException(field, value);
+		}
+		try {
+			p.x = Integer.parseInt(parts[0]);
+			p.y = Integer.parseInt(parts[1]);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException(field, value, e);
+		}
+		return p;
 	}
 	
 	/**

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * Contains the definitions for creating tiles.
  */
@@ -80,9 +82,15 @@ public class TileFactory {
 	 * the character representing it.
 	 * 
 	 * @return The created Tile.
+	 * 
+	 * @throws InvalidIndexException If the given ID does not refer to a valid
+	 * Tile.
 	 */
-	public Tile createTile(int id) {
+	public Tile createTile(int id) throws InvalidIndexException {
 		TileDefinition td = definitions.get(id);
+		if (td == null) {
+			throw new InvalidIndexException(id);
+		}
 		Tile tile = new Tile(td.name, td.walkable, td.image);
 		tile.setId(id);
 		return tile;

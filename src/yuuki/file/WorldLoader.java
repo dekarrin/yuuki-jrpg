@@ -73,7 +73,12 @@ public class WorldLoader extends CsvResourceLoader {
 	private void loadLands(World world, String[] paths, double percent) throws
 	ResourceNotFoundException, IOException {
 		for (String path : paths) {
-			Land land = landLoader.load(path);
+			Land land = null;
+			try {
+				land = landLoader.load(path);
+			} catch (ResourceFormatException e) {
+				System.err.println(e.getMessage() + " - skipping");
+			}
 			if (land != null) {
 				world.addLand(land);
 			}
