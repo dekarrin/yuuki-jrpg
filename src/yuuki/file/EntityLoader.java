@@ -3,8 +3,9 @@ package yuuki.file;
 import java.io.IOException;
 
 import yuuki.action.Action;
-import yuuki.entity.ActionFactory;
+import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Loads entity definition files.
@@ -42,37 +43,19 @@ public class EntityLoader extends CsvResourceLoader {
 	 * null.
 	 * 
 	 * @throws ResourceNotFoundException If the resource does not exist.
+	 * @throws ResourceFormatException
 	 * @throws IOException If an IOException occurs.
 	 */
 	public EntityFactory load(String resource) throws
-	ResourceNotFoundException, IOException {
+	ResourceNotFoundException, ResourceFormatException, IOException {
 		EntityFactory factory = new EntityFactory();
 		String[][] records = loadRecords(resource);
-		for (String[] r : records) {
-			String name = r[0];
-			//char disp = r[1].charAt(0);
-			Action[] moves = parseMoves(r[2]);
-			int hp = Integer.parseInt(r[3]);
-			int mp = Integer.parseInt(r[4]);
-			int str = Integer.parseInt(r[5]);
-			int def = Integer.parseInt(r[6]);
-			int agl = Integer.parseInt(r[7]);
-			int acc = Integer.parseInt(r[8]);
-			int mag = Integer.parseInt(r[9]);
-			int luk = Integer.parseInt(r[10]);
-			int hpg = Integer.parseInt(r[11]);
-			int mpg = Integer.parseInt(r[12]);
-			int strg = Integer.parseInt(r[13]);
-			int defg = Integer.parseInt(r[14]);
-			int aglg = Integer.parseInt(r[15]);
-			int accg = Integer.parseInt(r[16]);
-			int magg = Integer.parseInt(r[17]);
-			int lukg = Integer.parseInt(r[18]);
-			int xp = Integer.parseInt(r[19]);
-			String overArt = r[20];
-			factory.addDefinition(name, hp, hpg, mp, mpg, str, strg, def, defg,
-					agl, aglg, acc, accg, mag, magg, luk, lukg, moves, overArt,
-					xp);
+		for (int i = 0; i < records.length; i++) {
+			try {
+				parseRecord(records, i, factory);
+			} catch (RecordFormatException e) {
+				throw new ResourceFormatException(resource, e);
+			}
 			advanceProgress(1.0 / records.length);
 		}
 		return factory;
@@ -85,15 +68,65 @@ public class EntityLoader extends CsvResourceLoader {
 	 * @param value The exact value of the field containing the moves.
 	 * 
 	 * @return The Actions that the value refers to.
+	 * 
+	 * @throws FieldFormatException If the moves field contains an invalid
+	 * value.
 	 */
-	private Action[] parseMoves(String value) {
+	private Action[] parseMoves(String value) throws FieldFormatException {
 		String[] moves = splitMultiValue(value);
 		int[] actionIds = parseIntArray(moves, 0);
 		Action[] actions = new Action[actionIds.length];
 		for (int i = 0; i < actionIds.length; i++) {
-			actions[i] = actionFactory.createAction(actionIds[i]);
+			try {
+				actions[i] = actionFactory.createAction(actionIds[i]);
+			} catch (InvalidIndexException e) {
+				throw new FieldFormatException("moves", value);
+			}
 		}
 		return actions;
+	}
+	
+	/**
+	 * Parses a record and adds it to the factory.
+	 * 
+	 * @param records The record list to get the record from.
+	 * @param num The index of the record being parsed.
+	 * @param factory The factory to add the record to.
+	 * 
+	 * @throws RecordFormatException If the given record is invalid.
+	 */
+	private void parseRecord(String[][] records, int num,
+			EntityFactory factory) throws RecordFormatException {
+		String[] r = records[num];
+		String name = r[0];
+		//char disp = r[1].charAt(0);
+		Action[] moves;
+		try {
+			moves = parseMoves(r[2]);
+		} catch (FieldFormatException e) {
+			throw new RecordFormatException(num, e);
+		}
+		int hp = Integer.parseInt(r[3]);
+		int mp = Integer.parseInt(r[4]);
+		int str = Integer.parseInt(r[5]);
+		int def = Integer.parseInt(r[6]);
+		int agl = Integer.parseInt(r[7]);
+		int acc = Integer.parseInt(r[8]);
+		int mag = Integer.parseInt(r[9]);
+		int luk = Integer.parseInt(r[10]);
+		int hpg = Integer.parseInt(r[11]);
+		int mpg = Integer.parseInt(r[12]);
+		int strg = Integer.parseInt(r[13]);
+		int defg = Integer.parseInt(r[14]);
+		int aglg = Integer.parseInt(r[15]);
+		int accg = Integer.parseInt(r[16]);
+		int magg = Integer.parseInt(r[17]);
+		int lukg = Integer.parseInt(r[18]);
+		int xp = Integer.parseInt(r[19]);
+		String overArt = r[20];
+		factory.addDefinition(name, hp, hpg, mp, mpg, str, strg, def, defg,
+				agl, aglg, acc, accg, mag, magg, luk, lukg, moves, overArt,
+				xp);
 	}
 	
 }

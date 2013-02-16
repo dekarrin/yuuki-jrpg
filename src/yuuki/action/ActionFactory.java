@@ -1,12 +1,9 @@
-package yuuki.entity;
+package yuuki.action;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import yuuki.action.Action;
-import yuuki.action.BasicAttack;
-import yuuki.action.BasicDefense;
-import yuuki.action.Flee;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Generates Action instances.
@@ -71,9 +68,14 @@ public class ActionFactory {
 	 * @param id The definition ID of the Action to create.
 	 * 
 	 * @return The newly-created Action instance.
+	 * 
+	 * @throws InvalidIndexException If the given index ID does not exist.
 	 */
-	public Action createAction(int id) {
+	public Action createAction(int id) throws InvalidIndexException {
 		ActionDefinition ad = definitions.get(id);
+		if (ad == null) {
+			throw new InvalidIndexException(id);
+		}
 		Action base = bases.get(ad.name);
 		Action actualAction = base.createInstance(ad.args);
 		return actualAction;

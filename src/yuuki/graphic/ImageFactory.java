@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * Loads image files and gets Image resources.
  */
@@ -39,16 +41,18 @@ public class ImageFactory {
 	 * 
 	 * @param index The index for the Image to get.
 	 * 
-	 * @return The Image for the associated index, or null if the given index
-	 * does not exist.
+	 * @return The Image for the associated index.
+	 * 
+	 * @throws InvalidIndexException If the given index does not exist.
 	 */
-	public Image createImage(String index) {
+	public Image createImage(String index) throws InvalidIndexException {
 		Image image = null;
 		byte[] imageData = images.get(index);
-		if (imageData != null) {
-			ImageIcon icon = new ImageIcon(imageData);
-			image = icon.getImage();
+		if (imageData == null) {
+			throw new InvalidIndexException(index);
 		}
+		ImageIcon icon = new ImageIcon(imageData);
+		image = icon.getImage();
 		return image;
 	}
 	

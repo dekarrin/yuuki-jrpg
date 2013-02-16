@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * Contains definitions for creating Portals.
  */
@@ -60,9 +62,16 @@ public class PortalFactory {
 	 * to.
 	 * 
 	 * @return An instance of a Portal of the given name.
+	 * 
+	 * @throws InvalidIndexException If the given name does not refer to an
+	 * existing portal.
 	 */
-	public Portal createPortal(String name, String land, Point link) {
+	public Portal createPortal(String name, String land, Point link) throws
+	InvalidIndexException {
 		PortalDefinition pd = definitions.get(name);
+		if (pd == null) {
+			throw new InvalidIndexException(name);
+		}
 		Portal p = new Portal(pd.name, land, link, pd.imageIndex);
 		return p;
 	}

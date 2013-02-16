@@ -38,6 +38,7 @@ import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
 import yuuki.ui.screen.Screen;
 import yuuki.util.Grid;
+import yuuki.util.InvalidIndexException;
 import yuuki.world.Locatable;
 import yuuki.world.Movable;
 import yuuki.world.Portal;
@@ -1061,7 +1062,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	private Image getImage(String index) {
 		Image img = null;
 		if (imageEngine != null) {
-			img = imageEngine.createImage(index);
+			try {
+				img = imageEngine.createImage(index);
+			} catch (InvalidIndexException e) {
+				System.err.println("Cannot get image '" + e.getIndex() + "'");
+			}
 		}
 		return img;
 	}
@@ -1118,7 +1123,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 				mainWindow.add(screen, BorderLayout.CENTER);
 				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
 				String index = screen.getBackgroundImage();
-				contentPane.setBackgroundImage(getImage(index));
+				if (index != null) {
+					contentPane.setBackgroundImage(getImage(index));
+				} else {
+					contentPane.setBackgroundImage(null);
+				}
 				refreshWindow();
 				mainWindow.setVisible(true);
 				screen.setInitialProperties();
