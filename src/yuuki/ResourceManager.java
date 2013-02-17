@@ -96,19 +96,39 @@ public class ResourceManager {
 	public static final String WORLD_FILE = "world.csv";
 	
 	/**
-	 * The number of loads completed.
+	 * The number of load operations completed.
 	 */
-	private int loadsCompleted;
+	private int completedLoadOps;
+	
+	/**
+	 * Whether this manager is currently in a load operation.
+	 */
+	private boolean inLoad = false;
+	
+	/**
+	 * The master monitor for all loading tasks.
+	 */
+	private Progressable monitor;
 	
 	/**
 	 * The number of load operations planned.
 	 */
-	private int loadsPlanned;
+	private int plannedLoadOps;
 	
 	/**
-	 * Handles monitoring of loading tasks.
+	 * Initializes a load.
+	 * 
+	 * @param count The number of loading operations planned.
+	 * @return The monitor for the loading progress. This should not be used
+	 * after the given number of loading operations are completed.
 	 */
-	private Progressable monitor;
+	public Progressable initLoad(int count) {
+		inLoad = true;
+		monitor = new Progression();
+		plannedLoadOps = count;
+		completedLoadOps = 0;
+		return monitor;
+	}
 	
 	/**
 	 * Loads the entities from disk.
@@ -117,15 +137,12 @@ public class ResourceManager {
 	 * @return The loaded EntityFactory.
 	 */
 	public EntityFactory loadEntities(String text) {
-		Progressable m, monitor;
-		this.monitor.setText(text);
-		monitor = this.monitor.getSubProgressable(1.0 / loadsPlanned);
-		m = monitor.getSubProgressable(0.5);
+		Progressable sub = startLoadingOperation(text);
+		Progressable m = sub.getSubProgressable(0.5);
 		ActionFactory factory = loadActionDefinitions(m);
-		m = monitor.getSubProgressable(0.5);
+		m = sub.getSubProgressable(0.5);
 		EntityFactory entityMaker = loadEntityDefinitions(factory, m);
-		monitor.finishProgress();
-		checkCompletion();
+		finishLoadingOperation(sub);
 		return entityMaker;
 	}
 	
@@ -136,12 +153,10 @@ public class ResourceManager {
 	 * @return The ImageFactory with the loaded images.
 	 */
 	public ImageFactory loadImages(String text) {
-		Progressable monitor;
-		this.monitor.setText(text);
-		monitor = this.monitor.getSubProgressable(1.0 / loadsPlanned);
+		Progressable sub = startLoadingOperation(text);
 		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
 		ImageFactory factory = null;
-		loader.setProgressMonitor(monitor);
+		loader.setProgressMonitor(sub);
 		try {
 			try {
 				factory = loader.load(IMAGE_FILE);
@@ -152,8 +167,7 @@ public class ResourceManager {
 		} catch (IOException e) {
 			System.err.println("Could not load image file!");
 		}
-		monitor.finishProgress();
-		checkCompletion();
+		finishLoadingOperation(sub);
 		return factory;
 	}
 	
@@ -165,12 +179,10 @@ public class ResourceManager {
 	 * index.
 	 */
 	public Map<String, byte[]> loadMusic(String text) {
-		Progressable monitor;
-		this.monitor.setText(text);
-		monitor = this.monitor.getSubProgressable(1.0 / loadsPlanned);
+		Progressable sub = startLoadingOperation(text);
 		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
 		Map<String, byte[]> soundData = null;
-		loader.setProgressMonitor(monitor);
+		loader.setProgressMonitor(sub);
 		try {
 			try {
 				soundData = loader.load(MUSIC_FILE);
@@ -181,8 +193,7 @@ public class ResourceManager {
 		} catch (IOException e) {
 			System.err.println("Could not load music!");
 		}
-		monitor.finishProgress();
-		checkCompletion();
+		finishLoadingOperation(sub);
 		return soundData;
 	}
 	
@@ -194,13 +205,11 @@ public class ResourceManager {
 	 * index.
 	 */
 	public Map<String, byte[]> loadSoundEffects(String text) {
-		Progressable monitor;
-		this.monitor.setText(text);
-		monitor = this.monitor.getSubProgressable(1.0 / loadsPlanned);
+		Progressable sub = startLoadingOperation(text);
 		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
 				SOUND_EFFECT_PATH);
 		Map<String, byte[]> soundData = null;
-		loader.setProgressMonitor(monitor);
+		loader.setProgressMonitor(sub);
 		try {
 			try {
 				soundData = loader.load(SOUND_EFFECT_FILE);
@@ -211,8 +220,7 @@ public class ResourceManager {
 		} catch (IOException e) {
 			System.err.println("Could not load sound effects!");
 		}
-		monitor.finishProgress();
-		checkCompletion();
+		finishLoadingOperation(sub);
 		return soundData;
 	}
 	
@@ -224,42 +232,41 @@ public class ResourceManager {
 	 * @return The loaded World.
 	 */
 	public World loadWorld(String text, EntityFactory ef) {
-		Progressable m, monitor;
-		this.monitor.setText(text);
-		monitor = this.monitor.getSubProgressable(1.0 / loadsPlanned);
-		m = monitor.getSubProgressable(0.333);
+		Progressable sub = startLoadingOperation(text);
+		Progressable m = sub.getSubProgressable(0.333);
 		PortalFactory pf = loadPortalDefinitions(m);
-		m = monitor.getSubProgressable(0.333);
+		m = sub.getSubProgressable(0.333);
 		TileFactory tf = loadTileDefinitions(m);
-		m = monitor.getSubProgressable(0.333);
+		m = sub.getSubProgressable(0.333);
 		PopulationFactory pop = new PopulationFactory(tf, ef, pf);
 		World world = loadWorldDefinitions(pop, m);
-		monitor.finishProgress();
-		checkCompletion();
+		finishLoadingOperation(sub);
 		return world;
 	}
 	
 	/**
-	 * Sets the number of loads planned. This is used for updating the monitor.
-	 * 
-	 * @param count The number of loads planned.
-	 * @return The monitor for the loading progress. This should not be used
-	 * after the given number of loading operations are completed.
+	 * Completes the progress of the master monitor and sets the current load
+	 * such that it is no longer considered initialized.
 	 */
-	public Progressable startLoad(int count) {
-		monitor = new Progression();
-		loadsPlanned = count;
-		loadsCompleted = 0;
-		return monitor;
+	private void finishLoad() {
+		inLoad = false;
+		monitor.finishProgress();
 	}
 	
 	/**
-	 * Checks whether the load operation is done.
+	 * Finishes the current loading operation. The sub-monitor is immediately
+	 * completed and the number of completed loading operations is incremented.
+	 * If the load operation being finished is the last planned load operation,
+	 * the master monitor is immediately completed and the current load is set
+	 * such that it is no longer considered initialized.
+	 * 
+	 * @param sub The monitor of the loading operation being completed.
 	 */
-	private void checkCompletion() {
-		loadsCompleted++;
-		if (loadsCompleted == loadsPlanned) {
-			monitor.finishProgress();
+	private void finishLoadingOperation(Progressable sub) {
+		sub.finishProgress();
+		completedLoadOps++;
+		if (completedLoadOps == plannedLoadOps) {
+			finishLoad();
 		}
 	}
 	
@@ -348,7 +355,6 @@ public class ResourceManager {
 	 * Loads the tile definitions file from disk.
 	 * 
 	 * @param monitor Monitors the loading progress.
-	 * 
 	 * @return The TileFactory containing the tile definitions.
 	 */
 	private TileFactory loadTileDefinitions(Progressable monitor) {
@@ -395,6 +401,32 @@ public class ResourceManager {
 		}
 		monitor.finishProgress();
 		return w;
+	}
+	
+	/**
+	 * Starts a single loading operation. The master monitor's text is changed
+	 * to reflect the loading operation, and a sub monitor for a portion of the
+	 * master monitor with length equal to one divided by the number of planned
+	 * load operations is obtained and returned.
+	 * <p>
+	 * Attempting to call this method after it has already been called the
+	 * number of times specified by the last call to initLoad() will result in
+	 * an exception being thrown. Attempting to call this method before
+	 * initLoad() has been called at all will result in an exception being
+	 * thrown.
+	 * 
+	 * @param text The text to display through the loading monitor.
+	 * @return The sub-monitor for the loading operation.
+	 * @throws IllegalStateOperation If this method is called when a load is
+	 * not initialized.
+	 */
+	private Progressable startLoadingOperation(String text) {
+		if (!inLoad) {
+			throw new IllegalStateException("not in a load");
+		}
+		monitor.setText(text);
+		Progressable m = monitor.getSubProgressable(1.0 / plannedLoadOps);
+		return m;
 	}
 	
 }

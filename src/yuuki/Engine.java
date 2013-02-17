@@ -216,7 +216,7 @@ public class Engine implements Runnable, UiExecutor {
 			@Override
 			public void run() {
 				ui.updateLoadingProgress(0.0, "Loading...");
-				Progressable monitor = resourceManager.startLoad(1);
+				Progressable monitor = resourceManager.initLoad(1);
 				ui.switchToLoadingScreen();
 				Thread updateThread = getLoadUpdater(monitor, ui);
 				updateThread.start();
@@ -368,7 +368,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * Loads all game assets and updates the loading screen as they are loaded.
 	 */
 	private void loadAssets() {
-		Progressable monitor = resourceManager.startLoad(4);
+		Progressable monitor = resourceManager.initLoad(4);
 		Thread updateThread = getLoadUpdater(monitor, ui);
 		updateThread.start();
 		Map<String, byte[]> effectData;
