@@ -1,5 +1,7 @@
 package yuuki.sound;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * An AudioEngine intended for playing long tracks that loop. Only one track
  * at a time is allowed.
@@ -29,8 +31,10 @@ public class MusicEngine extends AudioEngine {
 	 * @param index The index of the sound to play.
 	 * @param restart Whether to restart the current player if the requested
 	 * sound file is already playing.
+	 * @throws InvalidIndexException 
 	 */
-	public void playSound(String index, boolean restart) {
+	public void playSound(String index, boolean restart) throws
+	InvalidIndexException {
 		if (track == null || !track.equals(index) || restart) {
 			playSound(index);
 		}
@@ -59,7 +63,8 @@ public class MusicEngine extends AudioEngine {
 	}
 	
 	@Override
-	protected SoundRunner createPlayer(String index) {
+	protected SoundRunner createPlayer(String index) throws
+	InvalidIndexException {
 		track = index;
 		byte[] data = getAudioData(index);
 		stopSound();

@@ -49,11 +49,15 @@ public class ImageLoader extends CsvResourceLoader {
 			String file = r[1];
 			Progressable m = getProgressSubSection(1.0 / records.length);
 			imageLoader.setProgressMonitor(m);
-			byte[] imageData = imageLoader.load(file);
-			if (m != null) {
-				m.finishProgress();
+			try {
+				byte[] imageData = imageLoader.load(file);
+				if (m != null) {
+					m.finishProgress();
+				}
+				factory.addDefinition(index, imageData);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not load image: " + e.getMessage());
 			}
-			factory.addDefinition(index, imageData);
 			advanceProgress(1.0 / records.length);
 		}
 		return factory;

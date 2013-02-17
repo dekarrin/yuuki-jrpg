@@ -1,11 +1,13 @@
 package yuuki;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ActionLoader;
+import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
@@ -28,72 +30,9 @@ import yuuki.world.World;
 public class ResourceManager {
 	
 	/**
-	 * The location of the file containing the action definitions. The location
-	 * is relative to the package structure.
+	 * The name of the manifest file.
 	 */
-	public static final String ACTIONS_FILE = "actions.csv";
-	
-	/**
-	 * The path to definitions files.
-	 */
-	public static final String DEFINITIONS_PATH = "/yuuki/resource/data/";
-	
-	/**
-	 * The location of the file containing the monster definitions. The
-	 * location is relative to the package structure.
-	 */
-	public static final String ENTITIES_FILE = "monsters.csv";
-	
-	/**
-	 * The path to the image definitions file.
-	 */
-	public static final String IMAGE_FILE = "graphics.csv";
-	
-	/**
-	 * The path to image files.
-	 */
-	public static final String IMAGE_PATH = "/yuuki/resource/images/";
-	
-	/**
-	 * The path to land files.
-	 */
-	public static final String LAND_PATH = "/yuuki/resource/land/";
-	
-	/**
-	 * The location of the file containing the music definitions.
-	 */
-	public static final String MUSIC_FILE = "music.csv";
-	
-	/**
-	 * The location of music files.
-	 */
-	public static final String MUSIC_PATH = "/yuuki/resource/audio/bgm/";
-	
-	/**
-	 * The name of the portal definitions file.
-	 */
-	public static final String PORTAL_FILE = "portals.csv";
-	
-	/**
-	 * The path to the sound effect definitions file.
-	 */
-	public static final String SOUND_EFFECT_FILE = "effects.csv";
-	
-	/**
-	 * The path to sound effect files.
-	 */
-	public static final String SOUND_EFFECT_PATH =
-			"/yuuki/resource/audio/sfx/";
-	
-	/**
-	 * The name of the tile definitions file.
-	 */
-	public static final String TILE_FILE = "tiles.csv";
-	
-	/**
-	 * The name of the world definitions file.
-	 */
-	public static final String WORLD_FILE = "world.csv";
+	private static final String MANIFEST_FILE = "content.csv";
 	
 	/**
 	 * The number of load operations completed.
@@ -111,9 +50,35 @@ public class ResourceManager {
 	private Progressable monitor;
 	
 	/**
+	 * The paths to the resources contained within the archive.
+	 */
+	private Map<String, String> paths = new HashMap<String, String>();
+	
+	/**
 	 * The number of load operations planned.
 	 */
 	private int plannedLoadOps;
+	
+	/**
+	 * The root of the resources.
+	 */
+	private final String root;
+	
+	/**
+	 * Creates a new ResourceManager for the specified content archive file.
+	 * The content archive file must be a resource file accessible through the
+	 * class loader.
+	 * 
+	 * @param root The path, relative to the resource root, to the content
+	 * directory.
+	 * @throws ResourceNotFoundException
+	 * @throws IOException If an I/O exception occurs.
+	 */
+	public ResourceManager(String root) throws ResourceNotFoundException,
+	IOException {
+		this.root = root;
+		readContentManifestFile();
+	}
 	
 	/**
 	 * Initializes a load.
@@ -154,12 +119,12 @@ public class ResourceManager {
 	 */
 	public ImageFactory loadImages(String text) {
 		Progressable sub = startLoadingOperation(text);
-		ImageLoader loader = new ImageLoader(DEFINITIONS_PATH, IMAGE_PATH);
+		ImageLoader loader = new ImageLoader(root, getFullPath("IMAGE_DIR"));
 		ImageFactory factory = null;
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				factory = loader.load(IMAGE_FILE);
+				factory = loader.load(getPath("IMAGE_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -180,12 +145,12 @@ public class ResourceManager {
 	 */
 	public Map<String, byte[]> loadMusic(String text) {
 		Progressable sub = startLoadingOperation(text);
-		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH, MUSIC_PATH);
+		SoundLoader loader = new SoundLoader(root, getFullPath("MUSIC_DIR"));
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				soundData = loader.load(MUSIC_FILE);
+				soundData = loader.load(getPath("MUSIC_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -206,13 +171,12 @@ public class ResourceManager {
 	 */
 	public Map<String, byte[]> loadSoundEffects(String text) {
 		Progressable sub = startLoadingOperation(text);
-		SoundLoader loader = new SoundLoader(DEFINITIONS_PATH,
-				SOUND_EFFECT_PATH);
+		SoundLoader loader = new SoundLoader(root, getFullPath("SOUND_DIR"));
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				soundData = loader.load(SOUND_EFFECT_FILE);
+				soundData = loader.load(getPath("SOUND_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -226,7 +190,7 @@ public class ResourceManager {
 	
 	/**
 	 * Loads the world from disk.
-	
+	 *
 	 * @param text The loading text to use on the monitor.
 	 * @param entities The EntityFactory to use.
 	 * @return The loaded World.
@@ -271,6 +235,31 @@ public class ResourceManager {
 	}
 	
 	/**
+	 * Gets the path from the loaded list of paths.
+	 * 
+	 * @param index The index of the path to get.
+	 * @return The path associated with the given index.
+	 */
+	private String getPath(String index) {
+		String p = paths.get(index);
+		if (p == null) {
+			System.err.println("no resources for index '" + index + "'");
+		}
+		return p;
+	}
+	
+	/**
+	 * Gets the full path for an index, which consists of the retrieved path
+	 * appended to the root.
+	 * 
+	 * @param index The index of the path to get.
+	 * @return The path associated with the given index.
+	 */
+	private String getFullPath(String index) {
+		return root + getPath(index);
+	}
+	
+	/**
 	 * Loads the action definitions from disk.
 	 * 
 	 * @param monitor Monitors the progress of the load.
@@ -278,11 +267,11 @@ public class ResourceManager {
 	 */
 	private ActionFactory loadActionDefinitions(Progressable monitor) {
 		ActionFactory factory = null;
-		ActionLoader loader = new ActionLoader(DEFINITIONS_PATH);
+		ActionLoader loader = new ActionLoader(root);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(ACTIONS_FILE);
+				factory = loader.load(getPath("ACTION_DEFS_FILE"));
 			} catch (ResourceFormatException e) {
 				System.err.println(e.getMessage());
 				throw e;
@@ -308,11 +297,11 @@ public class ResourceManager {
 	private EntityFactory loadEntityDefinitions(ActionFactory af,
 			Progressable monitor) {
 		EntityFactory factory = null;
-		EntityLoader loader = new EntityLoader(DEFINITIONS_PATH, af);
+		EntityLoader loader = new EntityLoader(root, af);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(ENTITIES_FILE);
+				factory = loader.load(getPath("ENTITY_DEFS_FILE"));
 			} catch (ResourceFormatException e) {
 				System.err.println(e.getMessage());
 				throw e;
@@ -335,11 +324,11 @@ public class ResourceManager {
 	 */
 	private PortalFactory loadPortalDefinitions(Progressable monitor) {
 		PortalFactory factory = null;
-		PortalLoader loader = new PortalLoader(DEFINITIONS_PATH);
+		PortalLoader loader = new PortalLoader(root);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(PORTAL_FILE);
+				factory = loader.load(getPath("PORTAL_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -359,11 +348,11 @@ public class ResourceManager {
 	 */
 	private TileFactory loadTileDefinitions(Progressable monitor) {
 		TileFactory factory = null;
-		TileLoader loader = new TileLoader(DEFINITIONS_PATH);
+		TileLoader loader = new TileLoader(root);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(TILE_FILE);
+				factory = loader.load(getPath("TILE_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -387,11 +376,11 @@ public class ResourceManager {
 			Progressable monitor) {
 		World w = null;
 		WorldLoader loader;
-		loader = new WorldLoader(DEFINITIONS_PATH, LAND_PATH, pop);
+		loader = new WorldLoader(root, getFullPath("LAND_DIR"), pop);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				w = loader.load(WORLD_FILE);
+				w = loader.load(getPath("WORLD_DEFS_FILE"));
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -401,6 +390,25 @@ public class ResourceManager {
 		}
 		monitor.finishProgress();
 		return w;
+	}
+	
+	/**
+	 * Reads the manifest file and puts its contents into the paths map.
+	 * 
+	 * @throws ResourceNotFoundException If the manifest file could not be
+	 * found.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	private void readContentManifestFile() throws ResourceNotFoundException,
+	IOException {
+		CsvResourceLoader loader = new CsvResourceLoader(root);
+		String[][] records = null;
+		records = loader.loadRecords(MANIFEST_FILE);
+		if (records != null) {
+			for (String[] r : records) {
+				paths.put(r[0], r[1]);
+			}
+		}
 	}
 	
 	/**

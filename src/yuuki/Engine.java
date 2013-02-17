@@ -1,5 +1,6 @@
 package yuuki;
 
+import java.io.IOException;
 import java.util.Map;
 
 import yuuki.battle.Battle;
@@ -8,6 +9,7 @@ import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.file.ResourceNotFoundException;
 import yuuki.graphic.ImageFactory;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
@@ -102,8 +104,20 @@ public class Engine implements Runnable, UiExecutor {
 	 * @param args Command line arguments. Not used.
 	 */
 	public static void main(String[] args) {
-		Engine game = new Engine();
-		game.run();
+		Engine game = null;
+		try {
+			game = new Engine();
+		} catch (ResourceNotFoundException e) {
+			System.err.println("missing resource manifest file");
+			System.err.println(e.getMessage());
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
+		if (game != null) {
+			game.run();
+		} else {
+			System.err.println("Fatal error; could not start Yuuki");
+		}
 	}
 	
 	/**
@@ -153,12 +167,17 @@ public class Engine implements Runnable, UiExecutor {
 	
 	/**
 	 * Creates a new Engine with a Swing-based GUI.
+	 * 
+	 * @throws ResourceNotFoundException If the resource manifest file could
+	 * not be found.
+	 * @throws IOException If an I/O error occurs while reading the resource
+	 * manifest file.
 	 */
-	public Engine() {
+	public Engine() throws ResourceNotFoundException, IOException {
+		resourceManager = new ResourceManager("/yuuki/resource/");
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
-		resourceManager = new ResourceManager();
 	}
 	
 	@Override

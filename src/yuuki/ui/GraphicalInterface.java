@@ -1065,7 +1065,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			try {
 				img = imageEngine.createImage(index);
 			} catch (InvalidIndexException e) {
-				System.err.println("Cannot get image '" + e.getIndex() + "'");
+				// silently fail
 			}
 		}
 		return img;
