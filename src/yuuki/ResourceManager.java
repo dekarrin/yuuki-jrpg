@@ -1,5 +1,6 @@
 package yuuki;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,9 +66,30 @@ public class ResourceManager {
 	private final String root;
 	
 	/**
-	 * Creates a new ResourceManager for the specified content archive file.
-	 * The content archive file must be a resource file accessible through the
-	 * class loader.
+	 * Whether this is using a directory external to the class path.
+	 */
+	private final boolean usingExternalPath;
+	
+	/**
+	 * Creates a new ResourceManager for the specified content directory. This
+	 * can be any directory on the file system.
+	 * 
+	 * @param root The path, relative to the resource root, to the content
+	 * directory.
+	 * @throws ResourceNotFoundException
+	 * @throws IOException If an I/O exception occurs.
+	 */
+	public ResourceManager(File root) throws ResourceNotFoundException,
+	IOException {
+		this.root = root.getPath() + '/';
+		usingExternalPath = true;
+		readContentManifestFile();
+	}
+	
+	/**
+	 * Creates a new ResourceManager for the specified internal content
+	 * directory. The content directory must be a resource file accessible
+	 * through the class loader.
 	 * 
 	 * @param root The path, relative to the resource root, to the content
 	 * directory.
@@ -77,6 +99,7 @@ public class ResourceManager {
 	public ResourceManager(String root) throws ResourceNotFoundException,
 	IOException {
 		this.root = root;
+		usingExternalPath = false;
 		readContentManifestFile();
 	}
 	
@@ -120,6 +143,7 @@ public class ResourceManager {
 	public ImageFactory loadImages(String text) {
 		Progressable sub = startLoadingOperation(text);
 		ImageLoader loader = new ImageLoader(root, getFullPath("IMAGE_DIR"));
+		loader.setFileSystemLoading(usingExternalPath);
 		ImageFactory factory = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -146,6 +170,7 @@ public class ResourceManager {
 	public Map<String, byte[]> loadMusic(String text) {
 		Progressable sub = startLoadingOperation(text);
 		SoundLoader loader = new SoundLoader(root, getFullPath("MUSIC_DIR"));
+		loader.setFileSystemLoading(usingExternalPath);
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -172,6 +197,7 @@ public class ResourceManager {
 	public Map<String, byte[]> loadSoundEffects(String text) {
 		Progressable sub = startLoadingOperation(text);
 		SoundLoader loader = new SoundLoader(root, getFullPath("SOUND_DIR"));
+		loader.setFileSystemLoading(usingExternalPath);
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -235,6 +261,17 @@ public class ResourceManager {
 	}
 	
 	/**
+	 * Gets the full path for an index, which consists of the retrieved path
+	 * appended to the root.
+	 * 
+	 * @param index The index of the path to get.
+	 * @return The path associated with the given index.
+	 */
+	private String getFullPath(String index) {
+		return root + getPath(index);
+	}
+	
+	/**
 	 * Gets the path from the loaded list of paths.
 	 * 
 	 * @param index The index of the path to get.
@@ -249,17 +286,6 @@ public class ResourceManager {
 	}
 	
 	/**
-	 * Gets the full path for an index, which consists of the retrieved path
-	 * appended to the root.
-	 * 
-	 * @param index The index of the path to get.
-	 * @return The path associated with the given index.
-	 */
-	private String getFullPath(String index) {
-		return root + getPath(index);
-	}
-	
-	/**
 	 * Loads the action definitions from disk.
 	 * 
 	 * @param monitor Monitors the progress of the load.
@@ -268,6 +294,7 @@ public class ResourceManager {
 	private ActionFactory loadActionDefinitions(Progressable monitor) {
 		ActionFactory factory = null;
 		ActionLoader loader = new ActionLoader(root);
+		loader.setFileSystemLoading(usingExternalPath);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -298,6 +325,7 @@ public class ResourceManager {
 			Progressable monitor) {
 		EntityFactory factory = null;
 		EntityLoader loader = new EntityLoader(root, af);
+		loader.setFileSystemLoading(usingExternalPath);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -325,6 +353,7 @@ public class ResourceManager {
 	private PortalFactory loadPortalDefinitions(Progressable monitor) {
 		PortalFactory factory = null;
 		PortalLoader loader = new PortalLoader(root);
+		loader.setFileSystemLoading(usingExternalPath);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -349,6 +378,7 @@ public class ResourceManager {
 	private TileFactory loadTileDefinitions(Progressable monitor) {
 		TileFactory factory = null;
 		TileLoader loader = new TileLoader(root);
+		loader.setFileSystemLoading(usingExternalPath);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -377,6 +407,7 @@ public class ResourceManager {
 		World w = null;
 		WorldLoader loader;
 		loader = new WorldLoader(root, getFullPath("LAND_DIR"), pop);
+		loader.setFileSystemLoading(usingExternalPath);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -402,6 +433,7 @@ public class ResourceManager {
 	private void readContentManifestFile() throws ResourceNotFoundException,
 	IOException {
 		CsvResourceLoader loader = new CsvResourceLoader(root);
+		loader.setFileSystemLoading(usingExternalPath);
 		String[][] records = null;
 		records = loader.loadRecords(MANIFEST_FILE);
 		if (records != null) {

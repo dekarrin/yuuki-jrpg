@@ -98,6 +98,11 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The root directory for all resource files.
+	 */
+	private static final String RESOURCE_ROOT = "/yuuki/resource/";
+	
+	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
 	 * it.
 	 *
@@ -131,11 +136,6 @@ public class Engine implements Runnable, UiExecutor {
 	private EntityFactory entityMaker;
 	
 	/**
-	 * Loads all resources.
-	 */
-	private ResourceManager resourceManager;
-	
-	/**
 	 * The main battle.
 	 */
 	private Battle mainBattle;
@@ -149,6 +149,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * The player character.
 	 */
 	private PlayerCharacter player;
+	
+	/**
+	 * Loads all resources.
+	 */
+	private ResourceManager resourceManager;
 	
 	/**
 	 * The user interface.
@@ -174,7 +179,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		resourceManager = new ResourceManager("/yuuki/resource/");
+		resourceManager = new ResourceManager(RESOURCE_ROOT);
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();

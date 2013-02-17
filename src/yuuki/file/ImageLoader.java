@@ -63,4 +63,10 @@ public class ImageLoader extends CsvResourceLoader {
 		return factory;
 	}
 	
+	@Override
+	public void setFileSystemLoading(boolean use) {
+		super.setFileSystemLoading(use);
+		imageLoader.setFileSystemLoading(use);
+	}
+	
 }

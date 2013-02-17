@@ -65,4 +65,10 @@ public class SoundLoader extends CsvResourceLoader {
 		return sounds;
 	}
 	
+	@Override
+	public void setFileSystemLoading(boolean use) {
+		super.setFileSystemLoading(use);
+		soundLoader.setFileSystemLoading(use);
+	}
+	
 }
