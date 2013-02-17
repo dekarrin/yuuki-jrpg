@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * Plays audio data.
  */
@@ -71,8 +73,9 @@ abstract class AudioEngine {
 	 * from disk and cached.
 	 * 
 	 * @param index The index of the sound resource.
+	 * @throws InvalidIndexException 
 	 */
-	public void playSound(String index) {
+	public void playSound(String index) throws InvalidIndexException {
 		SoundRunner player = createPlayer(index);
 		(new Thread(player, threadName)).start();
 	}
@@ -85,8 +88,10 @@ abstract class AudioEngine {
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while waiting
 	 * for the sound to start.
+	 * @throws InvalidIndexException 
 	 */
-	public void playSoundAndWait(String index) throws InterruptedException {
+	public void playSoundAndWait(String index) throws InterruptedException,
+	InvalidIndexException {
 		class Delegate implements SoundRunnerListener {
 			public boolean soundStarted = false;
 			@Override
@@ -167,7 +172,8 @@ abstract class AudioEngine {
 	 * 
 	 * @return The newly-created SoundRunner.
 	 */
-	protected abstract SoundRunner createPlayer(String index);
+	protected abstract SoundRunner createPlayer(String index) throws
+	InvalidIndexException;
 	
 	/**
 	 * Gets a byte array of audio data for a sound index.
@@ -175,9 +181,14 @@ abstract class AudioEngine {
 	 * @param index The index to get the byte array for.
 	 * 
 	 * @return The byte array at the given index.
+	 * @throws InvalidIndexException If the given index is invalid.
 	 */
-	protected byte[] getAudioData(String index) {
-		return sounds.get(index);
+	protected byte[] getAudioData(String index) throws InvalidIndexException {
+		byte[] data = sounds.get(index);
+		if (data == null) {
+			throw new InvalidIndexException(index);
+		}
+		return data;
 	}
 	
 }

@@ -52,13 +52,23 @@ public class SoundLoader extends CsvResourceLoader {
 			String file = r[1];
 			Progressable m = getProgressSubSection(1.0 / records.length);
 			soundLoader.setProgressMonitor(m);
-			byte[] data = soundLoader.load(file);
-			if (m != null) {
-				m.finishProgress();
+			try {
+				byte[] data = soundLoader.load(file);
+				if (m != null) {
+					m.finishProgress();
+				}
+				sounds.put(index, data);
+			} catch (ResourceNotFoundException e) {
+				System.err.println("Could not load sound: " + e.getMessage());
 			}
-			sounds.put(index, data);
 		}
 		return sounds;
+	}
+	
+	@Override
+	public void setFileSystemLoading(boolean use) {
+		super.setFileSystemLoading(use);
+		soundLoader.setFileSystemLoading(use);
 	}
 	
 }

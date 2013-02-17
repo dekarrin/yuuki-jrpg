@@ -59,6 +59,12 @@ public class WorldLoader extends CsvResourceLoader {
 		return world;
 	}
 	
+	@Override
+	public void setFileSystemLoading(boolean use) {
+		super.setFileSystemLoading(use);
+		landLoader.setFileSystemLoading(use);
+	}
+	
 	/**
 	 * Loads the land data into a World.
 	 * 

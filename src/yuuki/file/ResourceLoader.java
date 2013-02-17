@@ -2,6 +2,8 @@ package yuuki.file;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import yuuki.util.Progressable;
@@ -16,6 +18,12 @@ public class ResourceLoader {
 	 * Separates multiple values in a single field.
 	 */
 	private static final String MULTIVALUE_DELIMITER = ":";
+	
+	/**
+	 * Whether to load from file. If false, streams are loaded directly from
+	 * the file system rather than from the class path.
+	 */
+	private boolean loadFromFileSystem = false;
 	
 	/**
 	 * Records the progress of loading.
@@ -54,11 +62,26 @@ public class ResourceLoader {
 	public InputStream getStream(String resource) throws
 	ResourceNotFoundException {
 		String actualPath = resourceRoot + resource;
-		InputStream stream = getClass().getResourceAsStream(actualPath);
+		InputStream stream;
+		if (loadFromFileSystem) {
+			stream = getFileStream(actualPath);
+		} else {
+			stream = getResourceStream(actualPath);
+		}
 		if (stream == null) {
 			throw new ResourceNotFoundException(actualPath);
 		}
 		return stream;
+	}
+	
+	/**
+	 * Sets this resource loader to load from the file system rather than from
+	 * the class path.
+	 * 
+	 * @param use Whether to use the file system.
+	 */
+	public void setFileSystemLoading(boolean use) {
+		loadFromFileSystem = use;
 	}
 	
 	/**
@@ -68,6 +91,40 @@ public class ResourceLoader {
 	 */
 	public void setProgressMonitor(Progressable monitor) {
 		this.monitor = monitor;
+	}
+	
+	/**
+	 * Gets the stream from a file.
+	 * 
+	 * @param resource The path to the resource to load.
+	 * 
+	 * @return An InputStream to the resource.
+	 * 
+	 * @throws ResourceNotFoundException If the specified resource could not be
+	 * found.
+	 */
+	private InputStream getFileStream(String path) {
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(path);
+		} catch (FileNotFoundException e) {
+			stream = null;
+		}
+		return stream;
+	}
+	
+	/**
+	 * Gets the stream from a resource.
+	 * 
+	 * @param resource The path to the resource to load.
+	 * 
+	 * @return An InputStream to the resource.
+	 * 
+	 * @throws ResourceNotFoundException If the specified resource could not be
+	 * found.
+	 */
+	private InputStream getResourceStream(String path) {
+		return getClass().getResourceAsStream(path);
 	}
 	
 	/**

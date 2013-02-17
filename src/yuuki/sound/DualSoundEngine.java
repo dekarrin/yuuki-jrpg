@@ -2,6 +2,8 @@ package yuuki.sound;
 
 import java.util.Map;
 
+import yuuki.util.InvalidIndexException;
+
 /**
  * Combines the functionality of a MusicEngine and an EffectEngine into one
  * class for easy access.
@@ -61,7 +63,11 @@ public class DualSoundEngine {
 	 * @param effectIndex The index of the sound effect.
 	 */
 	public void playEffect(String effectIndex) {
-		effectEngine.playSound(effectIndex);
+		try {
+			effectEngine.playSound(effectIndex);
+		} catch (InvalidIndexException e) {
+			// silently fail
+		}
 	}
 	
 	/**
@@ -85,7 +91,11 @@ public class DualSoundEngine {
 	 * already playing.
 	 */
 	public void playMusic(String musicIndex, boolean restart) {
-		musicEngine.playSound(musicIndex, restart);
+		try {
+			musicEngine.playSound(musicIndex, restart);
+		} catch (InvalidIndexException e) {
+			// silently fail
+		}
 	}
 	
 	/**
@@ -102,7 +112,11 @@ public class DualSoundEngine {
 	 */
 	public void playMusicAndWait(String musicIndex) throws
 	InterruptedException {
-		musicEngine.playSoundAndWait(musicIndex);
+		try {
+			musicEngine.playSoundAndWait(musicIndex);
+		} catch (InvalidIndexException e) {
+			// silently fail
+		}
 	}
 	
 	/**

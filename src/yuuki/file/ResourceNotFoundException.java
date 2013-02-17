@@ -15,7 +15,7 @@ public class ResourceNotFoundException extends FileNotFoundException {
 	 * @param path The path to the resource file.
 	 */
 	public ResourceNotFoundException(String path) {
-		super(path);
+		super("'" + path + "' does not exist");
 	}
 	
 }
