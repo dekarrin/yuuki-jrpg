@@ -5,7 +5,7 @@
 "PORTAL_DEFS_FILE",		"data/portals.def"
 "SOUND_DEFS_FILE",		"data/effects.def"
 "TILE_DEFS_FILE",		"data/tiles.def"
-"WOLRD_DEFS_FILE",		"data/world.def"
+"WORLD_DEFS_FILE",		"data/world.def"
 "IMAGE_DIR",			"images/"
 "LAND_DIR",				"land/"
 "MUSIC_DIR",			"audio/bgm/"

@@ -212,7 +212,6 @@ public class LandLoader extends ResourceLoader {
 	 * @throws ResourceFormatException If the land file is invalid.
 	 * @throws IOException If an IOException occurs.
 	 */
-	@SuppressWarnings("fallthrough")
 	private Land loadLand() throws IOException, ResourceFormatException {
 		ArrayList<Tile> tileData = new ArrayList<Tile>();
 		String line = null;
@@ -227,42 +226,40 @@ public class LandLoader extends ResourceLoader {
 					} catch (RecordFormatException e) {
 						throw new ResourceFormatException(resourceName, e);
 					}
-					mode = ParserMode.PORTALS;
+					mode = ParserMode.MAP;
 					break;
-					
-				case PORTALS:
-					if (portals.size() < meta.portals) {
-						try {
-							readPortalData(line);
-						} catch (RecordFormatException e) {
-							System.err.println(e.getMessage() + " - skipping");
-							portals.add(null);
-						}
-						break;
-					} else {
-						mode = ParserMode.ENTITIES;
-					}
-					
-				case ENTITIES:
-					if (entities.size() < meta.entities) {
-						try {
-							readEntityData(line);
-						} catch (RecordFormatException e) {
-							System.err.println(e.getMessage() + " - skipping");
-							entities.add(null);
-						}
-						break;
-					} else {
-						mode = ParserMode.MAP;
-					}
 					
 				case MAP:
 					tileData.addAll(readMapData(line));
 					heightCount++;
+					if (heightCount == meta.size.height) {
+						mode = ParserMode.PORTALS;
+					}
+					break;
+					
+				case PORTALS:
+					try {
+						readPortalData(line);
+					} catch (RecordFormatException e) {
+						System.err.println(e.getMessage() + " - skipping");
+						portals.add(null);
+					}
+					if (portals.size() == meta.portals) {
+						mode = ParserMode.ENTITIES;
+					}
+					break;
+					
+				case ENTITIES:
+					try {
+						readEntityData(line);
+					} catch (RecordFormatException e) {
+						System.err.println(e.getMessage() + " - skipping");
+						entities.add(null);
+					}
 					break;
 			}
 			advanceProgress(1.0 / getLineCount());
-			if (heightCount == meta.size.height) {
+			if (entities.size() == meta.entities) {
 				break;
 			}
 		}
