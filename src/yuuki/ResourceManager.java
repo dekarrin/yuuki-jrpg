@@ -33,7 +33,7 @@ public class ResourceManager {
 	/**
 	 * The name of the manifest file.
 	 */
-	private static final String MANIFEST_FILE = "content.csv";
+	private static final String MANIFEST_FILE = "content.def";
 	
 	/**
 	 * The number of load operations completed.
