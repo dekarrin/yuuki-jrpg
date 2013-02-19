@@ -24,6 +24,11 @@ public abstract class Action implements Cloneable {
 	private String name;
 	
 	/**
+	 * Whether to skip cost application and force success.
+	 */
+	private boolean skipCost = false;
+	
+	/**
 	 * The actual effects after application of this action.
 	 */
 	protected int[] actualEffects;
@@ -133,7 +138,7 @@ public abstract class Action implements Cloneable {
 	public boolean apply() {
 		setAffectedTeams();
 		// only now can we be sure that the fighter id was set
-		successful = applyCost();
+		successful = (skipCost || applyCost());
 		if (successful) {
 			applyEffect();
 			applyBuffs();
@@ -303,6 +308,15 @@ public abstract class Action implements Cloneable {
 	public void setOrigin(Character performer) {
 		origin = performer;
 		setCostAndEffectStats(performer);
+	}
+	
+	/**
+	 * Sets whether this Action's next invocation is guaranteed to succeed.
+	 * 
+	 * @param skip Whether the Action's success is guaranteed.
+	 */
+	public void setSkipCost(boolean skip) {
+		this.skipCost = skip;
 	}
 	
 	/**
