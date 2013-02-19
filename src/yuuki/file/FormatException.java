@@ -6,7 +6,7 @@ package yuuki.file;
 public class FormatException extends Exception {
 	
 	private static final long serialVersionUID = 8454597720033038305L;
-
+	
 	/**
 	 * Constructs a new FormatException with null as its detail message.
 	 */
