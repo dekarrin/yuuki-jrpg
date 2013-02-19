@@ -27,21 +27,21 @@ public class Item {
 	}
 	
 	/**
-	 * Gets the value of this item.
-	 * 
-	 * @return The value.
-	 */
-	public int getValue() {
-		return value;
-	}
-	
-	/**
 	 * Gets the name of this item.
 	 * 
 	 * @return The name.
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Gets the value of this item.
+	 * 
+	 * @return The value.
+	 */
+	public int getValue() {
+		return value;
 	}
 	
 	@Override

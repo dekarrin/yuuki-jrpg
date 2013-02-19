@@ -31,7 +31,7 @@ public class MusicEngine extends AudioEngine {
 	 * @param index The index of the sound to play.
 	 * @param restart Whether to restart the current player if the requested
 	 * sound file is already playing.
-	 * @throws InvalidIndexException 
+	 * @throws InvalidIndexException
 	 */
 	public void playSound(String index, boolean restart) throws
 	InvalidIndexException {

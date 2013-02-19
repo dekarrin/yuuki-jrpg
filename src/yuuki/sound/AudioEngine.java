@@ -73,7 +73,7 @@ abstract class AudioEngine {
 	 * from disk and cached.
 	 * 
 	 * @param index The index of the sound resource.
-	 * @throws InvalidIndexException 
+	 * @throws InvalidIndexException
 	 */
 	public void playSound(String index) throws InvalidIndexException {
 		SoundRunner player = createPlayer(index);
@@ -88,7 +88,7 @@ abstract class AudioEngine {
 	 * 
 	 * @throws InterruptedException If the thread is interrupted while waiting
 	 * for the sound to start.
-	 * @throws InvalidIndexException 
+	 * @throws InvalidIndexException
 	 */
 	public void playSoundAndWait(String index) throws InterruptedException,
 	InvalidIndexException {
