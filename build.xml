@@ -201,9 +201,15 @@
 		</antcall>
 	</target>
 	
-	<target name="entity" depends="action,buff">
+	<target name="entity" depends="action,buff,item">
 		<antcall target="-build">
 			<param name="PACKAGE" value="${dir.package.entity}" />
+		</antcall>
+	</target>
+	
+	<target name="item" depends="action,buff">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${dir.package.item}" />
 		</antcall>
 	</target>
 	
