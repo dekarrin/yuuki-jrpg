@@ -30,6 +30,7 @@ public class ExternallyUsableItem extends UsableItem {
 	public void use(Character user, Character target) {
 		Action a = getActionForUse();
 		a.clearTargets();
+		a.setSkipCost(true);
 		a.setOrigin(user);
 		a.addTarget(target);
 		a.apply();
