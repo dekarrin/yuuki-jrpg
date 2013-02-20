@@ -6,7 +6,7 @@ import yuuki.item.UsableItem;
 /**
  * Uses an item.
  */
-public class ItemAction extends Action {
+public class ItemUse extends Action {
 	
 	/**
 	 * The Item to be used.
@@ -16,7 +16,7 @@ public class ItemAction extends Action {
 	/**
 	 * Creates a new ItemAction.
 	 */
-	public ItemAction() {
+	public ItemUse() {
 		super("use item", 0.0, 0.0, null, null);
 	}
 	
@@ -25,9 +25,23 @@ public class ItemAction extends Action {
 	 */
 	@Override
 	public Action createInstance(String[] args) {
-		return new ItemAction();
+		return new ItemUse();
 	}
 	
+	/**
+	 * Gets the Item used by this ItemAction.
+	 * 
+	 * @return The item.
+	 */
+	public UsableItem getItem() {
+		return item;
+	}
+	
+	/**
+	 * Sets the Item to be used.
+	 * 
+	 * @param item The Item to use.
+	 */
 	public void setItem(UsableItem item) {
 		this.item = item;
 	}
