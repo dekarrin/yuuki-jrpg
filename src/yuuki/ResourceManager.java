@@ -33,7 +33,7 @@ public class ResourceManager {
 	/**
 	 * The name of the manifest file.
 	 */
-	private static final String MANIFEST_FILE = "content.def";
+	public static final String MANIFEST_FILE = "content.def";
 	
 	/**
 	 * The number of load operations completed.
@@ -76,7 +76,7 @@ public class ResourceManager {
 	 * 
 	 * @param root The path, relative to the resource root, to the content
 	 * directory.
-	 * @throws ResourceNotFoundException
+	 * @throws ResourceNotFoundException If the manifest file is not found.
 	 * @throws IOException If an I/O exception occurs.
 	 */
 	public ResourceManager(File root) throws ResourceNotFoundException,
@@ -93,7 +93,7 @@ public class ResourceManager {
 	 * 
 	 * @param root The path, relative to the resource root, to the content
 	 * directory.
-	 * @throws ResourceNotFoundException
+	 * @throws ResourceNotFoundException If the manifest file is not found.
 	 * @throws IOException If an I/O exception occurs.
 	 */
 	public ResourceManager(String root) throws ResourceNotFoundException,

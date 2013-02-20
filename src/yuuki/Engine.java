@@ -1,6 +1,9 @@
 package yuuki;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import yuuki.battle.Battle;
@@ -312,6 +315,7 @@ public class Engine implements Runnable, UiExecutor {
 		ui.initialize();
 		ui.switchToLoadingScreen();
 		loadAssets();
+		scanMods();
 		applyOptions();
 		try {
 			ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -319,6 +323,43 @@ public class Engine implements Runnable, UiExecutor {
 			Thread.currentThread().interrupt();
 		}
 		ui.switchToIntroScreen();
+	}
+	
+	/**
+	 * Scans a folder called 'mods' at the same location as the root and loads
+	 * any valid mods found.
+	 */
+	private void scanMods() {
+		File modFolder = new File("./mods");
+		if (modFolder.isDirectory()) {
+			File[] contentDirs = modFolder.listFiles();
+			for (File modContent : contentDirs) {
+				ResourceManager rm = getModLoader(modContent);
+				if (rm != null) {
+					
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Gets the mod loader for a directory.
+	 * 
+	 * @param modDir The mod directory.
+	 * @return The ResourceManager for the given mod.
+	 */
+	private ResourceManager getModLoader(File modDir) {
+		ResourceManager rm = null;
+		try {
+			rm = new ResourceManager(modDir);
+		} catch (ResourceNotFoundException e) {
+			// it's not a mod dir, so do nothing
+		} catch (IOException e) {
+			String n = modDir.getName();
+			String msg = "Could not load mod manifest in '" + n + "'";
+			System.err.println(msg);
+		}
+		return rm;
 	}
 	
 	/**
