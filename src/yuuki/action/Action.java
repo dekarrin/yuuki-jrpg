@@ -121,12 +121,12 @@ public abstract class Action implements Cloneable {
 	 * the effects are attempted to be put on the targets. If the origin cannot
 	 * supply the cost, the application will fail. No effects are put on the
 	 * targets and this method returns false.
-	 *
+	 * <p>
 	 * Note that there are multiple situations that could cause this method to
 	 * return false; the origin could lack the required stat to perform the
 	 * Action, or it could have failed some other check. Returning false simply
 	 * indicates that no effects were attempted to be put on the targets.
-	 *
+	 * <p>
 	 * Also note that returning true does not necessarily mean that the targets
 	 * were affected; they could have blocked the effects. The return value
 	 * only indicates whether effects were attempted to be put onto the
