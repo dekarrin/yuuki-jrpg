@@ -89,6 +89,7 @@ public class ActionFactory {
 		bases.put("BasicAttack", new BasicAttack(0));
 		bases.put("BasicDefense", new BasicDefense(0));
 		bases.put("Flee", new Flee());
+		bases.put("ItemUse", new ItemUse());
 	}
 	
 }
