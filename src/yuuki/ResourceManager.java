@@ -26,7 +26,7 @@ import yuuki.world.TileFactory;
 import yuuki.world.World;
 
 /**
- * Handles resource loading.
+ * Handles resource loading of resources that are on disk.
  */
 public class ResourceManager {
 	
@@ -66,11 +66,6 @@ public class ResourceManager {
 	private final String root;
 	
 	/**
-	 * Whether this is using a directory external to the class path.
-	 */
-	private final boolean usingExternalPath;
-	
-	/**
 	 * Creates a new ResourceManager for the specified content directory. This
 	 * can be any directory on the file system.
 	 * 
@@ -82,24 +77,6 @@ public class ResourceManager {
 	public ResourceManager(File root) throws ResourceNotFoundException,
 	IOException {
 		this.root = root.getPath() + '/';
-		usingExternalPath = true;
-		readContentManifestFile();
-	}
-	
-	/**
-	 * Creates a new ResourceManager for the specified internal content
-	 * directory. The content directory must be a resource file accessible
-	 * through the class loader.
-	 * 
-	 * @param root The path, relative to the resource root, to the content
-	 * directory.
-	 * @throws ResourceNotFoundException If the manifest file is not found.
-	 * @throws IOException If an I/O exception occurs.
-	 */
-	public ResourceManager(String root) throws ResourceNotFoundException,
-	IOException {
-		this.root = root;
-		usingExternalPath = false;
 		readContentManifestFile();
 	}
 	

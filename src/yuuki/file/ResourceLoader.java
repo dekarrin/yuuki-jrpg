@@ -2,9 +2,14 @@ package yuuki.file;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import yuuki.util.Progressable;
 
@@ -12,7 +17,7 @@ import yuuki.util.Progressable;
  * Loads resource files into memory. Resource files are the files that are
  * external to the source code. These include images, sounds, and data files.
  */
-public class ResourceLoader {
+public class ResourceLoader implements Closeable {
 	
 	/**
 	 * Separates multiple values in a single field.
@@ -20,30 +25,55 @@ public class ResourceLoader {
 	private static final String MULTIVALUE_DELIMITER = ":";
 	
 	/**
-	 * Whether to load from file. If false, streams are loaded directly from
-	 * the file system rather than from the class path.
-	 */
-	private boolean loadFromFileSystem = false;
-	
-	/**
 	 * Records the progress of loading.
 	 */
 	private Progressable monitor;
 	
 	/**
-	 * The location of the resource files to be loaded. This is relative to the
-	 * package structure.
+	 * The directory containing the resource files to be loaded. If they are in
+	 * a ZIP file, this is the path to the ZIP file. If they are not in a ZIP
+	 * file, this is the root of all resource files to be loaded.
 	 */
-	private final String resourceRoot;
+	private final File root;
+	
+	/**
+	 * The ZIP file being read.
+	 */
+	private ZipFile zip;
+	
+	/**
+	 * The path within the ZIP file that the resource files are to be loaded
+	 * from. This is null if the resource files are not in a ZIP file.
+	 */
+	private final String zipRoot;
 	
 	/**
 	 * Creates a new ResourceLoader for resources at the specified location.
 	 * 
-	 * @param location The path to the directory containing the resource files
-	 * to be loaded, relative to the package structure.
+	 * @param directory The directory containing the resource files to be
+	 * loaded.
 	 */
-	public ResourceLoader(String location) {
-		resourceRoot = location;
+	public ResourceLoader(File directory) {
+		root = directory;
+		zipRoot = null;
+	}
+	
+	/**
+	 * Creates a new ResourceLoader for resources in the given ZIP file.
+	 * 
+	 *  @param archive The ZIP file containing the resource files to be loaded.
+	 *  @param zipRoot The root within the ZIP file of all files to be loaded.
+	 */
+	public ResourceLoader(ZipFile archive, String zipRoot) {
+		root = new File(archive.getName());
+		this.zipRoot = zipRoot;
+	}
+	
+	@Override
+	public void close() throws IOException {
+		if (zip != null) {
+			zip.close();
+		}
 	}
 	
 	/**
@@ -61,27 +91,19 @@ public class ResourceLoader {
 	 */
 	public InputStream getStream(String resource) throws
 	ResourceNotFoundException {
-		String actualPath = resourceRoot + resource;
-		InputStream stream;
-		if (loadFromFileSystem) {
-			stream = getFileStream(actualPath);
+		InputStream stream = null;
+		if (zipRoot != null) {
+			try {
+				stream = getZipStream(resource);
+			} catch (ResourceNotFoundException e) {
+				throw e;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} else {
-			stream = getResourceStream(actualPath);
-		}
-		if (stream == null) {
-			throw new ResourceNotFoundException(actualPath);
+			stream = getFileStream(resource);
 		}
 		return stream;
-	}
-	
-	/**
-	 * Sets this resource loader to load from the file system rather than from
-	 * the class path.
-	 * 
-	 * @param use Whether to use the file system.
-	 */
-	public void setFileSystemLoading(boolean use) {
-		loadFromFileSystem = use;
 	}
 	
 	/**
@@ -94,37 +116,46 @@ public class ResourceLoader {
 	}
 	
 	/**
-	 * Gets the stream from a file.
+	 * Gets a stream from a file.
 	 * 
-	 * @param resource The path to the resource to load.
-	 * 
+	 * @param path The relative path to the resource to load.
 	 * @return An InputStream to the resource.
-	 * 
 	 * @throws ResourceNotFoundException If the specified resource could not be
 	 * found.
 	 */
-	private InputStream getFileStream(String path) {
+	private InputStream getFileStream(String path) throws
+	ResourceNotFoundException {
+		File resource = new File(root, path);
 		InputStream stream = null;
 		try {
-			stream = new FileInputStream(path);
+			stream = new FileInputStream(resource);
 		} catch (FileNotFoundException e) {
-			stream = null;
+			throw new ResourceNotFoundException(resource.getAbsolutePath());
 		}
 		return stream;
 	}
 	
 	/**
-	 * Gets the stream from a resource.
+	 * Gets a stream from a file in a ZIP archive.
 	 * 
-	 * @param resource The path to the resource to load.
-	 * 
+	 * @param path The relative path to the resource to load.
 	 * @return An InputStream to the resource.
-	 * 
 	 * @throws ResourceNotFoundException If the specified resource could not be
 	 * found.
 	 */
-	private InputStream getResourceStream(String path) {
-		return getClass().getResourceAsStream(path);
+	private InputStream getZipStream(String path) throws
+	ResourceNotFoundException, IOException {
+		if (!root.isFile()) {
+			throw new ResourceNotFoundException(root.getAbsolutePath());
+		}
+		close();
+		zip = new ZipFile(root);
+		String entryPath = zipRoot + path;
+		ZipEntry entry = zip.getEntry(entryPath);
+		if (entry == null) {
+			throw new ResourceNotFoundException(entryPath);
+		}
+		return zip.getInputStream(entry);
 	}
 	
 	/**
