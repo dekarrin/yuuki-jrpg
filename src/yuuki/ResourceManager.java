@@ -235,20 +235,6 @@ public class ResourceManager {
 	}
 	
 	/**
-	 * Gets the path from the loaded list of paths.
-	 * 
-	 * @param index The index of the path to get.
-	 * @return The path associated with the given index.
-	 */
-	private String getPath(String index) {
-		String p = paths.get(index);
-		if (p == null) {
-			System.err.println("no resources for index '" + index + "'");
-		}
-		return p;
-	}
-	
-	/**
 	 * Loads the action definitions from disk.
 	 * 
 	 * @param monitor Monitors the progress of the load.
@@ -510,6 +496,20 @@ public class ResourceManager {
 	protected WorldLoader createWorldLoader(PopulationFactory pop) {
 		File landDir = new File(root, getPath("LAND_DIR"));
 		return new WorldLoader(root, landDir, pop);
+	}
+	
+	/**
+	 * Gets the path from the loaded list of paths.
+	 * 
+	 * @param index The index of the path to get.
+	 * @return The path associated with the given index.
+	 */
+	protected final String getPath(String index) {
+		String p = paths.get(index);
+		if (p == null) {
+			System.err.println("no resources for index '" + index + "'");
+		}
+		return p;
 	}
 	
 }
