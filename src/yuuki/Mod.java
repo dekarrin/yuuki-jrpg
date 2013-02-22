@@ -5,4 +5,5 @@ package yuuki;
  */
 public class Mod {
 	
+	
 }
