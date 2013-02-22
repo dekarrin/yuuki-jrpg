@@ -63,7 +63,7 @@ public class ResourceManager {
 	/**
 	 * The root of the resources.
 	 */
-	private final File root;
+	protected final File root;
 	
 	/**
 	 * Creates a new ResourceManager for the specified content directory. This
