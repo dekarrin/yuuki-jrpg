@@ -47,6 +47,9 @@ public class ZippedResourceManager extends ResourceManager {
 	public ZippedResourceManager(File archive, String root) throws
 	ResourceNotFoundException, IOException {
 		super(archive);
+		if (!root.startsWith("/")) {
+			root = '/' + root;
+		}
 		zipRoot = root;
 	}
 	

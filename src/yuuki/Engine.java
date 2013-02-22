@@ -2,7 +2,9 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import yuuki.battle.Battle;
@@ -102,7 +104,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * The root directory for all resource files.
 	 */
-	private static final String RESOURCE_ROOT = "/yuuki/resource/";
+	private static final String RESOURCE_ROOT = "yuuki/resource/";
 	
 	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
@@ -181,19 +183,34 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		File jar = getJarFile();
-		if (jar != null) {
-			resourceManager = new ZippedResourceManager(jar, RESOURCE_ROOT);
-		} else {
-			String p = getClass().getResource("/yuuki/Engine.java").getPath();
-			File path = new File(p);
-			File pathRoot = path.getParentFile().getParentFile();
-			File resourceRoot = new File(pathRoot, RESOURCE_ROOT);
-			resourceManager = new ResourceManager(resourceRoot);
-		}
+		// TODO: spawn thread to create the resource manager
+		resourceManager = createResourceManager();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
+	}
+	
+	/**
+	 * Creates the ResourceManager for the Engine. The specific type created
+	 * depends on whether Engine is being run from a JAR.
+	 * 
+	 * @return The ResourceManger.
+	 * @throws IOException 
+	 * @throws ResourceNotFoundException 
+	 */
+	private ResourceManager createResourceManager() throws
+	ResourceNotFoundException, IOException {
+		File jar = getJarFile();
+		if (jar != null) {
+			return new ZippedResourceManager(jar, RESOURCE_ROOT);
+		} else {
+			String className = getClass().getName().replace('.', '/');
+			URL resource = getClass().getResource("/" + className + ".class");
+			String p = URLDecoder.decode(resource.getPath(), "UTF-8");
+			File path = new File(p).getParentFile().getParentFile();
+			File resourceRoot = new File(path, RESOURCE_ROOT);
+			return new ResourceManager(resourceRoot);
+		}
 	}
 	
 	@Override
@@ -393,7 +410,15 @@ public class Engine implements Runnable, UiExecutor {
 		String className = getClass().getName().replace('.', '/');
 		URL resource = getClass().getResource("/" + className + ".class");
 		if (resource.toString().startsWith("jar:")) {
-			return new File(resource.toString());
+			String p = null;
+			try {
+				p = URLDecoder.decode(resource.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// should never happen
+				System.err.println("Encoding unsupported");
+				System.exit(1);
+			}
+			return new File(p);
 		} else {
 			return null;
 		}
