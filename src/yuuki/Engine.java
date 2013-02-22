@@ -2,8 +2,7 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 import java.util.Map;
 
 import yuuki.battle.Battle;
@@ -182,7 +181,16 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		resourceManager = new ResourceManager(RESOURCE_ROOT);
+		File jar = getJarFile();
+		if (jar != null) {
+			resourceManager = new ZippedResourceManager(jar, RESOURCE_ROOT);
+		} else {
+			String p = getClass().getResource("/yuuki/Engine.java").getPath();
+			File path = new File(p);
+			File pathRoot = path.getParentFile().getParentFile();
+			File resourceRoot = new File(pathRoot, RESOURCE_ROOT);
+			resourceManager = new ResourceManager(resourceRoot);
+		}
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
@@ -326,43 +334,6 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Scans a folder called 'mods' at the same location as the root and loads
-	 * any valid mods found.
-	 */
-	private void scanMods() {
-		File modFolder = new File("./mods");
-		if (modFolder.isDirectory()) {
-			File[] contentDirs = modFolder.listFiles();
-			for (File modContent : contentDirs) {
-				ResourceManager rm = getModLoader(modContent);
-				if (rm != null) {
-					
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Gets the mod loader for a directory.
-	 * 
-	 * @param modDir The mod directory.
-	 * @return The ResourceManager for the given mod.
-	 */
-	private ResourceManager getModLoader(File modDir) {
-		ResourceManager rm = null;
-		try {
-			rm = new ResourceManager(modDir);
-		} catch (ResourceNotFoundException e) {
-			// it's not a mod dir, so do nothing
-		} catch (IOException e) {
-			String n = modDir.getName();
-			String msg = "Could not load mod manifest in '" + n + "'";
-			System.err.println(msg);
-		}
-		return rm;
-	}
-	
-	/**
 	 * Advances the world by one tick and updates the GUI with the new world
 	 * data.
 	 * 
@@ -413,6 +384,22 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Gets the JAR file this class is being executed from if it exists.
+	 * 
+	 * @return The JAR file, or null if this class is not being executed from a
+	 * JAR file.
+	 */
+	private File getJarFile() {
+		String className = getClass().getName().replace('.', '/');
+		URL resource = getClass().getResource("/" + className + ".class");
+		if (resource.toString().startsWith("jar:")) {
+			return new File(resource.toString());
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * Creates a Thread containing a LoadingBarUpdater for use with the loading
 	 * screen.
 	 * 
@@ -427,6 +414,26 @@ public class Engine implements Runnable, UiExecutor {
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		return updateThread;
+	}
+	
+	/**
+	 * Gets the mod loader for a directory.
+	 * 
+	 * @param modDir The mod directory.
+	 * @return The ResourceManager for the given mod.
+	 */
+	private ResourceManager getModLoader(File modDir) {
+		ResourceManager rm = null;
+		try {
+			rm = new ResourceManager(modDir);
+		} catch (ResourceNotFoundException e) {
+			// it's not a mod dir, so do nothing
+		} catch (IOException e) {
+			String n = modDir.getName();
+			String msg = "Could not load mod manifest in '" + n + "'";
+			System.err.println(msg);
+		}
+		return rm;
 	}
 	
 	/**
@@ -446,6 +453,23 @@ public class Engine implements Runnable, UiExecutor {
 		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);
 		ui.initializeImages(imageFactory);
+	}
+	
+	/**
+	 * Scans a folder called 'mods' at the same location as the root and loads
+	 * any valid mods found.
+	 */
+	private void scanMods() {
+		File modFolder = new File("./mods");
+		if (modFolder.isDirectory()) {
+			File[] contentDirs = modFolder.listFiles();
+			for (File modContent : contentDirs) {
+				ResourceManager rm = getModLoader(modContent);
+				if (rm != null) {
+					
+				}
+			}
+		}
 	}
 	
 	/**
