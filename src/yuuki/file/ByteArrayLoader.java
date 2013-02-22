@@ -1,8 +1,10 @@
 package yuuki.file;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipFile;
 
 /**
  * Loads a file directly into a byte array.
@@ -13,11 +15,21 @@ public class ByteArrayLoader extends ResourceLoader {
 	 * Creates a new ByteArrayLoader for resource files at the specified
 	 * location.
 	 * 
-	 * @param location The path to the directory containing the resource files
-	 * to be loaded, relative to the package structure.
+	 * @param directory The directory containing the resource files to be
+	 * loaded.
 	 */
-	public ByteArrayLoader(String location) {
-		super(location);
+	public ByteArrayLoader(File directory) {
+		super(directory);
+	}
+	
+	/**
+	 * Creates a new ByteArrayLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of all files to be loaded.
+	 */
+	public ByteArrayLoader(ZipFile archive, String zipRoot) {
+		super(archive, zipRoot);
 	}
 	
 	/**

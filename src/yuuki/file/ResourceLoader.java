@@ -61,8 +61,8 @@ public class ResourceLoader implements Closeable {
 	/**
 	 * Creates a new ResourceLoader for resources in the given ZIP file.
 	 * 
-	 *  @param archive The ZIP file containing the resource files to be loaded.
-	 *  @param zipRoot The root within the ZIP file of all files to be loaded.
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of all files to be loaded.
 	 */
 	public ResourceLoader(ZipFile archive, String zipRoot) {
 		root = new File(archive.getName());

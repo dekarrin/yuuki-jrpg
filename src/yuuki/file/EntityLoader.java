@@ -1,6 +1,8 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.zip.ZipFile;
 
 import yuuki.action.Action;
 import yuuki.action.ActionFactory;
@@ -22,13 +24,27 @@ public class EntityLoader extends CsvResourceLoader {
 	 * Creates a new EntityLoader for entity definition files at the specified
 	 * location.
 	 * 
-	 * @param location The path to the directory containing the definition
-	 * files to be loaded, relative to the package structure.
+	 * @param directory The directory containing the definition files to be
+	 * loaded.
 	 * @param actions The ActionFactory to use for creating the definition
 	 * actions.
 	 */
-	public EntityLoader(String location, ActionFactory actions) {
-		super(location);
+	public EntityLoader(File directory, ActionFactory actions) {
+		super(directory);
+		this.actionFactory = actions;
+	}
+	
+	/**
+	 * Creates a new EntityLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of all files to be loaded.
+	 * @param actions The ActionFactory to use for creating the definition
+	 * actions.
+	 */
+	public EntityLoader(ZipFile archive, String zipRoot, ActionFactory
+			actions) {
+		super(archive, zipRoot);
 		this.actionFactory = actions;
 	}
 	

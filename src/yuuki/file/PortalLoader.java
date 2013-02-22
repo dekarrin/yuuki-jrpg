@@ -1,6 +1,8 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.zip.ZipFile;
 
 import yuuki.world.PortalFactory;
 
@@ -12,11 +14,21 @@ public class PortalLoader extends CsvResourceLoader {
 	/**
 	 * Creates a new PortalLoader for portal files at the specified location.
 	 * 
-	 * @param location The path to the directory containing the portal files to
-	 * be loaded, relative to the package structure.
+	 * @param directory The directory containing the portal files to be loaded.
 	 */
-	public PortalLoader(String location) {
-		super(location);
+	public PortalLoader(File directory) {
+		super(directory);
+	}
+	
+	/**
+	 * Creates a new PortalLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of resource files to be
+	 * loaded.
+	 */
+	public PortalLoader(ZipFile archive, String zipRoot) {
+		super(archive, zipRoot);
 	}
 	
 	/**

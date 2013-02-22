@@ -3,10 +3,12 @@ package yuuki.file;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.zip.ZipFile;
 
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.util.InvalidIndexException;
@@ -121,12 +123,25 @@ public class LandLoader extends ResourceLoader {
 	/**
 	 * Creates a new LandLoader for land files at the specified location.
 	 * 
-	 * @param location The path to the directory containing the land files to
-	 * be loaded, relative to the package structure.
+	 * @param directory The directory containing the land files to be loaded.
 	 * @param populator The factory to use for populating lands.
 	 */
-	public LandLoader(String location, PopulationFactory populator) {
-		super(location);
+	public LandLoader(File directory, PopulationFactory populator) {
+		super(directory);
+		this.populator = populator;
+	}
+	
+	/**
+	 * Creates a new LandLoader for land files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of resource files to be
+	 * loaded.
+	 * @param populator The factory to use for populating lands.
+	 */
+	public LandLoader(ZipFile archive, String zipRoot,
+			PopulationFactory populator) {
+		super(archive, zipRoot);
 		this.populator = populator;
 	}
 	
