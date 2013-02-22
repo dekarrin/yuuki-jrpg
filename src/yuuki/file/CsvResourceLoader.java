@@ -1,7 +1,9 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipFile;
 
 /**
  * Loads CSV data files containing tables of definitions.
@@ -16,11 +18,21 @@ public class CsvResourceLoader extends ResourceLoader {
 	/**
 	 * Creates a new CsvResourceLoader for resources at the specified location.
 	 * 
-	 * @param location The path to the directory containing the resource files
-	 * to be loaded, relative to the package structure.
+	 * @param directory The directory containing the resource files to be
+	 * loaded.
 	 */
-	public CsvResourceLoader(String location) {
-		super(location);
+	public CsvResourceLoader(File directory) {
+		super(directory);
+	}
+	
+	/**
+	 * Creates a new CsvResourceLoader for resources in the given ZIP file.
+	 * 
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of all files to be loaded.
+	 */
+	public CsvResourceLoader(ZipFile archive, String zipRoot) {
+		super(archive, zipRoot);
 	}
 	
 	/**

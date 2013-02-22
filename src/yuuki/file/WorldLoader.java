@@ -1,7 +1,9 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.ZipFile;
 
 import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
@@ -20,16 +22,29 @@ public class WorldLoader extends CsvResourceLoader {
 	/**
 	 * Creates a new WorldLoader for world files at the specified location.
 	 * 
-	 * @param location The path to the directory containing the world files to
-	 * be loaded, relative to the package structure.
-	 * @param landsPath The path to the directory containing the land files to
-	 * be loaded, relative to the package structure.
+	 * @param directory The directory containing the world files to be loaded.
+	 * @param landDir The directory containing the land files to be loaded.
 	 * @param populator The factory to use for populating lands.
 	 */
-	public WorldLoader(String location, String landsPath, PopulationFactory
+	public WorldLoader(File directory, File landDir, PopulationFactory
 			populator) {
-		super(location);
-		landLoader = new LandLoader(landsPath, populator);
+		super(directory);
+		landLoader = new LandLoader(landDir, populator);
+	}
+	
+	/**
+	 * Creates a new WorldLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of resource files to be
+	 * loaded.
+	 * @param landRoot The root within the ZIP file of land files to be loaded.
+	 * @param populator The factory to use for populating lands.
+	 */
+	public WorldLoader(ZipFile archive, String zipRoot, String landRoot,
+			PopulationFactory populator) {
+		super(archive, zipRoot);
+		landLoader = new LandLoader(archive, landRoot, populator);
 	}
 	
 	/**
@@ -57,12 +72,6 @@ public class WorldLoader extends CsvResourceLoader {
 		String[] pathsArr = paths.toArray(new String[0]);
 		loadLands(world, pathsArr, percent);
 		return world;
-	}
-	
-	@Override
-	public void setFileSystemLoading(boolean use) {
-		super.setFileSystemLoading(use);
-		landLoader.setFileSystemLoading(use);
 	}
 	
 	/**
