@@ -83,8 +83,9 @@ public class ContentLoader {
 	 * 
 	 * @return The loaded records.
 	 */
-	public void readManifest() throws ResourceNotFoundException, IOException {
-		readContentManifestFile();
+	public ContentManifest readManifest() throws ResourceNotFoundException,
+	IOException {
+		return readContentManifestFile();
 	}
 	
 	/**
@@ -389,17 +390,18 @@ public class ContentLoader {
 	 * found.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	private void readContentManifestFile() throws ResourceNotFoundException,
-	IOException {
+	private ContentManifest readContentManifestFile() throws
+	ResourceNotFoundException, IOException {
 		CsvResourceLoader loader = createManifestLoader();
 		String[][] records = null;
 		records = loader.loadRecords(MANIFEST_FILE);
+		manifest = new ContentManifest();
 		if (records != null) {
-			manifest = new ContentManifest();
 			for (String[] r : records) {
 				manifest.add(r[0], r[1]);
 			}
 		}
+		return manifest;
 	}
 	
 	/**

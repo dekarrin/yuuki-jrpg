@@ -43,6 +43,11 @@ public class ContentPack {
 	private final File location;
 	
 	/**
+	 * The manifest for this ContentPack.
+	 */
+	private final ContentManifest manifest;
+	
+	/**
 	 * The name of this ContentPack.
 	 */
 	private final String name;
@@ -61,14 +66,8 @@ public class ContentPack {
 			location = new File(getPackageRootFile(), BUILT_IN_ROOT);
 			fileManager = new ContentLoader(location);
 		}
-		fileManager.readManifest();
+		manifest = fileManager.readManifest();
 	}
-	
-	/**
-	 * Checks whether this ContentPack contains sound effect files.
-	 * 
-	 * @return Whether this ContentPack contains sound effect files.
-	 */
 	
 	/**
 	 * Creates a new ContentPack for files in the given directory.
@@ -84,7 +83,7 @@ public class ContentPack {
 		fileManager = new ContentLoader(location);
 		inArchive = false;
 		name = location.getName();
-		fileManager.readManifest();
+		manifest = fileManager.readManifest();
 	}
 	
 	/**
@@ -101,7 +100,7 @@ public class ContentPack {
 		fileManager = new ContentLoader(location);
 		inArchive = true;
 		name = location.getName();
-		fileManager.readManifest();
+		manifest = fileManager.readManifest();
 	}
 	
 	/**
@@ -123,6 +122,98 @@ public class ContentPack {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	/**
+	 * Whether this ContentPack contains actions.
+	 */
+	public boolean hasActions() {
+		return manifest.has(ContentManifest.FILE_ACTIONS);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains sound effect files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasEffectFiles() {
+		return manifest.has(ContentManifest.DIR_EFFECTS);
+	}
+	
+	/**
+	 * Whether this ContentPack contains entities.
+	 */
+	public boolean hasEntities() {
+		return manifest.has(ContentManifest.FILE_ENTITIES);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains image files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasImageFiles() {
+		return manifest.has(ContentManifest.DIR_IMAGES);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains land files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasLandFiles() {
+		return manifest.has(ContentManifest.DIR_LANDS);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains music files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasMusicFiles() {
+		return manifest.has(ContentManifest.DIR_MUSIC);
+	}
+	
+	/**
+	 * Whether this ContentPack contains sound definitions.
+	 */
+	public boolean hasNewEffects() {
+		return manifest.has(ContentManifest.FILE_EFFECTS);
+	}
+	
+	/**
+	 * Whether this ContentPack contains image definitions.
+	 */
+	public boolean hasNewImages() {
+		return manifest.has(ContentManifest.FILE_IMAGES);
+	}
+	
+	/**
+	 * Whether this ContentPack contains music definitions.
+	 */
+	public boolean hasNewMusic() {
+		return manifest.has(ContentManifest.FILE_MUSIC);
+	}
+	
+	/**
+	 * Whether this ContentPack contains portal definitions.
+	 */
+	public boolean hasPortals() {
+		return manifest.has(ContentManifest.FILE_PORTALS);
+	}
+	
+	/**
+	 * Whether this ContentPack contains a tile definition.
+	 */
+	public boolean hasTiles() {
+		return manifest.has(ContentManifest.FILE_TILES);
+	}
+	
+	/**
+	 * Whether this ContentPack contains a world definition.
+	 */
+	public boolean hasWorld() {
+		return manifest.has(ContentManifest.FILE_WORLD);
 	}
 	
 	/**
