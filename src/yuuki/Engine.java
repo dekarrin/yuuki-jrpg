@@ -418,7 +418,8 @@ public class Engine implements Runnable, UiExecutor {
 				System.err.println("Encoding unsupported");
 				System.exit(1);
 			}
-			return new File(p);
+			File directPath = new File(p.substring(9).replace("!", ""));
+			return directPath.getParentFile().getParentFile();
 		} else {
 			return null;
 		}
