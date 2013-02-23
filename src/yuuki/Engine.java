@@ -102,11 +102,6 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The root directory for all resource files.
-	 */
-	private static final String RESOURCE_ROOT = "yuuki/resource/";
-	
-	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
 	 * it.
 	 *
