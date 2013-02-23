@@ -27,7 +27,7 @@ public class ContentPack {
 	/**
 	 * Handles the actual loading of resources from the content pack.
 	 */
-	private final ResourceManager fileManager;
+	private final ContentLoader fileManager;
 	
 	/**
 	 * Whether the resources included in this ContentPack are in a ZIP archive.
@@ -56,11 +56,12 @@ public class ContentPack {
 		inArchive = (jar != null);
 		if (inArchive) {
 			location = jar;
-			fileManager = new ZippedResourceManager(location, BUILT_IN_ROOT);
+			fileManager = new ZippedContentLoader(location, BUILT_IN_ROOT);
 		} else {
 			location = new File(getPackageRootFile(), BUILT_IN_ROOT);
-			fileManager = new ResourceManager(location);
+			fileManager = new ContentLoader(location);
 		}
+		fileManager.readManifest();
 	}
 	
 	/**
@@ -74,7 +75,7 @@ public class ContentPack {
 	public ContentPack(File directory) throws ResourceNotFoundException,
 	IOException {
 		location = directory;
-		fileManager = new ResourceManager(location);
+		fileManager = new ContentLoader(location);
 		inArchive = false;
 		name = location.getName();
 		fileManager.readManifest();
@@ -91,7 +92,7 @@ public class ContentPack {
 	public ContentPack(ZipFile archive) throws ResourceNotFoundException,
 	IOException {
 		location = new File(archive.getName());
-		fileManager = new ZippedResourceManager(location);
+		fileManager = new ContentLoader(location);
 		inArchive = true;
 		name = location.getName();
 		fileManager.readManifest();
