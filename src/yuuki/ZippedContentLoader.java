@@ -68,7 +68,8 @@ public class ZippedContentLoader extends ContentLoader {
 	protected SoundLoader createEffectLoader() {
 		SoundLoader loader = null;
 		try {
-			String soundRoot = zipRoot + getPath("SOUND_DIR");
+			String path = manifest.get(ContentManifest.DIR_EFFECTS);
+			String soundRoot = zipRoot + path;
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new SoundLoader(zip, zipRoot, soundRoot);
@@ -97,7 +98,8 @@ public class ZippedContentLoader extends ContentLoader {
 	protected ImageLoader createImageLoader() {
 		ImageLoader loader = null;
 		try {
-			String imageRoot = zipRoot + getPath("IMAGE_DIR");
+			String path = manifest.get(ContentManifest.DIR_IMAGES);
+			String imageRoot = zipRoot + path;
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new ImageLoader(zip, zipRoot, imageRoot);
@@ -126,7 +128,8 @@ public class ZippedContentLoader extends ContentLoader {
 	protected SoundLoader createMusicLoader() {
 		SoundLoader loader = null;
 		try {
-			String soundRoot = zipRoot + getPath("MUSIC_DIR");
+			String path = manifest.get(ContentManifest.DIR_MUSIC);
+			String soundRoot = zipRoot + path;
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new SoundLoader(zip, zipRoot, soundRoot);
@@ -169,7 +172,8 @@ public class ZippedContentLoader extends ContentLoader {
 	protected WorldLoader createWorldLoader(PopulationFactory pop) {
 		WorldLoader loader = null;
 		try {
-			String landRoot = zipRoot + getPath("LAND_DIR");
+			String path = manifest.get(ContentManifest.DIR_LANDS);
+			String landRoot = zipRoot + path;
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new WorldLoader(zip, zipRoot, landRoot, pop);

@@ -2,7 +2,6 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import yuuki.action.ActionFactory;
@@ -51,9 +50,9 @@ public class ContentLoader {
 	private Progressable monitor;
 	
 	/**
-	 * The paths to the resources contained within the archive.
+	 * The ContentManifest for this loader.
 	 */
-	private Map<String, String> paths = new HashMap<String, String>();
+	protected ContentManifest manifest;
 	
 	/**
 	 * The number of load operations planned.
@@ -132,7 +131,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				factory = loader.load(getPath("IMAGE_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_IMAGES);
+				factory = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -158,7 +158,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				soundData = loader.load(getPath("MUSIC_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_MUSIC);
+				soundData = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -168,18 +169,6 @@ public class ContentLoader {
 		}
 		finishLoadingOperation(sub);
 		return soundData;
-	}
-	
-	/**
-	 * Checks whether this ContentLoader contains a path for the given path
-	 * index.
-	 * 
-	 * @param index The index of the path to check.
-	 * @return Whether this ContentLoader has read a path for that key from the
-	 * manifest file.
-	 */
-	public boolean containsPath(String index) {
-		return paths.containsKey(index);
 	}
 	
 	/**
@@ -196,7 +185,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		try {
 			try {
-				soundData = loader.load(getPath("SOUND_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_EFFECTS);
+				soundData = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -266,7 +256,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(getPath("ACTION_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_ACTIONS);
+				factory = loader.load(path);
 			} catch (ResourceFormatException e) {
 				System.err.println(e.getMessage());
 				throw e;
@@ -296,7 +287,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(getPath("ENTITY_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_ENTITIES);
+				factory = loader.load(path);
 			} catch (ResourceFormatException e) {
 				System.err.println(e.getMessage());
 				throw e;
@@ -323,7 +315,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(getPath("PORTAL_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_PORTALS);
+				factory = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -347,7 +340,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				factory = loader.load(getPath("TILE_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_TILES);
+				factory = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -374,7 +368,8 @@ public class ContentLoader {
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
-				w = loader.load(getPath("WORLD_DEFS_FILE"));
+				String path = manifest.get(ContentManifest.FILE_WORLD);
+				w = loader.load(path);
 			} catch (ResourceNotFoundException e) {
 				System.err.println("Could not find: " + e.getMessage());
 				throw e;
@@ -400,8 +395,9 @@ public class ContentLoader {
 		String[][] records = null;
 		records = loader.loadRecords(MANIFEST_FILE);
 		if (records != null) {
+			manifest = new ContentManifest();
 			for (String[] r : records) {
-				paths.put(r[0], r[1]);
+				manifest.add(r[0], r[1]);
 			}
 		}
 	}
@@ -447,7 +443,8 @@ public class ContentLoader {
 	 * @return The created SoundLoader.
 	 */
 	protected SoundLoader createEffectLoader() {
-		File musicDir = new File(root, getPath("SOUND_DIR"));
+		String path = manifest.get(ContentManifest.DIR_EFFECTS);
+		File musicDir = new File(root, path);
 		return new SoundLoader(root, musicDir);
 	}
 	
@@ -467,7 +464,8 @@ public class ContentLoader {
 	 * @return The created ImageLoader.
 	 */
 	protected ImageLoader createImageLoader() {
-		File imageDir = new File(root, getPath("IMAGE_DIR"));
+		String path = manifest.get(ContentManifest.DIR_IMAGES);
+		File imageDir = new File(root, path);
 		return new ImageLoader(root, imageDir);
 	}
 	
@@ -486,7 +484,8 @@ public class ContentLoader {
 	 * @return The created SoundLoader.
 	 */
 	protected SoundLoader createMusicLoader() {
-		File musicDir = new File(root, getPath("MUSIC_DIR"));
+		String path = manifest.get(ContentManifest.DIR_MUSIC);
+		File musicDir = new File(root, path);
 		return new SoundLoader(root, musicDir);
 	}
 	
@@ -515,22 +514,9 @@ public class ContentLoader {
 	 * @return The created WorldLoader.
 	 */
 	protected WorldLoader createWorldLoader(PopulationFactory pop) {
-		File landDir = new File(root, getPath("LAND_DIR"));
+		String path = manifest.get(ContentManifest.DIR_LANDS);
+		File landDir = new File(root, path);
 		return new WorldLoader(root, landDir, pop);
-	}
-	
-	/**
-	 * Gets the path from the loaded list of paths.
-	 * 
-	 * @param index The index of the path to get.
-	 * @return The path associated with the given index.
-	 */
-	protected final String getPath(String index) {
-		String p = paths.get(index);
-		if (p == null) {
-			System.err.println("no resources for index '" + index + "'");
-		}
-		return p;
 	}
 	
 }
