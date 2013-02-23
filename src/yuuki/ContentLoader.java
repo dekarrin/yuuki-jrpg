@@ -81,9 +81,10 @@ public class ContentLoader {
 	/**
 	 * Loads the manifest file for this ResourceManager. This must be called
 	 * before loading any other asset.
+	 * 
+	 * @return The loaded records.
 	 */
-	public void readManifest() throws ResourceNotFoundException,
-	IOException {
+	public void readManifest() throws ResourceNotFoundException, IOException {
 		readContentManifestFile();
 	}
 	
@@ -167,6 +168,18 @@ public class ContentLoader {
 		}
 		finishLoadingOperation(sub);
 		return soundData;
+	}
+	
+	/**
+	 * Checks whether this ContentLoader contains a path for the given path
+	 * index.
+	 * 
+	 * @param index The index of the path to check.
+	 * @return Whether this ContentLoader has read a path for that key from the
+	 * manifest file.
+	 */
+	public boolean containsPath(String index) {
+		return paths.containsKey(index);
 	}
 	
 	/**
@@ -376,6 +389,7 @@ public class ContentLoader {
 	/**
 	 * Reads the manifest file and puts its contents into the paths map.
 	 * 
+	 * @return The loaded records.
 	 * @throws ResourceNotFoundException If the manifest file could not be
 	 * found.
 	 * @throws IOException If an I/O error occurs.

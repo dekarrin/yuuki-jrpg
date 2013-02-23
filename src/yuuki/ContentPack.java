@@ -65,6 +65,12 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Checks whether this ContentPack contains sound effect files.
+	 * 
+	 * @return Whether this ContentPack contains sound effect files.
+	 */
+	
+	/**
 	 * Creates a new ContentPack for files in the given directory.
 	 * 
 	 * @param directory The directory that contains the ContentPack.
