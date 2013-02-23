@@ -1,6 +1,8 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.zip.ZipFile;
 
 import yuuki.graphic.ImageFactory;
 import yuuki.util.Progressable;
@@ -19,14 +21,28 @@ public class ImageLoader extends CsvResourceLoader {
 	 * Creates a new ImageLoader for resource files at the specified
 	 * location.
 	 * 
-	 * @param location The path to the directory containing the resource files
-	 * to be loaded, relative to the package structure.
-	 * @param imageRoot The path to the directory containing the image files
-	 * referred to by the resource files.
+	 * @param directory The directory containing the resource files to be
+	 * loaded.
+	 * @param imageDir The directory containing the image files referred to by
+	 * the resource files.
 	 */
-	public ImageLoader(String location, String imageRoot) {
-		super(location);
-		imageLoader = new ByteArrayLoader(imageRoot);
+	public ImageLoader(File directory, File imageDir) {
+		super(directory);
+		imageLoader = new ByteArrayLoader(imageDir);
+	}
+	
+	/**
+	 * Creates a new ImageLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of resource files to be
+	 * loaded.
+	 * @param imgRoot The root within the ZIP file of image files referred to
+	 * by the resource files.
+	 */
+	public ImageLoader(ZipFile archive, String zipRoot, String imgRoot) {
+		super(archive, zipRoot);
+		imageLoader = new ByteArrayLoader(archive, imgRoot);
 	}
 	
 	/**
@@ -61,12 +77,6 @@ public class ImageLoader extends CsvResourceLoader {
 			advanceProgress(1.0 / records.length);
 		}
 		return factory;
-	}
-	
-	@Override
-	public void setFileSystemLoading(boolean use) {
-		super.setFileSystemLoading(use);
-		imageLoader.setFileSystemLoading(use);
 	}
 	
 }

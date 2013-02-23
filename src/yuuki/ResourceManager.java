@@ -26,14 +26,14 @@ import yuuki.world.TileFactory;
 import yuuki.world.World;
 
 /**
- * Handles resource loading.
+ * Handles resource loading of resources that are on disk.
  */
 public class ResourceManager {
 	
 	/**
 	 * The name of the manifest file.
 	 */
-	private static final String MANIFEST_FILE = "content.def";
+	public static final String MANIFEST_FILE = "content.def";
 	
 	/**
 	 * The number of load operations completed.
@@ -63,12 +63,7 @@ public class ResourceManager {
 	/**
 	 * The root of the resources.
 	 */
-	private final String root;
-	
-	/**
-	 * Whether this is using a directory external to the class path.
-	 */
-	private final boolean usingExternalPath;
+	protected final File root;
 	
 	/**
 	 * Creates a new ResourceManager for the specified content directory. This
@@ -76,30 +71,19 @@ public class ResourceManager {
 	 * 
 	 * @param root The path, relative to the resource root, to the content
 	 * directory.
-	 * @throws ResourceNotFoundException
+	 * @throws ResourceNotFoundException If the manifest file is not found.
 	 * @throws IOException If an I/O exception occurs.
 	 */
-	public ResourceManager(File root) throws ResourceNotFoundException,
-	IOException {
-		this.root = root.getPath() + '/';
-		usingExternalPath = true;
-		readContentManifestFile();
+	public ResourceManager(File root) {
+		this.root = root;
 	}
 	
 	/**
-	 * Creates a new ResourceManager for the specified internal content
-	 * directory. The content directory must be a resource file accessible
-	 * through the class loader.
-	 * 
-	 * @param root The path, relative to the resource root, to the content
-	 * directory.
-	 * @throws ResourceNotFoundException
-	 * @throws IOException If an I/O exception occurs.
+	 * Loads the manifest file for this ResourceManager. This must be called
+	 * before loading any other asset.
 	 */
-	public ResourceManager(String root) throws ResourceNotFoundException,
+	public void readManifest() throws ResourceNotFoundException,
 	IOException {
-		this.root = root;
-		usingExternalPath = false;
 		readContentManifestFile();
 	}
 	
@@ -142,8 +126,7 @@ public class ResourceManager {
 	 */
 	public ImageFactory loadImages(String text) {
 		Progressable sub = startLoadingOperation(text);
-		ImageLoader loader = new ImageLoader(root, getFullPath("IMAGE_DIR"));
-		loader.setFileSystemLoading(usingExternalPath);
+		ImageLoader loader = createImageLoader();
 		ImageFactory factory = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -169,8 +152,7 @@ public class ResourceManager {
 	 */
 	public Map<String, byte[]> loadMusic(String text) {
 		Progressable sub = startLoadingOperation(text);
-		SoundLoader loader = new SoundLoader(root, getFullPath("MUSIC_DIR"));
-		loader.setFileSystemLoading(usingExternalPath);
+		SoundLoader loader = createMusicLoader();
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -196,8 +178,7 @@ public class ResourceManager {
 	 */
 	public Map<String, byte[]> loadSoundEffects(String text) {
 		Progressable sub = startLoadingOperation(text);
-		SoundLoader loader = new SoundLoader(root, getFullPath("SOUND_DIR"));
-		loader.setFileSystemLoading(usingExternalPath);
+		SoundLoader loader = createEffectLoader();
 		Map<String, byte[]> soundData = null;
 		loader.setProgressMonitor(sub);
 		try {
@@ -261,31 +242,6 @@ public class ResourceManager {
 	}
 	
 	/**
-	 * Gets the full path for an index, which consists of the retrieved path
-	 * appended to the root.
-	 * 
-	 * @param index The index of the path to get.
-	 * @return The path associated with the given index.
-	 */
-	private String getFullPath(String index) {
-		return root + getPath(index);
-	}
-	
-	/**
-	 * Gets the path from the loaded list of paths.
-	 * 
-	 * @param index The index of the path to get.
-	 * @return The path associated with the given index.
-	 */
-	private String getPath(String index) {
-		String p = paths.get(index);
-		if (p == null) {
-			System.err.println("no resources for index '" + index + "'");
-		}
-		return p;
-	}
-	
-	/**
 	 * Loads the action definitions from disk.
 	 * 
 	 * @param monitor Monitors the progress of the load.
@@ -293,8 +249,7 @@ public class ResourceManager {
 	 */
 	private ActionFactory loadActionDefinitions(Progressable monitor) {
 		ActionFactory factory = null;
-		ActionLoader loader = new ActionLoader(root);
-		loader.setFileSystemLoading(usingExternalPath);
+		ActionLoader loader = createActionLoader();
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -324,8 +279,7 @@ public class ResourceManager {
 	private EntityFactory loadEntityDefinitions(ActionFactory af,
 			Progressable monitor) {
 		EntityFactory factory = null;
-		EntityLoader loader = new EntityLoader(root, af);
-		loader.setFileSystemLoading(usingExternalPath);
+		EntityLoader loader = createEntityLoader(af);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -352,8 +306,7 @@ public class ResourceManager {
 	 */
 	private PortalFactory loadPortalDefinitions(Progressable monitor) {
 		PortalFactory factory = null;
-		PortalLoader loader = new PortalLoader(root);
-		loader.setFileSystemLoading(usingExternalPath);
+		PortalLoader loader = createPortalLoader();
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -377,8 +330,7 @@ public class ResourceManager {
 	 */
 	private TileFactory loadTileDefinitions(Progressable monitor) {
 		TileFactory factory = null;
-		TileLoader loader = new TileLoader(root);
-		loader.setFileSystemLoading(usingExternalPath);
+		TileLoader loader = createTileLoader();
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -405,9 +357,7 @@ public class ResourceManager {
 	private World loadWorldDefinitions(PopulationFactory pop,
 			Progressable monitor) {
 		World w = null;
-		WorldLoader loader;
-		loader = new WorldLoader(root, getFullPath("LAND_DIR"), pop);
-		loader.setFileSystemLoading(usingExternalPath);
+		WorldLoader loader = createWorldLoader(pop);
 		loader.setProgressMonitor(monitor);
 		try {
 			try {
@@ -432,8 +382,7 @@ public class ResourceManager {
 	 */
 	private void readContentManifestFile() throws ResourceNotFoundException,
 	IOException {
-		CsvResourceLoader loader = new CsvResourceLoader(root);
-		loader.setFileSystemLoading(usingExternalPath);
+		CsvResourceLoader loader = createManifestLoader();
 		String[][] records = null;
 		records = loader.loadRecords(MANIFEST_FILE);
 		if (records != null) {
@@ -467,6 +416,107 @@ public class ResourceManager {
 		monitor.setText(text);
 		Progressable m = monitor.getSubProgressable(1.0 / plannedLoadOps);
 		return m;
+	}
+	
+	/**
+	 * Creates a loader for reading action definition files.
+	 * 
+	 * @return The created ActionLoader.
+	 */
+	protected ActionLoader createActionLoader() {
+		return new ActionLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading sound effect files.
+	 * 
+	 * @return The created SoundLoader.
+	 */
+	protected SoundLoader createEffectLoader() {
+		File musicDir = new File(root, getPath("SOUND_DIR"));
+		return new SoundLoader(root, musicDir);
+	}
+	
+	/**
+	 * Creates a loader for reading entity definition files.
+	 * 
+	 * @param af The ActionFactory to use with entity creation.
+	 * @return The created EntityLoader.
+	 */
+	protected EntityLoader createEntityLoader(ActionFactory af) {
+		return new EntityLoader(root, af);
+	}
+	
+	/**
+	 * Creates a loader for reading images.
+	 * 
+	 * @return The created ImageLoader.
+	 */
+	protected ImageLoader createImageLoader() {
+		File imageDir = new File(root, getPath("IMAGE_DIR"));
+		return new ImageLoader(root, imageDir);
+	}
+	
+	/**
+	 * Creates a loader for reading the content manifest file.
+	 * 
+	 * @return The created CsvResourceLoader.
+	 */
+	protected CsvResourceLoader createManifestLoader() {
+		return new CsvResourceLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading music files.
+	 * 
+	 * @return The created SoundLoader.
+	 */
+	protected SoundLoader createMusicLoader() {
+		File musicDir = new File(root, getPath("MUSIC_DIR"));
+		return new SoundLoader(root, musicDir);
+	}
+	
+	/**
+	 * Creates a loader for reading portal definition files.
+	 * 
+	 * @return The created PortalLoader.
+	 */
+	protected PortalLoader createPortalLoader() {
+		return new PortalLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading tile definition files.
+	 * 
+	 * @return The created TileLoader.
+	 */
+	protected TileLoader createTileLoader() {
+		return new TileLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading world definition files.
+	 * 
+	 * @param pop The PopulationFactory to use for populating the lands.
+	 * @return The created WorldLoader.
+	 */
+	protected WorldLoader createWorldLoader(PopulationFactory pop) {
+		File landDir = new File(root, getPath("LAND_DIR"));
+		return new WorldLoader(root, landDir, pop);
+	}
+	
+	/**
+	 * Gets the path from the loaded list of paths.
+	 * 
+	 * @param index The index of the path to get.
+	 * @return The path associated with the given index.
+	 */
+	protected final String getPath(String index) {
+		String p = paths.get(index);
+		if (p == null) {
+			System.err.println("no resources for index '" + index + "'");
+		}
+		return p;
 	}
 	
 }

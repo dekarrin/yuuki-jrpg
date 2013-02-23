@@ -1,8 +1,10 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import yuuki.util.Progressable;
 
@@ -20,14 +22,28 @@ public class SoundLoader extends CsvResourceLoader {
 	/**
 	 * Creates a new SoundLoader for resource files at the specified location.
 	 * 
-	 * @param location The path to the directory containing the resource files
-	 * to be loaded, relative to the package structure.
-	 * @param soundRoot The path to the directory containing the sound files
-	 * that are referenced by the resource files.
+	 * @param directory The directory containing the resource files to be
+	 * loaded.
+	 * @param soundDir The directory containing the sound files that are
+	 * referenced by the resource files.
 	 */
-	public SoundLoader(String location, String soundRoot) {
-		super(location);
-		soundLoader = new ByteArrayLoader(soundRoot);
+	public SoundLoader(File directory, File soundDir) {
+		super(directory);
+		soundLoader = new ByteArrayLoader(soundDir);
+	}
+	
+	/**
+	 * Creates a new SoundLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of resource files to be
+	 * loaded.
+	 * @param soundRoot The root within the ZIP file of the sound files that
+	 * are referenced by the resource files.
+	 */
+	public SoundLoader(ZipFile archive, String zipRoot, String soundRoot) {
+		super(archive, zipRoot);
+		soundLoader = new ByteArrayLoader(archive, soundRoot);
 	}
 	
 	/**
@@ -63,12 +79,6 @@ public class SoundLoader extends CsvResourceLoader {
 			}
 		}
 		return sounds;
-	}
-	
-	@Override
-	public void setFileSystemLoading(boolean use) {
-		super.setFileSystemLoading(use);
-		soundLoader.setFileSystemLoading(use);
 	}
 	
 }

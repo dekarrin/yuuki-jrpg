@@ -1,6 +1,10 @@
 package yuuki;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import yuuki.battle.Battle;
@@ -100,7 +104,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * The root directory for all resource files.
 	 */
-	private static final String RESOURCE_ROOT = "/yuuki/resource/";
+	private static final String RESOURCE_ROOT = "yuuki/resource/";
 	
 	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
@@ -179,10 +183,38 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		resourceManager = new ResourceManager(RESOURCE_ROOT);
+		// TODO: spawn thread to create the resource manager
+		resourceManager = createResourceManager();
+		resourceManager.readManifest();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
+	}
+	
+	/**
+	 * Creates the ResourceManager for the Engine. The specific type created
+	 * depends on whether Engine is being run from a JAR.
+	 * 
+	 * @return The ResourceManger.
+	 */
+	private ResourceManager createResourceManager() {
+		File jar = getJarFile();
+		if (jar != null) {
+			return new ZippedResourceManager(jar, RESOURCE_ROOT);
+		} else {
+			String className = getClass().getName().replace('.', '/');
+			URL resource = getClass().getResource("/" + className + ".class");
+			String p = null;
+			try {
+				p = URLDecoder.decode(resource.getPath(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// should never happen
+				e.printStackTrace();
+			}
+			File path = new File(p).getParentFile().getParentFile();
+			File resourceRoot = new File(path, RESOURCE_ROOT);
+			return new ResourceManager(resourceRoot);
+		}
 	}
 	
 	@Override
@@ -312,6 +344,7 @@ public class Engine implements Runnable, UiExecutor {
 		ui.initialize();
 		ui.switchToLoadingScreen();
 		loadAssets();
+		scanMods();
 		applyOptions();
 		try {
 			ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -372,6 +405,31 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Gets the JAR file this class is being executed from if it exists.
+	 * 
+	 * @return The JAR file, or null if this class is not being executed from a
+	 * JAR file.
+	 */
+	private File getJarFile() {
+		String className = getClass().getName().replace('.', '/');
+		URL resource = getClass().getResource("/" + className + ".class");
+		if (resource.toString().startsWith("jar:")) {
+			String p = null;
+			try {
+				p = URLDecoder.decode(resource.toString(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// should never happen
+				System.err.println("Encoding unsupported");
+				System.exit(1);
+			}
+			File directPath = new File(p.substring(9).replace("!", ""));
+			return directPath.getParentFile().getParentFile();
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * Creates a Thread containing a LoadingBarUpdater for use with the loading
 	 * screen.
 	 * 
@@ -386,6 +444,26 @@ public class Engine implements Runnable, UiExecutor {
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		return updateThread;
+	}
+	
+	/**
+	 * Gets the mod loader for a directory.
+	 * 
+	 * @param modDir The mod directory.
+	 * @return The ResourceManager for the given mod.
+	 */
+	private ResourceManager getModLoader(File modDir) {
+		ResourceManager rm = new ResourceManager(modDir);
+		try {
+			rm.readManifest();
+		} catch (ResourceNotFoundException e) {
+			// it's not a mod dir, so do nothing
+		} catch (IOException e) {
+			String n = modDir.getName();
+			String msg = "Could not load mod manifest in '" + n + "'";
+			System.err.println(msg);
+		}
+		return rm;
 	}
 	
 	/**
@@ -405,6 +483,23 @@ public class Engine implements Runnable, UiExecutor {
 		updateThread.interrupt();
 		ui.initializeSounds(effectData, musicData);
 		ui.initializeImages(imageFactory);
+	}
+	
+	/**
+	 * Scans a folder called 'mods' at the same location as the root and loads
+	 * any valid mods found.
+	 */
+	private void scanMods() {
+		File modFolder = new File("./mods");
+		if (modFolder.isDirectory()) {
+			File[] contentDirs = modFolder.listFiles();
+			for (File modContent : contentDirs) {
+				ResourceManager rm = getModLoader(modContent);
+				if (rm != null) {
+					
+				}
+			}
+		}
 	}
 	
 	/**

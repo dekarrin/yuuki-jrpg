@@ -1,6 +1,8 @@
 package yuuki.file;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.zip.ZipFile;
 
 import yuuki.action.ActionFactory;
 
@@ -13,11 +15,21 @@ public class ActionLoader extends CsvResourceLoader {
 	 * Creates a new ActionLoader for action definition files at the specified
 	 * location.
 	 * 
-	 * @param location The path to the directory containing the action
-	 * definition files to be loaded, relative to the package structure.
+	 * @param directory The directory containing the action definition files to
+	 * be loaded.
 	 */
-	public ActionLoader(String location) {
-		super(location);
+	public ActionLoader(File directory) {
+		super(directory);
+	}
+	
+	/**
+	 * Creates a new ActionLoader for resource files in the given ZIP file.
+	 *
+	 * @param archive The ZIP file containing the resource files to be loaded.
+	 * @param zipRoot The root within the ZIP file of all files to be loaded.
+	 */
+	public ActionLoader(ZipFile archive, String zipRoot) {
+		super(archive, zipRoot);
 	}
 	
 	/**
