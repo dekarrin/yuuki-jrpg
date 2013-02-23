@@ -203,18 +203,12 @@ public class ContentLoader {
 	 * Loads the world from disk.
 	 *
 	 * @param text The loading text to use on the monitor.
-	 * @param entities The EntityFactory to use.
+	 * @param pop The PopulationFactory to use.
 	 * @return The loaded World.
 	 */
-	public World loadWorld(String text, EntityFactory ef) {
+	public World loadWorld(String text, PopulationFactory pop) {
 		Progressable sub = startLoadingOperation(text);
-		Progressable m = sub.getSubProgressable(0.333);
-		PortalFactory pf = loadPortalDefinitions(m);
-		m = sub.getSubProgressable(0.333);
-		TileFactory tf = loadTileDefinitions(m);
-		m = sub.getSubProgressable(0.333);
-		PopulationFactory pop = new PopulationFactory(tf, ef, pf);
-		World world = loadWorldDefinitions(pop, m);
+		World world = loadWorldDefinitions(pop, sub);
 		finishLoadingOperation(sub);
 		return world;
 	}
