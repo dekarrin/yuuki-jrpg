@@ -74,9 +74,16 @@ public class ResourceManager {
 	 * @throws ResourceNotFoundException If the manifest file is not found.
 	 * @throws IOException If an I/O exception occurs.
 	 */
-	public ResourceManager(File root) throws ResourceNotFoundException,
-	IOException {
+	public ResourceManager(File root) {
 		this.root = root;
+	}
+	
+	/**
+	 * Loads the manifest file for this ResourceManager. This must be called
+	 * before loading any other asset.
+	 */
+	public void readManifest() throws ResourceNotFoundException,
+	IOException {
 		readContentManifestFile();
 	}
 	

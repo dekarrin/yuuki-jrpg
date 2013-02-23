@@ -185,6 +185,7 @@ public class Engine implements Runnable, UiExecutor {
 	public Engine() throws ResourceNotFoundException, IOException {
 		// TODO: spawn thread to create the resource manager
 		resourceManager = createResourceManager();
+		resourceManager.readManifest();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
@@ -195,18 +196,21 @@ public class Engine implements Runnable, UiExecutor {
 	 * depends on whether Engine is being run from a JAR.
 	 * 
 	 * @return The ResourceManger.
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
 	 */
-	private ResourceManager createResourceManager() throws
-	ResourceNotFoundException, IOException {
+	private ResourceManager createResourceManager() {
 		File jar = getJarFile();
 		if (jar != null) {
 			return new ZippedResourceManager(jar, RESOURCE_ROOT);
 		} else {
 			String className = getClass().getName().replace('.', '/');
 			URL resource = getClass().getResource("/" + className + ".class");
-			String p = URLDecoder.decode(resource.getPath(), "UTF-8");
+			String p = null;
+			try {
+				p = URLDecoder.decode(resource.getPath(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// should never happen
+				e.printStackTrace();
+			}
 			File path = new File(p).getParentFile().getParentFile();
 			File resourceRoot = new File(path, RESOURCE_ROOT);
 			return new ResourceManager(resourceRoot);
@@ -449,9 +453,9 @@ public class Engine implements Runnable, UiExecutor {
 	 * @return The ResourceManager for the given mod.
 	 */
 	private ResourceManager getModLoader(File modDir) {
-		ResourceManager rm = null;
+		ResourceManager rm = new ResourceManager(modDir);
 		try {
-			rm = new ResourceManager(modDir);
+			rm.readManifest();
 		} catch (ResourceNotFoundException e) {
 			// it's not a mod dir, so do nothing
 		} catch (IOException e) {

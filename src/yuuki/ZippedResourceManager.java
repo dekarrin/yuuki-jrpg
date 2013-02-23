@@ -10,7 +10,6 @@ import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
-import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
@@ -32,10 +31,9 @@ public class ZippedResourceManager extends ResourceManager {
 	 * 
 	 * @param archive The ZIP file containing the resources.
 	 */
-	public ZippedResourceManager(File archive) throws
-	ResourceNotFoundException, IOException {
+	public ZippedResourceManager(File archive) {
 		super(archive);
-		zipRoot = "/";
+		zipRoot = "";
 	}
 	
 	/**
@@ -44,11 +42,10 @@ public class ZippedResourceManager extends ResourceManager {
 	 * @param archive The ZIP file containing the resources.
 	 * @param root The path within the archive to the root of the resources.
 	 */
-	public ZippedResourceManager(File archive, String root) throws
-	ResourceNotFoundException, IOException {
+	public ZippedResourceManager(File archive, String root) {
 		super(archive);
-		if (!root.startsWith("/")) {
-			root = '/' + root;
+		if (root.startsWith("/")) {
+			root = root.substring(1);
 		}
 		zipRoot = root;
 	}
