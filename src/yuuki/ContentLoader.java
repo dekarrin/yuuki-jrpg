@@ -28,7 +28,7 @@ import yuuki.world.World;
 /**
  * Handles resource loading of resources that are on disk.
  */
-public class ResourceManager {
+public class ContentLoader {
 	
 	/**
 	 * The name of the manifest file.
@@ -74,7 +74,7 @@ public class ResourceManager {
 	 * @throws ResourceNotFoundException If the manifest file is not found.
 	 * @throws IOException If an I/O exception occurs.
 	 */
-	public ResourceManager(File root) {
+	public ContentLoader(File root) {
 		this.root = root;
 	}
 	

@@ -152,7 +152,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Loads all resources.
 	 */
-	private ResourceManager resourceManager;
+	private ContentLoader resourceManager;
 	
 	/**
 	 * The user interface.
@@ -179,7 +179,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
 		// TODO: spawn thread to create the resource manager
-		resourceManager = createResourceManager();
+		resourceManager = createContentLoader();
 		resourceManager.readManifest();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
@@ -187,15 +187,20 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Creates the ResourceManager for the Engine. The specific type created
+	 * The root directory for all resource files.
+	 */
+	private static final String RESOURCE_ROOT = "yuuki/resource/";
+	
+	/**
+	 * Creates the ContentLoader for the Engine. The specific type created
 	 * depends on whether Engine is being run from a JAR.
 	 * 
-	 * @return The ResourceManger.
+	 * @return The ContentLoader.
 	 */
-	private ResourceManager createResourceManager() {
+	private ContentLoader createContentLoader() {
 		File jar = getJarFile();
 		if (jar != null) {
-			return new ZippedResourceManager(jar, RESOURCE_ROOT);
+			return new ZippedContentLoader(jar, RESOURCE_ROOT);
 		} else {
 			String className = getClass().getName().replace('.', '/');
 			URL resource = getClass().getResource("/" + className + ".class");
@@ -208,7 +213,7 @@ public class Engine implements Runnable, UiExecutor {
 			}
 			File path = new File(p).getParentFile().getParentFile();
 			File resourceRoot = new File(path, RESOURCE_ROOT);
-			return new ResourceManager(resourceRoot);
+			return new ContentLoader(resourceRoot);
 		}
 	}
 	
@@ -445,10 +450,10 @@ public class Engine implements Runnable, UiExecutor {
 	 * Gets the mod loader for a directory.
 	 * 
 	 * @param modDir The mod directory.
-	 * @return The ResourceManager for the given mod.
+	 * @return The ContentLoader for the given mod.
 	 */
-	private ResourceManager getModLoader(File modDir) {
-		ResourceManager rm = new ResourceManager(modDir);
+	private ContentLoader getModLoader(File modDir) {
+		ContentLoader rm = new ContentLoader(modDir);
 		try {
 			rm.readManifest();
 		} catch (ResourceNotFoundException e) {
@@ -489,7 +494,7 @@ public class Engine implements Runnable, UiExecutor {
 		if (modFolder.isDirectory()) {
 			File[] contentDirs = modFolder.listFiles();
 			for (File modContent : contentDirs) {
-				ResourceManager rm = getModLoader(modContent);
+				ContentLoader rm = getModLoader(modContent);
 				if (rm != null) {
 					
 				}

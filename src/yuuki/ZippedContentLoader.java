@@ -18,7 +18,7 @@ import yuuki.world.PopulationFactory;
 /**
  * Manages resources loaded from a ZIP file.
  */
-public class ZippedResourceManager extends ResourceManager {
+public class ZippedContentLoader extends ContentLoader {
 	
 	/**
 	 * The path within the archive where all resources are located.
@@ -26,12 +26,12 @@ public class ZippedResourceManager extends ResourceManager {
 	private String zipRoot;
 	
 	/**
-	 * Creates a new ZippedResourceManager for resources in the given ZIP file.
+	 * Creates a new ZippedContentLoader for resources in the given ZIP file.
 	 * The archive root is assumed to be '/'.
 	 * 
 	 * @param archive The ZIP file containing the resources.
 	 */
-	public ZippedResourceManager(File archive) {
+	public ZippedContentLoader(File archive) {
 		super(archive);
 		zipRoot = "";
 	}
@@ -42,7 +42,7 @@ public class ZippedResourceManager extends ResourceManager {
 	 * @param archive The ZIP file containing the resources.
 	 * @param root The path within the archive to the root of the resources.
 	 */
-	public ZippedResourceManager(File archive, String root) {
+	public ZippedContentLoader(File archive, String root) {
 		super(archive);
 		if (root.startsWith("/")) {
 			root = root.substring(1);
