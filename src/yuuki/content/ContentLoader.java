@@ -2,6 +2,8 @@ package yuuki.content;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import yuuki.action.ActionFactory;
@@ -103,6 +105,14 @@ public class ContentLoader {
 		return monitor;
 	}
 	
+	
+	// load entities, given an action factory
+	
+	// load an action factory, given nothing
+	
+	// load 
+	
+	
 	/**
 	 * Loads the entities from disk.
 	 * 
@@ -173,6 +183,24 @@ public class ContentLoader {
 	}
 	
 	/**
+	 * Loads mappings from disk.
+	 * 
+	 * @param monitor The monitor to use.
+	 * @param pathIndex The index of the path to load.
+	 * @return A map containing the mappings.
+	 */
+	private Map<String, String> loadMappings(Progressable monitor,
+			String pathIndex) {
+		Map<String, List<String>> r = loadDefinitions(monitor, pathIndex);
+		Map<String, String> mappings = new HashMap<String, String>(r.size());
+		for (String key : r.keySet()) {
+			String value = r.get(key).get(0);
+			mappings.put(key, value);
+		}
+		return mappings;
+	}
+	
+	/**
 	 * Loads the sound effects from disk.
 	 * 
 	 * @param text The loading text to use on the monitor.
@@ -211,6 +239,32 @@ public class ContentLoader {
 		World world = loadWorldDefinitions(pop, sub);
 		finishLoadingOperation(sub);
 		return world;
+	}
+	
+	/**
+	 * Loads sound definitions from disk.
+	 * 
+	 * @param text The loading text to use on the monitor.
+	 * @return A map containing the definitions.
+	 */
+	public Map<String, String> loadSoundDefinitions(String text) {
+		Progressable sub = startLoadingOperation(text);
+		String pathIndex = ContentManifest.FILE_EFFECTS;
+		Map<String, String> defs = loadMappings(sub, pathIndex);
+		finishLoadingOperation(sub);
+		return defs;
+	}
+	
+	/**
+	 * Loads definitions from disk.
+	 * 
+	 * @param monitor The monitor to use.
+	 * @param pathIndex The index of the path to load.
+	 * @return A map containing the definitions.
+	 */
+	private Map<String, List<String>> loadDefinitions(Progressable monitor,
+			String pathIndex) {
+		String path = manifest.get(pathIndex);		
 	}
 	
 	/**
