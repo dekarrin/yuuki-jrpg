@@ -1,4 +1,4 @@
-package yuuki;
+package yuuki.content;
 
 import java.util.HashMap;
 import java.util.Map;

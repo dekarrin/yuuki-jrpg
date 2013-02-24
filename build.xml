@@ -128,7 +128,7 @@
 		</jar>
 	</target>
 	
-	<target name="compile" depends="battle,ui,sound,animation,sprite,graphic,world,util,ai">
+	<target name="compile" depends="battle,ui,sound,animation,sprite,graphic,world,util,content">
 		<antcall target="-build">
 			<param name="PACKAGE" value="yuuki" />
 			<param name="NAME" value="${class.main}" />
@@ -144,6 +144,12 @@
 	<target name="util">
 		<antcall target="-build">
 			<param name="PACKAGE" value="${dir.package.util}" />
+		</antcall>
+	</target>
+	
+	<target name="content">
+		<antcall target="-build">
+			<param name="PACKAGE" value="${dir.package.content}" />
 		</antcall>
 	</target>
 	
@@ -201,7 +207,7 @@
 		</antcall>
 	</target>
 	
-	<target name="entity" depends="action,buff,item">
+	<target name="entity" depends="action,buff,item,ai">
 		<antcall target="-build">
 			<param name="PACKAGE" value="${dir.package.entity}" />
 		</antcall>
