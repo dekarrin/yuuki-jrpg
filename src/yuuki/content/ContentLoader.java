@@ -21,6 +21,7 @@ import yuuki.file.WorldLoader;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
 import yuuki.world.PopulationFactory;
+import yuuki.world.PortalFactory;
 
 /**
  * Handles resource loading of resources that are on disk.
@@ -195,6 +196,25 @@ public class ContentLoader {
 		}
 		finishLoadingOperation(sub);
 		return data;
+	}
+	
+	/**
+	 * Loads portal definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return A PortalFactory containing the loaded portal definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public PortalFactory loadPortals(String text) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		PortalFactory factory = null;
+		PortalLoader loader = createPortalLoader();
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_PORTALS);
+		factory = loader.load(path);
+		return factory;
 	}
 	
 	/**
