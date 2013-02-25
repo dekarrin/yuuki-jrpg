@@ -13,14 +13,11 @@ import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
-import yuuki.file.ImageLoader;
 import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
 import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
-import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
-import yuuki.file.WorldLoader;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
 import yuuki.world.Land;
@@ -89,7 +86,7 @@ public class ContentLoader {
 	 */
 	public ContentManifest readManifest() throws ResourceNotFoundException,
 	IOException {
-		CsvResourceLoader loader = createManifestLoader();
+		CsvResourceLoader loader = createDefLoader();
 		String[][] records = null;
 		records = loader.loadRecords(MANIFEST_FILE);
 		manifest = new ContentManifest();
@@ -376,7 +373,7 @@ public class ContentLoader {
 	private List<String> loadList(String text, String pathIndex) throws
 	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		CsvResourceLoader loader = createListLoader();
+		CsvResourceLoader loader = createDefLoader();
 		loader.setProgressMonitor(sub);
 		String[][] records = loader.loadRecords(manifest.get(pathIndex));
 		List<String> list = new ArrayList<String>(records.length);
@@ -401,7 +398,7 @@ public class ContentLoader {
 	private Map<String, List<String>> loadDefinitions(String text,
 			String pathIndex) throws ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		CsvResourceLoader loader = createDefinitionsLoader();
+		CsvResourceLoader loader = createDefLoader();
 		loader.setProgressMonitor(sub);
 		Map<String, List<String>> defs = new HashMap<String, List<String>>();
 		String[][] records = loader.loadRecords(manifest.get(pathIndex));
@@ -503,17 +500,6 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Creates a loader for reading sound effect files.
-	 * 
-	 * @return The created SoundLoader.
-	 */
-	protected SoundLoader createEffectLoader() {
-		String path = manifest.get(ContentManifest.DIR_EFFECTS);
-		File musicDir = new File(root, path);
-		return new SoundLoader(root, musicDir);
-	}
-	
-	/**
 	 * Creates a loader for reading entity definition files.
 	 * 
 	 * @param af The ActionFactory to use with entity creation.
@@ -524,51 +510,11 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Creates a loader for reading images.
-	 * 
-	 * @return The created ImageLoader.
-	 */
-	protected ImageLoader createImageLoader() {
-		String path = manifest.get(ContentManifest.DIR_IMAGES);
-		File imageDir = new File(root, path);
-		return new ImageLoader(root, imageDir);
-	}
-	
-	/**
-	 * Creates a loader for reading the content manifest file.
-	 * 
-	 * @return The created CsvResourceLoader.
-	 */
-	protected CsvResourceLoader createManifestLoader() {
-		return new CsvResourceLoader(root);
-	}
-	
-	/**
-	 * Creates a loader for reading music files.
-	 * 
-	 * @return The created SoundLoader.
-	 */
-	protected SoundLoader createMusicLoader() {
-		String path = manifest.get(ContentManifest.DIR_MUSIC);
-		File musicDir = new File(root, path);
-		return new SoundLoader(root, musicDir);
-	}
-	
-	/**
 	 * Creates a loader for reading definitions files.
 	 * 
 	 * @return The created definitions loader.
 	 */
-	protected CsvResourceLoader createDefinitionsLoader() {
-		return new CsvResourceLoader(root);
-	}
-	
-	/**
-	 * Creates a loader for reading list files.
-	 * 
-	 * @return The created list loader.
-	 */
-	protected CsvResourceLoader createListLoader() {
+	protected CsvResourceLoader createDefLoader() {
 		return new CsvResourceLoader(root);
 	}
 	
@@ -588,18 +534,6 @@ public class ContentLoader {
 	 */
 	protected TileLoader createTileLoader() {
 		return new TileLoader(root);
-	}
-	
-	/**
-	 * Creates a loader for reading world definition files.
-	 * 
-	 * @param pop The PopulationFactory to use for populating the lands.
-	 * @return The created WorldLoader.
-	 */
-	protected WorldLoader createWorldLoader(PopulationFactory pop) {
-		String path = manifest.get(ContentManifest.DIR_LANDS);
-		File landDir = new File(root, path);
-		return new WorldLoader(root, landDir, pop);
 	}
 	
 }
