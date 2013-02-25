@@ -6,13 +6,12 @@ import java.util.zip.ZipFile;
 
 import yuuki.action.ActionFactory;
 import yuuki.file.ActionLoader;
+import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
-import yuuki.file.ImageLoader;
+import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
-import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
-import yuuki.file.WorldLoader;
 import yuuki.world.PopulationFactory;
 
 /**
@@ -65,14 +64,29 @@ public class ZippedContentLoader extends ContentLoader {
 	}
 	
 	@Override
-	protected SoundLoader createEffectLoader() {
-		SoundLoader loader = null;
+	protected LandLoader createLandLoader(PopulationFactory pop) {
+		LandLoader loader = null;
 		try {
-			String path = manifest.get(ContentManifest.DIR_EFFECTS);
-			String soundRoot = zipRoot + path;
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new SoundLoader(zip, zipRoot, soundRoot);
+			ZipFile zip = new ZipFile(root);
+			loader = new LandLoader(zip, zipRoot, pop);
+			zip.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return loader;
+	}
+	
+	@Override
+	protected ByteArrayLoader createFileLoader(String pathIndex) {
+		ByteArrayLoader loader = null;
+		try {
+			ZipFile zip = new ZipFile(root);
+			String path = manifest.get(pathIndex);
+			if (!zipRoot.equalsIgnoreCase("") && !zipRoot.endsWith("/")) {
+				path = "/" + path;
+			}
+			String fullPath = zipRoot + path;
+			loader = new ByteArrayLoader(zip, fullPath);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,44 +109,11 @@ public class ZippedContentLoader extends ContentLoader {
 	}
 	
 	@Override
-	protected ImageLoader createImageLoader() {
-		ImageLoader loader = null;
-		try {
-			String path = manifest.get(ContentManifest.DIR_IMAGES);
-			String imageRoot = zipRoot + path;
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new ImageLoader(zip, zipRoot, imageRoot);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected CsvResourceLoader createManifestLoader() {
+	protected CsvResourceLoader createDefLoader() {
 		CsvResourceLoader loader = null;
 		try {
-			ZipFile zip = null;
-			zip = new ZipFile(root);
+			ZipFile zip = new ZipFile(root);
 			loader = new CsvResourceLoader(zip, zipRoot);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected SoundLoader createMusicLoader() {
-		SoundLoader loader = null;
-		try {
-			String path = manifest.get(ContentManifest.DIR_MUSIC);
-			String soundRoot = zipRoot + path;
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new SoundLoader(zip, zipRoot, soundRoot);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -161,22 +142,6 @@ public class ZippedContentLoader extends ContentLoader {
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new TileLoader(zip, zipRoot);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected WorldLoader createWorldLoader(PopulationFactory pop) {
-		WorldLoader loader = null;
-		try {
-			String path = manifest.get(ContentManifest.DIR_LANDS);
-			String landRoot = zipRoot + path;
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new WorldLoader(zip, zipRoot, landRoot, pop);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
