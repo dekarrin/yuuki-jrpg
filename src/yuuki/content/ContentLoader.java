@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import yuuki.action.ActionFactory;
+import yuuki.entity.EntityFactory;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
@@ -171,6 +172,30 @@ public class ContentLoader {
 	public Map<String, byte[]> loadEffects(String text,
 			Map<String, String> indexes) {
 		return loadIndexedFiles(text, indexes, ContentManifest.DIR_EFFECTS);
+	}
+	
+	/**
+	 * Loads entity definitions.
+	 * 
+	 * @param text What to set as the text of the monitor.
+	 * @param actions The ActionFactory to use for creating entity actions.
+	 * @return An EntityFactory with the entity definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public EntityFactory loadEntities(String text, ActionFactory actions)
+			throws ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		EntityFactory factory = null;
+		EntityLoader loader = createEntityLoader(actions);
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_ENTITIES);
+		try {
+			factory = loader.load(path);
+		} catch (ResourceFormatException e) {
+			System.err.println(e);
+		}
+		return factory;
 	}
 	
 	/**
