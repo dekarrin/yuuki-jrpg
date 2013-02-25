@@ -8,24 +8,19 @@ import java.util.List;
 import java.util.Map;
 
 import yuuki.action.ActionFactory;
-import yuuki.entity.EntityFactory;
 import yuuki.file.ActionLoader;
+import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
-import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
-import yuuki.graphic.ImageFactory;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
 import yuuki.world.PopulationFactory;
-import yuuki.world.PortalFactory;
-import yuuki.world.TileFactory;
-import yuuki.world.World;
 
 /**
  * Handles resource loading of resources that are on disk.
@@ -140,6 +135,69 @@ public class ContentLoader {
 	}
 	
 	/**
+	 * Loads music data.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param indexes Maps the indexes to the paths of the files to load.
+	 * @return A map containing the loaded music files identified by index.
+	 */
+	public Map<String, byte[]> loadMusic(String text,
+			Map<String, String> indexes) {
+		return loadIndexedFiles(text, indexes, ContentManifest.DIR_MUSIC);
+	}
+	
+	/**
+	 * Loads image data.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param indexes Maps the indexes to the paths of the files to load.
+	 * @return A map containing the loaded image files identified by index.
+	 */
+	public Map<String, byte[]> loadImages(String text,
+			Map<String, String> indexes) {
+		return loadIndexedFiles(text, indexes, ContentManifest.DIR_IMAGES);
+	}
+	
+	/**
+	 * Loads sound effect data.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param indexes Maps the indexes to the paths of the files to load.
+	 * @return A map containing the loaded sound files identified by index.
+	 */
+	public Map<String, byte[]> loadEffects(String text,
+			Map<String, String> indexes) {
+		return loadIndexedFiles(text, indexes, ContentManifest.DIR_EFFECTS);
+	}
+	
+	/**
+	 * Loads indexed files from a directory.
+	 * 
+	 * @param text What to set the text of the monitor.
+	 * @param indexes Maps the indexes to the paths of the files to load.
+	 * @param pathIndex The path to load files from.
+	 * @return A map containing the loaded files identified by their indexes.
+	 */
+	private Map<String, byte[]> loadIndexedFiles(String text,
+			Map<String, String> indexes, String pathIndex) {
+		Progressable sub = startLoadingOperation(text);
+		ByteArrayLoader loader = createFileLoader(pathIndex);
+		loader.setProgressMonitor(sub);
+		Map<String, byte[]> data = new HashMap<String, byte[]>();
+		for (String i : indexes.keySet()) {
+			byte[] fileData = null;
+			try {
+				fileData = loader.load(indexes.get(i));
+				data.put(i, fileData);
+			} catch (IOException e) {
+				System.out.println(e);
+			}
+		}
+		finishLoadingOperation(sub);
+		return data;
+	}
+	
+	/**
 	 * Loads music definitions.
 	 * 
 	 * @param text What to set the text of the monitor to.
@@ -196,7 +254,7 @@ public class ContentLoader {
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public Map<String, List<String>> loadDefinitions(String text,
+	private Map<String, List<String>> loadDefinitions(String text,
 			String pathIndex) throws ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
 		CsvResourceLoader loader = createDefinitionsLoader();
@@ -274,6 +332,18 @@ public class ContentLoader {
 	 */
 	protected ActionLoader createActionLoader() {
 		return new ActionLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading bytes from files in a folder.
+	 * 
+	 * @param pathIndex The index of the path of the directory.
+	 * @return The created ByteArrayLoader.
+	 */
+	protected ByteArrayLoader createFileLoader(String pathIndex) {
+		String path = manifest.get(pathIndex);
+		File fileDir = new File(root, path);
+		return new ByteArrayLoader(fileDir);
 	}
 	
 	/**
