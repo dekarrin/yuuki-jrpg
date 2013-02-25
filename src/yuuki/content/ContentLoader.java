@@ -14,6 +14,7 @@ import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
 import yuuki.file.PortalLoader;
+import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
@@ -196,6 +197,29 @@ public class ContentLoader {
 		}
 		finishLoadingOperation(sub);
 		return data;
+	}
+	
+	/**
+	 * Loads action definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return An ActionFactory containing the loaded action definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public ActionFactory loadActions(String text) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		ActionFactory factory = null;
+		ActionLoader loader = createActionLoader();
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_ACTIONS);
+		try {
+			factory = loader.load(path);
+		} catch (ResourceFormatException e) {
+			System.err.println(e);
+		}
+		return factory;
 	}
 	
 	/**
