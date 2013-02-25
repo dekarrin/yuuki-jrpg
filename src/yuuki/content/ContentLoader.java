@@ -14,6 +14,7 @@ import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
 import yuuki.file.ImageLoader;
+import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
 import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
@@ -22,6 +23,7 @@ import yuuki.file.TileLoader;
 import yuuki.file.WorldLoader;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
+import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
 import yuuki.world.PortalFactory;
 import yuuki.world.TileFactory;
@@ -172,6 +174,33 @@ public class ContentLoader {
 	public Map<String, byte[]> loadEffects(String text,
 			Map<String, String> indexes) {
 		return loadIndexedFiles(text, indexes, ContentManifest.DIR_EFFECTS);
+	}
+	
+	/**
+	 * Loads land file data.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param paths The paths to the land files.
+	 * @param pop The population factory to use for populating the lands.
+	 * @return A list containing the land file data.
+	 */
+	public List<Land> loadLands(String text, List<String> paths,
+			PopulationFactory pop) {
+		Progressable sub = startLoadingOperation(text);
+		LandLoader loader = createLandLoader(pop);
+		loader.setProgressMonitor(sub);
+		List<Land> lands = new ArrayList<Land>();
+		for (String p : paths) {
+			try {
+				Land land = loader.load(p);
+				lands.add(land);
+			} catch (IOException e) {
+				System.err.println(e);
+			} catch (ResourceFormatException e) {
+				System.err.println(e);
+			}
+		}
+		return lands;
 	}
 	
 	/**
@@ -421,6 +450,18 @@ public class ContentLoader {
 	 */
 	protected ActionLoader createActionLoader() {
 		return new ActionLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading land files.
+	 * 
+	 * @param pop The PopulationFactory for populating the Lands.
+	 * @return The created LandLoader.
+	 */
+	protected LandLoader createLandLoader(PopulationFactory pop) {
+		String path = manifest.get(ContentManifest.DIR_LANDS);
+		File landDir = new File(root, path);
+		return new LandLoader(landDir, pop);
 	}
 	
 	/**
