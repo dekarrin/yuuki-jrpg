@@ -116,17 +116,6 @@ public class ContentLoader {
 		return monitor;
 	}
 	
-	// start loading operation
-	// load it
-	// finish loading operation
-	
-	
-	// load entities, given an action factory
-	
-	// load an action factory, given nothing
-	
-	// load 
-	
 	/**
 	 * Loads sound effect definitions.
 	 * 
@@ -150,6 +139,19 @@ public class ContentLoader {
 	public Map<String, byte[]> loadMusic(String text,
 			Map<String, String> indexes) {
 		return loadIndexedFiles(text, indexes, ContentManifest.DIR_MUSIC);
+	}
+	
+	/**
+	 * Loads world definitions.
+	 * 
+	 * @param text What to set as the text of the monitor.
+	 * @return A list of paths to land files.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public List<String> loadWorld(String text) throws
+	ResourceNotFoundException, IOException {
+		return loadList(text, ContentManifest.FILE_WORLD);
 	}
 	
 	/**
@@ -362,12 +364,36 @@ public class ContentLoader {
 	}
 	
 	/**
+	 * Loads a definition file as a list of items. Only the first field from
+	 * each record is preserved.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param pathIndex The index of the path to load.
+	 * @return The list loaded from the definition file.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	private List<String> loadList(String text, String pathIndex) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		CsvResourceLoader loader = createListLoader();
+		loader.setProgressMonitor(sub);
+		String[][] records = loader.loadRecords(manifest.get(pathIndex));
+		List<String> list = new ArrayList<String>(records.length);
+		for (String[] r : records) {
+			String item = r[0];
+			list.add(item);
+		}
+		return list;
+	}
+	
+	/**
 	 * Loads definition files as a map of strings to lists of values. The first
 	 * field is treated as the identifier and the remaining fields are placed
 	 * into a list in the order that they appear.
 	 * 
 	 * @param text What to set the text of the monitor to.
-	 * @param pathIndex the index of the path to load.
+	 * @param pathIndex The index of the path to load.
 	 * @return The map loaded from the definition file.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
@@ -529,11 +555,20 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Creates a loader for reading definitions file.
+	 * Creates a loader for reading definitions files.
 	 * 
 	 * @return The created definitions loader.
 	 */
 	protected CsvResourceLoader createDefinitionsLoader() {
+		return new CsvResourceLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading list files.
+	 * 
+	 * @return The created list loader.
+	 */
+	protected CsvResourceLoader createListLoader() {
 		return new CsvResourceLoader(root);
 	}
 	
