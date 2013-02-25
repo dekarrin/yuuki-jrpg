@@ -132,11 +132,43 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Loads all content that this ContentPack has. If any content is included
+	 * that requires some other content that exists outside of this
+	 * ContentPack, then the required item is taken from the given Content
+	 * object.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 */
+	public void load(Content resolver) {
+		
+		loadAssets(resolver);
+		loadWorld(resolver);
+	}
+	
+	/**
+	 * Loads all content that is not the world and its lands.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 */
+	public void loadAssets(Content resolver) {
+		
+	}
+	
+	/**
+	 * The content loaded from disk.
+	 */
+	private Content content;
+	
+	/**
 	 * Checks whether this ContentPack contains sound effect files.
 	 * 
 	 * @return Whether it does.
 	 */
-	public boolean hasEffectFiles() {
+	public boolean hasEffects() {
 		return manifest.has(ContentManifest.DIR_EFFECTS);
 	}
 	
@@ -152,7 +184,7 @@ public class ContentPack {
 	 * 
 	 * @return Whether it does.
 	 */
-	public boolean hasImageFiles() {
+	public boolean hasImages() {
 		return manifest.has(ContentManifest.DIR_IMAGES);
 	}
 	
@@ -161,7 +193,7 @@ public class ContentPack {
 	 * 
 	 * @return Whether it does.
 	 */
-	public boolean hasLandFiles() {
+	public boolean hasLands() {
 		return manifest.has(ContentManifest.DIR_LANDS);
 	}
 	
@@ -170,28 +202,28 @@ public class ContentPack {
 	 * 
 	 * @return Whether it does.
 	 */
-	public boolean hasMusicFiles() {
+	public boolean hasMusic() {
 		return manifest.has(ContentManifest.DIR_MUSIC);
 	}
 	
 	/**
 	 * Whether this ContentPack contains sound definitions.
 	 */
-	public boolean hasNewEffects() {
+	public boolean hasEffectDefinitions() {
 		return manifest.has(ContentManifest.FILE_EFFECTS);
 	}
 	
 	/**
 	 * Whether this ContentPack contains image definitions.
 	 */
-	public boolean hasNewImages() {
+	public boolean hasImageDefinitions() {
 		return manifest.has(ContentManifest.FILE_IMAGES);
 	}
 	
 	/**
 	 * Whether this ContentPack contains music definitions.
 	 */
-	public boolean hasNewMusic() {
+	public boolean hasMusicDefinitions() {
 		return manifest.has(ContentManifest.FILE_MUSIC);
 	}
 	
