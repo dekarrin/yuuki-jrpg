@@ -467,6 +467,15 @@ public class ContentLoader {
 	}
 	
 	/**
+	 * Checks whether this ContentLoader is currently in a loading operation.
+	 * 
+	 * @return Whether it is.
+	 */
+	public boolean isInLoad() {
+		return inLoad;
+	}
+	
+	/**
 	 * Creates a loader for reading action definition files.
 	 * 
 	 * @return The created ActionLoader.
