@@ -8,6 +8,7 @@ import java.net.URLDecoder;
 import java.util.zip.ZipFile;
 
 import yuuki.file.ResourceNotFoundException;
+import yuuki.util.Progressable;
 
 /**
  * Loads content data and provides content pack meta data.
@@ -27,7 +28,7 @@ public class ContentPack {
 	/**
 	 * Handles the actual loading of resources from the content pack.
 	 */
-	private final ContentLoader fileManager;
+	private final ContentLoader loader;
 	
 	/**
 	 * Whether the resources included in this ContentPack are in a ZIP archive.
@@ -61,12 +62,12 @@ public class ContentPack {
 		inArchive = (jar != null);
 		if (inArchive) {
 			location = jar;
-			fileManager = new ZippedContentLoader(location, BUILT_IN_ROOT);
+			loader = new ZippedContentLoader(location, BUILT_IN_ROOT);
 		} else {
 			location = new File(getPackageRootFile(), BUILT_IN_ROOT);
-			fileManager = new ContentLoader(location);
+			loader = new ContentLoader(location);
 		}
-		manifest = fileManager.readManifest();
+		manifest = loader.readManifest();
 	}
 	
 	/**
@@ -80,10 +81,10 @@ public class ContentPack {
 	public ContentPack(File directory) throws ResourceNotFoundException,
 	IOException {
 		location = directory;
-		fileManager = new ContentLoader(location);
+		loader = new ContentLoader(location);
 		inArchive = false;
 		name = location.getName();
-		manifest = fileManager.readManifest();
+		manifest = loader.readManifest();
 	}
 	
 	/**
@@ -97,10 +98,10 @@ public class ContentPack {
 	public ContentPack(ZipFile archive) throws ResourceNotFoundException,
 	IOException {
 		location = new File(archive.getName());
-		fileManager = new ContentLoader(location);
+		loader = new ContentLoader(location);
 		inArchive = true;
 		name = location.getName();
-		manifest = fileManager.readManifest();
+		manifest = loader.readManifest();
 	}
 	
 	/**
@@ -132,36 +133,166 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Gets the monitor for the progress of the next call to load(). This must
+	 * be called only directly before load() is called, and only load() should
+	 * be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startLoadMonitor() {
+		return loader.initLoad(getLoadCount());
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadAssets(). This
+	 * must be called only directly before loadAssets() is called, and only
+	 * loadAssets() should be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startAssetLoadMonitor() {
+		return loader.initLoad(getAssetLoadCount());
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadWorld(). This
+	 * must be called only directly before loadWorld() is called, and only
+	 * loadWorld() should be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startWorldLoadMonitor() {
+		return loader.initLoad(getWorldLoadCount());
+	}
+	
+	/**
 	 * Loads all content that this ContentPack has. If any content is included
 	 * that requires some other content that exists outside of this
 	 * ContentPack, then the required item is taken from the given Content
 	 * object.
+	 * <P>
+	 * Before the load, any content already loaded is cleared from memory.
+	 * After the load, the loaded resources are stored in this ContentPack and
+	 * can be retrieved by using the getContent() method.
 	 * 
 	 * @param resolver Used to satisfy requirements that are not included in
 	 * this ContentPack. Set to null if requirements should not be
 	 * automatically fulfilled.
+	 * @return A monitor for getting the progress of the load.
 	 */
 	public void load(Content resolver) {
-		
+		content.reset();
+		if (!loader.isInLoad()) {
+			startLoadMonitor();
+		}
 		loadAssets(resolver);
 		loadWorld(resolver);
 	}
 	
 	/**
 	 * Loads all content that is not the world and its lands.
+	 * <P>
+	 * Before the load, any content already loaded is cleared from memory.
+	 * After the load, the loaded resources are stored in this ContentPack and
+	 * can be retrieved by using the getContent() method.
 	 * 
 	 * @param resolver Used to satisfy requirements that are not included in
 	 * this ContentPack. Set to null if requirements should not be
 	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	public void loadAssets(Content resolver) {
-		
+	public void loadAssets(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		content.resetAssets();
+		if (!loader.isInLoad()) {
+			startAssetLoadMonitor();
+		}
+		loadMusicDefinitions();
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of non-world
+	 * content that this ContentPack has.
+	 * 
+	 * @return The number of different non-world resource types that this
+	 * ContentPack has.
+	 */
+	private int getAssetLoadCount() {
+		int count = 0;
+		count += (hasMusicDefinitions())	? 1 : 0;
+		count += (hasEffectDefinitions())	? 1 : 0;
+		count += (hasImageDefinitions())	? 1 : 0;
+		count += (hasMusic())				? 1 : 0;
+		count += (hasEffects())				? 1 : 0;
+		count += (hasImages())				? 1 : 0;
+		count += (hasActions())				? 1 : 0;
+		count += (hasEntities())			? 1 : 0;
+		return count;
+	}
+	
+	/**
+	 * Loads music definitions. The music definitions are loaded from the
+	 * content container if it contains any.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadMusicDefinitions() throws ResourceNotFoundException,
+	IOException {
+		if (hasMusicDefinitions()) {
+			String msg = "Loading music definitions...";
+			content.musicDefinitions = loader.loadMusicDefinitions(msg);
+		}
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of content that
+	 * this ContentPack has.
+	 * 
+	 * @return The number of different resource types that this ContentPack
+	 * has.
+	 */
+	private int getLoadCount() {
+		return getAssetLoadCount() + getWorldLoadCount();
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of world content
+	 * that this ContentPack has.
+	 * 
+	 * @return The number of different world resource types that this
+	 * ContentPack has.
+	 */
+	private int getWorldLoadCount() {
+		int count = 0;
+		count += (hasLands())	? 1 : 0;
+		count += (hasPortals())	? 1 : 0;
+		count += (hasTiles())	? 1 : 0;
+		count += (hasWorld())	? 1 : 0;
+		return count;
 	}
 	
 	/**
 	 * The content loaded from disk.
 	 */
-	private Content content;
+	private final Content content = new Content();
 	
 	/**
 	 * Checks whether this ContentPack contains sound effect files.
