@@ -6,7 +6,7 @@ import java.util.Map;
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.graphic.ImageFactory;
-import yuuki.sound.DualSoundEngine;
+import yuuki.world.Land;
 import yuuki.world.PortalFactory;
 import yuuki.world.TileFactory;
 
@@ -15,14 +15,103 @@ import yuuki.world.TileFactory;
  */
 class Content {
 	
-	public ActionFactory actions = null;
-	public EntityFactory entities = null;
-	public ImageFactory images = null;
-	public DualSoundEngine sounds = new DualSoundEngine();
-	public PortalFactory portals = null;
-	public TileFactory tiles = null;
-	public Map<String, String> imagePaths = null;
-	public Map<String, String> effectPaths = null;
-	public Map<String, String> musicPaths = null;
-	public List<String> landPaths = null;
+	/**
+	 * Contains action definitions.
+	 */
+	public ActionFactory actions;
+	
+	/**
+	 * Contains paths to sound effect files.
+	 */
+	public Map<String, String> effectDefinitions;
+	
+	/**
+	 * Contains sound effect data.
+	 */
+	public Map<String, byte[]> effects;
+	
+	/**
+	 * Contains entity definitions.
+	 */
+	public EntityFactory entities;
+	
+	/**
+	 * Contains paths to image files.
+	 */
+	public Map<String, String> imageDefinitions;
+	
+	/**
+	 * Contains image data.
+	 */
+	public ImageFactory images;
+	
+	/**
+	 * Contains land data.
+	 */
+	public List<Land> lands;
+	
+	/**
+	 * Contains music data.
+	 */
+	public Map<String, byte[]> music;
+	
+	/**
+	 * Contains paths to music files.
+	 */
+	public Map<String, String> musicDefinitions;
+	
+	/**
+	 * Contains portal definitions.
+	 */
+	public PortalFactory portals;
+	
+	/**
+	 * Contains tile definitions.
+	 */
+	public TileFactory tiles;
+	
+	/**
+	 * Contains paths to land files.
+	 */
+	public List<String> world;
+	
+	/**
+	 * Creates a new Content instance.
+	 */
+	public Content() {
+		reset();
+	}
+	
+	/**
+	 * Resets all internal content to null.
+	 */
+	public void reset() {
+		resetAssets();
+		resetWorld();
+	}
+	
+	/**
+	 * Resets all non-world properties to null.
+	 */
+	public void resetAssets() {
+		musicDefinitions = null;
+		effectDefinitions = null;
+		imageDefinitions = null;
+		music = null;
+		effects = null;
+		images = null;
+		actions = null;
+		entities = null;
+	}
+	
+	/**
+	 * Resets all world properties to null.
+	 */
+	public void resetWorld() {
+		lands = null;
+		portals = null;
+		tiles = null;
+		world = null;
+	}
+	
 }
