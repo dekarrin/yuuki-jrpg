@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import yuuki.file.ResourceNotFoundException;
+import yuuki.sound.DualSoundEngine;
 
 /**
  * Handles content and loaders for Yuuki.
@@ -12,21 +13,16 @@ import yuuki.file.ResourceNotFoundException;
 public class ContentManager {
 	
 	/**
-	 * Holds all loaded content.
-	 */
-	private static class Content {
-		
-	}
-	
-	/**
 	 * The content packs.
 	 */
-	private Map<String, ContentPack> content;
+	private Map<String, ContentPack> packs;
 	
 	/**
-	 * The loaded content.
+	 * Creates sound effects.
 	 */
-	private Content loadedContent;
+	private Mergeable<Map<String, byte[]>> effectsEngine;
+	
+	
 	
 	/**
 	 * Creates a new ContentManager and loads the built-in content pack.
@@ -35,9 +31,9 @@ public class ContentManager {
 	 * @throws ResourceNotFoundException 
 	 */
 	public ContentManager() throws ResourceNotFoundException, IOException {
-		content = new HashMap<String, ContentPack>();
+		packs = new HashMap<String, ContentPack>();
 		ContentPack builtIn = new ContentPack();
-		content.put(ContentPack.BUILT_IN_NAME, builtIn);
+		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
 		enable(ContentPack.BUILT_IN_NAME);
 	}
 	
