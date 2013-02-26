@@ -1,7 +1,5 @@
 package yuuki.sound;
 
-import java.util.Map;
-
 import yuuki.util.InvalidIndexException;
 
 /**
@@ -26,6 +24,17 @@ public class DualSoundEngine {
 	public DualSoundEngine() {
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
+	}
+	
+	/**
+	 * Creates a new DualSoundEngine from the given engines.
+	 * 
+	 * @param effects The effect engine.
+	 * @param music The music engine.
+	 */
+	public DualSoundEngine(EffectEngine effects, MusicEngine music) {
+		effectEngine = effects;
+		musicEngine = music;
 	}
 	
 	/**
@@ -120,34 +129,12 @@ public class DualSoundEngine {
 	}
 	
 	/**
-	 * Sets the data for the effect engine.
-	 * 
-	 * @param effectData A map of string indexes to byte arrays containing
-	 * sound data for music. Such a map can be easily obtained using a
-	 * SoundLoader object.
-	 */
-	public void setEffectData(Map<String, byte[]> effectData) {
-		effectEngine.setData(effectData);
-	}
-	
-	/**
 	 * Sets the sound effect volume.
 	 * 
 	 * @param volume The new volume for sound effects.
 	 */
 	public void setEffectVolume(int volume) {
 		effectEngine.setVolume(volume);
-	}
-	
-	/**
-	 * Sets the data for the music engine.
-	 * 
-	 * @param musicData A map of string indexes to byte arrays containing sound
-	 * data for music. Such a map can be easily obtained using a SoundLoader
-	 * object.
-	 */
-	public void setMusicData(Map<String, byte[]> musicData) {
-		musicEngine.setData(musicData);
 	}
 	
 	/**
