@@ -1,15 +1,18 @@
 package yuuki.world;
 
 import java.awt.Point;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.content.Mergeable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Contains definitions for creating Portals.
  */
-public class PortalFactory {
+public class PortalFactory implements Mergeable<PortalFactory> {
 	
 	/**
 	 * The definition for a portal.
@@ -31,13 +34,13 @@ public class PortalFactory {
 	/**
 	 * Contains Portal definitions.
 	 */
-	private Map<String, PortalDefinition> definitions;
+	private Map<String, Deque<PortalDefinition>> definitions;
 	
 	/**
 	 * Creates a new PortalFactory.
 	 */
 	public PortalFactory() {
-		definitions = new HashMap<String, PortalDefinition>();
+		definitions = new HashMap<String, Deque<PortalDefinition>>();
 	}
 	
 	/**
@@ -50,7 +53,34 @@ public class PortalFactory {
 		PortalDefinition pd = new PortalDefinition();
 		pd.name = name;
 		pd.imageIndex = imageIndex;
-		definitions.put(name, pd);
+		Deque<PortalDefinition> d = definitions.get(name);
+		if (d == null) {
+			d = new ArrayDeque<PortalDefinition>();
+			definitions.put(name, d);
+		}
+		d.addFirst(pd);
+	}
+	
+	@Override
+	public void merge(PortalFactory content) {
+		for (String name : content.definitions.keySet()) {
+			PortalDefinition pd = content.definitions.get(name).peekFirst();
+			addDefinition(name, pd.imageIndex);
+		}
+	}
+	
+	@Override
+	public void subtract(PortalFactory content) {
+		for (String name : content.definitions.keySet()) {
+			PortalDefinition pd = content.definitions.get(name).peekFirst();
+			Deque<PortalDefinition> d = this.definitions.get(name);
+			if (d != null) {
+				d.removeFirstOccurrence(pd);
+				if (d.isEmpty()) {
+					this.definitions.remove(name);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -68,11 +98,12 @@ public class PortalFactory {
 	 */
 	public Portal createPortal(String name, String land, Point link) throws
 	InvalidIndexException {
-		PortalDefinition pd = definitions.get(name);
-		if (pd == null) {
+		Deque<PortalDefinition> pdDeque = definitions.get(name);
+		if (pdDeque == null) {
 			throw new InvalidIndexException(name);
 		}
-		Portal p = new Portal(pd.name, land, link, pd.imageIndex);
+		PortalDefinition def = pdDeque.peekFirst();
+		Portal p = new Portal(def.name, land, link, def.imageIndex);
 		return p;
 	}
 	
