@@ -342,6 +342,15 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Gets the loaded content from this ContentPack.
+	 * 
+	 * @return The content.
+	 */
+	public Content getContent() {
+		return content;
+	}
+	
+	/**
 	 * Loads portal definitions. The content is loaded from the content
 	 * container if this ContentPack contains it as indicated by the manifest.
 	 * 
