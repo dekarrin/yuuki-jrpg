@@ -5,7 +5,6 @@ import java.util.Map;
 
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
-import yuuki.graphic.ImageFactory;
 import yuuki.world.Land;
 import yuuki.world.PortalFactory;
 import yuuki.world.TileFactory;
@@ -43,7 +42,7 @@ class Content {
 	/**
 	 * Contains image data.
 	 */
-	public ImageFactory images;
+	public Map<String, byte[]> images;
 	
 	/**
 	 * Contains land data.
