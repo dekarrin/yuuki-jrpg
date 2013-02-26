@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
 import yuuki.action.ActionFactory;
+import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.util.Progressable;
+import yuuki.world.PopulationFactory;
+import yuuki.world.PortalFactory;
+import yuuki.world.TileFactory;
 
 /**
  * Loads content data and provides content pack meta data.
@@ -195,15 +200,160 @@ public class ContentPack {
 	 * @param resolver Used to satisfy requirements that are not included in
 	 * this ContentPack. Set to null if requirements should not be
 	 * automatically fulfilled.
-	 * @return A monitor for getting the progress of the load.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	public void load(Content resolver) {
+	public void load(Content resolver) throws ResourceNotFoundException,
+	IOException {
 		content.reset();
 		if (!loader.isInLoad()) {
 			startLoadMonitor();
 		}
 		loadAssets(resolver);
-		loadWorld(resolver);
+		loadWorldAssets(resolver);
+	}
+	
+	/**
+	 * Loads all content that is related to the world.
+	 * <P>
+	 * Before the load, any content already loaded is cleared from memory.
+	 * After the load, the loaded resources are stored in this ContentPack and
+	 * can be retrieved by using the getContent() method.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	public void loadWorldAssets(Content resolver) throws
+	ResourceNotFoundException, IOException {
+		content.resetWorld();
+		if (!loader.isInLoad()) {
+			startWorldLoadMonitor();
+		}
+		loadPortals();
+		loadTiles();
+		loadWorld();
+		loadLands(resolver);
+	}
+	
+	/**
+	 * Loads land data. The content is loaded from the content container if
+	 * this ContentPack contains it as indicated by the manifest. This method
+	 * must be called after loadWorld(), loadPortals(), loadTiles() and
+	 * loadEntities(), or it must be provided with an appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadLands(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		if (hasLands()) {
+			PopulationFactory pop = getPopFactory(resolver);
+			List<String> paths = null;
+			if (content.world != null) {
+				paths = content.world;
+			} else if (resolver != null && resolver.world != null) {
+				paths = resolver.world;
+			} else {
+				String msg = "Cannot load lands with no world";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading land data...";
+			content.lands = loader.loadLands(msg, paths, pop);
+		}
+	}
+	
+	/**
+	 * Gets a PopulationFactory by drawing on the loaded content and falling
+	 * back to the resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @return The PopulationFactory composed of loaded content.
+	 */
+	private PopulationFactory getPopFactory(Content resolver) {
+		EntityFactory ef = null;
+		TileFactory tf = null;
+		PortalFactory pf = null;
+		if (content.entities != null) {
+			ef = content.entities;
+		} else if (resolver != null && resolver.entities != null) {
+			ef = resolver.entities;
+		} else {
+			String msg = "Cannot get pop. factory with no ent. factory";
+			throw new IllegalStateException(msg);
+		}
+		if (content.tiles != null) {
+			tf = content.tiles;
+		} else if (resolver != null && resolver.tiles != null) {
+			tf = resolver.tiles;
+		} else {
+			String msg = "Cannot get pop. factory with no tile factory";
+			throw new IllegalStateException(msg);
+		}
+		if (content.portals != null) {
+			pf = content.portals;
+		} else if (resolver != null && resolver.portals != null) {
+			pf = resolver.portals;
+		} else {
+			String msg = "Cannot get pop. factory with no portal factory";
+			throw new IllegalStateException(msg);
+		}
+		return new PopulationFactory(tf, ef, pf);
+	}
+	
+	/**
+	 * Loads the list of maps. The content is loaded from the content container
+	 * if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadWorld() throws ResourceNotFoundException, IOException {
+		if (hasWorld()) {
+			String msg = "Loading world...";
+			content.world = loader.loadWorld(msg);
+		}
+	}
+	
+	/**
+	 * Loads tile definitions. The content is loaded from the content container
+	 * if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadTiles() throws ResourceNotFoundException, IOException {
+		if (hasTiles()) {
+			String msg = "Loading tiles...";
+			content.tiles = loader.loadTiles(msg);
+		}
+	}
+	
+	/**
+	 * Loads portal definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadPortals() throws ResourceNotFoundException, IOException {
+		if (hasPortals()) {
+			String msg = "Loading portals...";
+			content.portals = loader.loadPortals(msg);
+		}
 	}
 	
 	/**
@@ -460,10 +610,10 @@ public class ContentPack {
 	 */
 	private int getWorldLoadCount() {
 		int count = 0;
-		count += (hasLands())	? 1 : 0;
 		count += (hasPortals())	? 1 : 0;
 		count += (hasTiles())	? 1 : 0;
 		count += (hasWorld())	? 1 : 0;
+		count += (hasLands())	? 1 : 0;
 		return count;
 	}
 	
