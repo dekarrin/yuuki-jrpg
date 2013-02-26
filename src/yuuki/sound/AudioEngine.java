@@ -71,6 +71,9 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 			Deque<byte[]> d = sounds.get(k);
 			if (d != null) {
 				d.removeFirstOccurrence(content.get(k));
+				if (d.isEmpty()) {
+					sounds.remove(k);
+				}
 			}
 		}
 	}

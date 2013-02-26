@@ -1,29 +1,32 @@
 package yuuki.graphic;
 
 import java.awt.Image;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import yuuki.content.Mergeable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Loads image files and gets Image resources.
  */
-public class ImageFactory {
+public class ImageFactory implements Mergeable<Map<String, byte[]>> {
 	
 	/**
 	 * Maps image data to String indexes.
 	 */
-	private Map<String, byte[]> images;
+	private Map<String, Deque<byte[]>> images;
 	
 	/**
 	 * Creates a new ImageFactory. The data file is read and the image files
 	 * are cached.
 	 */
 	public ImageFactory() {
-		images = new HashMap<String, byte[]>();
+		images = new HashMap<String, Deque<byte[]>>();
 	}
 	
 	/**
@@ -33,7 +36,32 @@ public class ImageFactory {
 	 * @param imageData The bytes that make up the image.
 	 */
 	public void addDefinition(String index, byte[] imageData) {
-		images.put(index, imageData);
+		Deque<byte[]> d = images.get(index);
+		if (d == null) {
+			d = new ArrayDeque<byte[]>();
+			images.put(index, d);
+		}
+		d.addFirst(imageData);
+	}
+	
+	@Override
+	public void merge(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			addDefinition(k, content.get(k));
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			Deque<byte[]> d = images.get(k);
+			if (d != null) {
+				d.removeFirstOccurrence(content.get(k));
+				if (d.isEmpty()) {
+					images.remove(k);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -47,11 +75,11 @@ public class ImageFactory {
 	 */
 	public Image createImage(String index) throws InvalidIndexException {
 		Image image = null;
-		byte[] imageData = images.get(index);
-		if (imageData == null) {
+		Deque<byte[]> imageDataDeque = images.get(index);
+		if (imageDataDeque == null) {
 			throw new InvalidIndexException(index);
 		}
-		ImageIcon icon = new ImageIcon(imageData);
+		ImageIcon icon = new ImageIcon(imageDataDeque.peekFirst());
 		image = icon.getImage();
 		return image;
 	}
