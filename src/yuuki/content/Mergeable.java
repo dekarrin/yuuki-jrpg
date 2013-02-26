@@ -1,7 +1,5 @@
 package yuuki.content;
 
-import java.util.Collection;
-
 /**
  * Indicates that implementors can have content merged with them.
  * 
@@ -16,7 +14,7 @@ public interface Mergeable<E> {
 	 * 
 	 * @param content The content to be merged in with the existing content.
 	 */
-	public void merge(Collection<E> content);
+	public void merge(E content);
 	
 	/**
 	 * Subtracts content from the current set of content. If content that was
@@ -25,6 +23,6 @@ public interface Mergeable<E> {
 	 * 
 	 * @param content The content to be subtracted from the existing content.
 	 */
-	public void subtract(Collection<E> content);
+	public void subtract(E content);
 	
 }
