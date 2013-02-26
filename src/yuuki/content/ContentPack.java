@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
+import yuuki.action.ActionFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.util.Progressable;
 
@@ -225,6 +227,181 @@ public class ContentPack {
 			startAssetLoadMonitor();
 		}
 		loadMusicDefinitions();
+		loadEffectDefinitions();
+		loadImageDefinitions();
+		loadMusic(resolver);
+		loadEffects(resolver);
+		loadImages(resolver);
+		loadActions();
+		loadEntities(resolver);
+	}
+	
+	/**
+	 * Loads Entities. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest. This method must
+	 * be called after loadActions(), or it must be provided with an
+	 * appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadEntities(Content resolver) throws
+	ResourceNotFoundException, IOException {
+		if (hasEntities()) {
+			ActionFactory a = null;
+			if (content.actions != null) {
+				a = content.actions;
+			} else if (resolver != null && resolver.actions != null) {
+				a = resolver.actions;
+			} else {
+				String msg = "Cannot load entities with no actions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading entities...";
+			content.entities = loader.loadEntities(msg, a);
+		}
+	}
+	
+	/**
+	 * Loads actions. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadActions() throws ResourceNotFoundException, IOException {
+		if (hasActions()) {
+			String msg = "Loading actions...";
+			content.actions = loader.loadActions(msg);
+		}
+	}
+	
+	/**
+	 * Loads images. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest. This method must
+	 * be called after loadImageDefinitions(), or it must be provided with an
+	 * appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadImages(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		if (hasImages()) {
+			Map<String, String> paths = null;
+			if (content.imageDefinitions != null) {
+				paths = content.imageDefinitions;
+			} else if (resolver != null && resolver.imageDefinitions != null) {
+				paths = resolver.imageDefinitions;
+			} else {
+				String msg = "Cannot load images with no definitions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading images...";
+			content.images = loader.loadImages(msg, paths);
+		}
+	}
+	
+	/**
+	 * Loads sound effects. The content is loaded from the content container if
+	 * this ContentPack contains it as indicated by the manifest. This method
+	 * must be called after loadEffectDefinitions(), or it must be provided
+	 * with an appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadEffects(Content resolver) throws
+	ResourceNotFoundException, IOException {
+		if (hasEffects()) {
+			Map<String, String> paths = null;
+			if (content.effectDefinitions != null) {
+				paths = content.effectDefinitions;
+			} else if (resolver != null &&
+					resolver.effectDefinitions != null) {
+				paths = resolver.effectDefinitions;
+			} else {
+				String msg = "Cannot load effects with no definitions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading sound effects...";
+			content.effects = loader.loadEffects(msg, paths);
+		}
+	}
+	
+	/**
+	 * Loads music. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest. This method must
+	 * be called after loadMusicDefinitions(), or it must be provided with an
+	 * appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadMusic(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		if (hasMusic()) {
+			Map<String, String> paths = null;
+			if (content.musicDefinitions != null) {
+				paths = content.musicDefinitions;
+			} else if (resolver != null && resolver.musicDefinitions != null) {
+				paths = resolver.musicDefinitions;
+			} else {
+				String msg = "Cannot load music with no definitions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading music...";
+			content.music = loader.loadMusic(msg, paths);
+		}
+	}
+	
+	/**
+	 * Loads image definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadImageDefinitions() throws ResourceNotFoundException,
+	IOException {
+		if (hasImageDefinitions()) {
+			String msg = "Loading image definitions...";
+			content.imageDefinitions = loader.loadImageDefinitions(msg);
+		}
+	}
+	
+	/**
+	 * Loads sound effect definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadEffectDefinitions() throws ResourceNotFoundException,
+	IOException {
+		if (hasEffectDefinitions()) {
+			String msg = "Loading effect definitions...";
+			content.effectDefinitions = loader.loadEffectDefinitions(msg);
+		}
 	}
 	
 	/**
@@ -248,8 +425,9 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Loads music definitions. The music definitions are loaded from the
-	 * content container if it contains any.
+	 * Loads music definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
+	 * 
 	 * @throws ResourceNotFoundException If any resource in the load is not
 	 * found.
 	 * @throws IOException If an I/O error occurs during the load.
