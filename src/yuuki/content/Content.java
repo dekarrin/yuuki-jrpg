@@ -7,7 +7,7 @@ import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.world.Land;
 import yuuki.world.Portal;
-import yuuki.world.TileFactory;
+import yuuki.world.Tile;
 
 /**
  * Container class to hold all items that are a part of game engine content.
@@ -67,7 +67,7 @@ class Content {
 	/**
 	 * Contains tile definitions.
 	 */
-	public TileFactory tiles;
+	public Map<Integer, Tile.Definition> tiles;
 	
 	/**
 	 * Contains paths to land files.
