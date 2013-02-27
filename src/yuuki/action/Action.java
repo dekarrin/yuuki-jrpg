@@ -14,6 +14,23 @@ import yuuki.entity.Stat;
 public abstract class Action implements Cloneable {
 	
 	/**
+	 * Holds the information needed to create an instance of an Action.
+	 */
+	public static class Definition {
+		
+		/**
+		 * The arguments to the createInstance() method of the Action.
+		 */
+		public String[] args;
+		
+		/**
+		 * The name of this ActionDefinition.
+		 */
+		public String name;
+		
+	}
+	
+	/**
 	 * The teams that were affected by this Action.
 	 */
 	private HashSet<Integer> affectedTeams;
