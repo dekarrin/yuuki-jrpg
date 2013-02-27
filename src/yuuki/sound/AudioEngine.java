@@ -61,7 +61,7 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 				d = new ArrayDeque<byte[]>();
 				sounds.put(k, d);
 			}
-			d.addFirst(content.get(k));
+			d.push(content.get(k));
 		}
 	}
 	
@@ -70,7 +70,7 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 		for (String k : content.keySet()) {
 			Deque<byte[]> d = sounds.get(k);
 			if (d != null) {
-				d.removeFirstOccurrence(content.get(k));
+				d.remove(content.get(k));
 				if (d.isEmpty()) {
 					sounds.remove(k);
 				}
@@ -207,7 +207,7 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 		if (dataDeque == null) {
 			throw new InvalidIndexException(index);
 		}
-		return dataDeque.peekFirst();
+		return dataDeque.peek();
 	}
 	
 }

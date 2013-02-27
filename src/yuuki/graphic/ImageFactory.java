@@ -41,7 +41,7 @@ public class ImageFactory implements Mergeable<Map<String, byte[]>> {
 			d = new ArrayDeque<byte[]>();
 			images.put(index, d);
 		}
-		d.addFirst(imageData);
+		d.push(imageData);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class ImageFactory implements Mergeable<Map<String, byte[]>> {
 		for (String k : content.keySet()) {
 			Deque<byte[]> d = images.get(k);
 			if (d != null) {
-				d.removeFirstOccurrence(content.get(k));
+				d.remove(content.get(k));
 				if (d.isEmpty()) {
 					images.remove(k);
 				}
@@ -79,7 +79,7 @@ public class ImageFactory implements Mergeable<Map<String, byte[]>> {
 		if (imageDataDeque == null) {
 			throw new InvalidIndexException(index);
 		}
-		ImageIcon icon = new ImageIcon(imageDataDeque.peekFirst());
+		ImageIcon icon = new ImageIcon(imageDataDeque.peek());
 		image = icon.getImage();
 		return image;
 	}
