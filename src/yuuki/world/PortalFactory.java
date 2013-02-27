@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import yuuki.content.Mergeable;
@@ -13,7 +12,8 @@ import yuuki.util.InvalidIndexException;
 /**
  * Contains definitions for creating Portals.
  */
-public class PortalFactory implements Mergeable<List<Portal.Definition>> {
+public class PortalFactory implements
+Mergeable<Map<String, Portal.Definition>> {
 	
 	/**
 	 * Contains Portal definitions.
@@ -46,15 +46,15 @@ public class PortalFactory implements Mergeable<List<Portal.Definition>> {
 	}
 	
 	@Override
-	public void merge(List<Portal.Definition> content) {
-		for (Portal.Definition pd : content) {
+	public void merge(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
 			addDefinition(pd.name, pd.imageIndex);
 		}
 	}
 	
 	@Override
-	public void subtract(List<Portal.Definition> content) {
-		for (Portal.Definition pd : content) {
+	public void subtract(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
 			Deque<Portal.Definition> d = definitions.get(pd.name);
 			if (d != null) {
 				d.remove(pd);

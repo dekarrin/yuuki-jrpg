@@ -62,7 +62,7 @@ class Content {
 	/**
 	 * Contains portal definitions.
 	 */
-	public List<Portal.Definition> portals;
+	public Map<String, Portal.Definition> portals;
 	
 	/**
 	 * Contains tile definitions.
