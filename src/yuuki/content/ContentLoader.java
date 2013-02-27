@@ -305,10 +305,10 @@ public class ContentLoader {
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public List<Portal.Definition> loadPortals(String text) throws
+	public Map<String, Portal.Definition> loadPortals(String text) throws
 	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		List<Portal.Definition> portals = null;
+		Map<String, Portal.Definition> portals = null;
 		PortalLoader loader = createPortalLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_PORTALS);
