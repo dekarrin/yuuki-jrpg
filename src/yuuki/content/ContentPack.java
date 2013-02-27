@@ -33,14 +33,29 @@ public class ContentPack {
 	private static final String BUILT_IN_ROOT = "yuuki/resource/";
 	
 	/**
-	 * Handles the actual loading of resources from the content pack.
+	 * The content loaded from disk.
 	 */
-	private final ContentLoader loader;
+	private final Content content = new Content();
+	
+	/**
+	 * Whether this ContentPack is enabled.
+	 */
+	private boolean enabled = false;
 	
 	/**
 	 * Whether the resources included in this ContentPack are in a ZIP archive.
 	 */
 	private final boolean inArchive;
+	
+	/**
+	 * Whether this ContentPack has been fully loaded.
+	 */
+	private boolean loaded = false;
+	
+	/**
+	 * Handles the actual loading of resources from the content pack.
+	 */
+	private final ContentLoader loader;
 	
 	/**
 	 * The location of the content directory that holds all data for this pack.
@@ -112,6 +127,15 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Gets the loaded content from this ContentPack.
+	 * 
+	 * @return The content.
+	 */
+	public Content getContent() {
+		return content;
+	}
+	
+	/**
 	 * Gets the location of this ContentPack. If this ContentPack is located in
 	 * an archive, the File representing that archive will be returned. If this
 	 * ContentPack is located in a directory, the File representing that
@@ -140,51 +164,115 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Gets the monitor for the progress of the next call to load(). This must
-	 * be called only directly before load() is called, and only load() should
-	 * be called after this method.
-	 * 
-	 * Getting the monitor of any loading operation is optional, but once the
-	 * monitor for a particular load operation is obtained, the next load
-	 * operation must be the one that the monitor is intended for. Failure to
-	 * follow this will result in undefined behavior.
-	 * 
-	 * @return The monitor.
+	 * Whether this ContentPack contains sound definitions.
 	 */
-	public Progressable startLoadMonitor() {
-		return loader.initLoad(getLoadCount());
+	public boolean hasEffectDefinitions() {
+		return manifest.has(ContentManifest.FILE_EFFECTS);
 	}
 	
 	/**
-	 * Gets the monitor for the progress of the next call to loadAssets(). This
-	 * must be called only directly before loadAssets() is called, and only
-	 * loadAssets() should be called after this method.
+	 * Checks whether this ContentPack contains sound effect files.
 	 * 
-	 * Getting the monitor of any loading operation is optional, but once the
-	 * monitor for a particular load operation is obtained, the next load
-	 * operation must be the one that the monitor is intended for. Failure to
-	 * follow this will result in undefined behavior.
-	 * 
-	 * @return The monitor.
+	 * @return Whether it does.
 	 */
-	public Progressable startAssetLoadMonitor() {
-		return loader.initLoad(getAssetLoadCount());
+	public boolean hasEffects() {
+		return manifest.has(ContentManifest.DIR_EFFECTS);
 	}
 	
 	/**
-	 * Gets the monitor for the progress of the next call to loadWorld(). This
-	 * must be called only directly before loadWorld() is called, and only
-	 * loadWorld() should be called after this method.
-	 * 
-	 * Getting the monitor of any loading operation is optional, but once the
-	 * monitor for a particular load operation is obtained, the next load
-	 * operation must be the one that the monitor is intended for. Failure to
-	 * follow this will result in undefined behavior.
-	 * 
-	 * @return The monitor.
+	 * Whether this ContentPack contains entities.
 	 */
-	public Progressable startWorldLoadMonitor() {
-		return loader.initLoad(getWorldLoadCount());
+	public boolean hasEntities() {
+		return manifest.has(ContentManifest.FILE_ENTITIES);
+	}
+	
+	/**
+	 * Whether this ContentPack contains image definitions.
+	 */
+	public boolean hasImageDefinitions() {
+		return manifest.has(ContentManifest.FILE_IMAGES);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains image files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasImages() {
+		return manifest.has(ContentManifest.DIR_IMAGES);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains land files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasLands() {
+		return manifest.has(ContentManifest.DIR_LANDS);
+	}
+	
+	/**
+	 * Checks whether this ContentPack contains music files.
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean hasMusic() {
+		return manifest.has(ContentManifest.DIR_MUSIC);
+	}
+	
+	/**
+	 * Whether this ContentPack contains music definitions.
+	 */
+	public boolean hasMusicDefinitions() {
+		return manifest.has(ContentManifest.FILE_MUSIC);
+	}
+	
+	/**
+	 * Whether this ContentPack contains portal definitions.
+	 */
+	public boolean hasPortals() {
+		return manifest.has(ContentManifest.FILE_PORTALS);
+	}
+	
+	/**
+	 * Whether this ContentPack contains a tile definition.
+	 */
+	public boolean hasTiles() {
+		return manifest.has(ContentManifest.FILE_TILES);
+	}
+	
+	/**
+	 * Whether this ContentPack contains a world definition.
+	 */
+	public boolean hasWorld() {
+		return manifest.has(ContentManifest.FILE_WORLD);
+	}
+	
+	/**
+	 * Whether this ContentPack has been set to be enabled.
+	 * 
+	 * @return Whether it has been.
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	/**
+	 * Checks whether this ContentPack is located inside of a ZIP archive.
+	 * 
+	 * @return Whether this ContentPack is an a ZIP archive.
+	 */
+	public boolean isInArchive() {
+		return inArchive;
+	}
+	
+	/**
+	 * Whether this ContentPack has been fully loaded.
+	 * 
+	 * @return Whether it has been.
+	 */
+	public boolean isLoaded() {
+		return loaded;
 	}
 	
 	/**
@@ -212,6 +300,37 @@ public class ContentPack {
 		}
 		loadAssets(resolver);
 		loadWorldAssets(resolver);
+		loaded = true;
+	}
+	
+	/**
+	 * Loads all content that is not the world and its lands.
+	 * <P>
+	 * Before the load, any content already loaded is cleared from memory.
+	 * After the load, the loaded resources are stored in this ContentPack and
+	 * can be retrieved by using the getContent() method.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	public void loadAssets(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		content.resetAssets();
+		if (!loader.isInLoad()) {
+			startAssetLoadMonitor();
+		}
+		loadMusicDefinitions();
+		loadEffectDefinitions();
+		loadImageDefinitions();
+		loadMusic(resolver);
+		loadEffects(resolver);
+		loadImages(resolver);
+		loadActions();
+		loadEntities(resolver);
 	}
 	
 	/**
@@ -241,34 +360,170 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Loads land data. The content is loaded from the content container if
-	 * this ContentPack contains it as indicated by the manifest. This method
-	 * must be called after loadWorld(), loadPortals(), loadTiles() and
-	 * loadEntities(), or it must be provided with an appropriate resolver.
+	 * Sets whether this ContentPack is enabled.
 	 * 
-	 * @param resolver Used to satisfy requirements that are not included in
-	 * this ContentPack. Set to null if requirements should not be
-	 * automatically fulfilled.
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
+	 * @param enabled What to set the enabled state to.
 	 */
-	private void loadLands(Content resolver) throws ResourceNotFoundException,
-	IOException {
-		if (hasLands()) {
-			PopulationFactory pop = getPopFactory(resolver);
-			List<String> paths = null;
-			if (content.world != null) {
-				paths = content.world;
-			} else if (resolver != null && resolver.world != null) {
-				paths = resolver.world;
-			} else {
-				String msg = "Cannot load lands with no world";
-				throw new IllegalStateException(msg);
-			}
-			String msg = "Loading land data...";
-			content.lands = loader.loadLands(msg, paths, pop);
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadAssets(). This
+	 * must be called only directly before loadAssets() is called, and only
+	 * loadAssets() should be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startAssetLoadMonitor() {
+		return loader.initLoad(getAssetLoadCount());
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to load(). This must
+	 * be called only directly before load() is called, and only load() should
+	 * be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startLoadMonitor() {
+		return loader.initLoad(getLoadCount());
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadWorld(). This
+	 * must be called only directly before loadWorld() is called, and only
+	 * loadWorld() should be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @return The monitor.
+	 */
+	public Progressable startWorldLoadMonitor() {
+		return loader.initLoad(getWorldLoadCount());
+	}
+	
+	/**
+	 * Creates a File object that points to the package root located by a URL.
+	 * 
+	 * @param jarUrl The URL that locates the current class.
+	 * @param packages The package depth of the current class.
+	 * @return The File object that points to the package root in the given
+	 * URL.
+	 */
+	private File composePackageRootFile(URL resource, int packageCount) {
+		String decoded = null;
+		try {
+			decoded = URLDecoder.decode(resource.toString(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// should never happen.
+			System.err.println("UTF-8 identified as unsupported!");
 		}
+		String path = decoded.replace("!", "");
+		if (path.startsWith("jar:")) {
+			path = path.substring(4);
+		}
+		if (path.startsWith("file:")) {
+			path = path.substring(5);
+		}
+		File jarFile = new File(path);
+		for (int i = 0; i < packageCount + 1; i++) {
+			jarFile = jarFile.getParentFile();
+		}
+		return jarFile;
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of non-world
+	 * content that this ContentPack has.
+	 * 
+	 * @return The number of different non-world resource types that this
+	 * ContentPack has.
+	 */
+	private int getAssetLoadCount() {
+		int count = 0;
+		count += (hasMusicDefinitions())	? 1 : 0;
+		count += (hasEffectDefinitions())	? 1 : 0;
+		count += (hasImageDefinitions())	? 1 : 0;
+		count += (hasMusic())				? 1 : 0;
+		count += (hasEffects())				? 1 : 0;
+		count += (hasImages())				? 1 : 0;
+		count += (hasActions())				? 1 : 0;
+		count += (hasEntities())			? 1 : 0;
+		return count;
+	}
+	
+	/**
+	 * Gets the JAR file this class is being executed from if it exists.
+	 * 
+	 * @return The JAR file, or null if this class is not being executed from a
+	 * JAR file.
+	 */
+	private File getJarFile() {
+		String className = getClass().getName();
+		int packageCount = getPackageCount(className);
+		String classPath = className.replace('.', '/');
+		URL resource = getClass().getResource("/" + classPath + ".class");
+		if (resource.toString().startsWith("jar:")) {
+			return composePackageRootFile(resource, packageCount);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of content that
+	 * this ContentPack has.
+	 * 
+	 * @return The number of different resource types that this ContentPack
+	 * has.
+	 */
+	private int getLoadCount() {
+		return getAssetLoadCount() + getWorldLoadCount();
+	}
+	
+	/**
+	 * Counts the number of packages in a class name.
+	 * 
+	 * @param className The fully-qualified class name to count the number of
+	 * packages in.
+	 * @return The number of packages in the given name.
+	 */
+	private int getPackageCount(String className) {
+		int count = 0;
+		for (int i = 0; i < className.length(); i++) {
+			if (className.charAt(i) == '.') {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/**
+	 * Gets the File that represents the root of the package structure that
+	 * this class is located in.
+	 * 
+	 * @return The File that represents the package root.
+	 */
+	private File getPackageRootFile() {
+		String className = getClass().getName();
+		int packageCount = getPackageCount(className);
+		String classPath = className.replace('.', '/');
+		URL resource = getClass().getResource("/" + classPath + ".class");
+		return composePackageRootFile(resource, packageCount);
 	}
 	
 	/**
@@ -312,117 +567,19 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Loads the list of maps. The content is loaded from the content container
-	 * if this ContentPack contains it as indicated by the manifest.
+	 * Gets the number of loads necessary to load every type of world content
+	 * that this ContentPack has.
 	 * 
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
+	 * @return The number of different world resource types that this
+	 * ContentPack has.
 	 */
-	private void loadWorld() throws ResourceNotFoundException, IOException {
-		if (hasWorld()) {
-			String msg = "Loading world...";
-			content.world = loader.loadWorld(msg);
-		}
-	}
-	
-	/**
-	 * Loads tile definitions. The content is loaded from the content container
-	 * if this ContentPack contains it as indicated by the manifest.
-	 * 
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	private void loadTiles() throws ResourceNotFoundException, IOException {
-		if (hasTiles()) {
-			String msg = "Loading tiles...";
-			content.tiles = loader.loadTiles(msg);
-		}
-	}
-	
-	/**
-	 * Gets the loaded content from this ContentPack.
-	 * 
-	 * @return The content.
-	 */
-	public Content getContent() {
-		return content;
-	}
-	
-	/**
-	 * Loads portal definitions. The content is loaded from the content
-	 * container if this ContentPack contains it as indicated by the manifest.
-	 * 
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	private void loadPortals() throws ResourceNotFoundException, IOException {
-		if (hasPortals()) {
-			String msg = "Loading portals...";
-			content.portals = loader.loadPortals(msg);
-		}
-	}
-	
-	/**
-	 * Loads all content that is not the world and its lands.
-	 * <P>
-	 * Before the load, any content already loaded is cleared from memory.
-	 * After the load, the loaded resources are stored in this ContentPack and
-	 * can be retrieved by using the getContent() method.
-	 * 
-	 * @param resolver Used to satisfy requirements that are not included in
-	 * this ContentPack. Set to null if requirements should not be
-	 * automatically fulfilled.
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	public void loadAssets(Content resolver) throws ResourceNotFoundException,
-	IOException {
-		content.resetAssets();
-		if (!loader.isInLoad()) {
-			startAssetLoadMonitor();
-		}
-		loadMusicDefinitions();
-		loadEffectDefinitions();
-		loadImageDefinitions();
-		loadMusic(resolver);
-		loadEffects(resolver);
-		loadImages(resolver);
-		loadActions();
-		loadEntities(resolver);
-	}
-	
-	/**
-	 * Loads Entities. The content is loaded from the content container if this
-	 * ContentPack contains it as indicated by the manifest. This method must
-	 * be called after loadActions(), or it must be provided with an
-	 * appropriate resolver.
-	 * 
-	 * @param resolver Used to satisfy requirements that are not included in
-	 * this ContentPack. Set to null if requirements should not be
-	 * automatically fulfilled.
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	private void loadEntities(Content resolver) throws
-	ResourceNotFoundException, IOException {
-		if (hasEntities()) {
-			ActionFactory a = new ActionFactory();
-			if (content.actions != null) {
-				a.merge(content.actions);
-			} else if (resolver != null && resolver.actions != null) {
-				a.merge(resolver.actions);
-			} else {
-				String msg = "Cannot load entities with no actions";
-				throw new IllegalStateException(msg);
-			}
-			String msg = "Loading entities...";
-			content.entities = loader.loadEntities(msg, a);
-		}
+	private int getWorldLoadCount() {
+		int count = 0;
+		count += (hasPortals())	? 1 : 0;
+		count += (hasTiles())	? 1 : 0;
+		count += (hasWorld())	? 1 : 0;
+		count += (hasLands())	? 1 : 0;
+		return count;
 	}
 	
 	/**
@@ -441,32 +598,18 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Loads images. The content is loaded from the content container if this
-	 * ContentPack contains it as indicated by the manifest. This method must
-	 * be called after loadImageDefinitions(), or it must be provided with an
-	 * appropriate resolver.
+	 * Loads sound effect definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
 	 * 
-	 * @param resolver Used to satisfy requirements that are not included in
-	 * this ContentPack. Set to null if requirements should not be
-	 * automatically fulfilled.
 	 * @throws ResourceNotFoundException If any resource in the load is not
 	 * found.
 	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	private void loadImages(Content resolver) throws ResourceNotFoundException,
+	private void loadEffectDefinitions() throws ResourceNotFoundException,
 	IOException {
-		if (hasImages()) {
-			Map<String, String> paths = null;
-			if (content.imageDefinitions != null) {
-				paths = content.imageDefinitions;
-			} else if (resolver != null && resolver.imageDefinitions != null) {
-				paths = resolver.imageDefinitions;
-			} else {
-				String msg = "Cannot load images with no definitions";
-				throw new IllegalStateException(msg);
-			}
-			String msg = "Loading images...";
-			content.images = loader.loadImages(msg, paths);
+		if (hasEffectDefinitions()) {
+			String msg = "Loading effect definitions...";
+			content.effectDefinitions = loader.loadEffectDefinitions(msg);
 		}
 	}
 	
@@ -502,6 +645,113 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Loads Entities. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest. This method must
+	 * be called after loadActions(), or it must be provided with an
+	 * appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadEntities(Content resolver) throws
+	ResourceNotFoundException, IOException {
+		if (hasEntities()) {
+			ActionFactory a = new ActionFactory();
+			if (content.actions != null) {
+				a.merge(content.actions);
+			} else if (resolver != null && resolver.actions != null) {
+				a.merge(resolver.actions);
+			} else {
+				String msg = "Cannot load entities with no actions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading entities...";
+			content.entities = loader.loadEntities(msg, a);
+		}
+	}
+	
+	/**
+	 * Loads image definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadImageDefinitions() throws ResourceNotFoundException,
+	IOException {
+		if (hasImageDefinitions()) {
+			String msg = "Loading image definitions...";
+			content.imageDefinitions = loader.loadImageDefinitions(msg);
+		}
+	}
+	
+	/**
+	 * Loads images. The content is loaded from the content container if this
+	 * ContentPack contains it as indicated by the manifest. This method must
+	 * be called after loadImageDefinitions(), or it must be provided with an
+	 * appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadImages(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		if (hasImages()) {
+			Map<String, String> paths = null;
+			if (content.imageDefinitions != null) {
+				paths = content.imageDefinitions;
+			} else if (resolver != null && resolver.imageDefinitions != null) {
+				paths = resolver.imageDefinitions;
+			} else {
+				String msg = "Cannot load images with no definitions";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading images...";
+			content.images = loader.loadImages(msg, paths);
+		}
+	}
+	
+	/**
+	 * Loads land data. The content is loaded from the content container if
+	 * this ContentPack contains it as indicated by the manifest. This method
+	 * must be called after loadWorld(), loadPortals(), loadTiles() and
+	 * loadEntities(), or it must be provided with an appropriate resolver.
+	 * 
+	 * @param resolver Used to satisfy requirements that are not included in
+	 * this ContentPack. Set to null if requirements should not be
+	 * automatically fulfilled.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadLands(Content resolver) throws ResourceNotFoundException,
+	IOException {
+		if (hasLands()) {
+			PopulationFactory pop = getPopFactory(resolver);
+			List<String> paths = null;
+			if (content.world != null) {
+				paths = content.world;
+			} else if (resolver != null && resolver.world != null) {
+				paths = resolver.world;
+			} else {
+				String msg = "Cannot load lands with no world";
+				throw new IllegalStateException(msg);
+			}
+			String msg = "Loading land data...";
+			content.lands = loader.loadLands(msg, paths, pop);
+		}
+	}
+	
+	/**
 	 * Loads music. The content is loaded from the content container if this
 	 * ContentPack contains it as indicated by the manifest. This method must
 	 * be called after loadMusicDefinitions(), or it must be provided with an
@@ -532,58 +782,6 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Loads image definitions. The content is loaded from the content
-	 * container if this ContentPack contains it as indicated by the manifest.
-	 * 
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	private void loadImageDefinitions() throws ResourceNotFoundException,
-	IOException {
-		if (hasImageDefinitions()) {
-			String msg = "Loading image definitions...";
-			content.imageDefinitions = loader.loadImageDefinitions(msg);
-		}
-	}
-	
-	/**
-	 * Loads sound effect definitions. The content is loaded from the content
-	 * container if this ContentPack contains it as indicated by the manifest.
-	 * 
-	 * @throws ResourceNotFoundException If any resource in the load is not
-	 * found.
-	 * @throws IOException If an I/O error occurs during the load.
-	 */
-	private void loadEffectDefinitions() throws ResourceNotFoundException,
-	IOException {
-		if (hasEffectDefinitions()) {
-			String msg = "Loading effect definitions...";
-			content.effectDefinitions = loader.loadEffectDefinitions(msg);
-		}
-	}
-	
-	/**
-	 * Gets the number of loads necessary to load every type of non-world
-	 * content that this ContentPack has.
-	 * 
-	 * @return The number of different non-world resource types that this
-	 * ContentPack has.
-	 */
-	private int getAssetLoadCount() {
-		int count = 0;
-		count += (hasMusicDefinitions())	? 1 : 0;
-		count += (hasEffectDefinitions())	? 1 : 0;
-		count += (hasImageDefinitions())	? 1 : 0;
-		count += (hasMusic())				? 1 : 0;
-		count += (hasEffects())				? 1 : 0;
-		count += (hasImages())				? 1 : 0;
-		count += (hasActions())				? 1 : 0;
-		count += (hasEntities())			? 1 : 0;
-		return count;
-	}
-	
-	/**
 	 * Loads music definitions. The content is loaded from the content
 	 * container if this ContentPack contains it as indicated by the manifest.
 	 * 
@@ -600,208 +798,48 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Gets the number of loads necessary to load every type of content that
-	 * this ContentPack has.
+	 * Loads portal definitions. The content is loaded from the content
+	 * container if this ContentPack contains it as indicated by the manifest.
 	 * 
-	 * @return The number of different resource types that this ContentPack
-	 * has.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	private int getLoadCount() {
-		return getAssetLoadCount() + getWorldLoadCount();
-	}
-	
-	/**
-	 * Gets the number of loads necessary to load every type of world content
-	 * that this ContentPack has.
-	 * 
-	 * @return The number of different world resource types that this
-	 * ContentPack has.
-	 */
-	private int getWorldLoadCount() {
-		int count = 0;
-		count += (hasPortals())	? 1 : 0;
-		count += (hasTiles())	? 1 : 0;
-		count += (hasWorld())	? 1 : 0;
-		count += (hasLands())	? 1 : 0;
-		return count;
-	}
-	
-	/**
-	 * The content loaded from disk.
-	 */
-	private final Content content = new Content();
-	
-	/**
-	 * Checks whether this ContentPack contains sound effect files.
-	 * 
-	 * @return Whether it does.
-	 */
-	public boolean hasEffects() {
-		return manifest.has(ContentManifest.DIR_EFFECTS);
-	}
-	
-	/**
-	 * Whether this ContentPack contains entities.
-	 */
-	public boolean hasEntities() {
-		return manifest.has(ContentManifest.FILE_ENTITIES);
-	}
-	
-	/**
-	 * Checks whether this ContentPack contains image files.
-	 * 
-	 * @return Whether it does.
-	 */
-	public boolean hasImages() {
-		return manifest.has(ContentManifest.DIR_IMAGES);
-	}
-	
-	/**
-	 * Checks whether this ContentPack contains land files.
-	 * 
-	 * @return Whether it does.
-	 */
-	public boolean hasLands() {
-		return manifest.has(ContentManifest.DIR_LANDS);
-	}
-	
-	/**
-	 * Checks whether this ContentPack contains music files.
-	 * 
-	 * @return Whether it does.
-	 */
-	public boolean hasMusic() {
-		return manifest.has(ContentManifest.DIR_MUSIC);
-	}
-	
-	/**
-	 * Whether this ContentPack contains sound definitions.
-	 */
-	public boolean hasEffectDefinitions() {
-		return manifest.has(ContentManifest.FILE_EFFECTS);
-	}
-	
-	/**
-	 * Whether this ContentPack contains image definitions.
-	 */
-	public boolean hasImageDefinitions() {
-		return manifest.has(ContentManifest.FILE_IMAGES);
-	}
-	
-	/**
-	 * Whether this ContentPack contains music definitions.
-	 */
-	public boolean hasMusicDefinitions() {
-		return manifest.has(ContentManifest.FILE_MUSIC);
-	}
-	
-	/**
-	 * Whether this ContentPack contains portal definitions.
-	 */
-	public boolean hasPortals() {
-		return manifest.has(ContentManifest.FILE_PORTALS);
-	}
-	
-	/**
-	 * Whether this ContentPack contains a tile definition.
-	 */
-	public boolean hasTiles() {
-		return manifest.has(ContentManifest.FILE_TILES);
-	}
-	
-	/**
-	 * Whether this ContentPack contains a world definition.
-	 */
-	public boolean hasWorld() {
-		return manifest.has(ContentManifest.FILE_WORLD);
-	}
-	
-	/**
-	 * Checks whether this ContentPack is located inside of a ZIP archive.
-	 * 
-	 * @return Whether this ContentPack is an a ZIP archive.
-	 */
-	public boolean isInArchive() {
-		return inArchive;
-	}
-	
-	/**
-	 * Creates a File object that points to the package root located by a URL.
-	 * 
-	 * @param jarUrl The URL that locates the current class.
-	 * @param packages The package depth of the current class.
-	 * @return The File object that points to the package root in the given
-	 * URL.
-	 */
-	private File composePackageRootFile(URL resource, int packageCount) {
-		String decoded = null;
-		try {
-			decoded = URLDecoder.decode(resource.toString(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// should never happen.
-			System.err.println("UTF-8 identified as unsupported!");
-		}
-		String path = decoded.replace("!", "");
-		if (path.startsWith("jar:")) {
-			path = path.substring(4);
-		}
-		if (path.startsWith("file:")) {
-			path = path.substring(5);
-		}
-		File jarFile = new File(path);
-		for (int i = 0; i < packageCount + 1; i++) {
-			jarFile = jarFile.getParentFile();
-		}
-		return jarFile;
-	}
-	
-	/**
-	 * Gets the JAR file this class is being executed from if it exists.
-	 * 
-	 * @return The JAR file, or null if this class is not being executed from a
-	 * JAR file.
-	 */
-	private File getJarFile() {
-		String className = getClass().getName();
-		int packageCount = getPackageCount(className);
-		String classPath = className.replace('.', '/');
-		URL resource = getClass().getResource("/" + classPath + ".class");
-		if (resource.toString().startsWith("jar:")) {
-			return composePackageRootFile(resource, packageCount);
-		} else {
-			return null;
+	private void loadPortals() throws ResourceNotFoundException, IOException {
+		if (hasPortals()) {
+			String msg = "Loading portals...";
+			content.portals = loader.loadPortals(msg);
 		}
 	}
 	
 	/**
-	 * Counts the number of packages in a class name.
+	 * Loads tile definitions. The content is loaded from the content container
+	 * if this ContentPack contains it as indicated by the manifest.
 	 * 
-	 * @param className The fully-qualified class name to count the number of
-	 * packages in.
-	 * @return The number of packages in the given name.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	private int getPackageCount(String className) {
-		int count = 0;
-		for (int i = 0; i < className.length(); i++) {
-			if (className.charAt(i) == '.') {
-				count++;
-			}
+	private void loadTiles() throws ResourceNotFoundException, IOException {
+		if (hasTiles()) {
+			String msg = "Loading tiles...";
+			content.tiles = loader.loadTiles(msg);
 		}
-		return count;
 	}
 	
 	/**
-	 * Gets the File that represents the root of the package structure that
-	 * this class is located in.
+	 * Loads the list of maps. The content is loaded from the content container
+	 * if this ContentPack contains it as indicated by the manifest.
 	 * 
-	 * @return The File that represents the package root.
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	private File getPackageRootFile() {
-		String className = getClass().getName();
-		int packageCount = getPackageCount(className);
-		String classPath = className.replace('.', '/');
-		URL resource = getClass().getResource("/" + classPath + ".class");
-		return composePackageRootFile(resource, packageCount);
+	private void loadWorld() throws ResourceNotFoundException, IOException {
+		if (hasWorld()) {
+			String msg = "Loading world...";
+			content.world = loader.loadWorld(msg);
+		}
 	}
 	
 }
