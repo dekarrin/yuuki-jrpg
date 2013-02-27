@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import yuuki.action.Action;
-import yuuki.entity.EntityFactory;
+import yuuki.entity.Character;
 import yuuki.world.Land;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
@@ -32,7 +32,7 @@ class Content {
 	/**
 	 * Contains entity definitions.
 	 */
-	public EntityFactory entities;
+	public Map<String, Character.Definition> entities;
 	
 	/**
 	 * Contains paths to image files.

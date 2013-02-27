@@ -9,7 +9,6 @@ import java.util.Map;
 
 import yuuki.action.Action;
 import yuuki.action.ActionFactory;
-import yuuki.entity.EntityFactory;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
@@ -25,6 +24,7 @@ import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
+import yuuki.entity.Character;
 
 /**
  * Handles resource loading of resources that are on disk.
@@ -208,23 +208,24 @@ public class ContentLoader {
 	 * 
 	 * @param text What to set as the text of the monitor.
 	 * @param actions The ActionFactory to use for creating entity actions.
-	 * @return An EntityFactory with the entity definitions.
+	 * @return A map containing names mapped to the loaded entities.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public EntityFactory loadEntities(String text, ActionFactory actions)
-			throws ResourceNotFoundException, IOException {
+	public Map<String, Character.Definition> loadEntities(String text,
+			ActionFactory actions) throws ResourceNotFoundException,
+			IOException {
 		Progressable sub = startLoadingOperation(text);
-		EntityFactory factory = null;
+		Map<String, Character.Definition> entities = null;
 		EntityLoader loader = createEntityLoader(actions);
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_ENTITIES);
 		try {
-			factory = loader.load(path);
+			entities = loader.load(path);
 		} catch (ResourceFormatException e) {
 			System.err.println(e);
 		}
-		return factory;
+		return entities;
 	}
 	
 	/**

@@ -16,6 +16,101 @@ import yuuki.world.Movable;
 public abstract class Character implements Movable, Displayable {
 	
 	/**
+	 * Holds the arguments to creating an actual instance of a Character.
+	 */
+	public static class Definition implements Cloneable {
+		
+		/**
+		 * The accuracy of the Character.
+		 */
+		public Stat acc;
+		
+		/**
+		 * The agility of the Character.
+		 */
+		public Stat agl;
+		
+		/**
+		 * The defense of the Character.
+		 */
+		public Stat def;
+		
+		/**
+		 * The hit points of the Character.
+		 */
+		public VariableStat hp;
+		
+		/**
+		 * The luck of the Character.
+		 */
+		public Stat luk;
+		
+		/**
+		 * The magic of the Character.
+		 */
+		public Stat mag;
+		
+		/**
+		 * The actions that the Character may perform.
+		 */
+		public Action[] moves;
+		
+		/**
+		 * The mana points of the Character.
+		 */
+		public VariableStat mp;
+		
+		/**
+		 * The name of the Character. Not used when creating a PlayerCharacter.
+		 */
+		public String name;
+		
+		/**
+		 * The path to the overworld art for the Character.
+		 */
+		public String overworldArt;
+		
+		/**
+		 * The strength of the Character.
+		 */
+		public Stat str;
+		
+		/**
+		 * The experience points gained when this Character is defeated.
+		 */
+		public int xp;
+		
+		/**
+		 * Performs a deep-copy on this Definition.
+		 * 
+		 * @return the deep-copied Definition.
+		 */
+		@Override
+		public Definition clone() {
+			Definition d2 = null;
+			try {
+				d2 = (Definition) super.clone();
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+			d2.hp = hp.clone();
+			d2.mp = mp.clone();
+			d2.str = str.clone();
+			d2.def = def.clone();
+			d2.agl = agl.clone();
+			d2.acc = acc.clone();
+			d2.mag = mag.clone();
+			d2.luk = luk.clone();
+			d2.moves = new Action[moves.length];
+			for (int i = 0; i < moves.length; i++) {
+				d2.moves[i] = moves[i].clone();
+			}
+			return d2;
+		}
+		
+	}
+	
+	/**
 	 * The base used in calculating required experience.
 	 */
 	protected static final double XP_BASE = 2.0;
