@@ -22,7 +22,7 @@ import yuuki.util.Progressable;
 import yuuki.util.Progression;
 import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
-import yuuki.world.PortalFactory;
+import yuuki.world.Portal;
 import yuuki.world.TileFactory;
 
 /**
@@ -303,15 +303,15 @@ public class ContentLoader {
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public PortalFactory loadPortals(String text) throws
+	public List<Portal.Definition> loadPortals(String text) throws
 	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		PortalFactory factory = null;
+		List<Portal.Definition> portals = null;
 		PortalLoader loader = createPortalLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_PORTALS);
-		factory = loader.load(path);
-		return factory;
+		portals = loader.load(path);
+		return portals;
 	}
 	
 	/**

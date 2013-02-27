@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import yuuki.content.Mergeable;
@@ -12,35 +13,18 @@ import yuuki.util.InvalidIndexException;
 /**
  * Contains definitions for creating Portals.
  */
-public class PortalFactory implements Mergeable<PortalFactory> {
-	
-	/**
-	 * The definition for a portal.
-	 */
-	private static class PortalDefinition {
-		
-		/**
-		 * The index of the image file for this portal.
-		 */
-		String imageIndex;
-		
-		/**
-		 * The name of the portal.
-		 */
-		String name;
-		
-	}
+public class PortalFactory implements Mergeable<List<Portal.Definition>> {
 	
 	/**
 	 * Contains Portal definitions.
 	 */
-	private Map<String, Deque<PortalDefinition>> definitions;
+	private Map<String, Deque<Portal.Definition>> definitions;
 	
 	/**
 	 * Creates a new PortalFactory.
 	 */
 	public PortalFactory() {
-		definitions = new HashMap<String, Deque<PortalDefinition>>();
+		definitions = new HashMap<String, Deque<Portal.Definition>>();
 	}
 	
 	/**
@@ -50,34 +34,32 @@ public class PortalFactory implements Mergeable<PortalFactory> {
 	 * @param imageIndex The index of the image for this portal.
 	 */
 	public void addDefinition(String name, String imageIndex) {
-		PortalDefinition pd = new PortalDefinition();
+		Portal.Definition pd = new Portal.Definition();
 		pd.name = name;
 		pd.imageIndex = imageIndex;
-		Deque<PortalDefinition> d = definitions.get(name);
+		Deque<Portal.Definition> d = definitions.get(name);
 		if (d == null) {
-			d = new ArrayDeque<PortalDefinition>();
+			d = new ArrayDeque<Portal.Definition>();
 			definitions.put(name, d);
 		}
-		d.addFirst(pd);
+		d.push(pd);
 	}
 	
 	@Override
-	public void merge(PortalFactory content) {
-		for (String name : content.definitions.keySet()) {
-			PortalDefinition pd = content.definitions.get(name).peekFirst();
-			addDefinition(name, pd.imageIndex);
+	public void merge(List<Portal.Definition> content) {
+		for (Portal.Definition pd : content) {
+			addDefinition(pd.name, pd.imageIndex);
 		}
 	}
 	
 	@Override
-	public void subtract(PortalFactory content) {
-		for (String name : content.definitions.keySet()) {
-			PortalDefinition pd = content.definitions.get(name).peekFirst();
-			Deque<PortalDefinition> d = this.definitions.get(name);
+	public void subtract(List<Portal.Definition> content) {
+		for (Portal.Definition pd : content) {
+			Deque<Portal.Definition> d = definitions.get(pd.name);
 			if (d != null) {
-				d.removeFirstOccurrence(pd);
+				d.remove(pd);
 				if (d.isEmpty()) {
-					this.definitions.remove(name);
+					definitions.remove(pd.name);
 				}
 			}
 		}
@@ -98,11 +80,11 @@ public class PortalFactory implements Mergeable<PortalFactory> {
 	 */
 	public Portal createPortal(String name, String land, Point link) throws
 	InvalidIndexException {
-		Deque<PortalDefinition> pdDeque = definitions.get(name);
+		Deque<Portal.Definition> pdDeque = definitions.get(name);
 		if (pdDeque == null) {
 			throw new InvalidIndexException(name);
 		}
-		PortalDefinition def = pdDeque.peekFirst();
+		Portal.Definition def = pdDeque.peek();
 		Portal p = new Portal(def.name, land, link, def.imageIndex);
 		return p;
 	}
