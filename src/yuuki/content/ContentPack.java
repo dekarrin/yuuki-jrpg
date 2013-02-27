@@ -411,11 +411,11 @@ public class ContentPack {
 	private void loadEntities(Content resolver) throws
 	ResourceNotFoundException, IOException {
 		if (hasEntities()) {
-			ActionFactory a = null;
+			ActionFactory a = new ActionFactory();
 			if (content.actions != null) {
-				a = content.actions;
+				a.merge(content.actions);
 			} else if (resolver != null && resolver.actions != null) {
-				a = resolver.actions;
+				a.merge(resolver.actions);
 			} else {
 				String msg = "Cannot load entities with no actions";
 				throw new IllegalStateException(msg);

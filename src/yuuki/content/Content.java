@@ -3,7 +3,7 @@ package yuuki.content;
 import java.util.List;
 import java.util.Map;
 
-import yuuki.action.ActionFactory;
+import yuuki.action.Action;
 import yuuki.entity.EntityFactory;
 import yuuki.world.Land;
 import yuuki.world.Portal;
@@ -17,7 +17,7 @@ class Content {
 	/**
 	 * Contains action definitions.
 	 */
-	public ActionFactory actions;
+	public Map<Integer, Action.Definition> actions;
 	
 	/**
 	 * Contains paths to sound effect files.

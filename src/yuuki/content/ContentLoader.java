@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import yuuki.action.Action;
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ActionLoader;
@@ -276,23 +277,23 @@ public class ContentLoader {
 	 * Loads action definitions.
 	 * 
 	 * @param text What to set the text of the monitor to.
-	 * @return An ActionFactory containing the loaded action definitions.
+	 * @return A map containing action IDs mapped to the loaded definitions.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public ActionFactory loadActions(String text) throws
+	public Map<Integer, Action.Definition> loadActions(String text) throws
 	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		ActionFactory factory = null;
+		Map<Integer, Action.Definition> actions = null;
 		ActionLoader loader = createActionLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_ACTIONS);
 		try {
-			factory = loader.load(path);
+			actions = loader.load(path);
 		} catch (ResourceFormatException e) {
 			System.err.println(e);
 		}
-		return factory;
+		return actions;
 	}
 	
 	/**
