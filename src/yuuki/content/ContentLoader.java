@@ -23,7 +23,7 @@ import yuuki.util.Progression;
 import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
 import yuuki.world.Portal;
-import yuuki.world.TileFactory;
+import yuuki.world.Tile;
 
 /**
  * Handles resource loading of resources that are on disk.
@@ -257,19 +257,19 @@ public class ContentLoader {
 	 * Loads tile definitions.
 	 * 
 	 * @param text What to set the text of the monitor to.
-	 * @return A TileFactory containing the loaded tile definitions.
+	 * @return A map containing tile IDs mapped to the loaded tiles.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public TileFactory loadTiles(String text) throws
+	public Map<Integer, Tile.Definition> loadTiles(String text) throws
 	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		TileFactory factory = null;
+		Map<Integer, Tile.Definition> tiles = null;
 		TileLoader loader = createTileLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_TILES);
-		factory = loader.load(path);
-		return factory;
+		tiles = loader.load(path);
+		return tiles;
 	}
 	
 	/**

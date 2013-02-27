@@ -12,29 +12,7 @@ import yuuki.util.InvalidIndexException;
 /**
  * Contains the definitions for creating tiles.
  */
-public class TileFactory implements Mergeable<TileFactory> {
-	
-	/**
-	 * The definition of a Tile.
-	 */
-	private static class TileDefinition {
-		
-		/**
-		 * The image data for the tile.
-		 */
-		public String image;
-		
-		/**
-		 * The name of the Tile.
-		 */
-		public String name;
-		
-		/**
-		 * Whether the Tile can be walked on.
-		 */
-		public boolean walkable;
-		
-	}
+public class TileFactory implements Mergeable<Map<Integer, Tile.Definition>> {
 	
 	/**
 	 * The character that represents a void tile.
@@ -49,13 +27,13 @@ public class TileFactory implements Mergeable<TileFactory> {
 	/**
 	 * The definitions in this TileFactory.
 	 */
-	private Map<Integer, Deque<TileDefinition>> definitions;
+	private Map<Integer, Deque<Tile.Definition>> definitions;
 	
 	/**
 	 * Creates a new TileFactory.
 	 */
 	public TileFactory() {
-		definitions = new HashMap<Integer, Deque<TileDefinition>>();
+		definitions = new HashMap<Integer, Deque<Tile.Definition>>();
 		addDefinition(VOID_CHAR, "void", false, VOID_PATH);
 	}
 	
@@ -71,35 +49,35 @@ public class TileFactory implements Mergeable<TileFactory> {
 	 */
 	public void addDefinition(int id, String name, boolean walkable, String
 			path) {
-		TileDefinition def = new TileDefinition();
+		Tile.Definition def = new Tile.Definition();
 		def.name = name;
 		def.walkable = walkable;
 		def.image = path;
-		Deque<TileDefinition> d = definitions.get(name);
+		Deque<Tile.Definition> d = definitions.get(name);
 		if (d == null) {
-			d = new ArrayDeque<TileDefinition>();
+			d = new ArrayDeque<Tile.Definition>();
 			definitions.put(id, d);
 		}
 		d.push(def);
 	}
 	
 	@Override
-	public void merge(TileFactory content) {
-		for (int id : content.definitions.keySet()) {
-			TileDefinition td = content.definitions.get(id).peek();
+	public void merge(Map<Integer, Tile.Definition> content) {
+		for (int id : content.keySet()) {
+			Tile.Definition td = content.get(id);
 			addDefinition(id, td.name, td.walkable, td.image);
 		}
 	}
 	
 	@Override
-	public void subtract(TileFactory content) {
-		for (int id : content.definitions.keySet()) {
-			TileDefinition td = content.definitions.get(id).peek();
-			Deque<TileDefinition> d = this.definitions.get(id);
+	public void subtract(Map<Integer, Tile.Definition> content) {
+		for (int id : content.keySet()) {
+			Tile.Definition td = content.get(id);
+			Deque<Tile.Definition> d = definitions.get(id);
 			if (d != null) {
 				d.remove(td);
 				if (d.isEmpty()) {
-					this.definitions.remove(id);
+					definitions.remove(id);
 				}
 			}
 		}
@@ -117,11 +95,11 @@ public class TileFactory implements Mergeable<TileFactory> {
 	 * Tile.
 	 */
 	public Tile createTile(int id) throws InvalidIndexException {
-		Deque<TileDefinition> tdDeque = definitions.get(id);
+		Deque<Tile.Definition> tdDeque = definitions.get(id);
 		if (tdDeque == null) {
 			throw new InvalidIndexException(id);
 		}
-		TileDefinition def = tdDeque.peekFirst();
+		Tile.Definition def = tdDeque.peekFirst();
 		Tile tile = new Tile(def.name, def.walkable, def.image);
 		tile.setId(id);
 		return tile;

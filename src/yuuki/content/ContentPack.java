@@ -282,7 +282,7 @@ public class ContentPack {
 	 */
 	private PopulationFactory getPopFactory(Content resolver) {
 		EntityFactory ef = null;
-		TileFactory tf = null;
+		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
 		if (content.entities != null) {
 			ef = content.entities;
@@ -293,9 +293,9 @@ public class ContentPack {
 			throw new IllegalStateException(msg);
 		}
 		if (content.tiles != null) {
-			tf = content.tiles;
+			tf.merge(content.tiles);
 		} else if (resolver != null && resolver.tiles != null) {
-			tf = resolver.tiles;
+			tf.merge(resolver.tiles);
 		} else {
 			String msg = "Cannot get pop. factory with no tile factory";
 			throw new IllegalStateException(msg);
