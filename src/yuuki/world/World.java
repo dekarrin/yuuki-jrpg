@@ -1,19 +1,24 @@
 package yuuki.world;
 
 import java.awt.Point;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import yuuki.content.Mergeable;
 import yuuki.util.Grid;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Handles overworld navigation and data. The World class is responsible for
  * loading land data, keeping track of entities on the current land, and
  * modifying the current land.
  */
-public class World {
+public class World implements Mergeable<Map<String, Land>> {
 	
 	/**
 	 * The land currently being controlled by this World.
@@ -23,13 +28,13 @@ public class World {
 	/**
 	 * All lands loaded, indexed by land name.
 	 */
-	private Map<String, Land> lands;
+	private Map<String, Deque<Land>> lands;
 	
 	/**
 	 * Creates a new, empty World.
 	 */
 	public World() {
-		lands = new HashMap<String, Land>();
+		lands = new HashMap<String, Deque<Land>>();
 	}
 	
 	/**
@@ -38,7 +43,32 @@ public class World {
 	 * @param land The Land to add.
 	 */
 	public void addLand(Land land) {
-		lands.put(land.getName(), land);
+		Deque<Land> d = lands.get(land.getName());
+		if (d == null) {
+			d = new ArrayDeque<Land>();
+			lands.put(land.getName(), d);
+		}
+		d.push(land);
+	}
+	
+	@Override
+	public void merge(Map<String, Land> content) {
+		for (Land l : content.values()) {
+			addLand(l);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, Land> content) {
+		for (Land land : content.values()) {
+			Deque<Land> d = lands.get(land.getName());
+			if (d != null) {
+				d.remove(land);
+				if (d.isEmpty()) {
+					lands.remove(d);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -66,9 +96,11 @@ public class World {
 	 * Changes the active land.
 	 * 
 	 * @param landName The name of the land to switch to.
+	 * @throws InvalidIndexException If the given name does not refer to an
+	 * existing Land.
 	 */
-	public void changeLand(String landName) {
-		activeLand = lands.get(landName);
+	public void changeLand(String landName) throws InvalidIndexException {
+		activeLand = getLand(landName);
 	}
 	
 	/**
@@ -77,11 +109,10 @@ public class World {
 	 * @return An array containing the names of all loaded Lands.
 	 */
 	public String[] getAllLandNames() {
-		ArrayList<String> names = new ArrayList<String>();
-		for (Land l : lands.values()) {
-			names.add(l.getName());
-		}
-		return names.toArray(new String[0]);
+		Set<String> nameSet = lands.keySet();
+		String[] names = new String[nameSet.size()];
+		nameSet.toArray(names);
+		return names;
 	}
 	
 	/**
@@ -159,12 +190,31 @@ public class World {
 		List<Movable> moves = activeLand.getTransfers();
 		for (Movable m : moves) {
 			Portal p = activeLand.portalAt(m.getLocation());
-			Land destination = lands.get(p.getLinkedLand());
-			if (destination == null) {
+			Land destination;
+			try {
+				destination = getLand(p.getLinkedLand());
+			} catch (InvalidIndexException e) {
 				throw new InvalidLinkNameException(p.getLinkedLand());
 			}
 			destination.transferInResident(m, p.getLink());
 		}
+	}
+	
+	/**
+	 * Gets a Land object by name.
+	 * 
+	 * @param name The name of the Land object.
+	 * @return The Land referred to by the name.
+	 * @throws InvalidIndexException If the name does not refer to an existing
+	 * Land.
+	 */
+	private Land getLand(String name) throws InvalidIndexException {
+		Deque<Land> landDeque = lands.get(name);
+		if (landDeque == null) {
+			throw new InvalidIndexException(name);
+		}
+		Land l = landDeque.peek();
+		return l;
 	}
 	
 }
