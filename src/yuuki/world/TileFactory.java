@@ -1,15 +1,18 @@
 package yuuki.world;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.content.Mergeable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Contains the definitions for creating tiles.
  */
-public class TileFactory {
+public class TileFactory implements Mergeable<TileFactory> {
 	
 	/**
 	 * The definition of a Tile.
@@ -46,13 +49,13 @@ public class TileFactory {
 	/**
 	 * The definitions in this TileFactory.
 	 */
-	private Map<Integer, TileDefinition> definitions;
+	private Map<Integer, Deque<TileDefinition>> definitions;
 	
 	/**
 	 * Creates a new TileFactory.
 	 */
 	public TileFactory() {
-		definitions = new HashMap<Integer, TileDefinition>();
+		definitions = new HashMap<Integer, Deque<TileDefinition>>();
 		addDefinition(VOID_CHAR, "void", false, VOID_PATH);
 	}
 	
@@ -72,7 +75,34 @@ public class TileFactory {
 		def.name = name;
 		def.walkable = walkable;
 		def.image = path;
-		definitions.put(id, def);
+		Deque<TileDefinition> d = definitions.get(name);
+		if (d == null) {
+			d = new ArrayDeque<TileDefinition>();
+			definitions.put(id, d);
+		}
+		d.push(def);
+	}
+	
+	@Override
+	public void merge(TileFactory content) {
+		for (int id : content.definitions.keySet()) {
+			TileDefinition td = content.definitions.get(id).peek();
+			addDefinition(id, td.name, td.walkable, td.image);
+		}
+	}
+	
+	@Override
+	public void subtract(TileFactory content) {
+		for (int id : content.definitions.keySet()) {
+			TileDefinition td = content.definitions.get(id).peek();
+			Deque<TileDefinition> d = this.definitions.get(id);
+			if (d != null) {
+				d.remove(td);
+				if (d.isEmpty()) {
+					this.definitions.remove(id);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -87,11 +117,12 @@ public class TileFactory {
 	 * Tile.
 	 */
 	public Tile createTile(int id) throws InvalidIndexException {
-		TileDefinition td = definitions.get(id);
-		if (td == null) {
+		Deque<TileDefinition> tdDeque = definitions.get(id);
+		if (tdDeque == null) {
 			throw new InvalidIndexException(id);
 		}
-		Tile tile = new Tile(td.name, td.walkable, td.image);
+		TileDefinition def = tdDeque.peekFirst();
+		Tile tile = new Tile(def.name, def.walkable, def.image);
 		tile.setId(id);
 		return tile;
 	}
