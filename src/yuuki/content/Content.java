@@ -1,5 +1,7 @@
 package yuuki.content;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,10 +77,42 @@ class Content {
 	public List<String> world;
 	
 	/**
-	 * Creates a new Content instance.
+	 * Creates a new Content instance. All properties are set to null.
 	 */
 	public Content() {
 		reset();
+	}
+	
+	/**
+	 * Initializes all internal content to empty collections.
+	 */
+	public void init() {
+		initAssets();
+		initWorld();
+	}
+	
+	/**
+	 * Initializes all non-world properties to empty collections.
+	 */
+	public void initAssets() {
+		musicDefinitions = new HashMap<String, String>();
+		effectDefinitions = new HashMap<String, String>();
+		imageDefinitions = new HashMap<String, String>();
+		music = new HashMap<String, byte[]>();
+		effects = new HashMap<String, byte[]>();
+		images = new HashMap<String, byte[]>();
+		actions = new HashMap<Integer, Action.Definition>();
+		entities = new HashMap<String, Character.Definition>();
+	}
+	
+	/**
+	 * Initializes all world properties to empty collections.
+	 */
+	public void initWorld() {
+		lands = new ArrayList<Land>();
+		portals = new HashMap<String, Portal.Definition>();
+		tiles = new HashMap<Integer, Tile.Definition>();
+		world = new ArrayList<String>();
 	}
 	
 	/**
