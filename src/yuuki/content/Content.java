@@ -6,7 +6,7 @@ import java.util.Map;
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.world.Land;
-import yuuki.world.PortalFactory;
+import yuuki.world.Portal;
 import yuuki.world.TileFactory;
 
 /**
@@ -62,7 +62,7 @@ class Content {
 	/**
 	 * Contains portal definitions.
 	 */
-	public PortalFactory portals;
+	public List<Portal.Definition> portals;
 	
 	/**
 	 * Contains tile definitions.

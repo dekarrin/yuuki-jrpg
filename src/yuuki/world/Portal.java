@@ -10,6 +10,23 @@ import yuuki.ui.Displayable;
 public class Portal implements Locatable, Displayable {
 	
 	/**
+	 * The definition for a portal.
+	 */
+	public static class Definition {
+		
+		/**
+		 * The index of the image file for this portal.
+		 */
+		public String imageIndex;
+		
+		/**
+		 * The name of the portal.
+		 */
+		public String name;
+		
+	}
+	
+	/**
 	 * The index of this Portal's image art.
 	 */
 	private String imageIndex;
