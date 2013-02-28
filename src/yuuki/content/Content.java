@@ -1,6 +1,7 @@
 package yuuki.content;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,62 +20,64 @@ class Content {
 	/**
 	 * Contains action definitions.
 	 */
-	public Map<Integer, Action.Definition> actions;
+	private Map<Integer, Deque<Action.Definition>> actions;
 	
 	/**
 	 * Contains paths to sound effect files.
 	 */
-	public Map<String, String> effectDefinitions;
+	private Map<String, Deque<String>> effectDefinitions;
 	
 	/**
 	 * Contains sound effect data.
 	 */
-	public Map<String, byte[]> effects;
+	private Map<String, Deque<byte[]>> effects;
 	
 	/**
 	 * Contains entity definitions.
 	 */
-	public Map<String, Character.Definition> entities;
+	private Map<String, Deque<Character.Definition>> entities;
 	
 	/**
 	 * Contains paths to image files.
 	 */
-	public Map<String, String> imageDefinitions;
+	private Map<String, Deque<String>> imageDefinitions;
 	
 	/**
 	 * Contains image data.
 	 */
-	public Map<String, byte[]> images;
+	private Map<String, Deque<byte[]>> images;
 	
 	/**
 	 * Contains land data.
 	 */
-	public List<Land> lands;
+	private List<Land> lands;
 	
 	/**
 	 * Contains music data.
 	 */
-	public Map<String, byte[]> music;
+	private Map<String, Deque<byte[]>> music;
 	
 	/**
 	 * Contains paths to music files.
 	 */
-	public Map<String, String> musicDefinitions;
+	private Map<String, Deque<String>> musicDefinitions;
 	
 	/**
 	 * Contains portal definitions.
 	 */
-	public Map<String, Portal.Definition> portals;
+	private Map<String, Deque<Portal.Definition>> portals;
 	
 	/**
 	 * Contains tile definitions.
 	 */
-	public Map<Integer, Tile.Definition> tiles;
+	private Map<Integer, Deque<Tile.Definition>> tiles;
+	
+	
 	
 	/**
 	 * Contains paths to land files.
 	 */
-	public List<String> world;
+	private List<String> world;
 	
 	/**
 	 * Creates a new Content instance. All properties are set to null.
@@ -95,14 +98,14 @@ class Content {
 	 * Initializes all non-world properties to empty collections.
 	 */
 	public void initAssets() {
-		musicDefinitions = new HashMap<String, String>();
-		effectDefinitions = new HashMap<String, String>();
-		imageDefinitions = new HashMap<String, String>();
-		music = new HashMap<String, byte[]>();
-		effects = new HashMap<String, byte[]>();
-		images = new HashMap<String, byte[]>();
-		actions = new HashMap<Integer, Action.Definition>();
-		entities = new HashMap<String, Character.Definition>();
+		musicDefinitions = new HashMap<String, Deque<String>>();
+		effectDefinitions = new HashMap<String, Deque<String>>();
+		imageDefinitions = new HashMap<String, Deque<String>>();
+		music = new HashMap<String, Deque<byte[]>>();
+		effects = new HashMap<String, Deque<byte[]>>();
+		images = new HashMap<String, Deque<byte[]>>();
+		actions = new HashMap<Integer, Deque<Action.Definition>>();
+		entities = new HashMap<String, Deque<Character.Definition>>();
 	}
 	
 	/**
@@ -110,8 +113,8 @@ class Content {
 	 */
 	public void initWorld() {
 		lands = new ArrayList<Land>();
-		portals = new HashMap<String, Portal.Definition>();
-		tiles = new HashMap<Integer, Tile.Definition>();
+		portals = new HashMap<String, Deque<Portal.Definition>>();
+		tiles = new HashMap<Integer, Deque<Tile.Definition>>();
 		world = new ArrayList<String>();
 	}
 	
