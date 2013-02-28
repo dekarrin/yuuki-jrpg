@@ -72,8 +72,6 @@ class Content {
 	 */
 	private Map<Integer, Deque<Tile.Definition>> tiles;
 	
-	
-	
 	/**
 	 * Contains paths to land files.
 	 */
@@ -84,6 +82,114 @@ class Content {
 	 */
 	public Content() {
 		reset();
+	}
+	
+	/**
+	 * Gets action definitions.
+	 * 
+	 * @return The definitions.
+	 */
+	public Map<Integer, Action.Definition> getActions() {
+		return createMapView(actions);
+	}
+	
+	/**
+	 * Gets paths to sound effect files.
+	 * 
+	 * @return The paths.
+	 */
+	public Map<String, String> geteffectDefinitions() {
+		return createMapView(effectDefinitions);
+	}
+	
+	/**
+	 * Gets sound effect data.
+	 * 
+	 * @return Sound effect data.
+	 */
+	public Map<String, byte[]> getEffects() {
+		return createMapView(effects);
+	}
+	
+	/**
+	 * Gets entity definitions.
+	 * 
+	 * @return The definitions.
+	 */
+	public Map<String, Character.Definition> getEntities() {
+		return createMapView(entities);
+	}
+	
+	/**
+	 * Gets paths to image files.
+	 * 
+	 * @return The paths.
+	 */
+	public Map<String, String> getImageDefinitions() {
+		return createMapView(imageDefinitions);
+	}
+	
+	/**
+	 * Gets image data.
+	 * 
+	 * @return The image data.
+	 */
+	public Map<String, byte[]> getImages() {
+		return createMapView(images);
+	}
+	
+	/**
+	 * Gets land data.
+	 * 
+	 * @return The land data.
+	 */
+	public List<Land> getLands() {
+		return lands;
+	}
+	
+	/**
+	 * Gets music data.
+	 * 
+	 * @return The music data.
+	 */
+	public Map<String, byte[]> getMusic() {
+		return createMapView(music);
+	}
+	
+	/**
+	 * Gets paths to music files.
+	 * 
+	 * @return The paths.
+	 */
+	public Map<String, String> getMusicDefinitions() {
+		return createMapView(musicDefinitions);
+	}
+	
+	/**
+	 * Gets portal definitions.
+	 * 
+	 * @return The definitions.
+	 */
+	public Map<String, Portal.Definition> getPortals() {
+		return createMapView(portals);
+	}
+	
+	/**
+	 * Gets tile definitions.
+	 * 
+	 * @return The definitions.
+	 */
+	public Map<Integer, Tile.Definition> getTiles() {
+		return createMapView(tiles);
+	}
+	
+	/**
+	 * Gets the paths to the land files.
+	 * 
+	 * @return The paths.
+	 */
+	public List<String> getWorld() {
+		return world;
 	}
 	
 	/**
@@ -148,6 +254,24 @@ class Content {
 		portals = null;
 		tiles = null;
 		world = null;
+	}
+	
+	/**
+	 * Creates a view for a map.
+	 * 
+	 * @param <K> The type of the key.
+	 * @param <V> The type of the value.
+	 * @return The view.
+	 */
+	private <K, V> Map<K, V> createMapView(Map<K, Deque<V>> map) {
+		Map<K, V> defs = null;
+		if (map != null) {
+			defs = new HashMap<K, V>();
+			for (K key : map.keySet()) {
+				defs.put(key, map.get(key).peek());
+			}
+		}
+		return defs;
 	}
 	
 }
