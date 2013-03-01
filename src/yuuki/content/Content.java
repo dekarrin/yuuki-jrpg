@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import yuuki.world.Tile;
 /**
  * Container class to hold all items that are a part of game engine content.
  */
-class Content {
+class Content implements Mergeable<Content> {
 	
 	/**
 	 * Contains action definitions.
@@ -223,6 +224,106 @@ class Content {
 		portals = new HashMap<String, Deque<Portal.Definition>>();
 		tiles = new HashMap<Integer, Deque<Tile.Definition>>();
 		world = new ArrayList<String>();
+	}
+	
+	@Override
+	public void merge(Content content) {
+		mergeItems(musicDefinitions, content.musicDefinitions);
+		mergeItems(effectDefinitions, content.effectDefinitions);
+		mergeItems(imageDefinitions, content.imageDefinitions);
+		mergeItems(music, content.music);
+		mergeItems(effects, content.effects);
+		mergeItems(images, content.images);
+		mergeItems(actions, content.actions);
+		mergeItems(entities, content.entities);
+		mergeItems(lands, content.lands);
+		mergeItems(portals, content.portals);
+		mergeItems(tiles, content.tiles);
+		mergeItems(world, content.world);
+	}
+	
+	/**
+	 * Merges the items in one list with those of another.
+	 * 
+	 * @param original The items in the original list.
+	 * @param merging The items in the list to be merged.
+	 */
+	private <E> void mergeItems(List<E> original, List<E> merging) {
+		for (E element : merging) {
+			original.add(element);
+		}
+	}
+	
+	/**
+	 * Merges the items in one map with those of another.
+	 * 
+	 * @param original The items in the original map.
+	 * @param merging The items in the map to be merged.
+	 */
+	private <V, K> void mergeItems(Map<K, Deque<V>> original,
+			Map<K, Deque<V>> merging) {
+		for (K key : merging.keySet()) {
+			Deque<V> mergeDeque = merging.get(key);
+			Deque<V> originalDeque = original.get(key);
+			if (originalDeque == null) {
+				originalDeque = new ArrayDeque<V>();
+				original.put(key, originalDeque);
+			}
+			Iterator<V> it = mergeDeque.descendingIterator();
+			while (it.hasNext()) {
+				originalDeque.push(it.next());
+			}
+		}
+	}
+	
+	@Override
+	public void subtract(Content content) {
+		subtractItems(musicDefinitions, content.musicDefinitions);
+		subtractItems(effectDefinitions, content.effectDefinitions);
+		subtractItems(imageDefinitions, content.imageDefinitions);
+		subtractItems(music, content.music);
+		subtractItems(effects, content.effects);
+		subtractItems(images, content.images);
+		subtractItems(actions, content.actions);
+		subtractItems(entities, content.entities);
+		subtractItems(lands, content.lands);
+		subtractItems(portals, content.portals);
+		subtractItems(tiles, content.tiles);
+		subtractItems(world, content.world);
+	}
+	
+	/**
+	 * Merges the items in one map with those of another.
+	 * 
+	 * @param original The items in the original map.
+	 * @param merging The items in the map to be merged.
+	 */
+	private <V, K> void subtractItems(Map<K, Deque<V>> original,
+			Map<K, Deque<V>> subtracting) {
+		for (K key : subtracting.keySet()) {
+			Deque<V> subDeque = subtracting.get(key);
+			Deque<V> originalDeque = original.get(key);
+			if (originalDeque != null) {
+				for (V element : subDeque) {
+					originalDeque.remove(element);
+				}
+				if (originalDeque.isEmpty()) {
+					original.remove(key);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Subtracts the items in one list with those of another.
+	 * 
+	 * @param original The items in the original list.
+	 * @param subtracting The items in the list to be subtracting.
+	 */
+	private <E> void subtractItems(List<E> original, List<E> subtracting) {
+		for (E element : subtracting) {
+			original.remove(element);
+		}
 	}
 	
 	/**
