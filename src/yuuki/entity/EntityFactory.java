@@ -112,7 +112,7 @@ Mergeable<Map<String, Character.Definition>> {
 			if (d != null) {
 				d.remove(def);
 				if (d.isEmpty()) {
-					definitions.remove(d);
+					definitions.remove(index);
 				}
 			}
 		}
