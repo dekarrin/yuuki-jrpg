@@ -70,7 +70,7 @@ Mergeable<Map<Integer, Action.Definition>> {
 			if (d != null) {
 				d.remove(def);
 				if (d.isEmpty()) {
-					definitions.remove(d);
+					definitions.remove(id);
 				}
 			}
 		}

@@ -65,7 +65,7 @@ public class World implements Mergeable<Map<String, Land>> {
 			if (d != null) {
 				d.remove(land);
 				if (d.isEmpty()) {
-					lands.remove(d);
+					lands.remove(land.getName());
 				}
 			}
 		}
