@@ -1,5 +1,6 @@
 package yuuki.content;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ class Content {
 	 * 
 	 * @return The paths.
 	 */
-	public Map<String, String> geteffectDefinitions() {
+	public Map<String, String> getEffectDefinitions() {
 		return createMapView(effectDefinitions);
 	}
 	
@@ -254,6 +255,131 @@ class Content {
 		portals = null;
 		tiles = null;
 		world = null;
+	}
+	
+	/**
+	 * Sets action definitions.
+	 * 
+	 * @param defs The definitions.
+	 */
+	public void setActions(Map<Integer, Action.Definition> defs) {
+		actions = createMap(defs);
+	}
+	
+	/**
+	 * Sets paths to sound effect files.
+	 * 
+	 * @param paths The paths.
+	 */
+	public void setEffectDefinitions(Map<String, String> paths) {
+		effectDefinitions = createMap(paths);
+	}
+	
+	/**
+	 * Sets sound effect data.
+	 * 
+	 * @param data Sound effect data.
+	 */
+	public void setEffects(Map<String, byte[]> data) {
+		effects = createMap(data);
+	}
+	
+	/**
+	 * Sets entity definitions.
+	 * 
+	 * @param defs The definitions.
+	 */
+	public void setEntities(Map<String, Character.Definition> defs) {
+		entities = createMap(defs);
+	}
+	
+	/**
+	 * Sets paths to image files.
+	 * 
+	 * @param paths The paths.
+	 */
+	public void setImageDefinitions(Map<String, String> paths) {
+		imageDefinitions = createMap(paths);
+	}
+	
+	/**
+	 * Sets image data.
+	 * 
+	 * @param data The image data.
+	 */
+	public void setImages(Map<String, byte[]> data) {
+		images = createMap(data);
+	}
+	
+	/**
+	 * Sets land data.
+	 * 
+	 * @param data The land data.
+	 */
+	public void setLands(List<Land> data) {
+		lands = data;
+	}
+	
+	/**
+	 * Sets music data.
+	 * 
+	 * @param data The music data.
+	 */
+	public void setMusic(Map<String, byte[]> data) {
+		music = createMap(data);
+	}
+	
+	/**
+	 * Sets paths to music files.
+	 * 
+	 * @param paths The paths.
+	 */
+	public void setMusicDefinitions(Map<String, String> paths) {
+		musicDefinitions = createMap(paths);
+	}
+	
+	/**
+	 * Sets portal definitions.
+	 * 
+	 * @param defs The definitions.
+	 */
+	public void setPortals(Map<String, Portal.Definition> defs) {
+		portals = createMap(defs);
+	}
+	
+	/**
+	 * Sets tile definitions.
+	 * 
+	 * @param defs The definitions.
+	 */
+	public void setTiles(Map<Integer, Tile.Definition> defs) {
+		tiles = createMap(defs);
+	}
+	
+	/**
+	 * Sets the paths to the land files.
+	 * 
+	 * @param paths The paths.
+	 */
+	public void setWorld(List<String> paths) {
+		world = paths;
+	}
+	
+	/**
+	 * Creates a priority map from a normal map.
+	 * @param <K> The type of the key.
+	 * @param <V> The type of the value.
+	 * @param view The view to create the map from.
+	 * @return The created map.
+	 */
+	private <K, V> Map<K, Deque<V>> createMap(Map<K, V> view) {
+		Map<K, Deque<V>> map = new HashMap<K, Deque<V>>();
+		for (Map.Entry<K, V> entry : view.entrySet()) {
+			Deque<V> vDeque = new ArrayDeque<V>();
+			vDeque.push(entry.getValue());
+			map.put(entry.getKey(), vDeque);
+		}
+		return map;
 	}
 	
 	/**
