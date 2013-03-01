@@ -539,26 +539,26 @@ public class ContentPack {
 		EntityFactory ef = new EntityFactory();
 		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
-		if (content.entities != null) {
-			ef.merge(content.entities);
-		} else if (resolver != null && resolver.entities != null) {
-			ef.merge(resolver.entities);
+		if (content.getEntities() != null) {
+			ef.merge(content.getEntities());
+		} else if (resolver != null && resolver.getEntities() != null) {
+			ef.merge(resolver.getEntities());
 		} else {
 			String msg = "Cannot get pop. factory with no ent. factory";
 			throw new IllegalStateException(msg);
 		}
-		if (content.tiles != null) {
-			tf.merge(content.tiles);
-		} else if (resolver != null && resolver.tiles != null) {
-			tf.merge(resolver.tiles);
+		if (content.getTiles() != null) {
+			tf.merge(content.getTiles());
+		} else if (resolver != null && resolver.getTiles() != null) {
+			tf.merge(resolver.getTiles());
 		} else {
 			String msg = "Cannot get pop. factory with no tile factory";
 			throw new IllegalStateException(msg);
 		}
-		if (content.portals != null) {
-			pf.merge(content.portals);
-		} else if (resolver != null && resolver.portals != null) {
-			pf.merge(resolver.portals);
+		if (content.getPortals() != null) {
+			pf.merge(content.getPortals());
+		} else if (resolver != null && resolver.getPortals() != null) {
+			pf.merge(resolver.getPortals());
 		} else {
 			String msg = "Cannot get pop. factory with no portal factory";
 			throw new IllegalStateException(msg);
@@ -593,7 +593,7 @@ public class ContentPack {
 	private void loadActions() throws ResourceNotFoundException, IOException {
 		if (hasActions()) {
 			String msg = "Loading actions...";
-			content.actions = loader.loadActions(msg);
+			content.setActions(loader.loadActions(msg));
 		}
 	}
 	
@@ -609,7 +609,7 @@ public class ContentPack {
 	IOException {
 		if (hasEffectDefinitions()) {
 			String msg = "Loading effect definitions...";
-			content.effectDefinitions = loader.loadEffectDefinitions(msg);
+			content.setEffectDefinitions(loader.loadEffectDefinitions(msg));
 		}
 	}
 	
@@ -630,17 +630,17 @@ public class ContentPack {
 	ResourceNotFoundException, IOException {
 		if (hasEffects()) {
 			Map<String, String> paths = null;
-			if (content.effectDefinitions != null) {
-				paths = content.effectDefinitions;
+			if (content.getEffectDefinitions() != null) {
+				paths = content.getEffectDefinitions();
 			} else if (resolver != null &&
-					resolver.effectDefinitions != null) {
-				paths = resolver.effectDefinitions;
+					resolver.getEffectDefinitions() != null) {
+				paths = resolver.getEffectDefinitions();
 			} else {
 				String msg = "Cannot load effects with no definitions";
 				throw new IllegalStateException(msg);
 			}
 			String msg = "Loading sound effects...";
-			content.effects = loader.loadEffects(msg, paths);
+			content.setEffects(loader.loadEffects(msg, paths));
 		}
 	}
 	
@@ -661,16 +661,16 @@ public class ContentPack {
 	ResourceNotFoundException, IOException {
 		if (hasEntities()) {
 			ActionFactory a = new ActionFactory();
-			if (content.actions != null) {
-				a.merge(content.actions);
-			} else if (resolver != null && resolver.actions != null) {
-				a.merge(resolver.actions);
+			if (content.getActions() != null) {
+				a.merge(content.getActions());
+			} else if (resolver != null && resolver.getActions() != null) {
+				a.merge(resolver.getActions());
 			} else {
 				String msg = "Cannot load entities with no actions";
 				throw new IllegalStateException(msg);
 			}
 			String msg = "Loading entities...";
-			content.entities = loader.loadEntities(msg, a);
+			content.setEntities(loader.loadEntities(msg, a));
 		}
 	}
 	
@@ -686,7 +686,7 @@ public class ContentPack {
 	IOException {
 		if (hasImageDefinitions()) {
 			String msg = "Loading image definitions...";
-			content.imageDefinitions = loader.loadImageDefinitions(msg);
+			content.setImageDefinitions(loader.loadImageDefinitions(msg));
 		}
 	}
 	
@@ -707,16 +707,17 @@ public class ContentPack {
 	IOException {
 		if (hasImages()) {
 			Map<String, String> paths = null;
-			if (content.imageDefinitions != null) {
-				paths = content.imageDefinitions;
-			} else if (resolver != null && resolver.imageDefinitions != null) {
-				paths = resolver.imageDefinitions;
+			if (content.getImageDefinitions() != null) {
+				paths = content.getImageDefinitions();
+			} else if (resolver != null &&
+					resolver.getImageDefinitions() != null) {
+				paths = resolver.getImageDefinitions();
 			} else {
 				String msg = "Cannot load images with no definitions";
 				throw new IllegalStateException(msg);
 			}
 			String msg = "Loading images...";
-			content.images = loader.loadImages(msg, paths);
+			content.setImages(loader.loadImages(msg, paths));
 		}
 	}
 	
@@ -738,16 +739,16 @@ public class ContentPack {
 		if (hasLands()) {
 			PopulationFactory pop = getPopFactory(resolver);
 			List<String> paths = null;
-			if (content.world != null) {
-				paths = content.world;
-			} else if (resolver != null && resolver.world != null) {
-				paths = resolver.world;
+			if (content.getWorld() != null) {
+				paths = content.getWorld();
+			} else if (resolver != null && resolver.getWorld() != null) {
+				paths = resolver.getWorld();
 			} else {
 				String msg = "Cannot load lands with no world";
 				throw new IllegalStateException(msg);
 			}
 			String msg = "Loading land data...";
-			content.lands = loader.loadLands(msg, paths, pop);
+			content.setLands(loader.loadLands(msg, paths, pop));
 		}
 	}
 	
@@ -768,16 +769,17 @@ public class ContentPack {
 	IOException {
 		if (hasMusic()) {
 			Map<String, String> paths = null;
-			if (content.musicDefinitions != null) {
-				paths = content.musicDefinitions;
-			} else if (resolver != null && resolver.musicDefinitions != null) {
-				paths = resolver.musicDefinitions;
+			if (content.getMusicDefinitions() != null) {
+				paths = content.getMusicDefinitions();
+			} else if (resolver != null &&
+					resolver.getMusicDefinitions() != null) {
+				paths = resolver.getMusicDefinitions();
 			} else {
 				String msg = "Cannot load music with no definitions";
 				throw new IllegalStateException(msg);
 			}
 			String msg = "Loading music...";
-			content.music = loader.loadMusic(msg, paths);
+			content.setMusic(loader.loadMusic(msg, paths));
 		}
 	}
 	
@@ -793,7 +795,7 @@ public class ContentPack {
 	IOException {
 		if (hasMusicDefinitions()) {
 			String msg = "Loading music definitions...";
-			content.musicDefinitions = loader.loadMusicDefinitions(msg);
+			content.setMusicDefinitions(loader.loadMusicDefinitions(msg));
 		}
 	}
 	
@@ -808,7 +810,7 @@ public class ContentPack {
 	private void loadPortals() throws ResourceNotFoundException, IOException {
 		if (hasPortals()) {
 			String msg = "Loading portals...";
-			content.portals = loader.loadPortals(msg);
+			content.setPortals(loader.loadPortals(msg));
 		}
 	}
 	
@@ -823,7 +825,7 @@ public class ContentPack {
 	private void loadTiles() throws ResourceNotFoundException, IOException {
 		if (hasTiles()) {
 			String msg = "Loading tiles...";
-			content.tiles = loader.loadTiles(msg);
+			content.setTiles(loader.loadTiles(msg));
 		}
 	}
 	
@@ -838,7 +840,7 @@ public class ContentPack {
 	private void loadWorld() throws ResourceNotFoundException, IOException {
 		if (hasWorld()) {
 			String msg = "Loading world...";
-			content.world = loader.loadWorld(msg);
+			content.setWorld(loader.loadWorld(msg));
 		}
 	}
 	
