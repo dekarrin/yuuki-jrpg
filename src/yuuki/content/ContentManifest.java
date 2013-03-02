@@ -9,9 +9,34 @@ import java.util.Map;
 public class ContentManifest {
 	
 	/**
+	 * The key that contains the path for the sound effect directory.
+	 */
+	public static final String DIR_EFFECTS = "SOUND_DIR";
+	
+	/**
+	 * The key that contains the path for the images directory.
+	 */
+	public static final String DIR_IMAGES = "IMAGE_DIR";
+	
+	/**
+	 * The key that contains the path for the lands directory.
+	 */
+	public static final String DIR_LANDS = "LAND_DIR";
+	
+	/**
+	 * The key that contains the path for the music directory.
+	 */
+	public static final String DIR_MUSIC = "MUSIC_DIR";
+	
+	/**
 	 * The key that contains the path for the action definition file.
 	 */
 	public static final String FILE_ACTIONS = "ACTION_DEFS_FILE";
+	
+	/**
+	 * The key that contains the path for the sound effect definition file.
+	 */
+	public static final String FILE_EFFECTS = "SOUND_DEFS_FILE";
 	
 	/**
 	 * The key that contains the path for the entity definition file.
@@ -34,11 +59,6 @@ public class ContentManifest {
 	public static final String FILE_PORTALS = "PORTAL_DEFS_FILE";
 	
 	/**
-	 * The key that contains the path for the sound effect definition file.
-	 */
-	public static final String FILE_EFFECTS = "SOUND_DEFS_FILE";
-	
-	/**
 	 * The key that contains the path for the tile definition file.
 	 */
 	public static final String FILE_TILES = "TILE_DEFS_FILE";
@@ -47,26 +67,6 @@ public class ContentManifest {
 	 * The key that contains the path for the world definition file.
 	 */
 	public static final String FILE_WORLD = "WORLD_DEFS_FILE";
-	
-	/**
-	 * The key that contains the path for the images directory.
-	 */
-	public static final String DIR_IMAGES = "IMAGE_DIR";
-	
-	/**
-	 * The key that contains the path for the lands directory.
-	 */
-	public static final String DIR_LANDS = "LAND_DIR";
-	
-	/**
-	 * The key that contains the path for the music directory.
-	 */
-	public static final String DIR_MUSIC = "MUSIC_DIR";
-	
-	/**
-	 * The key that contains the path for the sound effect directory.
-	 */
-	public static final String DIR_EFFECTS = "SOUND_DIR";
 	
 	/**
 	 * The paths to the resources.

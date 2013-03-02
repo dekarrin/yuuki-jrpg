@@ -64,11 +64,25 @@ public class ZippedContentLoader extends ContentLoader {
 	}
 	
 	@Override
-	protected LandLoader createLandLoader(PopulationFactory pop) {
-		LandLoader loader = null;
+	protected CsvResourceLoader createDefLoader() {
+		CsvResourceLoader loader = null;
 		try {
 			ZipFile zip = new ZipFile(root);
-			loader = new LandLoader(zip, zipRoot, pop);
+			loader = new CsvResourceLoader(zip, zipRoot);
+			zip.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return loader;
+	}
+	
+	@Override
+	protected EntityLoader createEntityLoader(ActionFactory af) {
+		EntityLoader loader = null;
+		try {
+			ZipFile zip = null;
+			zip = new ZipFile(root);
+			loader = new EntityLoader(zip, zipRoot, af);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,25 +109,11 @@ public class ZippedContentLoader extends ContentLoader {
 	}
 	
 	@Override
-	protected EntityLoader createEntityLoader(ActionFactory af) {
-		EntityLoader loader = null;
-		try {
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new EntityLoader(zip, zipRoot, af);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected CsvResourceLoader createDefLoader() {
-		CsvResourceLoader loader = null;
+	protected LandLoader createLandLoader(PopulationFactory pop) {
+		LandLoader loader = null;
 		try {
 			ZipFile zip = new ZipFile(root);
-			loader = new CsvResourceLoader(zip, zipRoot);
+			loader = new LandLoader(zip, zipRoot, pop);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();

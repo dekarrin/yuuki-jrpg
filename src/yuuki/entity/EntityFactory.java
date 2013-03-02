@@ -41,6 +41,21 @@ Mergeable<Map<String, Character.Definition>> {
 	/**
 	 * Adds a definition to this EntityFactory.
 	 * 
+	 * @param def The definition to add.
+	 */
+	public void addDefinition(Character.Definition def) {
+		String index = def.name.toLowerCase();
+		Deque<Character.Definition> d = definitions.get(index);
+		if (d == null) {
+			d = new ArrayDeque<Character.Definition>();
+			definitions.put(index, d);
+		}
+		d.push(def);
+	}
+	
+	/**
+	 * Adds a definition to this EntityFactory.
+	 * 
 	 * @param name The character's name.
 	 * @param hp The base hit points.
 	 * @param hpg The hit points gained per level.
@@ -80,42 +95,6 @@ Mergeable<Map<String, Character.Definition>> {
 		cd.moves = moves;
 		cd.xp = xp;
 		addDefinition(cd);
-	}
-	
-	/**
-	 * Adds a definition to this EntityFactory.
-	 * 
-	 * @param def The definition to add.
-	 */
-	public void addDefinition(Character.Definition def) {
-		String index = def.name.toLowerCase();
-		Deque<Character.Definition> d = definitions.get(index);
-		if (d == null) {
-			d = new ArrayDeque<Character.Definition>();
-			definitions.put(index, d);
-		}
-		d.push(def);
-	}
-	
-	@Override
-	public void merge(Map<String, Character.Definition> content) {
-		for (Character.Definition def : content.values()) {
-			addDefinition(def);
-		}
-	}
-	
-	@Override
-	public void subtract(Map<String, Character.Definition> content) {
-		for (Character.Definition def : content.values()) {
-			String index = def.name.toLowerCase();
-			Deque<Character.Definition> d = definitions.get(index);
-			if (d != null) {
-				d.remove(def);
-				if (d.isEmpty()) {
-					definitions.remove(index);
-				}
-			}
-		}
 	}
 	
 	/**
@@ -220,6 +199,27 @@ Mergeable<Map<String, Character.Definition>> {
 	public String[] getEntityNames() {
 		String[] names = definitions.keySet().toArray(new String[0]);
 		return names;
+	}
+	
+	@Override
+	public void merge(Map<String, Character.Definition> content) {
+		for (Character.Definition def : content.values()) {
+			addDefinition(def);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, Character.Definition> content) {
+		for (Character.Definition def : content.values()) {
+			String index = def.name.toLowerCase();
+			Deque<Character.Definition> d = definitions.get(index);
+			if (d != null) {
+				d.remove(def);
+				if (d.isEmpty()) {
+					definitions.remove(index);
+				}
+			}
+		}
 	}
 	
 	/**

@@ -54,6 +54,26 @@ Mergeable<Map<Integer, Action.Definition>> {
 		d.push(def);
 	}
 	
+	/**
+	 * Creates an instance of an Action from a definition ID.
+	 * 
+	 * @param id The definition ID of the Action to create.
+	 * 
+	 * @return The newly-created Action instance.
+	 * 
+	 * @throws InvalidIndexException If the given index ID does not exist.
+	 */
+	public Action createAction(int id) throws InvalidIndexException {
+		Deque<Action.Definition> adDeque = definitions.get(id);
+		if (adDeque == null) {
+			throw new InvalidIndexException(id);
+		}
+		Action.Definition ad = adDeque.peek();
+		Action base = bases.get(ad.name);
+		Action actualAction = base.createInstance(ad.args);
+		return actualAction;
+	}
+	
 	@Override
 	public void merge(Map<Integer, Action.Definition> content) {
 		for (int id : content.keySet()) {
@@ -74,26 +94,6 @@ Mergeable<Map<Integer, Action.Definition>> {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Creates an instance of an Action from a definition ID.
-	 * 
-	 * @param id The definition ID of the Action to create.
-	 * 
-	 * @return The newly-created Action instance.
-	 * 
-	 * @throws InvalidIndexException If the given index ID does not exist.
-	 */
-	public Action createAction(int id) throws InvalidIndexException {
-		Deque<Action.Definition> adDeque = definitions.get(id);
-		if (adDeque == null) {
-			throw new InvalidIndexException(id);
-		}
-		Action.Definition ad = adDeque.peek();
-		Action base = bases.get(ad.name);
-		Action actualAction = base.createInstance(ad.args);
-		return actualAction;
 	}
 	
 	/**

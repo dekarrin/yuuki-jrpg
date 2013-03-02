@@ -51,26 +51,6 @@ public class World implements Mergeable<Map<String, Land>> {
 		d.push(land);
 	}
 	
-	@Override
-	public void merge(Map<String, Land> content) {
-		for (Land l : content.values()) {
-			addLand(l);
-		}
-	}
-	
-	@Override
-	public void subtract(Map<String, Land> content) {
-		for (Land land : content.values()) {
-			Deque<Land> d = lands.get(land.getName());
-			if (d != null) {
-				d.remove(land);
-				if (d.isEmpty()) {
-					lands.remove(land.getName());
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Adds a resident to the active land.
 	 * 
@@ -173,6 +153,13 @@ public class World implements Mergeable<Map<String, Land>> {
 		return activeLand.getTiles();
 	}
 	
+	@Override
+	public void merge(Map<String, Land> content) {
+		for (Land l : content.values()) {
+			addLand(l);
+		}
+	}
+	
 	/**
 	 * Removes a resident from the active land.
 	 * 
@@ -182,21 +169,16 @@ public class World implements Mergeable<Map<String, Land>> {
 		activeLand.removeResident(resident);
 	}
 	
-	/**
-	 * Finalizes the transfers out of the active land and moves them to the
-	 * land that they are transferring to.
-	 */
-	private void moveTransfers() {
-		List<Movable> moves = activeLand.getTransfers();
-		for (Movable m : moves) {
-			Portal p = activeLand.portalAt(m.getLocation());
-			Land destination;
-			try {
-				destination = getLand(p.getLinkedLand());
-			} catch (InvalidIndexException e) {
-				throw new InvalidLinkNameException(p.getLinkedLand());
+	@Override
+	public void subtract(Map<String, Land> content) {
+		for (Land land : content.values()) {
+			Deque<Land> d = lands.get(land.getName());
+			if (d != null) {
+				d.remove(land);
+				if (d.isEmpty()) {
+					lands.remove(land.getName());
+				}
 			}
-			destination.transferInResident(m, p.getLink());
 		}
 	}
 	
@@ -215,6 +197,24 @@ public class World implements Mergeable<Map<String, Land>> {
 		}
 		Land l = landDeque.peek();
 		return l;
+	}
+	
+	/**
+	 * Finalizes the transfers out of the active land and moves them to the
+	 * land that they are transferring to.
+	 */
+	private void moveTransfers() {
+		List<Movable> moves = activeLand.getTransfers();
+		for (Movable m : moves) {
+			Portal p = activeLand.portalAt(m.getLocation());
+			Land destination;
+			try {
+				destination = getLand(p.getLinkedLand());
+			} catch (InvalidIndexException e) {
+				throw new InvalidLinkNameException(p.getLinkedLand());
+			}
+			destination.transferInResident(m, p.getLink());
+		}
 	}
 	
 }

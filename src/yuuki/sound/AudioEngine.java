@@ -53,31 +53,6 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 		initializeAudioApi();
 	}
 	
-	@Override
-	public void merge(Map<String, byte[]> content) {
-		for (String k : content.keySet()) {
-			Deque<byte[]> d = sounds.get(k);
-			if (d == null) {
-				d = new ArrayDeque<byte[]>();
-				sounds.put(k, d);
-			}
-			d.push(content.get(k));
-		}
-	}
-	
-	@Override
-	public void subtract(Map<String, byte[]> content) {
-		for (String k : content.keySet()) {
-			Deque<byte[]> d = sounds.get(k);
-			if (d != null) {
-				d.remove(content.get(k));
-				if (d.isEmpty()) {
-					sounds.remove(k);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Gets the volume.
 	 * 
@@ -95,6 +70,18 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 	 */
 	public boolean isReady() {
 		return (sounds != null);
+	}
+	
+	@Override
+	public void merge(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			Deque<byte[]> d = sounds.get(k);
+			if (d == null) {
+				d = new ArrayDeque<byte[]>();
+				sounds.put(k, d);
+			}
+			d.push(content.get(k));
+		}
 	}
 	
 	/**
@@ -147,6 +134,19 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 	 */
 	public void setVolume(int volume) {
 		this.volume = volume;
+	}
+	
+	@Override
+	public void subtract(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			Deque<byte[]> d = sounds.get(k);
+			if (d != null) {
+				d.remove(content.get(k));
+				if (d.isEmpty()) {
+					sounds.remove(k);
+				}
+			}
+		}
 	}
 	
 	/**
