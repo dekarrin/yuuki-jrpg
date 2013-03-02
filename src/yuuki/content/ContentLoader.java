@@ -9,6 +9,7 @@ import java.util.Map;
 
 import yuuki.action.Action;
 import yuuki.action.ActionFactory;
+import yuuki.entity.Character;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
@@ -24,7 +25,6 @@ import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
-import yuuki.entity.Character;
 
 /**
  * Handles resource loading of resources that are on disk.
@@ -52,14 +52,14 @@ public class ContentLoader {
 	private Progressable monitor;
 	
 	/**
-	 * The ContentManifest for this loader.
-	 */
-	protected ContentManifest manifest;
-	
-	/**
 	 * The number of load operations planned.
 	 */
 	private int plannedLoadOps;
+	
+	/**
+	 * The ContentManifest for this loader.
+	 */
+	protected ContentManifest manifest;
 	
 	/**
 	 * The root of the resources.
@@ -80,26 +80,6 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Loads the manifest file for this ResourceManager. This must be called
-	 * before loading any other asset.
-	 * 
-	 * @return The loaded records.
-	 */
-	public ContentManifest readManifest() throws ResourceNotFoundException,
-	IOException {
-		CsvResourceLoader loader = createDefLoader();
-		String[][] records = null;
-		records = loader.loadRecords(MANIFEST_FILE);
-		manifest = new ContentManifest();
-		if (records != null) {
-			for (String[] r : records) {
-				manifest.add(r[0], r[1]);
-			}
-		}
-		return manifest;
-	}
-	
-	/**
 	 * Initializes a load.
 	 * 
 	 * @param count The number of loading operations planned.
@@ -112,6 +92,38 @@ public class ContentLoader {
 		plannedLoadOps = count;
 		completedLoadOps = 0;
 		return monitor;
+	}
+	
+	/**
+	 * Checks whether this ContentLoader is currently in a loading operation.
+	 * 
+	 * @return Whether it is.
+	 */
+	public boolean isInLoad() {
+		return inLoad;
+	}
+	
+	/**
+	 * Loads action definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return A map containing action IDs mapped to the loaded definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public Map<Integer, Action.Definition> loadActions(String text) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		Map<Integer, Action.Definition> actions = null;
+		ActionLoader loader = createActionLoader();
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_ACTIONS);
+		try {
+			actions = loader.load(path);
+		} catch (ResourceFormatException e) {
+			System.err.println(e);
+		}
+		return actions;
 	}
 	
 	/**
@@ -128,28 +140,53 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Loads music data.
+	 * Loads sound effect data.
 	 * 
 	 * @param text What to set the text of the monitor to.
 	 * @param indexes Maps the indexes to the paths of the files to load.
-	 * @return A map containing the loaded music files identified by index.
+	 * @return A map containing the loaded sound files identified by index.
 	 */
-	public Map<String, byte[]> loadMusic(String text,
+	public Map<String, byte[]> loadEffects(String text,
 			Map<String, String> indexes) {
-		return loadIndexedFiles(text, indexes, ContentManifest.DIR_MUSIC);
+		return loadIndexedFiles(text, indexes, ContentManifest.DIR_EFFECTS);
 	}
 	
 	/**
-	 * Loads world definitions.
+	 * Loads entity definitions.
 	 * 
 	 * @param text What to set as the text of the monitor.
-	 * @return A list of paths to land files.
+	 * @param actions The ActionFactory to use for creating entity actions.
+	 * @return A map containing names mapped to the loaded entities.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public List<String> loadWorld(String text) throws
+	public Map<String, Character.Definition> loadEntities(String text,
+			ActionFactory actions) throws ResourceNotFoundException,
+			IOException {
+		Progressable sub = startLoadingOperation(text);
+		Map<String, Character.Definition> entities = null;
+		EntityLoader loader = createEntityLoader(actions);
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_ENTITIES);
+		try {
+			entities = loader.load(path);
+		} catch (ResourceFormatException e) {
+			System.err.println(e);
+		}
+		return entities;
+	}
+	
+	/**
+	 * Loads image definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return The map loaded from the image definitions file.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public Map<String, String> loadImageDefinitions(String text) throws
 	ResourceNotFoundException, IOException {
-		return loadList(text, ContentManifest.FILE_WORLD);
+		return loadIndexes(text, ContentManifest.FILE_IMAGES);
 	}
 	
 	/**
@@ -162,18 +199,6 @@ public class ContentLoader {
 	public Map<String, byte[]> loadImages(String text,
 			Map<String, String> indexes) {
 		return loadIndexedFiles(text, indexes, ContentManifest.DIR_IMAGES);
-	}
-	
-	/**
-	 * Loads sound effect data.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @param indexes Maps the indexes to the paths of the files to load.
-	 * @return A map containing the loaded sound files identified by index.
-	 */
-	public Map<String, byte[]> loadEffects(String text,
-			Map<String, String> indexes) {
-		return loadIndexedFiles(text, indexes, ContentManifest.DIR_EFFECTS);
 	}
 	
 	/**
@@ -204,28 +229,155 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Loads entity definitions.
+	 * Loads music data.
 	 * 
-	 * @param text What to set as the text of the monitor.
-	 * @param actions The ActionFactory to use for creating entity actions.
-	 * @return A map containing names mapped to the loaded entities.
+	 * @param text What to set the text of the monitor to.
+	 * @param indexes Maps the indexes to the paths of the files to load.
+	 * @return A map containing the loaded music files identified by index.
+	 */
+	public Map<String, byte[]> loadMusic(String text,
+			Map<String, String> indexes) {
+		return loadIndexedFiles(text, indexes, ContentManifest.DIR_MUSIC);
+	}
+	
+	/**
+	 * Loads music definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return The map loaded from the music definitions file.
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public Map<String, Character.Definition> loadEntities(String text,
-			ActionFactory actions) throws ResourceNotFoundException,
-			IOException {
+	public Map<String, String> loadMusicDefinitions(String text) throws
+	ResourceNotFoundException, IOException {
+		return loadIndexes(text, ContentManifest.FILE_MUSIC);
+	}
+	
+	/**
+	 * Loads portal definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return A PortalFactory containing the loaded portal definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public Map<String, Portal.Definition> loadPortals(String text) throws
+	ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
-		Map<String, Character.Definition> entities = null;
-		EntityLoader loader = createEntityLoader(actions);
+		Map<String, Portal.Definition> portals = null;
+		PortalLoader loader = createPortalLoader();
 		loader.setProgressMonitor(sub);
-		String path = manifest.get(ContentManifest.FILE_ENTITIES);
-		try {
-			entities = loader.load(path);
-		} catch (ResourceFormatException e) {
-			System.err.println(e);
+		String path = manifest.get(ContentManifest.FILE_PORTALS);
+		portals = loader.load(path);
+		return portals;
+	}
+	
+	/**
+	 * Loads tile definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return A map containing tile IDs mapped to the loaded tiles.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public Map<Integer, Tile.Definition> loadTiles(String text) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		Map<Integer, Tile.Definition> tiles = null;
+		TileLoader loader = createTileLoader();
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_TILES);
+		tiles = loader.load(path);
+		return tiles;
+	}
+	
+	/**
+	 * Loads world definitions.
+	 * 
+	 * @param text What to set as the text of the monitor.
+	 * @return A list of paths to land files.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public List<String> loadWorld(String text) throws
+	ResourceNotFoundException, IOException {
+		return loadList(text, ContentManifest.FILE_WORLD);
+	}
+	
+	/**
+	 * Loads the manifest file for this ResourceManager. This must be called
+	 * before loading any other asset.
+	 * 
+	 * @return The loaded records.
+	 */
+	public ContentManifest readManifest() throws ResourceNotFoundException,
+	IOException {
+		CsvResourceLoader loader = createDefLoader();
+		String[][] records = null;
+		records = loader.loadRecords(MANIFEST_FILE);
+		manifest = new ContentManifest();
+		if (records != null) {
+			for (String[] r : records) {
+				manifest.add(r[0], r[1]);
+			}
 		}
-		return entities;
+		return manifest;
+	}
+	
+	/**
+	 * Completes the progress of the master monitor and sets the current load
+	 * such that it is no longer considered initialized.
+	 */
+	private void finishLoad() {
+		inLoad = false;
+		monitor.finishProgress();
+	}
+	
+	/**
+	 * Finishes the current loading operation. The sub-monitor is immediately
+	 * completed and the number of completed loading operations is incremented.
+	 * If the load operation being finished is the last planned load operation,
+	 * the master monitor is immediately completed and the current load is set
+	 * such that it is no longer considered initialized.
+	 * 
+	 * @param sub The monitor of the loading operation being completed.
+	 */
+	private void finishLoadingOperation(Progressable sub) {
+		sub.finishProgress();
+		completedLoadOps++;
+		if (completedLoadOps == plannedLoadOps) {
+			finishLoad();
+		}
+	}
+	
+	/**
+	 * Loads definition files as a map of strings to lists of values. The first
+	 * field is treated as the identifier and the remaining fields are placed
+	 * into a list in the order that they appear.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @param pathIndex The index of the path to load.
+	 * @return The map loaded from the definition file.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	private Map<String, List<String>> loadDefinitions(String text,
+			String pathIndex) throws ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		CsvResourceLoader loader = createDefLoader();
+		loader.setProgressMonitor(sub);
+		Map<String, List<String>> defs = new HashMap<String, List<String>>();
+		String[][] records = loader.loadRecords(manifest.get(pathIndex));
+		for (String[] r : records) {
+			String index = r[0];
+			List<String> fields = new ArrayList<String>();
+			for (int i = 1; i < r.length; i++) {
+				fields.add(r[i]);
+			}
+			defs.put(index, fields);
+		}
+		finishLoadingOperation(sub);
+		return defs;
 	}
 	
 	/**
@@ -253,93 +405,6 @@ public class ContentLoader {
 		}
 		finishLoadingOperation(sub);
 		return data;
-	}
-	
-	/**
-	 * Loads tile definitions.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @return A map containing tile IDs mapped to the loaded tiles.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	public Map<Integer, Tile.Definition> loadTiles(String text) throws
-	ResourceNotFoundException, IOException {
-		Progressable sub = startLoadingOperation(text);
-		Map<Integer, Tile.Definition> tiles = null;
-		TileLoader loader = createTileLoader();
-		loader.setProgressMonitor(sub);
-		String path = manifest.get(ContentManifest.FILE_TILES);
-		tiles = loader.load(path);
-		return tiles;
-	}
-	
-	/**
-	 * Loads action definitions.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @return A map containing action IDs mapped to the loaded definitions.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	public Map<Integer, Action.Definition> loadActions(String text) throws
-	ResourceNotFoundException, IOException {
-		Progressable sub = startLoadingOperation(text);
-		Map<Integer, Action.Definition> actions = null;
-		ActionLoader loader = createActionLoader();
-		loader.setProgressMonitor(sub);
-		String path = manifest.get(ContentManifest.FILE_ACTIONS);
-		try {
-			actions = loader.load(path);
-		} catch (ResourceFormatException e) {
-			System.err.println(e);
-		}
-		return actions;
-	}
-	
-	/**
-	 * Loads portal definitions.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @return A PortalFactory containing the loaded portal definitions.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	public Map<String, Portal.Definition> loadPortals(String text) throws
-	ResourceNotFoundException, IOException {
-		Progressable sub = startLoadingOperation(text);
-		Map<String, Portal.Definition> portals = null;
-		PortalLoader loader = createPortalLoader();
-		loader.setProgressMonitor(sub);
-		String path = manifest.get(ContentManifest.FILE_PORTALS);
-		portals = loader.load(path);
-		return portals;
-	}
-	
-	/**
-	 * Loads music definitions.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @return The map loaded from the music definitions file.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	public Map<String, String> loadMusicDefinitions(String text) throws
-	ResourceNotFoundException, IOException {
-		return loadIndexes(text, ContentManifest.FILE_MUSIC);
-	}
-	
-	/**
-	 * Loads image definitions.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @return The map loaded from the image definitions file.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	public Map<String, String> loadImageDefinitions(String text) throws
-	ResourceNotFoundException, IOException {
-		return loadIndexes(text, ContentManifest.FILE_IMAGES);
 	}
 	
 	/**
@@ -387,62 +452,6 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Loads definition files as a map of strings to lists of values. The first
-	 * field is treated as the identifier and the remaining fields are placed
-	 * into a list in the order that they appear.
-	 * 
-	 * @param text What to set the text of the monitor to.
-	 * @param pathIndex The index of the path to load.
-	 * @return The map loaded from the definition file.
-	 * @throws ResourceNotFoundException If the given path does not exist.
-	 * @throws IOException If an I/O error occurs.
-	 */
-	private Map<String, List<String>> loadDefinitions(String text,
-			String pathIndex) throws ResourceNotFoundException, IOException {
-		Progressable sub = startLoadingOperation(text);
-		CsvResourceLoader loader = createDefLoader();
-		loader.setProgressMonitor(sub);
-		Map<String, List<String>> defs = new HashMap<String, List<String>>();
-		String[][] records = loader.loadRecords(manifest.get(pathIndex));
-		for (String[] r : records) {
-			String index = r[0];
-			List<String> fields = new ArrayList<String>();
-			for (int i = 1; i < r.length; i++) {
-				fields.add(r[i]);
-			}
-			defs.put(index, fields);
-		}
-		finishLoadingOperation(sub);
-		return defs;
-	}
-	
-	/**
-	 * Completes the progress of the master monitor and sets the current load
-	 * such that it is no longer considered initialized.
-	 */
-	private void finishLoad() {
-		inLoad = false;
-		monitor.finishProgress();
-	}
-	
-	/**
-	 * Finishes the current loading operation. The sub-monitor is immediately
-	 * completed and the number of completed loading operations is incremented.
-	 * If the load operation being finished is the last planned load operation,
-	 * the master monitor is immediately completed and the current load is set
-	 * such that it is no longer considered initialized.
-	 * 
-	 * @param sub The monitor of the loading operation being completed.
-	 */
-	private void finishLoadingOperation(Progressable sub) {
-		sub.finishProgress();
-		completedLoadOps++;
-		if (completedLoadOps == plannedLoadOps) {
-			finishLoad();
-		}
-	}
-	
-	/**
 	 * Starts a single loading operation. The master monitor's text is changed
 	 * to reflect the loading operation, and a sub monitor for a portion of the
 	 * master monitor with length equal to one divided by the number of planned
@@ -469,15 +478,6 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Checks whether this ContentLoader is currently in a loading operation.
-	 * 
-	 * @return Whether it is.
-	 */
-	public boolean isInLoad() {
-		return inLoad;
-	}
-	
-	/**
 	 * Creates a loader for reading action definition files.
 	 * 
 	 * @return The created ActionLoader.
@@ -487,15 +487,22 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Creates a loader for reading land files.
+	 * Creates a loader for reading definitions files.
 	 * 
-	 * @param pop The PopulationFactory for populating the Lands.
-	 * @return The created LandLoader.
+	 * @return The created definitions loader.
 	 */
-	protected LandLoader createLandLoader(PopulationFactory pop) {
-		String path = manifest.get(ContentManifest.DIR_LANDS);
-		File landDir = new File(root, path);
-		return new LandLoader(landDir, pop);
+	protected CsvResourceLoader createDefLoader() {
+		return new CsvResourceLoader(root);
+	}
+	
+	/**
+	 * Creates a loader for reading entity definition files.
+	 * 
+	 * @param af The ActionFactory to use with entity creation.
+	 * @return The created EntityLoader.
+	 */
+	protected EntityLoader createEntityLoader(ActionFactory af) {
+		return new EntityLoader(root, af);
 	}
 	
 	/**
@@ -511,22 +518,15 @@ public class ContentLoader {
 	}
 	
 	/**
-	 * Creates a loader for reading entity definition files.
+	 * Creates a loader for reading land files.
 	 * 
-	 * @param af The ActionFactory to use with entity creation.
-	 * @return The created EntityLoader.
+	 * @param pop The PopulationFactory for populating the Lands.
+	 * @return The created LandLoader.
 	 */
-	protected EntityLoader createEntityLoader(ActionFactory af) {
-		return new EntityLoader(root, af);
-	}
-	
-	/**
-	 * Creates a loader for reading definitions files.
-	 * 
-	 * @return The created definitions loader.
-	 */
-	protected CsvResourceLoader createDefLoader() {
-		return new CsvResourceLoader(root);
+	protected LandLoader createLandLoader(PopulationFactory pop) {
+		String path = manifest.get(ContentManifest.DIR_LANDS);
+		File landDir = new File(root, path);
+		return new LandLoader(landDir, pop);
 	}
 	
 	/**

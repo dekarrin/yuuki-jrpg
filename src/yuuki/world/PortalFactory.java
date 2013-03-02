@@ -45,26 +45,6 @@ Mergeable<Map<String, Portal.Definition>> {
 		d.push(pd);
 	}
 	
-	@Override
-	public void merge(Map<String, Portal.Definition> content) {
-		for (Portal.Definition pd : content.values()) {
-			addDefinition(pd.name, pd.imageIndex);
-		}
-	}
-	
-	@Override
-	public void subtract(Map<String, Portal.Definition> content) {
-		for (Portal.Definition pd : content.values()) {
-			Deque<Portal.Definition> d = definitions.get(pd.name);
-			if (d != null) {
-				d.remove(pd);
-				if (d.isEmpty()) {
-					definitions.remove(pd.name);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Creates an instance of a Portal.
 	 * 
@@ -87,6 +67,26 @@ Mergeable<Map<String, Portal.Definition>> {
 		Portal.Definition def = pdDeque.peek();
 		Portal p = new Portal(def.name, land, link, def.imageIndex);
 		return p;
+	}
+	
+	@Override
+	public void merge(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
+			addDefinition(pd.name, pd.imageIndex);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
+			Deque<Portal.Definition> d = definitions.get(pd.name);
+			if (d != null) {
+				d.remove(pd);
+				if (d.isEmpty()) {
+					definitions.remove(pd.name);
+				}
+			}
+		}
 	}
 	
 }

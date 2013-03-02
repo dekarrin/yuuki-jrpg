@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.graphic.ImageFactory;
@@ -12,8 +11,6 @@ import yuuki.sound.DualSoundEngine;
 import yuuki.sound.EffectEngine;
 import yuuki.sound.MusicEngine;
 import yuuki.util.Progressable;
-import yuuki.world.PortalFactory;
-import yuuki.world.TileFactory;
 import yuuki.world.World;
 
 /**
@@ -22,29 +19,9 @@ import yuuki.world.World;
 public class ContentManager {
 	
 	/**
-	 * The content packs.
-	 */
-	private Map<String, ContentPack> packs;
-	
-	/**
 	 * Handles sound effect content.
 	 */
 	private EffectEngine effectEngine;
-	
-	/**
-	 * Handles music content.
-	 */
-	private MusicEngine musicEngine;
-	
-	/**
-	 * Handles image content.
-	 */
-	private ImageFactory imageFactory;
-	
-	/**
-	 * Handles world content.
-	 */
-	private World world;
 	
 	/**
 	 * Handles Entity creation.
@@ -52,16 +29,36 @@ public class ContentManager {
 	private EntityFactory entityFactory;
 	
 	/**
+	 * Handles image content.
+	 */
+	private ImageFactory imageFactory;
+	
+	/**
 	 * Represents the current model of all loaded content.
 	 */
 	private Content loadedContent;
 	
 	/**
+	 * Handles music content.
+	 */
+	private MusicEngine musicEngine;
+	
+	/**
+	 * The content packs.
+	 */
+	private Map<String, ContentPack> packs;
+	
+	/**
+	 * Handles world content.
+	 */
+	private World world;
+	
+	/**
 	 * Creates a new ContentManager and loads the manifest for the built-in
 	 * content pack.
 	 * 
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
+	 * @throws IOException
+	 * @throws ResourceNotFoundException
 	 * 
 	 */
 	public ContentManager() throws ResourceNotFoundException, IOException {
@@ -75,6 +72,80 @@ public class ContentManager {
 		entityFactory = new EntityFactory();
 		ContentPack builtIn = new ContentPack();
 		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
+	}
+	
+	/**
+	 * Enables a ContentPack. The content pack must already be loaded, or a
+	 * null pointer will be encountered. This method has no effect if the
+	 * content pack is already enabled.
+	 * 
+	 * @param The name of the content pack to enable.
+	 */
+	public void enable(String name) {
+		ContentPack pack = packs.get(name);
+		if (pack.isEnabled()) {
+			return;
+		}
+		Content c = pack.getContent();
+	}
+	
+	/**
+	 * Gets the entity factory that this ContentManager controls.
+	 * 
+	 * @return The entity factory.
+	 */
+	public EntityFactory getEntityFactory() {
+		return entityFactory;
+	}
+	
+	/**
+	 * Gets the image factory that this ContentManager controls.
+	 * 
+	 * @return The image factory.
+	 */
+	public ImageFactory getImageFactory() {
+		return imageFactory;
+	}
+	
+	/**
+	 * Gets the sound engine that this ContentManager controls.
+	 * 
+	 * @return The sound engine.
+	 */
+	public DualSoundEngine getSoundEngine() {
+		return new DualSoundEngine(effectEngine, musicEngine);
+	}
+	
+	/**
+	 * Gets the world engine that this ContentManager controls.
+	 * 
+	 * @return The world engine.
+	 */
+	public World getWorldEngine() {
+		return world;
+	}
+	
+	/**
+	 * Loads all content in a content pack.
+	 * 
+	 * @param name The name of the content pack.
+	 * @throws IOException
+	 * @throws ResourceNotFoundException
+	 */
+	public void load(String name) throws ResourceNotFoundException,
+	IOException {
+		packs.get(name).load(loadedContent);
+	}
+	
+	/**
+	 * Loads all non-world assets from the built-in content pack.
+	 * 
+	 * @throws IOException
+	 * @throws ResourceNotFoundException
+	 */
+	public void loadBuiltIn() throws ResourceNotFoundException,
+	IOException {
+		load(ContentPack.BUILT_IN_NAME);
 	}
 	
 	/**
@@ -92,80 +163,6 @@ public class ContentManager {
 	 */
 	public Progressable startLoadMonitor(String name) {
 		return packs.get(name).startLoadMonitor();
-	}
-	
-	/**
-	 * Loads all content in a content pack.
-	 * 
-	 * @param name The name of the content pack.
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
-	 */
-	public void load(String name) throws ResourceNotFoundException,
-	IOException {
-		packs.get(name).load(loadedContent);
-	}
-	
-	/**
-	 * Loads all non-world assets from the built-in content pack.
-	 * 
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
-	 */
-	public void loadBuiltIn() throws ResourceNotFoundException,
-	IOException {
-		load(ContentPack.BUILT_IN_NAME);
-	}
-	
-	/**
-	 * Gets the sound engine that this ContentManager controls.
-	 * 
-	 * @return The sound engine.
-	 */
-	public DualSoundEngine getSoundEngine() {
-		return new DualSoundEngine(effectEngine, musicEngine);
-	}
-	
-	/**
-	 * Gets the image factory that this ContentManager controls.
-	 * 
-	 * @return The image factory.
-	 */
-	public ImageFactory getImageFactory() {
-		return imageFactory;
-	}
-	
-	/**
-	 * Gets the world engine that this ContentManager controls.
-	 * 
-	 * @return The world engine.
-	 */
-	public World getWorldEngine() {
-		return world;
-	}
-	
-	/**
-	 * Gets the entity factory that this ContentManager controls.
-	 * 
-	 * @return The entity factory.
-	 */
-	public EntityFactory getEntityFactory() {
-		return entityFactory;
-	}
-	
-	/**
-	 * Enables a ContentPack. The content pack must already be loaded, or a
-	 * null pointer will be encountered. This method has no effect if the
-	 * content pack is already enabled.
-	 * 
-	 * @param The name of the content pack to enable.
-	 */
-	public void enable(String name) {
-		ContentPack pack = packs.get(name);
-		if (pack.isEnabled()) {
-			return;
-		}
-		Content c = pack.getContent();
 	}
 	
 }

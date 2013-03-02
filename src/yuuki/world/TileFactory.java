@@ -61,28 +61,6 @@ public class TileFactory implements Mergeable<Map<Integer, Tile.Definition>> {
 		d.push(def);
 	}
 	
-	@Override
-	public void merge(Map<Integer, Tile.Definition> content) {
-		for (int id : content.keySet()) {
-			Tile.Definition td = content.get(id);
-			addDefinition(id, td.name, td.walkable, td.image);
-		}
-	}
-	
-	@Override
-	public void subtract(Map<Integer, Tile.Definition> content) {
-		for (int id : content.keySet()) {
-			Tile.Definition td = content.get(id);
-			Deque<Tile.Definition> d = definitions.get(id);
-			if (d != null) {
-				d.remove(td);
-				if (d.isEmpty()) {
-					definitions.remove(id);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Creates a Tile from an ID.
 	 * 
@@ -103,6 +81,28 @@ public class TileFactory implements Mergeable<Map<Integer, Tile.Definition>> {
 		Tile tile = new Tile(def.name, def.walkable, def.image);
 		tile.setId(id);
 		return tile;
+	}
+	
+	@Override
+	public void merge(Map<Integer, Tile.Definition> content) {
+		for (int id : content.keySet()) {
+			Tile.Definition td = content.get(id);
+			addDefinition(id, td.name, td.walkable, td.image);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<Integer, Tile.Definition> content) {
+		for (int id : content.keySet()) {
+			Tile.Definition td = content.get(id);
+			Deque<Tile.Definition> d = definitions.get(id);
+			if (d != null) {
+				d.remove(td);
+				if (d.isEmpty()) {
+					definitions.remove(id);
+				}
+			}
+		}
 	}
 	
 }

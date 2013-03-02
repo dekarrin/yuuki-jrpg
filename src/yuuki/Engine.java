@@ -9,6 +9,8 @@ import java.util.Map;
 
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
+import yuuki.content.ContentLoader;
+import yuuki.content.ZippedContentLoader;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
@@ -102,6 +104,11 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The root directory for all resource files.
+	 */
+	private static final String RESOURCE_ROOT = "yuuki/resource/";
+	
+	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
 	 * it.
 	 *
@@ -184,37 +191,6 @@ public class Engine implements Runnable, UiExecutor {
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
-	}
-	
-	/**
-	 * The root directory for all resource files.
-	 */
-	private static final String RESOURCE_ROOT = "yuuki/resource/";
-	
-	/**
-	 * Creates the ContentLoader for the Engine. The specific type created
-	 * depends on whether Engine is being run from a JAR.
-	 * 
-	 * @return The ContentLoader.
-	 */
-	private ContentLoader createContentLoader() {
-		File jar = getJarFile();
-		if (jar != null) {
-			return new ZippedContentLoader(jar, RESOURCE_ROOT);
-		} else {
-			String className = getClass().getName().replace('.', '/');
-			URL resource = getClass().getResource("/" + className + ".class");
-			String p = null;
-			try {
-				p = URLDecoder.decode(resource.getPath(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// should never happen
-				e.printStackTrace();
-			}
-			File path = new File(p).getParentFile().getParentFile();
-			File resourceRoot = new File(path, RESOURCE_ROOT);
-			return new ContentLoader(resourceRoot);
-		}
 	}
 	
 	@Override
@@ -389,6 +365,32 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void applyOptions() {
 		ui.applyOptions(options);
+	}
+	
+	/**
+	 * Creates the ContentLoader for the Engine. The specific type created
+	 * depends on whether Engine is being run from a JAR.
+	 * 
+	 * @return The ContentLoader.
+	 */
+	private ContentLoader createContentLoader() {
+		File jar = getJarFile();
+		if (jar != null) {
+			return new ZippedContentLoader(jar, RESOURCE_ROOT);
+		} else {
+			String className = getClass().getName().replace('.', '/');
+			URL resource = getClass().getResource("/" + className + ".class");
+			String p = null;
+			try {
+				p = URLDecoder.decode(resource.getPath(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// should never happen
+				e.printStackTrace();
+			}
+			File path = new File(p).getParentFile().getParentFile();
+			File resourceRoot = new File(path, RESOURCE_ROOT);
+			return new ContentLoader(resourceRoot);
+		}
 	}
 	
 	/**
