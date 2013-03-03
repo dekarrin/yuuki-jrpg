@@ -145,8 +145,12 @@ class Content implements Mergeable<Content> {
 	 * 
 	 * @return The land data.
 	 */
-	public List<Land> getLands() {
-		return lands;
+	public Map<String, Land> getLands() {
+		Map<String, Land> map = new HashMap<String, Land>(lands.size());
+		for (Land l : lands) {
+			map.put(l.getName(), l);
+		}
+		return map;
 	}
 	
 	/**

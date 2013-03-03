@@ -1,8 +1,10 @@
 package yuuki.content;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
@@ -36,7 +38,7 @@ public class ContentManager {
 	/**
 	 * Represents the current model of all loaded content.
 	 */
-	private Content loadedContent;
+	private Content contentModel;
 	
 	/**
 	 * Handles music content.
@@ -63,8 +65,8 @@ public class ContentManager {
 	 */
 	public ContentManager() throws ResourceNotFoundException, IOException {
 		packs = new HashMap<String, ContentPack>();
-		loadedContent = new Content();
-		loadedContent.init();
+		contentModel = new Content();
+		contentModel.init();
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
@@ -72,6 +74,66 @@ public class ContentManager {
 		entityFactory = new EntityFactory();
 		ContentPack builtIn = new ContentPack();
 		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
+	}
+	
+	/**
+	 * Initializes a ContentPack and reads its manifest.
+	 * 
+	 * @param id What name to identify the content pack with.
+	 * @param file The archive or directory that contains the content pack's
+	 * resources.
+	 */
+	public void scan(String id, File file) {
+		ContentPack pack = null;
+		if (file.isDirectory()) {
+			try {
+				pack = new ContentPack(file);
+			} catch (ResourceNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				ZipFile z = new ZipFile(file);
+				pack = new ContentPack(z);
+				z.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (pack != null) {
+			packs.put(id, pack);
+		}
+	}
+	
+	/**
+	 * Disables a ContentPack.
+	 * 
+	 * @param name The name of the content pack to enable.
+	 */
+	public void disable(String name) {
+		ContentPack pack = packs.get(name);
+		if (!pack.isEnabled()) {
+			return;
+		}
+		Content c = pack.getContent();
+		if (pack.hasEffects() && pack.hasEffectDefinitions()) {
+			effectEngine.subtract(c.getEffects());
+		}
+		if (pack.hasMusic() && pack.hasMusicDefinitions()) {
+			musicEngine.subtract(c.getMusic());
+		}
+		if (pack.hasEntities()) {
+			entityFactory.subtract(c.getEntities());
+		}
+		if (pack.hasImages() && pack.hasImageDefinitions()) {
+			imageFactory.subtract(c.getImages());
+		}
+		if (pack.hasLands() && pack.hasWorld()) {
+			world.subtract(c.getLands());
+		}
+		contentModel.subtract(c);
 	}
 	
 	/**
@@ -87,6 +149,22 @@ public class ContentManager {
 			return;
 		}
 		Content c = pack.getContent();
+		if (pack.hasEffects() && pack.hasEffectDefinitions()) {
+			effectEngine.merge(c.getEffects());
+		}
+		if (pack.hasMusic() && pack.hasMusicDefinitions()) {
+			musicEngine.merge(c.getMusic());
+		}
+		if (pack.hasEntities()) {
+			entityFactory.merge(c.getEntities());
+		}
+		if (pack.hasImages() && pack.hasImageDefinitions()) {
+			imageFactory.merge(c.getImages());
+		}
+		if (pack.hasLands() && pack.hasWorld()) {
+			world.merge(c.getLands());
+		}
+		contentModel.merge(c);
 	}
 	
 	/**
@@ -134,7 +212,7 @@ public class ContentManager {
 	 */
 	public void load(String name) throws ResourceNotFoundException,
 	IOException {
-		packs.get(name).load(loadedContent);
+		packs.get(name).load(contentModel);
 	}
 	
 	/**
