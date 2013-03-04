@@ -26,6 +26,12 @@ public class World implements Mergeable<Map<String, Land>> {
 	private Land activeLand;
 	
 	/**
+	 * The residents that are being transferred from the active land to an
+	 * inactive land.
+	 */
+	private Map<Movable, String> externalTransfers;
+	
+	/**
 	 * All lands loaded, indexed by land name.
 	 */
 	private Map<String, Deque<Land>> lands;
@@ -93,6 +99,17 @@ public class World implements Mergeable<Map<String, Land>> {
 		String[] names = new String[nameSet.size()];
 		nameSet.toArray(names);
 		return names;
+	}
+	
+	/**
+	 * Gets the name of the external land that the given entity is linking to.
+	 * 
+	 * @param entity The entity to check.
+	 * @return The name of the land that it is linking to, or null if it is not
+	 * linking to any land.
+	 */
+	public String getExternalLinkName(Movable entity) {
+		return externalTransfers.get(entity);
 	}
 	
 	/**
@@ -205,13 +222,18 @@ public class World implements Mergeable<Map<String, Land>> {
 	 */
 	private void moveTransfers() {
 		List<Movable> moves = activeLand.getTransfers();
+		externalTransfers = new HashMap<Movable, String>(3);
 		for (Movable m : moves) {
 			Portal p = activeLand.portalAt(m.getLocation());
+			String linked = p.getLinkedLand();
 			Land destination;
 			try {
-				destination = getLand(p.getLinkedLand());
+				destination = getLand(linked);
 			} catch (InvalidIndexException e) {
 				throw new InvalidLinkNameException(p.getLinkedLand());
+			}
+			if (!activeLand.getName().equals(linked)) {
+				externalTransfers.put(m, linked);
 			}
 			destination.transferInResident(m, p.getLink());
 		}

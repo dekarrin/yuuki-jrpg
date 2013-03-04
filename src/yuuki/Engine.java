@@ -358,6 +358,15 @@ public class Engine implements Runnable, UiExecutor {
 			Runner r = new Runner(npcs);
 			(new Thread(r, "WorldCommunication")).start();
 		}
+		String externalLinkName = world.getExternalLinkName(player);
+		if (externalLinkName != null) {
+			try {
+				world.changeLand(externalLinkName);
+			} catch (InvalidIndexException e) {
+				DialogHandler.showFatalError("Could not transfer to new map");
+			}
+			updateWorldViewData();
+		}
 		ui.updateWorldView(player.getLocation());
 	}
 	
@@ -378,7 +387,8 @@ public class Engine implements Runnable, UiExecutor {
 		} else {
 			worldRunner.start();
 		}
-		updateWorldViewer();
+		updateWorldViewData();
+		ui.updateWorldView(player.getLocation());
 		ui.switchToOverworldScreen();
 	}
 	
@@ -486,15 +496,13 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Starts the thread running the world. If the thread has not yet been
-	 * created, it is created.
+	 * Updates the world view with the active land.
 	 */
-	private void updateWorldViewer() {
+	private void updateWorldViewData() {
 		ui.clearWorldLocatables();
 		ui.setWorldView(world.getTiles());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
-		ui.updateWorldView(player.getLocation());
 	}
 	
 }
