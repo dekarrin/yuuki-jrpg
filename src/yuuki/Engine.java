@@ -2,26 +2,22 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
-import yuuki.content.ContentLoader;
 import yuuki.content.ContentManager;
 import yuuki.content.ContentPack;
-import yuuki.content.ZippedContentLoader;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.file.ResourceNotFoundException;
-import yuuki.graphic.ImageFactory;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
+import yuuki.util.InvalidIndexException;
 import yuuki.util.Progressable;
 import yuuki.world.World;
 
@@ -115,17 +111,10 @@ public class Engine implements Runnable, UiExecutor {
 		Engine game = null;
 		try {
 			game = new Engine();
-		} catch (ResourceNotFoundException e) {
-			System.err.println("missing resource manifest file");
-			System.err.println(e.getMessage());
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			showFatalError(e);
 		}
-		if (game != null) {
-			game.run();
-		} else {
-			System.err.println("Fatal error; could not start Yuuki");
-		}
+		game.run();
 	}
 	
 	/**
@@ -244,15 +233,21 @@ public class Engine implements Runnable, UiExecutor {
 			@Override
 			public void run() {
 				ui.updateLoadingProgress(0.0, "Loading...");
-				Progressable monitor = resourceManager.initLoad(1);
+				Progressable m = resourceManager.startWorldLoadMonitor(
+						ContentPack.BUILT_IN_NAME);
 				ui.switchToLoadingScreen();
-				Thread updateThread = getLoadUpdater(monitor, ui);
+				Thread updateThread = getLoadUpdater(m);
 				updateThread.start();
-				world = resourceManager.loadWorld("Loading...", entityMaker);
+				try {
+					resourceManager.loadEnabledWorlds();
+				} catch (IOException e) {
+					Engine.showFatalError(e);
+				}
+				updateThread.interrupt();
+				world = resourceManager.getWorldEngine();
 				setInitialWorld();
 				player.setLocation(world.getPlayerStart());
 				world.addResident(player);
-				updateThread.interrupt();
 				enterOverworldMode();
 			}
 		}, "WorldLoadingThread")).start();
@@ -313,17 +308,59 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void run() {
-		ui.initialize();
-		ui.switchToLoadingScreen();
-		scanMods();
-		load();
-		applyOptions();
 		try {
-			ui.playMusicAndWait("BGM_MAIN_MENU");
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+			ui.initialize();
+			ui.switchToLoadingScreen();
+			scanMods();
+			load();
+			applyOptions();
+			try {
+				ui.playMusicAndWait("BGM_MAIN_MENU");
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			ui.switchToIntroScreen();
+		} catch (Exception e) {
+			Engine.showFatalError(e);
 		}
-		ui.switchToIntroScreen();
+	}
+	
+	/**
+	 * Gets the stack trace from a Throwable as a String.
+	 * 
+	 * @param t The Throwable to get the stack trace from.
+	 * @return The stack trace.
+	 */
+	private static String getTrace(Throwable t) {
+		StringBuilder buffer = new StringBuilder();
+		for (StackTraceElement trace : t.getStackTrace()) {
+			buffer.append(trace.toString());
+			buffer.append("\n");
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * Shows an error message for an exception and immediately terminates the
+	 * program.
+	 * 
+	 * @param t The Throwable that caused the error.
+	 */
+	private static void showFatalError(Throwable t) {
+		String msg = t.getMessage() + "\n\n";
+		msg += Engine.getTrace(t);
+		Engine.showFatalError(msg);
+	}
+	
+	/**
+	 * Shows an error message and immediately terminates the program.
+	 * 
+	 * @param msg The message to show.
+	 */
+	private static void showFatalError(String msg) {
+		JOptionPane.showMessageDialog(null, msg, "Fatal Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 	}
 	
 	/**
@@ -382,11 +419,10 @@ public class Engine implements Runnable, UiExecutor {
 	 * 
 	 * @param p The {@link yuuki.util.Progressable} to use for monitoring
 	 * progress.
-	 * @param ui A reference to the user interface.
 	 * 
 	 * @return The thread containing the LoadingBarUpdater.
 	 */
-	private Thread getLoadUpdater(Progressable p, Interactable ui) {
+	private Thread getLoadUpdater(Progressable p) {
 		p.setText(("Loading..."));
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
@@ -395,20 +431,22 @@ public class Engine implements Runnable, UiExecutor {
 	
 	/**
 	 * Loads all game assets and updates the loading screen as they are loaded.
+	 * 
+	 * @throws ResourceNotFoundException If a resource in the built-in content
+	 * could not be found.
+	 * @throws IOException If an IOException occurs while loading the built-in
+	 * content.
 	 */
-	private void load() {
-		final String n = ContentPack.BUILT_IN_NAME;
-		Progressable monitor = resourceManager.startAssetLoadMonitor(n);
-		Thread updateThread = getLoadUpdater(monitor, ui);
+	private void load() throws ResourceNotFoundException, IOException {
+		Progressable m;
+		m = resourceManager.startAssetLoadMonitor(ContentPack.BUILT_IN_NAME);
+		Thread updateThread = getLoadUpdater(m);
 		updateThread.start();
-		resourceManager.loadAssets(n);
-		effectData = resourceManager.loadSoundEffects("Loading SFX...");
-		musicData = resourceManager.loadMusic("Loading Music...");
-		imageFactory = resourceManager.loadImages("Loading Images...");
-		entityMaker = resourceManager.loadEntities("Loading Entities...");
+		resourceManager.loadAssets(ContentPack.BUILT_IN_NAME);
 		updateThread.interrupt();
-		ui.initializeSounds(effectData, musicData);
-		ui.initializeImages(imageFactory);
+		entityMaker = resourceManager.getEntityFactory();
+		ui.initializeSounds(resourceManager.getSoundEngine());
+		ui.initializeImages(resourceManager.getImageFactory());
 	}
 	
 	/**
@@ -434,7 +472,12 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void setInitialWorld() {
 		String[] lands = world.getAllLandNames();
-		world.changeLand(lands[0]);
+		try {
+			world.changeLand(lands[0]);
+		} catch (InvalidIndexException e) {
+			// should never happen
+			Engine.showFatalError(e);
+		}
 	}
 	
 	/**

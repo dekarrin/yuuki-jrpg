@@ -56,16 +56,6 @@ public class DualSoundEngine {
 	}
 	
 	/**
-	 * Checks whether this DualSoundEngine is ready to have sounds played.
-	 * 
-	 * @return True if this sound engine has had both its music data and effect
-	 * data set.
-	 */
-	public boolean isReady() {
-		return (effectEngine.isReady() && musicEngine.isReady());
-	}
-	
-	/**
 	 * Plays the sound effect file associated with a music index. The file is
 	 * loaded if it hasn't yet been loaded, and then it is played.
 	 * 
