@@ -243,7 +243,7 @@ public class Engine implements Runnable, UiExecutor {
 				Thread updateThread = getLoadUpdater(m);
 				updateThread.start();
 				try {
-					resourceManager.loadEnabledWorlds();
+					resourceManager.loadWorld(ContentPack.BUILT_IN_NAME);
 				} catch (IOException e) {
 					DialogHandler.showFatalError(e);
 				}
