@@ -2,6 +2,8 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
@@ -314,6 +316,7 @@ public class Engine implements Runnable, UiExecutor {
 			ui.switchToLoadingScreen();
 			scanMods();
 			loadAssets();
+			loadMods();
 			applyOptions();
 			try {
 				ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -413,6 +416,22 @@ public class Engine implements Runnable, UiExecutor {
 		entityMaker = resourceManager.getEntityFactory();
 		ui.initializeSounds(resourceManager.getSoundEngine());
 		ui.initializeImages(resourceManager.getImageFactory());
+	}
+	
+	/**
+	 * Loads all scanned mods.
+	 */
+	private void loadMods() {
+		ui.setLoadingIndeterminate(true);
+		ui.updateLoadingProgress(100.0, "Loading mods");
+		Set<String> x = new HashSet<String>(1);
+		x.add(ContentPack.BUILT_IN_NAME);
+		try {
+			resourceManager.loadAll(x);
+		} catch (Exception e) {
+			DialogHandler.showError(e);
+		}
+		ui.setLoadingIndeterminate(false);
 	}
 	
 	/**
