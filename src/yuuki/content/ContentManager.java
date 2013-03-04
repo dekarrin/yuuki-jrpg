@@ -21,6 +21,11 @@ import yuuki.world.World;
 public class ContentManager {
 	
 	/**
+	 * Represents the current model of all loaded content.
+	 */
+	private Content contentModel;
+	
+	/**
 	 * Handles sound effect content.
 	 */
 	private EffectEngine effectEngine;
@@ -36,11 +41,6 @@ public class ContentManager {
 	private ImageFactory imageFactory;
 	
 	/**
-	 * Represents the current model of all loaded content.
-	 */
-	private Content contentModel;
-	
-	/**
 	 * Handles music content.
 	 */
 	private MusicEngine musicEngine;
@@ -49,11 +49,6 @@ public class ContentManager {
 	 * The content packs.
 	 */
 	private Map<String, ContentPack> packs;
-	
-	/**
-	 * Handles world content.
-	 */
-	private World world;
 	
 	/**
 	 * Creates a new ContentManager and loads the manifest for the built-in
@@ -70,47 +65,15 @@ public class ContentManager {
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
-		world = new World();
 		entityFactory = new EntityFactory();
 		ContentPack builtIn = new ContentPack();
 		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
 	}
 	
 	/**
-	 * Initializes a ContentPack and reads its manifest.
-	 * 
-	 * @param id What name to identify the content pack with.
-	 * @param file The archive or directory that contains the content pack's
-	 * resources.
-	 */
-	public void scan(String id, File file) {
-		ContentPack pack = null;
-		if (file.isDirectory()) {
-			try {
-				pack = new ContentPack(file);
-			} catch (ResourceNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				ZipFile z = new ZipFile(file);
-				pack = new ContentPack(z);
-				z.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (pack != null) {
-			packs.put(id, pack);
-		}
-	}
-	
-	/**
 	 * Disables a ContentPack.
 	 * 
-	 * @param name The name of the content pack to enable.
+	 * @param id The identifier of the content pack to enable.
 	 */
 	public void disable(String name) {
 		ContentPack pack = packs.get(name);
@@ -130,9 +93,6 @@ public class ContentManager {
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.subtract(c.getImages());
 		}
-		if (pack.hasLands() && pack.hasWorld()) {
-			world.subtract(c.getLands());
-		}
 		contentModel.subtract(c);
 	}
 	
@@ -141,7 +101,7 @@ public class ContentManager {
 	 * null pointer will be encountered. This method has no effect if the
 	 * content pack is already enabled.
 	 * 
-	 * @param The name of the content pack to enable.
+	 * @param id The identifier of the content pack to enable.
 	 */
 	public void enable(String name) {
 		ContentPack pack = packs.get(name);
@@ -160,9 +120,6 @@ public class ContentManager {
 		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.merge(c.getImages());
-		}
-		if (pack.hasLands() && pack.hasWorld()) {
-			world.merge(c.getLands());
 		}
 		contentModel.merge(c);
 	}
@@ -195,41 +152,75 @@ public class ContentManager {
 	}
 	
 	/**
-	 * Gets the world engine that this ContentManager controls.
+	 * Gets the world engine built of of enabled content packs that this
+	 * ContentManager controls.
 	 * 
 	 * @return The world engine.
 	 */
 	public World getWorldEngine() {
+		World world = new World();
+		for (ContentPack cp : packs.values()) {
+			if (cp.isEnabled() && cp.hasWorld() && cp.hasLands() &&
+					cp.mapDataIsLoaded()) {
+				world.merge(cp.getContent().getLands());
+			}
+		}
 		return world;
 	}
 	
 	/**
-	 * Loads all content in a content pack.
+	 * Loads all non-map content in a content pack.
 	 * 
 	 * @param name The name of the content pack.
 	 * @throws IOException
 	 * @throws ResourceNotFoundException
 	 */
-	public void load(String name) throws ResourceNotFoundException,
+	public void loadAssets(String name) throws ResourceNotFoundException,
 	IOException {
-		packs.get(name).load(contentModel);
+		packs.get(name).loadAssets(contentModel);
 	}
 	
 	/**
-	 * Loads all non-world assets from the built-in content pack.
+	 * Loads all map content in a content pack.
 	 * 
+	 * @param name The name of the content pack.
 	 * @throws IOException
 	 * @throws ResourceNotFoundException
 	 */
-	public void loadBuiltIn() throws ResourceNotFoundException,
+	public void loadWorld(String name) throws ResourceNotFoundException,
 	IOException {
-		load(ContentPack.BUILT_IN_NAME);
+		packs.get(name).loadWorldAssets(contentModel);
 	}
 	
 	/**
-	 * Gets the monitor for the progress of the next call to load(). This must
-	 * be called only directly before load() is called, and only load() should
-	 * be called after this method.
+	 * Initializes a ContentPack and reads its manifest.
+	 * 
+	 * @param id What name to identify the content pack with.
+	 * @param file The archive or directory that contains the content pack's
+	 * resources.
+	 * 
+	 * @throws IOException 
+	 * @throws ResourceNotFoundException 
+	 */
+	public void scan(String id, File file) throws ResourceNotFoundException,
+	IOException {
+		ContentPack pack = null;
+		if (file.isDirectory()) {
+			pack = new ContentPack(file);
+		} else {
+			ZipFile z = new ZipFile(file);
+			pack = new ContentPack(z);
+			z.close();
+		}
+		if (pack != null) {
+			packs.put(id, pack);
+		}
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadAssets(). This
+	 * must be called only directly before loadAssets() is called, and only
+	 * loadAssets() should be called after this method.
 	 * 
 	 * Getting the monitor of any loading operation is optional, but once the
 	 * monitor for a particular load operation is obtained, the next load
@@ -239,8 +230,25 @@ public class ContentManager {
 	 * @param name The name of the content pack.
 	 * @return The monitor.
 	 */
-	public Progressable startLoadMonitor(String name) {
-		return packs.get(name).startLoadMonitor();
+	public Progressable startAssetLoadMonitor(String name) {
+		return packs.get(name).startAssetLoadMonitor();
+	}
+	
+	/**
+	 * Gets the monitor for the progress of the next call to loadWorld(). This
+	 * must be called only directly before loadWorld() is called, and only
+	 * loadWorld() should be called after this method.
+	 * 
+	 * Getting the monitor of any loading operation is optional, but once the
+	 * monitor for a particular load operation is obtained, the next load
+	 * operation must be the one that the monitor is intended for. Failure to
+	 * follow this will result in undefined behavior.
+	 * 
+	 * @param name The name of the content pack.
+	 * @return The monitor.
+	 */
+	public Progressable startWorldLoadMonitor(String name) {
+		return packs.get(name).startWorldLoadMonitor();
 	}
 	
 }
