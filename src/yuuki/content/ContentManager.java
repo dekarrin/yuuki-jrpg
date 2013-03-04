@@ -221,7 +221,7 @@ public class ContentManager {
 		if (file.isDirectory()) {
 			pack = new ContentPack(file);
 		} else {
-			ZipFile z = new ZipFile(file);
+			ZipFile z = new ZipFile(file.getCanonicalFile());
 			pack = new ContentPack(z);
 			z.close();
 		}
