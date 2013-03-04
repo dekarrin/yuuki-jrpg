@@ -51,14 +51,9 @@ public class ContentManager {
 	private Map<String, ContentPack> packs;
 	
 	/**
-	 * Creates a new ContentManager and loads the manifest for the built-in
-	 * content pack.
-	 * 
-	 * @throws IOException
-	 * @throws ResourceNotFoundException
-	 * 
+	 * Creates a new ContentManager.
 	 */
-	public ContentManager() throws ResourceNotFoundException, IOException {
+	public ContentManager() {
 		packs = new HashMap<String, ContentPack>();
 		contentModel = new Content();
 		contentModel.init();
@@ -66,8 +61,6 @@ public class ContentManager {
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
 		entityFactory = new EntityFactory();
-		ContentPack builtIn = new ContentPack();
-		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
 	}
 	
 	/**
@@ -169,6 +162,23 @@ public class ContentManager {
 	}
 	
 	/**
+	 * Loads the map data in all content packs that are enabled.
+	 * 
+	 * @throws ResourceNotFoundException 
+	 * @throws IOException 
+	 */
+	public void loadEnabledWorlds() throws ResourceNotFoundException,
+	IOException {
+		for (String id : packs.keySet()) {
+			ContentPack c = packs.get(id);
+			if (c.isEnabled() && c.hasWorld() && c.hasLands() &&
+					!c.mapDataIsLoaded()) {
+				loadWorld(id);
+			}
+		}
+	}
+	
+	/**
 	 * Loads all non-map content in a content pack.
 	 * 
 	 * @param name The name of the content pack.
@@ -199,8 +209,8 @@ public class ContentManager {
 	 * @param file The archive or directory that contains the content pack's
 	 * resources.
 	 * 
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
+	 * @throws IOException
+	 * @throws ResourceNotFoundException
 	 */
 	public void scan(String id, File file) throws ResourceNotFoundException,
 	IOException {
@@ -215,6 +225,17 @@ public class ContentManager {
 		if (pack != null) {
 			packs.put(id, pack);
 		}
+	}
+	
+	/**
+	 * Loads the manifest for the built-in content pack.
+	 * 
+	 * @throws ResourceNotFoundException
+	 * @throws IOException
+	 */
+	public void scanBuiltIn() throws ResourceNotFoundException, IOException {
+		ContentPack builtIn = new ContentPack();
+		packs.put(ContentPack.BUILT_IN_NAME, builtIn);
 	}
 	
 	/**
