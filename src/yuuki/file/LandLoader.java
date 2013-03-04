@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipFile;
 
 import yuuki.entity.NonPlayerCharacter;
+import yuuki.ui.DialogHandler;
 import yuuki.util.InvalidIndexException;
 import yuuki.world.Land;
 import yuuki.world.Movable;
@@ -256,7 +257,8 @@ public class LandLoader extends ResourceLoader {
 					try {
 						readPortalData(line);
 					} catch (RecordFormatException e) {
-						System.err.println(e.getMessage() + " - skipping");
+						String msg = e.getMessage() + " - skipping";
+						DialogHandler.showMessage(msg);
 						portals.add(null);
 					}
 					if (portals.size() == meta.portals) {
@@ -268,7 +270,8 @@ public class LandLoader extends ResourceLoader {
 					try {
 						readEntityData(line);
 					} catch (RecordFormatException e) {
-						System.err.println(e.getMessage() + " - skipping");
+						String msg = e.getMessage() + " - skipping";
+						DialogHandler.showMessage(msg);
 						entities.add(null);
 					}
 					break;
@@ -329,7 +332,7 @@ public class LandLoader extends ResourceLoader {
 				String raw = "bad tile '%s' on line %i of '%s' - using void";
 				String msg = String.format(raw, e.getIndex(), currentLine,
 						resourceName);
-				System.err.println(msg);
+				DialogHandler.showMessage(msg);
 				t = populator.createVoidTile();
 			}
 			tileList.add(t);

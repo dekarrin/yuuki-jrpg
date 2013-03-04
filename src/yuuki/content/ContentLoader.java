@@ -19,6 +19,7 @@ import yuuki.file.PortalLoader;
 import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.file.TileLoader;
+import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
 import yuuki.world.Land;
@@ -121,7 +122,7 @@ public class ContentLoader {
 		try {
 			actions = loader.load(path);
 		} catch (ResourceFormatException e) {
-			System.err.println(e);
+			DialogHandler.showError(e);
 		}
 		return actions;
 	}
@@ -171,7 +172,7 @@ public class ContentLoader {
 		try {
 			entities = loader.load(path);
 		} catch (ResourceFormatException e) {
-			System.err.println(e);
+			DialogHandler.showError(e);
 		}
 		return entities;
 	}
@@ -219,10 +220,8 @@ public class ContentLoader {
 			try {
 				Land land = loader.load(p);
 				lands.add(land);
-			} catch (IOException e) {
-				System.err.println(e);
-			} catch (ResourceFormatException e) {
-				System.err.println(e);
+			} catch (Exception e) {
+				DialogHandler.showError(e);
 			}
 		}
 		return lands;

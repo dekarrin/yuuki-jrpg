@@ -3,8 +3,6 @@ package yuuki;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
 import yuuki.content.ContentManager;
@@ -14,6 +12,7 @@ import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.file.ResourceNotFoundException;
+import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
@@ -117,47 +116,9 @@ public class Engine implements Runnable, UiExecutor {
 		try {
 			game = new Engine();
 		} catch (IOException e) {
-			showFatalError(e);
+			DialogHandler.showFatalError(e);
 		}
 		game.run();
-	}
-	
-	/**
-	 * Gets the stack trace from a Throwable as a String.
-	 * 
-	 * @param t The Throwable to get the stack trace from.
-	 * @return The stack trace.
-	 */
-	private static String getTrace(Throwable t) {
-		StringBuilder buffer = new StringBuilder();
-		for (StackTraceElement trace : t.getStackTrace()) {
-			buffer.append(trace.toString());
-			buffer.append("\n");
-		}
-		return buffer.toString();
-	}
-	
-	/**
-	 * Shows an error message and immediately terminates the program.
-	 * 
-	 * @param msg The message to show.
-	 */
-	private static void showFatalError(String msg) {
-		JOptionPane.showMessageDialog(null, msg, "Fatal Error",
-				JOptionPane.ERROR_MESSAGE);
-		System.exit(1);
-	}
-	
-	/**
-	 * Shows an error message for an exception and immediately terminates the
-	 * program.
-	 * 
-	 * @param t The Throwable that caused the error.
-	 */
-	private static void showFatalError(Throwable t) {
-		String msg = t.getMessage() + "\n\n";
-		msg += Engine.getTrace(t);
-		Engine.showFatalError(msg);
 	}
 	
 	/**
@@ -284,7 +245,7 @@ public class Engine implements Runnable, UiExecutor {
 				try {
 					resourceManager.loadEnabledWorlds();
 				} catch (IOException e) {
-					Engine.showFatalError(e);
+					DialogHandler.showFatalError(e);
 				}
 				updateThread.interrupt();
 				world = resourceManager.getWorldEngine();
@@ -364,7 +325,7 @@ public class Engine implements Runnable, UiExecutor {
 			}
 			ui.switchToIntroScreen();
 		} catch (Exception e) {
-			Engine.showFatalError(e);
+			DialogHandler.showFatalError(e);
 		}
 	}
 	
@@ -467,7 +428,7 @@ public class Engine implements Runnable, UiExecutor {
 				try {
 					resourceManager.scan(mod.getName(), mod);
 				} catch (IOException e) {
-					System.err.println(e);
+					DialogHandler.showError(e);
 				}
 			}
 		}
@@ -482,7 +443,7 @@ public class Engine implements Runnable, UiExecutor {
 			world.changeLand(lands[0]);
 		} catch (InvalidIndexException e) {
 			// should never happen
-			Engine.showFatalError(e);
+			DialogHandler.showFatalError(e);
 		}
 	}
 	

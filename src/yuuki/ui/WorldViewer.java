@@ -199,7 +199,7 @@ public class WorldViewer extends JPanel {
 		try {
 			i = images.createImage(TileFactory.VOID_PATH);
 		} catch (InvalidIndexException e) {
-			System.err.println(e.getMessage());
+			DialogHandler.showError(e.getMessage());
 		}
 		Point p = new Point();
 		for (p.y = 0; p.y < tileHeight; p.y++) {
@@ -265,7 +265,7 @@ public class WorldViewer extends JPanel {
 					Image img = images.createImage(imgIndex);
 					bufferView.set(p, img);
 				} catch (InvalidIndexException e) {
-					System.err.println(e.getMessage());
+					DialogHandler.showError(e.getMessage());
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public class WorldViewer extends JPanel {
 					Image img = images.createImage(imgIndex);
 					tileBufferView.set(p, img);
 				} catch (InvalidIndexException e) {
-					System.err.println(e.getMessage());
+					DialogHandler.showError(e.getMessage());
 				}
 			}
 		}
