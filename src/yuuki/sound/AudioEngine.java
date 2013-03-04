@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import yuuki.content.Mergeable;
+import yuuki.ui.DialogHandler;
 import yuuki.util.InvalidIndexException;
 
 /**
@@ -151,7 +152,8 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 			}
 			dataStream.flush();
 		} catch (IOException e) {
-			System.err.println("Failed to get audio initialization data");
+			String msg = "Failed to get audio initialization data";
+			DialogHandler.showFatalError(msg);
 		}
 		return byteStream.toByteArray();
 	}

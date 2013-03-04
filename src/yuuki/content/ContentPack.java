@@ -12,6 +12,7 @@ import java.util.zip.ZipFile;
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
+import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 import yuuki.world.PopulationFactory;
 import yuuki.world.PortalFactory;
@@ -468,7 +469,7 @@ public class ContentPack {
 			decoded = URLDecoder.decode(resource.toString(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// should never happen.
-			System.err.println("UTF-8 identified as unsupported!");
+			DialogHandler.showFatalError("UTF-8 identified as unsupported!");
 		}
 		String path = decoded.replace("!", "");
 		if (path.startsWith("jar:")) {

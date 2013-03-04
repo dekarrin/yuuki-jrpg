@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import yuuki.ui.DialogHandler;
+
 /**
  * Reads a CSV file.
  */
@@ -67,7 +69,7 @@ public class CsvParser {
 		try {
 			stream.close();
 		} catch (IOException e) {
-			System.err.println("Stream couldn't close");
+			DialogHandler.showError("Stream couldn't close");
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipFile;
 
+import yuuki.ui.DialogHandler;
 import yuuki.world.Land;
 import yuuki.world.PopulationFactory;
 import yuuki.world.World;
@@ -92,7 +93,7 @@ public class WorldLoader extends CsvResourceLoader {
 			try {
 				land = landLoader.load(path);
 			} catch (ResourceFormatException e) {
-				System.err.println(e.getMessage() + " - skipping");
+				DialogHandler.showError(e.getMessage() + " - skipping");
 			}
 			if (land != null) {
 				world.addLand(land);

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
+import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 
 /**
@@ -75,7 +76,8 @@ public class SoundLoader extends CsvResourceLoader {
 				}
 				sounds.put(index, data);
 			} catch (ResourceNotFoundException e) {
-				System.err.println("Could not load sound: " + e.getMessage());
+				String msg = "Could not load sound: " + e.getMessage();
+				DialogHandler.showError(msg);
 			}
 		}
 		return sounds;
