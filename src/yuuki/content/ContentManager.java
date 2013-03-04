@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipFile;
 
 import yuuki.entity.EntityFactory;
@@ -272,6 +273,23 @@ public class ContentManager {
 	 */
 	public Progressable startWorldLoadMonitor(String name) {
 		return packs.get(name).startWorldLoadMonitor();
+	}
+	
+	/**
+	 * Loads non-map data in all but the given content packs.
+	 * 
+	 * @param exclude A list of IDs to exclude.
+	 * @throws ResourceNotFoundException 
+	 * @throws IOException 
+	 */
+	public void loadAll(Set<String> exclude) throws ResourceNotFoundException,
+	IOException {
+		for (String k : packs.keySet()) {
+			if (!exclude.contains(k)) {
+				loadAssets(k);
+			}
+		}
+		
 	}
 	
 }
