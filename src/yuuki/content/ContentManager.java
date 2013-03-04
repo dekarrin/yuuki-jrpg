@@ -87,6 +87,7 @@ public class ContentManager {
 			imageFactory.subtract(c.getImages());
 		}
 		contentModel.subtract(c);
+		pack.setEnabled(false);
 	}
 	
 	/**
@@ -115,6 +116,7 @@ public class ContentManager {
 			imageFactory.merge(c.getImages());
 		}
 		contentModel.merge(c);
+		pack.setEnabled(true);
 	}
 	
 	/**
