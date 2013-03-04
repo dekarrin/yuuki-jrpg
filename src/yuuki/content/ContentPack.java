@@ -48,9 +48,14 @@ public class ContentPack {
 	private final boolean inArchive;
 	
 	/**
-	 * Whether this ContentPack has been fully loaded.
+	 * Whether this ContentPack's map data has been loaded.
 	 */
-	private boolean loaded = false;
+	private boolean mapLoaded = false;
+	
+	/**
+	 * Whether this ContentPack's non-map data has been loaded.
+	 */
+	private boolean assetsLoaded = false;
 	
 	/**
 	 * Handles the actual loading of resources from the content pack.
@@ -90,6 +95,7 @@ public class ContentPack {
 			loader = new ContentLoader(location);
 		}
 		manifest = loader.readManifest();
+		setLoaded();
 	}
 	
 	/**
@@ -107,6 +113,7 @@ public class ContentPack {
 		inArchive = false;
 		name = location.getName();
 		manifest = loader.readManifest();
+		setLoaded();
 	}
 	
 	/**
@@ -124,6 +131,18 @@ public class ContentPack {
 		inArchive = true;
 		name = location.getName();
 		manifest = loader.readManifest();
+		setLoaded();
+	}
+	
+	/**
+	 * Sets whether this ContentPack has loaded certain parts of it based on
+	 * whether it has them.
+	 */
+	private void setLoaded() {
+		mapLoaded = !(hasPortals() || hasTiles() || hasWorld() || hasLands());
+		assetsLoaded = !(hasMusicDefinitions() || hasEffectDefinitions() ||
+				hasImageDefinitions() || hasMusic() || hasEffects() ||
+				hasImages() || hasActions() || hasEntities());
 	}
 	
 	/**
@@ -267,12 +286,30 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Whether this ContentPack has been fully loaded.
+	 * Checks whether this ContentPack has been fully loaded.
 	 * 
 	 * @return Whether it has been.
 	 */
 	public boolean isLoaded() {
-		return loaded;
+		return (mapDataIsLoaded() && assetDataIsLoaded());
+	}
+	
+	/**
+	 * Checks whether this ContentPack has loaded its map data.
+	 * 
+	 * @return True if the map data has been loaded, or if there is none.
+	 */
+	public boolean mapDataIsLoaded() {
+		return mapLoaded;
+	}
+	
+	/**
+	 * Checks whether this ContentPack has loaded its non-map data.
+	 * 
+	 * @return True if the non-map data has been loaded, or if there is none.
+	 */
+	public boolean assetDataIsLoaded() {
+		return assetsLoaded;
 	}
 	
 	/**
@@ -300,7 +337,6 @@ public class ContentPack {
 		}
 		loadAssets(resolver);
 		loadWorldAssets(resolver);
-		loaded = true;
 	}
 	
 	/**
@@ -331,6 +367,7 @@ public class ContentPack {
 		loadImages(resolver);
 		loadActions();
 		loadEntities(resolver);
+		assetsLoaded = true;
 	}
 	
 	/**
@@ -357,6 +394,7 @@ public class ContentPack {
 		loadTiles();
 		loadWorld();
 		loadLands(resolver);
+		mapLoaded = true;
 	}
 	
 	/**
