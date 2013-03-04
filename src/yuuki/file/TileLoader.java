@@ -2,9 +2,11 @@ package yuuki.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
-import yuuki.world.TileFactory;
+import yuuki.world.Tile;
 
 /**
  * Loads Tile definitions from a tile definitions file.
@@ -36,26 +38,26 @@ public class TileLoader extends CsvResourceLoader {
 	 * 
 	 * @param resource The location of the file to load, relative to the
 	 * resource root.
-	 * 
-	 * @return A TileFactory with the definitions from the file.
-	 * 
+	 * @return A map containing tile IDs mapped to the definitions found in the
+	 * file.
 	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public TileFactory load(String resource) throws ResourceNotFoundException,
-	IOException {
-		TileFactory factory = null;
+	public Map<Integer, Tile.Definition> load(String resource) throws
+	ResourceNotFoundException, IOException {
+		Map<Integer, Tile.Definition> tiles;
+		tiles = new HashMap<Integer, Tile.Definition>();
 		String[][] records = loadRecords(resource);
-		factory = new TileFactory();
 		for (String[] r : records) {
 			int id = r[0].charAt(0);
-			String name = r[1];
-			boolean walkable = r[2].equals("1");
-			String path = r[3];
-			factory.addDefinition(id, name, walkable, path);
+			Tile.Definition td = new Tile.Definition();
+			td.name = r[1];
+			td.walkable = r[2].equals("1");
+			td.image = r[3];
+			tiles.put(id, td);
 			advanceProgress(1.0 / records.length);
 		}
-		return factory;
+		return tiles;
 	}
 	
 }

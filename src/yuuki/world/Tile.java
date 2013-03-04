@@ -8,6 +8,28 @@ import yuuki.ui.Displayable;
 public class Tile implements Displayable {
 	
 	/**
+	 * The definition of a Tile.
+	 */
+	public static class Definition {
+		
+		/**
+		 * The image data for the tile.
+		 */
+		public String image;
+		
+		/**
+		 * The name of the Tile.
+		 */
+		public String name;
+		
+		/**
+		 * Whether the Tile can be walked on.
+		 */
+		public boolean walkable;
+		
+	}
+	
+	/**
 	 * The ID of this Tile, used for getting the representative character.
 	 */
 	private int id;

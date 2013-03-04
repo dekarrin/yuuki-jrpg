@@ -1,43 +1,30 @@
 package yuuki.world;
 
 import java.awt.Point;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.content.Mergeable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Contains definitions for creating Portals.
  */
-public class PortalFactory {
-	
-	/**
-	 * The definition for a portal.
-	 */
-	private static class PortalDefinition {
-		
-		/**
-		 * The index of the image file for this portal.
-		 */
-		String imageIndex;
-		
-		/**
-		 * The name of the portal.
-		 */
-		String name;
-		
-	}
+public class PortalFactory implements
+Mergeable<Map<String, Portal.Definition>> {
 	
 	/**
 	 * Contains Portal definitions.
 	 */
-	private Map<String, PortalDefinition> definitions;
+	private Map<String, Deque<Portal.Definition>> definitions;
 	
 	/**
 	 * Creates a new PortalFactory.
 	 */
 	public PortalFactory() {
-		definitions = new HashMap<String, PortalDefinition>();
+		definitions = new HashMap<String, Deque<Portal.Definition>>();
 	}
 	
 	/**
@@ -47,10 +34,15 @@ public class PortalFactory {
 	 * @param imageIndex The index of the image for this portal.
 	 */
 	public void addDefinition(String name, String imageIndex) {
-		PortalDefinition pd = new PortalDefinition();
+		Portal.Definition pd = new Portal.Definition();
 		pd.name = name;
 		pd.imageIndex = imageIndex;
-		definitions.put(name, pd);
+		Deque<Portal.Definition> d = definitions.get(name);
+		if (d == null) {
+			d = new ArrayDeque<Portal.Definition>();
+			definitions.put(name, d);
+		}
+		d.push(pd);
 	}
 	
 	/**
@@ -68,12 +60,33 @@ public class PortalFactory {
 	 */
 	public Portal createPortal(String name, String land, Point link) throws
 	InvalidIndexException {
-		PortalDefinition pd = definitions.get(name);
-		if (pd == null) {
+		Deque<Portal.Definition> pdDeque = definitions.get(name);
+		if (pdDeque == null) {
 			throw new InvalidIndexException(name);
 		}
-		Portal p = new Portal(pd.name, land, link, pd.imageIndex);
+		Portal.Definition def = pdDeque.peek();
+		Portal p = new Portal(def.name, land, link, def.imageIndex);
 		return p;
+	}
+	
+	@Override
+	public void merge(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
+			addDefinition(pd.name, pd.imageIndex);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, Portal.Definition> content) {
+		for (Portal.Definition pd : content.values()) {
+			Deque<Portal.Definition> d = definitions.get(pd.name);
+			if (d != null) {
+				d.remove(pd);
+				if (d.isEmpty()) {
+					definitions.remove(pd.name);
+				}
+			}
+		}
 	}
 	
 }

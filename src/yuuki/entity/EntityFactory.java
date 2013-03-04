@@ -1,112 +1,21 @@
 package yuuki.entity;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import yuuki.action.Action;
+import yuuki.content.Mergeable;
 import yuuki.ui.Interactable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Generates entities based on their names.
  */
-public class EntityFactory {
-	
-	/**
-	 * Holds the arguments to creating an actual instance of a Character.
-	 */
-	private static class EntityDefinition implements Cloneable {
-		
-		/**
-		 * The accuracy of the Character.
-		 */
-		public Stat acc;
-		
-		/**
-		 * The agility of the Character.
-		 */
-		public Stat agl;
-		
-		/**
-		 * The defense of the Character.
-		 */
-		public Stat def;
-		
-		/**
-		 * The hit points of the Character.
-		 */
-		public VariableStat hp;
-		
-		/**
-		 * The luck of the Character.
-		 */
-		public Stat luk;
-		
-		/**
-		 * The magic of the Character.
-		 */
-		public Stat mag;
-		
-		/**
-		 * The actions that the Character may perform.
-		 */
-		public Action[] moves;
-		
-		/**
-		 * The mana points of the Character.
-		 */
-		public VariableStat mp;
-		
-		/**
-		 * The name of the Character. Not used when creating a PlayerCharacter.
-		 */
-		public String name;
-		
-		/**
-		 * The path to the overworld art for the Character.
-		 */
-		public String overworldArt;
-		
-		/**
-		 * The strength of the Character.
-		 */
-		public Stat str;
-		
-		/**
-		 * The experience points gained when this Character is defeated.
-		 */
-		public int xp;
-		
-		/**
-		 * Performs a deep-copy on this EntityDef.
-		 * 
-		 * @return the deep-copied EntityDef.
-		 */
-		@Override
-		public EntityDefinition clone() {
-			EntityDefinition d2 = null;
-			try {
-				d2 = (EntityDefinition) super.clone();
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-			d2.hp = hp.clone();
-			d2.mp = mp.clone();
-			d2.str = str.clone();
-			d2.def = def.clone();
-			d2.agl = agl.clone();
-			d2.acc = acc.clone();
-			d2.mag = mag.clone();
-			d2.luk = luk.clone();
-			d2.moves = new Action[moves.length];
-			for (int i = 0; i < moves.length; i++) {
-				d2.moves[i] = moves[i].clone();
-			}
-			return d2;
-		}
-		
-	}
+public class EntityFactory implements
+Mergeable<Map<String, Character.Definition>> {
 	
 	/**
 	 * The name of the EntityDefinition for a player character.
@@ -119,14 +28,29 @@ public class EntityFactory {
 	 * multiple instances of characters will share the same references to
 	 * stats.
 	 */
-	private Map<String, EntityDefinition> definitions;
+	private Map<String, Deque<Character.Definition>> definitions;
 	
 	/**
 	 * Allocates a new EntityFactory. The definition files are read and the
 	 * list of base actions is populated.
 	 */
 	public EntityFactory() {
-		definitions = new HashMap<String, EntityDefinition>();
+		definitions = new HashMap<String, Deque<Character.Definition>>();
+	}
+	
+	/**
+	 * Adds a definition to this EntityFactory.
+	 * 
+	 * @param def The definition to add.
+	 */
+	public void addDefinition(Character.Definition def) {
+		String index = def.name.toLowerCase();
+		Deque<Character.Definition> d = definitions.get(index);
+		if (d == null) {
+			d = new ArrayDeque<Character.Definition>();
+			definitions.put(index, d);
+		}
+		d.push(def);
 	}
 	
 	/**
@@ -157,20 +81,20 @@ public class EntityFactory {
 			int str, int strg, int def, int defg, int agl, int aglg, int acc,
 			int accg, int mag, int magg, int luk, int lukg, Action[] moves,
 			String overworldArt, int xp) {
-		EntityDefinition ed = new EntityDefinition();
-		ed.name = name;
-		ed.hp = new VariableStat("health", hp, hpg);
-		ed.mp = new VariableStat("mana", mp, mpg);
-		ed.str = new Stat("strength", str, strg);
-		ed.def = new Stat("defense", def, defg);
-		ed.agl = new Stat("agility", agl, aglg);
-		ed.acc = new Stat("accuracy", acc, accg);
-		ed.mag = new Stat("magic", mag, magg);
-		ed.luk = new Stat("luck", luk, lukg);
-		ed.overworldArt = overworldArt;
-		ed.moves = moves;
-		ed.xp = xp;
-		definitions.put(name.toLowerCase(), ed);
+		Character.Definition cd = new Character.Definition();
+		cd.name = name;
+		cd.hp = new VariableStat("health", hp, hpg);
+		cd.mp = new VariableStat("mana", mp, mpg);
+		cd.str = new Stat("strength", str, strg);
+		cd.def = new Stat("defense", def, defg);
+		cd.agl = new Stat("agility", agl, aglg);
+		cd.acc = new Stat("accuracy", acc, accg);
+		cd.mag = new Stat("magic", mag, magg);
+		cd.luk = new Stat("luck", luk, lukg);
+		cd.overworldArt = overworldArt;
+		cd.moves = moves;
+		cd.xp = xp;
+		addDefinition(cd);
 	}
 	
 	/**
@@ -186,7 +110,7 @@ public class EntityFactory {
 	 */
 	public NonPlayerCharacter createNpc(String name, int level) throws
 	InvalidIndexException {
-		EntityDefinition d = getDefinition(name);
+		Character.Definition d = getDefinition(name);
 		NonPlayerCharacter m;
 		m = new NonPlayerCharacter(d.name, level, d.moves, d.hp, d.mp, d.str,
 				d.def, d.agl, d.acc, d.mag, d.luk, d.overworldArt, d.xp);
@@ -204,7 +128,7 @@ public class EntityFactory {
 	 */
 	public PlayerCharacter createPlayer(String name, int level,
 			Interactable ui) {
-		EntityDefinition d = null;
+		Character.Definition d = null;
 		try {
 			d = getDefinition(PLAYER_CHARACTER_NAME);
 		} catch (InvalidIndexException e) {
@@ -277,24 +201,44 @@ public class EntityFactory {
 		return names;
 	}
 	
+	@Override
+	public void merge(Map<String, Character.Definition> content) {
+		for (Character.Definition def : content.values()) {
+			addDefinition(def);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<String, Character.Definition> content) {
+		for (Character.Definition def : content.values()) {
+			String index = def.name.toLowerCase();
+			Deque<Character.Definition> d = definitions.get(index);
+			if (d != null) {
+				d.remove(def);
+				if (d.isEmpty()) {
+					definitions.remove(index);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Gets an entity definition. The name is normalized and the definition is
 	 * deep-cloned to ensure that its contents are never shared between two
 	 * instances.
 	 * 
 	 * @param name The name of the entity.
-	 * 
 	 * @return The definition for the named entity.
-	 * 
 	 * @throws InvalidIndexException If the given name doesn't exist.
 	 */
-	private EntityDefinition getDefinition(String name) throws
+	private Character.Definition getDefinition(String name) throws
 	InvalidIndexException {
-		EntityDefinition d = definitions.get(name.toLowerCase());
-		if (d == null) {
+		Deque<Character.Definition> dq = definitions.get(name.toLowerCase());
+		if (dq == null) {
 			throw new InvalidIndexException(name);
 		}
-		return d.clone();
+		Character.Definition def = dq.peek();
+		return def.clone();
 	}
 	
 }

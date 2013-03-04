@@ -3,14 +3,19 @@ package yuuki.sound;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.content.Mergeable;
+import yuuki.ui.DialogHandler;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Plays audio data.
  */
-abstract class AudioEngine {
+abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 	
 	/**
 	 * The data for a blank WAV for initializing the engine.
@@ -24,7 +29,7 @@ abstract class AudioEngine {
 	/**
 	 * Audio data loaded from disk.
 	 */
-	private Map<String, byte[]> sounds;
+	private Map<String, Deque<byte[]>> sounds;
 	
 	/**
 	 * The name of player threads started by this AudioEngine.
@@ -43,7 +48,7 @@ abstract class AudioEngine {
 	 * AudioEngine.
 	 */
 	public AudioEngine(String threadName) {
-		sounds = null;
+		sounds = new HashMap<String, Deque<byte[]>>();
 		volume = 50;
 		this.threadName = threadName;
 		initializeAudioApi();
@@ -58,14 +63,16 @@ abstract class AudioEngine {
 		return volume;
 	}
 	
-	/**
-	 * Checks whether this AudioEngine is ready to play sounds.
-	 * 
-	 * @return True if this AudioEngine has had its sound data set; otherwise,
-	 * false.
-	 */
-	public boolean isReady() {
-		return (sounds != null);
+	@Override
+	public void merge(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			Deque<byte[]> d = sounds.get(k);
+			if (d == null) {
+				d = new ArrayDeque<byte[]>();
+				sounds.put(k, d);
+			}
+			d.push(content.get(k));
+		}
 	}
 	
 	/**
@@ -112,22 +119,25 @@ abstract class AudioEngine {
 	}
 	
 	/**
-	 * Sets the data for this AudioEngine.
-	 * 
-	 * @param soundData A map of string indexes to byte arrays containing sound
-	 * data. Such a map can be easily obtained using a SoundLoader object.
-	 */
-	public void setData(Map<String, byte[]> soundData) {
-		sounds = soundData;
-	}
-	
-	/**
 	 * Sets the volume.
 	 * 
 	 * @param volume The new volume.
 	 */
 	public void setVolume(int volume) {
 		this.volume = volume;
+	}
+	
+	@Override
+	public void subtract(Map<String, byte[]> content) {
+		for (String k : content.keySet()) {
+			Deque<byte[]> d = sounds.get(k);
+			if (d != null) {
+				d.remove(content.get(k));
+				if (d.isEmpty()) {
+					sounds.remove(k);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -142,7 +152,8 @@ abstract class AudioEngine {
 			}
 			dataStream.flush();
 		} catch (IOException e) {
-			System.err.println("Failed to get audio initialization data");
+			String msg = "Failed to get audio initialization data";
+			DialogHandler.showFatalError(msg);
 		}
 		return byteStream.toByteArray();
 	}
@@ -184,11 +195,11 @@ abstract class AudioEngine {
 	 * @throws InvalidIndexException If the given index is invalid.
 	 */
 	protected byte[] getAudioData(String index) throws InvalidIndexException {
-		byte[] data = sounds.get(index);
-		if (data == null) {
+		Deque<byte[]> dataDeque = sounds.get(index);
+		if (dataDeque == null) {
 			throw new InvalidIndexException(index);
 		}
-		return data;
+		return dataDeque.peek();
 	}
 	
 }

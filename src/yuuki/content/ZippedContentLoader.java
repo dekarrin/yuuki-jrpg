@@ -1,4 +1,4 @@
-package yuuki;
+package yuuki.content;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,19 +6,18 @@ import java.util.zip.ZipFile;
 
 import yuuki.action.ActionFactory;
 import yuuki.file.ActionLoader;
+import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
-import yuuki.file.ImageLoader;
+import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
-import yuuki.file.SoundLoader;
 import yuuki.file.TileLoader;
-import yuuki.file.WorldLoader;
 import yuuki.world.PopulationFactory;
 
 /**
  * Manages resources loaded from a ZIP file.
  */
-public class ZippedResourceManager extends ResourceManager {
+public class ZippedContentLoader extends ContentLoader {
 	
 	/**
 	 * The path within the archive where all resources are located.
@@ -26,12 +25,12 @@ public class ZippedResourceManager extends ResourceManager {
 	private String zipRoot;
 	
 	/**
-	 * Creates a new ZippedResourceManager for resources in the given ZIP file.
+	 * Creates a new ZippedContentLoader for resources in the given ZIP file.
 	 * The archive root is assumed to be '/'.
 	 * 
 	 * @param archive The ZIP file containing the resources.
 	 */
-	public ZippedResourceManager(File archive) {
+	public ZippedContentLoader(File archive) {
 		super(archive);
 		zipRoot = "";
 	}
@@ -42,7 +41,7 @@ public class ZippedResourceManager extends ResourceManager {
 	 * @param archive The ZIP file containing the resources.
 	 * @param root The path within the archive to the root of the resources.
 	 */
-	public ZippedResourceManager(File archive, String root) {
+	public ZippedContentLoader(File archive, String root) {
 		super(archive);
 		if (root.startsWith("/")) {
 			root = root.substring(1);
@@ -65,13 +64,11 @@ public class ZippedResourceManager extends ResourceManager {
 	}
 	
 	@Override
-	protected SoundLoader createEffectLoader() {
-		SoundLoader loader = null;
+	protected CsvResourceLoader createDefLoader() {
+		CsvResourceLoader loader = null;
 		try {
-			String soundRoot = zipRoot + getPath("SOUND_DIR");
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new SoundLoader(zip, zipRoot, soundRoot);
+			ZipFile zip = new ZipFile(root);
+			loader = new CsvResourceLoader(zip, zipRoot);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -94,13 +91,16 @@ public class ZippedResourceManager extends ResourceManager {
 	}
 	
 	@Override
-	protected ImageLoader createImageLoader() {
-		ImageLoader loader = null;
+	protected ByteArrayLoader createFileLoader(String pathIndex) {
+		ByteArrayLoader loader = null;
 		try {
-			String imageRoot = zipRoot + getPath("IMAGE_DIR");
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new ImageLoader(zip, zipRoot, imageRoot);
+			ZipFile zip = new ZipFile(root);
+			String path = manifest.get(pathIndex);
+			if (!zipRoot.equalsIgnoreCase("") && !zipRoot.endsWith("/")) {
+				path = "/" + path;
+			}
+			String fullPath = zipRoot + path;
+			loader = new ByteArrayLoader(zip, fullPath);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -109,27 +109,11 @@ public class ZippedResourceManager extends ResourceManager {
 	}
 	
 	@Override
-	protected CsvResourceLoader createManifestLoader() {
-		CsvResourceLoader loader = null;
+	protected LandLoader createLandLoader(PopulationFactory pop) {
+		LandLoader loader = null;
 		try {
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new CsvResourceLoader(zip, zipRoot);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected SoundLoader createMusicLoader() {
-		SoundLoader loader = null;
-		try {
-			String soundRoot = zipRoot + getPath("MUSIC_DIR");
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new SoundLoader(zip, zipRoot, soundRoot);
+			ZipFile zip = new ZipFile(root);
+			loader = new LandLoader(zip, zipRoot, pop);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -158,21 +142,6 @@ public class ZippedResourceManager extends ResourceManager {
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new TileLoader(zip, zipRoot);
-			zip.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return loader;
-	}
-	
-	@Override
-	protected WorldLoader createWorldLoader(PopulationFactory pop) {
-		WorldLoader loader = null;
-		try {
-			String landRoot = zipRoot + getPath("LAND_DIR");
-			ZipFile zip = null;
-			zip = new ZipFile(root);
-			loader = new WorldLoader(zip, zipRoot, landRoot, pop);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.zip.ZipFile;
 
 import yuuki.graphic.ImageFactory;
+import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 
 /**
@@ -72,7 +73,8 @@ public class ImageLoader extends CsvResourceLoader {
 				}
 				factory.addDefinition(index, imageData);
 			} catch (ResourceNotFoundException e) {
-				System.err.println("Could not load image: " + e.getMessage());
+				String msg = "Could not load image: " + e.getMessage();
+				DialogHandler.showError(msg);
 			}
 			advanceProgress(1.0 / records.length);
 		}

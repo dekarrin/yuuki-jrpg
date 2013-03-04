@@ -2,22 +2,21 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Map;
 
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
+import yuuki.content.ContentManager;
+import yuuki.content.ContentPack;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.file.ResourceNotFoundException;
-import yuuki.graphic.ImageFactory;
+import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
+import yuuki.util.InvalidIndexException;
 import yuuki.util.Progressable;
 import yuuki.world.World;
 
@@ -102,9 +101,9 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The root directory for all resource files.
+	 * The path to the mods directory.
 	 */
-	private static final String RESOURCE_ROOT = "yuuki/resource/";
+	private static final String PATH_MODS = "./mods";
 	
 	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
@@ -116,17 +115,10 @@ public class Engine implements Runnable, UiExecutor {
 		Engine game = null;
 		try {
 			game = new Engine();
-		} catch (ResourceNotFoundException e) {
-			System.err.println("missing resource manifest file");
-			System.err.println(e.getMessage());
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			DialogHandler.showFatalError(e);
 		}
-		if (game != null) {
-			game.run();
-		} else {
-			System.err.println("Fatal error; could not start Yuuki");
-		}
+		game.run();
 	}
 	
 	/**
@@ -157,7 +149,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Loads all resources.
 	 */
-	private ResourceManager resourceManager;
+	private ContentManager resourceManager;
 	
 	/**
 	 * The user interface.
@@ -183,38 +175,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		// TODO: spawn thread to create the resource manager
-		resourceManager = createResourceManager();
-		resourceManager.readManifest();
+		resourceManager = new ContentManager();
+		resourceManager.scanBuiltIn();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
-	}
-	
-	/**
-	 * Creates the ResourceManager for the Engine. The specific type created
-	 * depends on whether Engine is being run from a JAR.
-	 * 
-	 * @return The ResourceManger.
-	 */
-	private ResourceManager createResourceManager() {
-		File jar = getJarFile();
-		if (jar != null) {
-			return new ZippedResourceManager(jar, RESOURCE_ROOT);
-		} else {
-			String className = getClass().getName().replace('.', '/');
-			URL resource = getClass().getResource("/" + className + ".class");
-			String p = null;
-			try {
-				p = URLDecoder.decode(resource.getPath(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// should never happen
-				e.printStackTrace();
-			}
-			File path = new File(p).getParentFile().getParentFile();
-			File resourceRoot = new File(path, RESOURCE_ROOT);
-			return new ResourceManager(resourceRoot);
-		}
 	}
 	
 	@Override
@@ -272,15 +237,21 @@ public class Engine implements Runnable, UiExecutor {
 			@Override
 			public void run() {
 				ui.updateLoadingProgress(0.0, "Loading...");
-				Progressable monitor = resourceManager.initLoad(1);
+				Progressable m = resourceManager.startWorldLoadMonitor(
+						ContentPack.BUILT_IN_NAME);
 				ui.switchToLoadingScreen();
-				Thread updateThread = getLoadUpdater(monitor, ui);
+				Thread updateThread = getLoadUpdater(m);
 				updateThread.start();
-				world = resourceManager.loadWorld("Loading...", entityMaker);
+				try {
+					resourceManager.loadWorld(ContentPack.BUILT_IN_NAME);
+				} catch (IOException e) {
+					DialogHandler.showFatalError(e);
+				}
+				updateThread.interrupt();
+				world = resourceManager.getWorldEngine();
 				setInitialWorld();
 				player.setLocation(world.getPlayerStart());
 				world.addResident(player);
-				updateThread.interrupt();
 				enterOverworldMode();
 			}
 		}, "WorldLoadingThread")).start();
@@ -341,17 +312,23 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void run() {
-		ui.initialize();
-		ui.switchToLoadingScreen();
-		loadAssets();
-		scanMods();
-		applyOptions();
 		try {
-			ui.playMusicAndWait("BGM_MAIN_MENU");
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+			ui.initialize();
+			ui.switchToLoadingScreen();
+			scanMods();
+			loadAssets();
+			applyOptions();
+			try {
+				ui.playMusicAndWait("BGM_MAIN_MENU");
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+			ui.switchToIntroScreen();
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			DialogHandler.showFatalError(e);
 		}
-		ui.switchToIntroScreen();
 	}
 	
 	/**
@@ -405,41 +382,15 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Gets the JAR file this class is being executed from if it exists.
-	 * 
-	 * @return The JAR file, or null if this class is not being executed from a
-	 * JAR file.
-	 */
-	private File getJarFile() {
-		String className = getClass().getName().replace('.', '/');
-		URL resource = getClass().getResource("/" + className + ".class");
-		if (resource.toString().startsWith("jar:")) {
-			String p = null;
-			try {
-				p = URLDecoder.decode(resource.toString(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// should never happen
-				System.err.println("Encoding unsupported");
-				System.exit(1);
-			}
-			File directPath = new File(p.substring(9).replace("!", ""));
-			return directPath.getParentFile().getParentFile();
-		} else {
-			return null;
-		}
-	}
-	
-	/**
 	 * Creates a Thread containing a LoadingBarUpdater for use with the loading
 	 * screen.
 	 * 
 	 * @param p The {@link yuuki.util.Progressable} to use for monitoring
 	 * progress.
-	 * @param ui A reference to the user interface.
 	 * 
 	 * @return The thread containing the LoadingBarUpdater.
 	 */
-	private Thread getLoadUpdater(Progressable p, Interactable ui) {
+	private Thread getLoadUpdater(Progressable p) {
 		p.setText(("Loading..."));
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
@@ -447,42 +398,24 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Gets the mod loader for a directory.
-	 * 
-	 * @param modDir The mod directory.
-	 * @return The ResourceManager for the given mod.
-	 */
-	private ResourceManager getModLoader(File modDir) {
-		ResourceManager rm = new ResourceManager(modDir);
-		try {
-			rm.readManifest();
-		} catch (ResourceNotFoundException e) {
-			// it's not a mod dir, so do nothing
-		} catch (IOException e) {
-			String n = modDir.getName();
-			String msg = "Could not load mod manifest in '" + n + "'";
-			System.err.println(msg);
-		}
-		return rm;
-	}
-	
-	/**
 	 * Loads all game assets and updates the loading screen as they are loaded.
+	 * 
+	 * @throws ResourceNotFoundException If a resource in the built-in content
+	 * could not be found.
+	 * @throws IOException If an IOException occurs while loading the built-in
+	 * content.
 	 */
-	private void loadAssets() {
-		Progressable monitor = resourceManager.initLoad(4);
-		Thread updateThread = getLoadUpdater(monitor, ui);
+	private void loadAssets() throws ResourceNotFoundException, IOException {
+		Progressable m;
+		m = resourceManager.startAssetLoadMonitor(ContentPack.BUILT_IN_NAME);
+		Thread updateThread = getLoadUpdater(m);
 		updateThread.start();
-		Map<String, byte[]> effectData;
-		Map<String, byte[]> musicData;
-		ImageFactory imageFactory;
-		effectData = resourceManager.loadSoundEffects("Loading SFX...");
-		musicData = resourceManager.loadMusic("Loading Music...");
-		imageFactory = resourceManager.loadImages("Loading Images...");
-		entityMaker = resourceManager.loadEntities("Loading Entities...");
+		resourceManager.loadAssets(ContentPack.BUILT_IN_NAME);
 		updateThread.interrupt();
-		ui.initializeSounds(effectData, musicData);
-		ui.initializeImages(imageFactory);
+		resourceManager.enable(ContentPack.BUILT_IN_NAME);
+		entityMaker = resourceManager.getEntityFactory();
+		ui.initializeSounds(resourceManager.getSoundEngine());
+		ui.initializeImages(resourceManager.getImageFactory());
 	}
 	
 	/**
@@ -490,13 +423,14 @@ public class Engine implements Runnable, UiExecutor {
 	 * any valid mods found.
 	 */
 	private void scanMods() {
-		File modFolder = new File("./mods");
+		File modFolder = new File(PATH_MODS);
 		if (modFolder.isDirectory()) {
 			File[] contentDirs = modFolder.listFiles();
-			for (File modContent : contentDirs) {
-				ResourceManager rm = getModLoader(modContent);
-				if (rm != null) {
-					
+			for (File mod : contentDirs) {
+				try {
+					resourceManager.scan(mod.getName(), mod);
+				} catch (IOException e) {
+					DialogHandler.showError(e);
 				}
 			}
 		}
@@ -507,7 +441,12 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void setInitialWorld() {
 		String[] lands = world.getAllLandNames();
-		world.changeLand(lands[0]);
+		try {
+			world.changeLand(lands[0]);
+		} catch (InvalidIndexException e) {
+			// should never happen
+			DialogHandler.showFatalError(e);
+		}
 	}
 	
 	/**

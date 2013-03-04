@@ -1,31 +1,18 @@
 package yuuki.action;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+import yuuki.content.Mergeable;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Generates Action instances.
  */
-public class ActionFactory {
-	
-	/**
-	 * Holds the information needed to create an instance of an Action.
-	 */
-	private static class ActionDefinition {
-		
-		/**
-		 * The arguments to the createInstance() method of the Action.
-		 */
-		public String[] args;
-		
-		/**
-		 * The name of this ActionDefinition.
-		 */
-		public String name;
-		
-	}
+public class ActionFactory implements
+Mergeable<Map<Integer, Action.Definition>> {
 	
 	/**
 	 * The bases for creating instances of Action. Used to get an instance
@@ -36,13 +23,13 @@ public class ActionFactory {
 	/**
 	 * The definitions in this ActionFactory.
 	 */
-	private Map<Integer, ActionDefinition> definitions;
+	private Map<Integer, Deque<Action.Definition>> definitions;
 	
 	/**
 	 * Creates a new ActionFactory and the associated base Action instances.
 	 */
 	public ActionFactory() {
-		definitions = new HashMap<Integer, ActionDefinition>();
+		definitions = new HashMap<Integer, Deque<Action.Definition>>();
 		bases = new HashMap<String, Action>();
 		createBaseActions();
 	}
@@ -56,10 +43,15 @@ public class ActionFactory {
 	 * Action.
 	 */
 	public void addDefinition(int id, String name, String[] args) {
-		ActionDefinition def = new ActionDefinition();
+		Action.Definition def = new Action.Definition();
 		def.name = name;
 		def.args = args;
-		definitions.put(id, def);
+		Deque<Action.Definition> d = definitions.get(id);
+		if (d == null) {
+			d = new ArrayDeque<Action.Definition>();
+			definitions.put(id, d);
+		}
+		d.push(def);
 	}
 	
 	/**
@@ -72,13 +64,36 @@ public class ActionFactory {
 	 * @throws InvalidIndexException If the given index ID does not exist.
 	 */
 	public Action createAction(int id) throws InvalidIndexException {
-		ActionDefinition ad = definitions.get(id);
-		if (ad == null) {
+		Deque<Action.Definition> adDeque = definitions.get(id);
+		if (adDeque == null) {
 			throw new InvalidIndexException(id);
 		}
+		Action.Definition ad = adDeque.peek();
 		Action base = bases.get(ad.name);
 		Action actualAction = base.createInstance(ad.args);
 		return actualAction;
+	}
+	
+	@Override
+	public void merge(Map<Integer, Action.Definition> content) {
+		for (int id : content.keySet()) {
+			Action.Definition def = content.get(id);
+			addDefinition(id, def.name, def.args);
+		}
+	}
+	
+	@Override
+	public void subtract(Map<Integer, Action.Definition> content) {
+		for (int id : content.keySet()) {
+			Action.Definition def = content.get(id);
+			Deque<Action.Definition> d = definitions.get(id);
+			if (d != null) {
+				d.remove(def);
+				if (d.isEmpty()) {
+					definitions.remove(id);
+				}
+			}
+		}
 	}
 	
 	/**

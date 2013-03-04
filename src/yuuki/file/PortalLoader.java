@@ -2,9 +2,11 @@ package yuuki.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
-import yuuki.world.PortalFactory;
+import yuuki.world.Portal;
 
 /**
  * Loads portal definitions.
@@ -37,23 +39,23 @@ public class PortalLoader extends CsvResourceLoader {
 	 * 
 	 * @param resource The path to the resource file to load, relative to the
 	 * resource root.
-	 * 
-	 * @return The PortalFactory object.
-	 * 
+	 * @return A map of portal names mapped to portal definitions.
 	 * @throws ResourceNotFoundException If the resource does not exist.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public PortalFactory load(String resource) throws
+	public Map<String, Portal.Definition> load(String resource) throws
 	ResourceNotFoundException, IOException {
-		PortalFactory factory = new PortalFactory();
+		Map<String, Portal.Definition> defs;
+		defs = new HashMap<String, Portal.Definition>();
 		String[][] records = loadRecords(resource);
 		for (String[] r : records) {
-			String name = r[0];
-			String imageIndex = r[1];
-			factory.addDefinition(name, imageIndex);
+			Portal.Definition d = new Portal.Definition();
+			d.name = r[0];
+			d.imageIndex = r[1];
+			defs.put(d.name.toLowerCase(), d);
 			advanceProgress(1.0 / records.length);
 		}
-		return factory;
+		return defs;
 	}
 	
 }

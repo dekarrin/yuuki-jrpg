@@ -2,9 +2,11 @@ package yuuki.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
-import yuuki.action.ActionFactory;
+import yuuki.action.Action;
 
 /**
  * Loads action definition files into an ActionFactory.
@@ -37,26 +39,25 @@ public class ActionLoader extends CsvResourceLoader {
 	 * 
 	 * @param resource The location of the file to load, relative to the
 	 * resource root.
-	 * 
-	 * @return An ActionFactory with the definitions from the file.
-	 * 
+	 * @return A map of action IDs mapped to the definitions from the file.
 	 * @throws ResourceNotFoundException If the resource could not be found.
 	 * @throws ResourceFormatException If the resource has invalid contents.
 	 * @throws IOException If an IOException occurs.
 	 */
-	public ActionFactory load(String resource) throws
+	public Map<Integer, Action.Definition> load(String resource) throws
 	ResourceNotFoundException, ResourceFormatException, IOException {
-		ActionFactory factory = new ActionFactory();
+		Map<Integer, Action.Definition> actions;
+		actions = new HashMap<Integer, Action.Definition>();
 		String[][] records = loadRecords(resource);
 		for (int i = 0; i < records.length; i++) {
 			try {
-				parseRecord(records, i, factory);
+				parseRecord(records, i, actions);
 			} catch (RecordFormatException e) {
 				throw new ResourceFormatException(resource, e);
 			}
 			advanceProgress(1.0 / records.length);
 		}
-		return factory;
+		return actions;
 	}
 	
 	/**
@@ -64,12 +65,12 @@ public class ActionLoader extends CsvResourceLoader {
 	 * 
 	 * @param records The record list to get the record from.
 	 * @param num The index of the record being parsed.
-	 * @param factory The factory to add the record to.
-	 * 
+	 * @param map The map to add the record to.
 	 * @throws RecordFormatException If the given record is invalid.
 	 */
 	private void parseRecord(String[][] records, int num,
-			ActionFactory factory) throws RecordFormatException {
+			Map<Integer, Action.Definition> map) throws
+			RecordFormatException {
 		String[] r = records[num];
 		int id = 0;
 		try {
@@ -77,9 +78,10 @@ public class ActionLoader extends CsvResourceLoader {
 		} catch (FieldFormatException e) {
 			throw new RecordFormatException(num, e);
 		}
-		String name = r[1];
-		String[] args = splitMultiValue(r[2]);
-		factory.addDefinition(id, name, args);
+		Action.Definition def = new Action.Definition();
+		def.name = r[1];
+		def.args = splitMultiValue(r[2]);
+		map.put(id, def);
 	}
 	
 }

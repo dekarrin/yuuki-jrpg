@@ -2,13 +2,13 @@ package yuuki.ui;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Map;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
+import yuuki.sound.DualSoundEngine;
 import yuuki.util.Grid;
 import yuuki.world.Movable;
 import yuuki.world.Portal;
@@ -201,11 +201,9 @@ public interface Interactable {
 	/**
 	 * Initializes the sound system.
 	 * 
-	 * @param effectData The sound effect data.
-	 * @param musicData The background music data.
+	 * @param soundEngine The sound engine to use as the sound system.
 	 */
-	public void initializeSounds(Map<String, byte[]> effectData,
-			Map<String, byte[]> musicData);
+	public void initializeSounds(DualSoundEngine soundEngine);
 	
 	/**
 	 * Plays background music.
