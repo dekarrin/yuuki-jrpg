@@ -62,16 +62,6 @@ abstract class AudioEngine implements Mergeable<Map<String, byte[]>> {
 		return volume;
 	}
 	
-	/**
-	 * Checks whether this AudioEngine is ready to play sounds.
-	 * 
-	 * @return True if this AudioEngine has had its sound data set; otherwise,
-	 * false.
-	 */
-	public boolean isReady() {
-		return (sounds != null);
-	}
-	
 	@Override
 	public void merge(Map<String, byte[]> content) {
 		for (String k : content.keySet()) {

@@ -7,7 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -202,7 +201,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		currentScreen = null;
 		formerScreen = null;
 		animationEngine = new AnimationManager(ANIMATION_FPS);
-		soundEngine = new DualSoundEngine();
+		soundEngine = null;
 	}
 	
 	@Override
@@ -446,10 +445,8 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void initializeSounds(Map<String, byte[]> effectData,
-			Map<String, byte[]> musicData) {
-		this.soundEngine.setEffectData(effectData);
-		this.soundEngine.setMusicData(musicData);
+	public void initializeSounds(DualSoundEngine soundEngine) {
+		this.soundEngine = soundEngine;
 		introScreen.setSoundEngine(soundEngine);
 	}
 	
@@ -508,7 +505,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	
 	@Override
 	public void playMusic(String musicIndex) {
-		if (soundEngine.isReady()) {
+		if (soundEngine != null) {
 			soundEngine.playMusic(musicIndex, false);
 		}
 	}
@@ -516,14 +513,14 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void playMusicAndWait(String musicIndex) throws
 	InterruptedException {
-		if (soundEngine.isReady()) {
+		if (soundEngine != null) {
 			soundEngine.playMusicAndWait(musicIndex);
 		}
 	}
 	
 	@Override
 	public void playSound(String effectIndex) {
-		if (soundEngine.isReady()) {
+		if (soundEngine != null) {
 			soundEngine.playEffect(effectIndex);
 		}
 	}
