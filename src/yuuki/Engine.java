@@ -102,6 +102,11 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * The path to the mods directory.
+	 */
+	private static final String PATH_MODS = "./mods";
+	
+	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
 	 * it.
 	 *
@@ -115,6 +120,44 @@ public class Engine implements Runnable, UiExecutor {
 			showFatalError(e);
 		}
 		game.run();
+	}
+	
+	/**
+	 * Gets the stack trace from a Throwable as a String.
+	 * 
+	 * @param t The Throwable to get the stack trace from.
+	 * @return The stack trace.
+	 */
+	private static String getTrace(Throwable t) {
+		StringBuilder buffer = new StringBuilder();
+		for (StackTraceElement trace : t.getStackTrace()) {
+			buffer.append(trace.toString());
+			buffer.append("\n");
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * Shows an error message and immediately terminates the program.
+	 * 
+	 * @param msg The message to show.
+	 */
+	private static void showFatalError(String msg) {
+		JOptionPane.showMessageDialog(null, msg, "Fatal Error",
+				JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
+	}
+	
+	/**
+	 * Shows an error message for an exception and immediately terminates the
+	 * program.
+	 * 
+	 * @param t The Throwable that caused the error.
+	 */
+	private static void showFatalError(Throwable t) {
+		String msg = t.getMessage() + "\n\n";
+		msg += Engine.getTrace(t);
+		Engine.showFatalError(msg);
 	}
 	
 	/**
@@ -312,7 +355,7 @@ public class Engine implements Runnable, UiExecutor {
 			ui.initialize();
 			ui.switchToLoadingScreen();
 			scanMods();
-			load();
+			loadAssets();
 			applyOptions();
 			try {
 				ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -323,44 +366,6 @@ public class Engine implements Runnable, UiExecutor {
 		} catch (Exception e) {
 			Engine.showFatalError(e);
 		}
-	}
-	
-	/**
-	 * Gets the stack trace from a Throwable as a String.
-	 * 
-	 * @param t The Throwable to get the stack trace from.
-	 * @return The stack trace.
-	 */
-	private static String getTrace(Throwable t) {
-		StringBuilder buffer = new StringBuilder();
-		for (StackTraceElement trace : t.getStackTrace()) {
-			buffer.append(trace.toString());
-			buffer.append("\n");
-		}
-		return buffer.toString();
-	}
-	
-	/**
-	 * Shows an error message for an exception and immediately terminates the
-	 * program.
-	 * 
-	 * @param t The Throwable that caused the error.
-	 */
-	private static void showFatalError(Throwable t) {
-		String msg = t.getMessage() + "\n\n";
-		msg += Engine.getTrace(t);
-		Engine.showFatalError(msg);
-	}
-	
-	/**
-	 * Shows an error message and immediately terminates the program.
-	 * 
-	 * @param msg The message to show.
-	 */
-	private static void showFatalError(String msg) {
-		JOptionPane.showMessageDialog(null, msg, "Fatal Error",
-				JOptionPane.ERROR_MESSAGE);
-		System.exit(1);
 	}
 	
 	/**
@@ -437,13 +442,14 @@ public class Engine implements Runnable, UiExecutor {
 	 * @throws IOException If an IOException occurs while loading the built-in
 	 * content.
 	 */
-	private void load() throws ResourceNotFoundException, IOException {
+	private void loadAssets() throws ResourceNotFoundException, IOException {
 		Progressable m;
 		m = resourceManager.startAssetLoadMonitor(ContentPack.BUILT_IN_NAME);
 		Thread updateThread = getLoadUpdater(m);
 		updateThread.start();
 		resourceManager.loadAssets(ContentPack.BUILT_IN_NAME);
 		updateThread.interrupt();
+		resourceManager.enable(ContentPack.BUILT_IN_NAME);
 		entityMaker = resourceManager.getEntityFactory();
 		ui.initializeSounds(resourceManager.getSoundEngine());
 		ui.initializeImages(resourceManager.getImageFactory());
@@ -454,7 +460,7 @@ public class Engine implements Runnable, UiExecutor {
 	 * any valid mods found.
 	 */
 	private void scanMods() {
-		File modFolder = new File("./mods");
+		File modFolder = new File(PATH_MODS);
 		if (modFolder.isDirectory()) {
 			File[] contentDirs = modFolder.listFiles();
 			for (File mod : contentDirs) {
