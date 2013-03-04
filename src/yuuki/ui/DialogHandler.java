@@ -23,8 +23,7 @@ public class DialogHandler {
 	 * @param t The Throwable that caused the error.
 	 */
 	public static void showError(Throwable t) {
-		String msg = t.getMessage() + "\n\n";
-		msg += DialogHandler.getTrace(t);
+		String msg = DialogHandler.getTrace(t);
 		DialogHandler.showError(msg);
 	}
 	
@@ -45,24 +44,8 @@ public class DialogHandler {
 	 * @param t The Throwable that caused the error.
 	 */
 	public static void showFatalError(Throwable t) {
-		String msg = t.getMessage() + "\n\n";
-		msg += DialogHandler.getTrace(t);
+		String msg = DialogHandler.getTrace(t);
 		DialogHandler.showFatalError(msg);
-	}
-	
-	/**
-	 * Gets the stack trace from a Throwable as a String.
-	 * 
-	 * @param t The Throwable to get the stack trace from.
-	 * @return The stack trace.
-	 */
-	private static String getTrace(Throwable t) {
-		StringBuilder buffer = new StringBuilder();
-		for (StackTraceElement trace : t.getStackTrace()) {
-			buffer.append(trace.toString());
-			buffer.append("\n");
-		}
-		return buffer.toString();
 	}
 	
 	/**
@@ -73,6 +56,25 @@ public class DialogHandler {
 	public static void showMessage(String msg) {
 		JOptionPane.showMessageDialog(null, msg, "Message",
 				JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	/**
+	 * Gets the stack trace from a Throwable as a String.
+	 * 
+	 * @param t The Throwable to get the stack trace from.
+	 * @return The stack trace.
+	 */
+	private static String getTrace(Throwable t) {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(t.getClass().getCanonicalName());
+		buffer.append(": ");
+		buffer.append(t.getMessage());
+		buffer.append("\n\n");
+		for (StackTraceElement trace : t.getStackTrace()) {
+			buffer.append(trace.toString());
+			buffer.append("\n");
+		}
+		return buffer.toString();
 	}
 	
 }

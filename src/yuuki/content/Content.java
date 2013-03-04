@@ -444,8 +444,13 @@ class Content implements Mergeable<Content> {
 	 * @param merging The items in the list to be merged.
 	 */
 	private <E> void mergeItems(List<E> original, List<E> merging) {
-		for (E element : merging) {
-			original.add(element);
+		if (merging != null) {
+			if (original == null) {
+				original = new ArrayList<E>();
+			}
+			for (E element : merging) {
+				original.add(element);
+			}
 		}
 	}
 	
@@ -457,16 +462,21 @@ class Content implements Mergeable<Content> {
 	 */
 	private <V, K> void mergeItems(Map<K, Deque<V>> original,
 			Map<K, Deque<V>> merging) {
-		for (K key : merging.keySet()) {
-			Deque<V> mergeDeque = merging.get(key);
-			Deque<V> originalDeque = original.get(key);
-			if (originalDeque == null) {
-				originalDeque = new ArrayDeque<V>();
-				original.put(key, originalDeque);
+		if (merging != null) {
+			if (original == null) {
+				original = new HashMap<K, Deque<V>>();
 			}
-			Iterator<V> it = mergeDeque.descendingIterator();
-			while (it.hasNext()) {
-				originalDeque.push(it.next());
+			for (K key : merging.keySet()) {
+				Deque<V> mergeDeque = merging.get(key);
+				Deque<V> originalDeque = original.get(key);
+				if (originalDeque == null) {
+					originalDeque = new ArrayDeque<V>();
+					original.put(key, originalDeque);
+				}
+				Iterator<V> it = mergeDeque.descendingIterator();
+				while (it.hasNext()) {
+					originalDeque.push(it.next());
+				}
 			}
 		}
 	}
@@ -478,8 +488,10 @@ class Content implements Mergeable<Content> {
 	 * @param subtracting The items in the list to be subtracting.
 	 */
 	private <E> void subtractItems(List<E> original, List<E> subtracting) {
-		for (E element : subtracting) {
-			original.remove(element);
+		if (original != null && subtracting != null) {
+			for (E element : subtracting) {
+				original.remove(element);
+			}
 		}
 	}
 	
@@ -491,15 +503,17 @@ class Content implements Mergeable<Content> {
 	 */
 	private <V, K> void subtractItems(Map<K, Deque<V>> original,
 			Map<K, Deque<V>> subtracting) {
-		for (K key : subtracting.keySet()) {
-			Deque<V> subDeque = subtracting.get(key);
-			Deque<V> originalDeque = original.get(key);
-			if (originalDeque != null) {
-				for (V element : subDeque) {
-					originalDeque.remove(element);
-				}
-				if (originalDeque.isEmpty()) {
-					original.remove(key);
+		if (original != null && subtracting != null) {
+			for (K key : subtracting.keySet()) {
+				Deque<V> subDeque = subtracting.get(key);
+				Deque<V> originalDeque = original.get(key);
+				if (originalDeque != null) {
+					for (V element : subDeque) {
+						originalDeque.remove(element);
+					}
+					if (originalDeque.isEmpty()) {
+						original.remove(key);
+					}
 				}
 			}
 		}

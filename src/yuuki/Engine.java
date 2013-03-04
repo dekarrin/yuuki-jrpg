@@ -324,6 +324,8 @@ public class Engine implements Runnable, UiExecutor {
 				Thread.currentThread().interrupt();
 			}
 			ui.switchToIntroScreen();
+		} catch (RuntimeException e) {
+			throw e;
 		} catch (Exception e) {
 			DialogHandler.showFatalError(e);
 		}
