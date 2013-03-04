@@ -107,5 +107,15 @@ public class LoadingScreen extends Screen<ScreenListener> {
 		progress.setValue(val);
 		setText(text);
 	}
+
+	/**
+	 * Sets whether the Loading bar is in indeterminate mode.
+	 * 
+	 * @param ind Whether it is.
+	 */
+	public void setIndeterminate(boolean ind) {
+		progress.setIndeterminate(ind);
+		progress.setStringPainted(!ind);
+	}
 	
 }

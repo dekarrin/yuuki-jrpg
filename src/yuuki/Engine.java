@@ -236,23 +236,20 @@ public class Engine implements Runnable, UiExecutor {
 		(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ui.updateLoadingProgress(0.0, "Loading...");
-				Progressable m = resourceManager.startWorldLoadMonitor(
-						ContentPack.BUILT_IN_NAME);
+				ui.setLoadingIndeterminate(true);
+				ui.updateLoadingProgress(0.0, "Loading worlds...");
 				ui.switchToLoadingScreen();
-				Thread updateThread = getLoadUpdater(m);
-				updateThread.start();
 				try {
-					resourceManager.loadWorld(ContentPack.BUILT_IN_NAME);
+					resourceManager.loadEnabledWorlds();
 				} catch (IOException e) {
 					DialogHandler.showFatalError(e);
 				}
-				updateThread.interrupt();
 				world = resourceManager.getWorldEngine();
 				setInitialWorld();
 				player.setLocation(world.getPlayerStart());
 				world.addResident(player);
 				enterOverworldMode();
+				ui.setLoadingIndeterminate(false);
 			}
 		}, "WorldLoadingThread")).start();
 	}

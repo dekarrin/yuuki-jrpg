@@ -454,4 +454,11 @@ public interface Interactable {
 	 */
 	public void waitForDisplay();
 	
+	/**
+	 * Sets whether the loading bar is in indeterminate mode.
+	 * 
+	 * @param b Whether to put the loading bar in indeterminate mode.
+	 */
+	public void setLoadingIndeterminate(boolean b);
+	
 }

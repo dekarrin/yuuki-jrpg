@@ -845,6 +845,21 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void setLoadingIndeterminate(boolean ind) {
+		class Runner implements Runnable {
+			private boolean ind;
+			public Runner(boolean ind) {
+				this.ind = ind;
+			}
+			@Override
+			public void run() {
+				loadingScreen.setIndeterminate(ind);
+			}
+		}
+		SwingUtilities.invokeLater(new Runner(ind));
+	}
+	
+	@Override
 	public void updateLoadingProgress(double percent, String text) {
 		class Runner implements Runnable {
 			private double percent;
