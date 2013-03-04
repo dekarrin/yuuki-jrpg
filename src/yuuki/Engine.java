@@ -324,6 +324,7 @@ public class Engine implements Runnable, UiExecutor {
 				Thread.currentThread().interrupt();
 			}
 			ui.switchToIntroScreen();
+			resourceManager.enable("testmod.zip");
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

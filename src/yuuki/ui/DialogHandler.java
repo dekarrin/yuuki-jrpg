@@ -14,7 +14,7 @@ public class DialogHandler {
 	 */
 	public static void showError(String msg) {
 		JOptionPane.showMessageDialog(null, msg, "Error",
-				JOptionPane.ERROR_MESSAGE);
+				JOptionPane.WARNING_MESSAGE);
 	}
 	
 	/**
@@ -66,10 +66,10 @@ public class DialogHandler {
 	 */
 	private static String getTrace(Throwable t) {
 		StringBuilder buffer = new StringBuilder();
-		buffer.append(t.getClass().getCanonicalName());
-		buffer.append(": ");
 		buffer.append(t.getMessage());
 		buffer.append("\n\n");
+		buffer.append(t.getClass().getCanonicalName());
+		buffer.append("\n");
 		for (StackTraceElement trace : t.getStackTrace()) {
 			buffer.append(trace.toString());
 			buffer.append("\n");

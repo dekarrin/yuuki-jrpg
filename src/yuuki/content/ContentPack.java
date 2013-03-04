@@ -128,7 +128,7 @@ public class ContentPack {
 	public ContentPack(ZipFile archive) throws ResourceNotFoundException,
 	IOException {
 		location = new File(archive.getName());
-		loader = new ContentLoader(location);
+		loader = new ZippedContentLoader(location);
 		inArchive = true;
 		name = location.getName();
 		manifest = loader.readManifest();
