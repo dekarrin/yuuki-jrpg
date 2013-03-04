@@ -10,6 +10,8 @@ import java.util.Map;
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
 import yuuki.content.ContentLoader;
+import yuuki.content.ContentManager;
+import yuuki.content.ContentPack;
 import yuuki.content.ZippedContentLoader;
 import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
@@ -104,11 +106,6 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * The root directory for all resource files.
-	 */
-	private static final String RESOURCE_ROOT = "yuuki/resource/";
-	
-	/**
 	 * Program execution hook. Creates a new instance of Engine and then runs
 	 * it.
 	 *
@@ -159,7 +156,7 @@ public class Engine implements Runnable, UiExecutor {
 	/**
 	 * Loads all resources.
 	 */
-	private ContentLoader resourceManager;
+	private ContentManager resourceManager;
 	
 	/**
 	 * The user interface.
@@ -185,9 +182,8 @@ public class Engine implements Runnable, UiExecutor {
 	 * manifest file.
 	 */
 	public Engine() throws ResourceNotFoundException, IOException {
-		// TODO: spawn thread to create the resource manager
-		resourceManager = createContentLoader();
-		resourceManager.readManifest();
+		resourceManager = new ContentManager();
+		resourceManager.scanBuiltIn();
 		options = new Options();
 		ui = new GraphicalInterface(this, options);
 		worldRunner = new WorldRunner();
@@ -319,8 +315,8 @@ public class Engine implements Runnable, UiExecutor {
 	public void run() {
 		ui.initialize();
 		ui.switchToLoadingScreen();
-		loadAssets();
 		scanMods();
+		load();
 		applyOptions();
 		try {
 			ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -368,32 +364,6 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Creates the ContentLoader for the Engine. The specific type created
-	 * depends on whether Engine is being run from a JAR.
-	 * 
-	 * @return The ContentLoader.
-	 */
-	private ContentLoader createContentLoader() {
-		File jar = getJarFile();
-		if (jar != null) {
-			return new ZippedContentLoader(jar, RESOURCE_ROOT);
-		} else {
-			String className = getClass().getName().replace('.', '/');
-			URL resource = getClass().getResource("/" + className + ".class");
-			String p = null;
-			try {
-				p = URLDecoder.decode(resource.getPath(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// should never happen
-				e.printStackTrace();
-			}
-			File path = new File(p).getParentFile().getParentFile();
-			File resourceRoot = new File(path, RESOURCE_ROOT);
-			return new ContentLoader(resourceRoot);
-		}
-	}
-	
-	/**
 	 * Switches to the overworld screen and begins overworld advancement.
 	 */
 	private void enterOverworldMode() {
@@ -404,31 +374,6 @@ public class Engine implements Runnable, UiExecutor {
 		}
 		updateWorldViewer();
 		ui.switchToOverworldScreen();
-	}
-	
-	/**
-	 * Gets the JAR file this class is being executed from if it exists.
-	 * 
-	 * @return The JAR file, or null if this class is not being executed from a
-	 * JAR file.
-	 */
-	private File getJarFile() {
-		String className = getClass().getName().replace('.', '/');
-		URL resource = getClass().getResource("/" + className + ".class");
-		if (resource.toString().startsWith("jar:")) {
-			String p = null;
-			try {
-				p = URLDecoder.decode(resource.toString(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// should never happen
-				System.err.println("Encoding unsupported");
-				System.exit(1);
-			}
-			File directPath = new File(p.substring(9).replace("!", ""));
-			return directPath.getParentFile().getParentFile();
-		} else {
-			return null;
-		}
 	}
 	
 	/**
@@ -449,35 +394,14 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Gets the mod loader for a directory.
-	 * 
-	 * @param modDir The mod directory.
-	 * @return The ContentLoader for the given mod.
-	 */
-	private ContentLoader getModLoader(File modDir) {
-		ContentLoader rm = new ContentLoader(modDir);
-		try {
-			rm.readManifest();
-		} catch (ResourceNotFoundException e) {
-			// it's not a mod dir, so do nothing
-		} catch (IOException e) {
-			String n = modDir.getName();
-			String msg = "Could not load mod manifest in '" + n + "'";
-			System.err.println(msg);
-		}
-		return rm;
-	}
-	
-	/**
 	 * Loads all game assets and updates the loading screen as they are loaded.
 	 */
-	private void loadAssets() {
-		Progressable monitor = resourceManager.initLoad(4);
+	private void load() {
+		final String n = ContentPack.BUILT_IN_NAME;
+		Progressable monitor = resourceManager.startAssetLoadMonitor(n);
 		Thread updateThread = getLoadUpdater(monitor, ui);
 		updateThread.start();
-		Map<String, byte[]> effectData;
-		Map<String, byte[]> musicData;
-		ImageFactory imageFactory;
+		resourceManager.loadAssets(n);
 		effectData = resourceManager.loadSoundEffects("Loading SFX...");
 		musicData = resourceManager.loadMusic("Loading Music...");
 		imageFactory = resourceManager.loadImages("Loading Images...");
@@ -495,10 +419,11 @@ public class Engine implements Runnable, UiExecutor {
 		File modFolder = new File("./mods");
 		if (modFolder.isDirectory()) {
 			File[] contentDirs = modFolder.listFiles();
-			for (File modContent : contentDirs) {
-				ContentLoader rm = getModLoader(modContent);
-				if (rm != null) {
-					
+			for (File mod : contentDirs) {
+				try {
+					resourceManager.scan(mod.getName(), mod);
+				} catch (IOException e) {
+					System.err.println(e);
 				}
 			}
 		}
