@@ -20,6 +20,7 @@ import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
 import yuuki.util.InvalidIndexException;
 import yuuki.util.Progressable;
+import yuuki.world.InvalidLinkNameException;
 import yuuki.world.World;
 
 /**
@@ -340,7 +341,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * waiting for the player to select a move.
 	 */
 	private void advanceWorld() throws InterruptedException {
-		world.advance();
+		try {
+			world.advance();
+		} catch (InvalidLinkNameException e) {
+			DialogHandler.showError(e);
+		}
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
 			class Runner implements Runnable {

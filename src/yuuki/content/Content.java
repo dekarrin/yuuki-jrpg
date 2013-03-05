@@ -77,7 +77,7 @@ class Content implements Mergeable<Content> {
 	/**
 	 * Contains paths to land files.
 	 */
-	private List<String> world;
+	private List<String> map;
 	
 	/**
 	 * Creates a new Content instance. All properties are set to null.
@@ -195,7 +195,7 @@ class Content implements Mergeable<Content> {
 	 * @return The paths.
 	 */
 	public List<String> getWorld() {
-		return world;
+		return map;
 	}
 	
 	@Override
@@ -214,7 +214,7 @@ class Content implements Mergeable<Content> {
 		lands = mergeLists(lands, content.lands);
 		portals = mergeMaps(portals, content.portals);
 		tiles = mergeMaps(tiles, content.tiles);
-		world = mergeLists(world, content.world);
+		map = mergeLists(map, content.map);
 	}
 	
 	/**
@@ -222,7 +222,7 @@ class Content implements Mergeable<Content> {
 	 */
 	public void reset() {
 		resetAssets();
-		resetWorld();
+		resetMaps();
 	}
 	
 	/**
@@ -237,16 +237,16 @@ class Content implements Mergeable<Content> {
 		images = null;
 		actions = null;
 		entities = null;
+		portals = null;
+		tiles = null;
 	}
 	
 	/**
 	 * Resets all world properties to null.
 	 */
-	public void resetWorld() {
+	public void resetMaps() {
 		lands = null;
-		portals = null;
-		tiles = null;
-		world = null;
+		map = null;
 	}
 	
 	/**
@@ -354,7 +354,7 @@ class Content implements Mergeable<Content> {
 	 * @param paths The paths.
 	 */
 	public void setWorld(List<String> paths) {
-		world = paths;
+		map = paths;
 	}
 	
 	@Override
@@ -373,7 +373,7 @@ class Content implements Mergeable<Content> {
 		lands = subtractLists(lands, content.lands);
 		portals = subtractMaps(portals, content.portals);
 		tiles = subtractMaps(tiles, content.tiles);
-		world = subtractLists(world, content.world);
+		map = subtractLists(map, content.map);
 	}
 	
 	/**

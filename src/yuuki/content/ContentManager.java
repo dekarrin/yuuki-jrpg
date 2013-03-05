@@ -156,7 +156,7 @@ public class ContentManager {
 		World world = new World();
 		for (ContentPack cp : packs.values()) {
 			if (cp.isEnabled() && cp.hasWorld() && cp.hasLands() &&
-					cp.mapDataIsLoaded()) {
+					cp.mapsAreLoaded()) {
 				world.merge(cp.getContent().getLands());
 			}
 		}
@@ -164,18 +164,17 @@ public class ContentManager {
 	}
 	
 	/**
-	 * Loads the map data in all content packs that are enabled.
+	 * Loads non-map data in all but the given content packs.
 	 * 
-	 * @throws ResourceNotFoundException 
-	 * @throws IOException 
+	 * @param exclude A list of IDs to exclude.
+	 * @throws ResourceNotFoundException
+	 * @throws IOException
 	 */
-	public void loadEnabledWorlds() throws ResourceNotFoundException,
+	public void loadAll(Set<String> exclude) throws ResourceNotFoundException,
 	IOException {
-		for (String id : packs.keySet()) {
-			ContentPack c = packs.get(id);
-			if (c.isEnabled() && c.hasWorld() && c.hasLands() &&
-					!c.mapDataIsLoaded()) {
-				loadWorld(id);
+		for (String k : packs.keySet()) {
+			if (!exclude.contains(k)) {
+				loadAssets(k);
 			}
 		}
 	}
@@ -193,6 +192,23 @@ public class ContentManager {
 	}
 	
 	/**
+	 * Loads the map data in all content packs that are enabled.
+	 * 
+	 * @throws ResourceNotFoundException
+	 * @throws IOException
+	 */
+	public void loadEnabledWorlds() throws ResourceNotFoundException,
+	IOException {
+		for (String id : packs.keySet()) {
+			ContentPack c = packs.get(id);
+			if (c.isEnabled() && c.hasWorld() && c.hasLands() &&
+					!c.mapsAreLoaded()) {
+				loadWorld(id);
+			}
+		}
+	}
+	
+	/**
 	 * Loads all map content in a content pack.
 	 * 
 	 * @param name The name of the content pack.
@@ -201,7 +217,7 @@ public class ContentManager {
 	 */
 	public void loadWorld(String name) throws ResourceNotFoundException,
 	IOException {
-		packs.get(name).loadWorldAssets(contentModel);
+		packs.get(name).loadMaps(contentModel);
 	}
 	
 	/**
@@ -271,23 +287,7 @@ public class ContentManager {
 	 * @return The monitor.
 	 */
 	public Progressable startWorldLoadMonitor(String name) {
-		return packs.get(name).startWorldLoadMonitor();
-	}
-	
-	/**
-	 * Loads non-map data in all but the given content packs.
-	 * 
-	 * @param exclude A list of IDs to exclude.
-	 * @throws ResourceNotFoundException 
-	 * @throws IOException 
-	 */
-	public void loadAll(Set<String> exclude) throws ResourceNotFoundException,
-	IOException {
-		for (String k : packs.keySet()) {
-			if (!exclude.contains(k)) {
-				loadAssets(k);
-			}
-		}
+		return packs.get(name).startMapLoadMonitor();
 	}
 	
 }
