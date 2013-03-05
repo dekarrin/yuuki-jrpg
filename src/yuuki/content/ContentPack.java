@@ -140,10 +140,18 @@ public class ContentPack {
 	 * whether it has them.
 	 */
 	private void setLoaded() {
-		mapLoaded = !(hasPortals() || hasTiles() || hasWorld() || hasLands());
-		assetsLoaded = !(hasMusicDefinitions() || hasEffectDefinitions() ||
-				hasImageDefinitions() || hasMusic() || hasEffects() ||
-				hasImages() || hasActions() || hasEntities());
+		mapLoaded = !(hasWorld() || hasLands());
+		assetsLoaded = !(
+				hasMusicDefinitions() ||
+				hasEffectDefinitions() ||
+				hasImageDefinitions() ||
+				hasMusic() ||
+				hasEffects() ||
+				hasImages() ||
+				hasActions() ||
+				hasEntities() ||
+				hasPortals() ||
+				hasTiles());
 	}
 	
 	/**
@@ -292,7 +300,7 @@ public class ContentPack {
 	 * @return Whether it has been.
 	 */
 	public boolean isLoaded() {
-		return (mapDataIsLoaded() && assetDataIsLoaded());
+		return (mapsAreLoaded() && assetsAreLoaded());
 	}
 	
 	/**
@@ -300,7 +308,7 @@ public class ContentPack {
 	 * 
 	 * @return True if the map data has been loaded, or if there is none.
 	 */
-	public boolean mapDataIsLoaded() {
+	public boolean mapsAreLoaded() {
 		return mapLoaded;
 	}
 	
@@ -309,7 +317,7 @@ public class ContentPack {
 	 * 
 	 * @return True if the non-map data has been loaded, or if there is none.
 	 */
-	public boolean assetDataIsLoaded() {
+	public boolean assetsAreLoaded() {
 		return assetsLoaded;
 	}
 	
@@ -337,7 +345,7 @@ public class ContentPack {
 			startLoadMonitor();
 		}
 		loadAssets(resolver);
-		loadWorldAssets(resolver);
+		loadMaps(resolver);
 	}
 	
 	/**
@@ -368,6 +376,8 @@ public class ContentPack {
 		loadImages(resolver);
 		loadActions();
 		loadEntities(resolver);
+		loadPortals();
+		loadTiles();
 		assetsLoaded = true;
 	}
 	
@@ -385,14 +395,12 @@ public class ContentPack {
 	 * found.
 	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	public void loadWorldAssets(Content resolver) throws
+	public void loadMaps(Content resolver) throws
 	ResourceNotFoundException, IOException {
-		content.resetWorld();
+		content.resetMaps();
 		if (!loader.isInLoad()) {
-			startWorldLoadMonitor();
+			startMapLoadMonitor();
 		}
-		loadPortals();
-		loadTiles();
 		loadWorld();
 		loadLands(resolver);
 		mapLoaded = true;
@@ -451,8 +459,8 @@ public class ContentPack {
 	 * 
 	 * @return The monitor.
 	 */
-	public Progressable startWorldLoadMonitor() {
-		return loader.initLoad(getWorldLoadCount());
+	public Progressable startMapLoadMonitor() {
+		return loader.initLoad(getMapLoadCount());
 	}
 	
 	/**
@@ -502,6 +510,8 @@ public class ContentPack {
 		count += (hasImages())				? 1 : 0;
 		count += (hasActions())				? 1 : 0;
 		count += (hasEntities())			? 1 : 0;
+		count += (hasPortals())				? 1 : 0;
+		count += (hasTiles())				? 1 : 0;
 		return count;
 	}
 	
@@ -531,7 +541,7 @@ public class ContentPack {
 	 * has.
 	 */
 	private int getLoadCount() {
-		return getAssetLoadCount() + getWorldLoadCount();
+		return getAssetLoadCount() + getMapLoadCount();
 	}
 	
 	/**
@@ -597,10 +607,8 @@ public class ContentPack {
 	 * @return The number of different world resource types that this
 	 * ContentPack has.
 	 */
-	private int getWorldLoadCount() {
+	private int getMapLoadCount() {
 		int count = 0;
-		count += (hasPortals())	? 1 : 0;
-		count += (hasTiles())	? 1 : 0;
 		count += (hasWorld())	? 1 : 0;
 		count += (hasLands())	? 1 : 0;
 		return count;

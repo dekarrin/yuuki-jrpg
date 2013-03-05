@@ -44,7 +44,7 @@ public class RecordFormatException extends FormatException {
 	 * @param message The message to display.
 	 */
 	public RecordFormatException(int record, String message) {
-		super(message);
+		super("Record #" + record + ": " + message);
 		this.record = record;
 	}
 	
@@ -58,7 +58,7 @@ public class RecordFormatException extends FormatException {
 	 */
 	public RecordFormatException(int record, String message,
 			FieldFormatException cause) {
-		super(message, cause);
+		super("Record #" + record + ": " + message, cause);
 		this.record = record;
 	}
 	
@@ -71,7 +71,7 @@ public class RecordFormatException extends FormatException {
 	 * @param cause The exception that caused this exception.
 	 */
 	public RecordFormatException(int record, String message, Throwable cause) {
-		super(message, cause);
+		super("Record #" + record + ": " + message, cause);
 		this.record = record;
 	}
 	
