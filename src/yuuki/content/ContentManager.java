@@ -57,7 +57,6 @@ public class ContentManager {
 	public ContentManager() {
 		packs = new HashMap<String, ContentPack>();
 		contentModel = new Content();
-		contentModel.init();
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
@@ -289,7 +288,6 @@ public class ContentManager {
 				loadAssets(k);
 			}
 		}
-		
 	}
 	
 }
