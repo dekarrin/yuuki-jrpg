@@ -19,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import yuuki.Options;
+import yuuki.ui.ModPanel;
 
 /**
  * The screen containing the options for the game.
@@ -31,6 +32,11 @@ ChangeListener {
 	 * The slider for background music volume.
 	 */
 	private JSlider bgmVolumeSlider;
+	
+	/**
+	 * The panel for mod loading.
+	 */
+	private ModPanel modPanel;
 	
 	/**
 	 * Listens for enter presses.
@@ -70,7 +76,7 @@ ChangeListener {
 	 */
 	public OptionsScreen(int width, int height) {
 		super(width, height);
-		MouseListener ma = new MouseAdapter() {
+		MouseListener mAdapter = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getSource() == submitButton) {
@@ -84,15 +90,17 @@ ChangeListener {
 		bgmVolumeSlider = createPercentSlider();
 		sfxVolumeSlider = createPercentSlider();
 		sfxTestButton = new JButton("SFX Test");
-		sfxTestButton.addMouseListener(ma);
+		sfxTestButton.addMouseListener(mAdapter);
 		sfxTestButton.addKeyListener(enterListener);
 		submitButton = new JButton("OK");
-		submitButton.addMouseListener(ma);
+		submitButton.addMouseListener(mAdapter);
 		submitButton.addKeyListener(enterListener);
+		modPanel = new ModPanel(width - 80, 200);
 		form.add(createLabeledComponent("BGM: ", bgmVolumeSlider));
 		form.add(createLabeledComponent("SFX: ", sfxVolumeSlider));
 		form.add(sfxTestButton);
 		form.add(submitButton);
+		form.add(modPanel);
 		add(form);
 	}
 	
