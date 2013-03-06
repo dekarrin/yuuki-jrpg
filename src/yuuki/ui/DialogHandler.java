@@ -33,7 +33,7 @@ public class DialogHandler {
 	 * @param msg The message to show.
 	 */
 	public static void showFatalError(String msg) {
-		showError(msg);
+		showFatalError(msg);
 		System.exit(1);
 	}
 	

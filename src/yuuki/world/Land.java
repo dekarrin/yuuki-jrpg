@@ -362,7 +362,7 @@ public class Land {
 		while (it.hasNext()) {
 			resident = it.next();
 			Point p = resident.getLocation();
-			if (portals.containsKey(p) && resident.isTransferrable()) {
+			if (resident.isTransferrable() && portals.containsKey(p)) {
 				tiles.itemAt(p).setOccupied(false);
 				outgoingResidents.add(resident);
 				it.remove();
