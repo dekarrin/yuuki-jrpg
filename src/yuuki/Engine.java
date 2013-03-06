@@ -87,6 +87,9 @@ public class Engine implements Runnable, UiExecutor {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
+			} catch (InvalidLinkNameException e) {
+				DialogHandler.showFatalError("Invalid portal link: '" +
+						e.getMessage() + "'");
 			}
 		}
 		public void setPaused(boolean paused) {
@@ -339,13 +342,12 @@ public class Engine implements Runnable, UiExecutor {
 	 * 
 	 * @throws InterruptedException If the current thread is interrupted while
 	 * waiting for the player to select a move.
+	 * @throws InvalidLinkNameException If a resident tries to use a portal
+	 * with an invalid link.
 	 */
-	private void advanceWorld() throws InterruptedException {
-		try {
-			world.advance();
-		} catch (InvalidLinkNameException e) {
-			DialogHandler.showError(e);
-		}
+	private void advanceWorld() throws InterruptedException,
+	InvalidLinkNameException {
+		world.advance();
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
 			class Runner implements Runnable {
