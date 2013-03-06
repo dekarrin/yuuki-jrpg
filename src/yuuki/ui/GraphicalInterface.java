@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
@@ -1005,12 +1006,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 				mainProgram.requestQuit();
 			}
 		};
+		Dimension windowSize = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(
 				WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
 		mainWindow.setContentPane(contentPane);
+		mainWindow.setPreferredSize(windowSize);
+		mainWindow.setSize(windowSize);
+		mainWindow.setLocationRelativeTo(null);
 	}
 	
 	/**
