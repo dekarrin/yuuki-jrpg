@@ -3,6 +3,7 @@ package yuuki.ui.screen;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import yuuki.graphic.ImageFactory;
 import yuuki.ui.WorldViewer;
@@ -148,6 +150,11 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	private JButton moveWestButton;
 	
 	/**
+	 * The label that shows the name of the current land.
+	 */
+	private JLabel landName;
+	
+	/**
 	 * Listens for directional keypad pushes.
 	 */
 	private KeyListener numpadListener = new KeyAdapter() {
@@ -217,6 +224,9 @@ public class OverworldScreen extends Screen<ScreenListener> {
 		addKeyListener(numpadListener);
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
+		landName = new JLabel("");
+		landName.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+		landName.setAlignmentX(Component.CENTER_ALIGNMENT);
 		createMovementButtons();
 		addElements();
 	}
@@ -257,7 +267,7 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 * 
 	 * @return The movement button.
 	 */
-	public JButton createMoveButton(String label) {
+	private JButton createMoveButton(String label) {
 		JButton button = new JButton(label);
 		button.setFocusable(false);
 		button.addActionListener(hitListener);
@@ -304,9 +314,11 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 * Changes the world viewer's view of the world.
 	 * 
 	 * @param view The grid with the view to show.
+	 * @param name The name of the land that is being displayed.
 	 */
-	public void setWorldView(Grid<Tile> view) {
+	public void setWorldView(Grid<Tile> view, String name) {
 		worldViewer.setLand(view);
+		landName.setText(name);
 	}
 	
 	/**
@@ -314,7 +326,7 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 * 
 	 * @param center The coordinates of the new center to show.
 	 */
-	public void updateWorldView(Point center) {
+	public void updateWorldViewport(Point center) {
 		worldViewer.updateDisplay(center);
 	}
 	
@@ -324,8 +336,10 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	private void addElements() {
 		Box moveBox = createMovementBox();
 		Box vertBox = Box.createVerticalBox();
-		vertBox.add(worldViewer);
+		vertBox.add(landName);
 		vertBox.add(Box.createVerticalStrut(10));
+		vertBox.add(worldViewer);
+		vertBox.add(Box.createVerticalStrut(15));
 		vertBox.add(moveBox);
 		add(vertBox);
 	}

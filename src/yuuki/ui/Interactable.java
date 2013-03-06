@@ -269,8 +269,9 @@ public interface Interactable {
 	 * Sets the world view to the given tile grid.
 	 * 
 	 * @param view The tiles that make up the world view.
+	 * @param name The name of the land being displayed.
 	 */
-	public void setWorldView(Grid<Tile> view);
+	public void setWorldView(Grid<Tile> view, String name);
 	
 	/**
 	 * Shows a character fail at an attack.
