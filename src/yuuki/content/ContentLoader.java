@@ -124,6 +124,7 @@ public class ContentLoader {
 		} catch (ResourceFormatException e) {
 			DialogHandler.showError(e);
 		}
+		finishLoadingOperation(sub);
 		return actions;
 	}
 	
@@ -174,6 +175,7 @@ public class ContentLoader {
 		} catch (ResourceFormatException e) {
 			DialogHandler.showError(e);
 		}
+		finishLoadingOperation(sub);
 		return entities;
 	}
 	
@@ -214,16 +216,19 @@ public class ContentLoader {
 			PopulationFactory pop) {
 		Progressable sub = startLoadingOperation(text);
 		LandLoader loader = createLandLoader(pop);
-		loader.setProgressMonitor(sub);
 		List<Land> lands = new ArrayList<Land>();
 		for (String p : paths) {
 			try {
+				Progressable m = sub.getSubProgressable(1.0 / paths.size());
+				loader.setProgressMonitor(m);
 				Land land = loader.load(p);
 				lands.add(land);
+				m.finishProgress();
 			} catch (Exception e) {
 				DialogHandler.showError(e);
 			}
 		}
+		finishLoadingOperation(sub);
 		return lands;
 	}
 	
@@ -268,6 +273,7 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_PORTALS);
 		portals = loader.load(path);
+		finishLoadingOperation(sub);
 		return portals;
 	}
 	
@@ -287,6 +293,7 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_TILES);
 		tiles = loader.load(path);
+		finishLoadingOperation(sub);
 		return tiles;
 	}
 	
@@ -391,11 +398,13 @@ public class ContentLoader {
 			Map<String, String> indexes, String pathIndex) {
 		Progressable sub = startLoadingOperation(text);
 		ByteArrayLoader loader = createFileLoader(pathIndex);
-		loader.setProgressMonitor(sub);
 		Map<String, byte[]> data = new HashMap<String, byte[]>();
 		for (String i : indexes.keySet()) {
+			loader.setProgressMonitor(sub);
 			byte[] fileData = null;
 			try {
+				Progressable m = sub.getSubProgressable(1.0 / indexes.size());
+				loader.setProgressMonitor(m);
 				fileData = loader.load(indexes.get(i));
 				data.put(i, fileData);
 			} catch (IOException e) {
@@ -447,6 +456,7 @@ public class ContentLoader {
 			String item = r[0];
 			list.add(item);
 		}
+		finishLoadingOperation(sub);
 		return list;
 	}
 	
