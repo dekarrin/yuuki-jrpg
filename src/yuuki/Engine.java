@@ -507,7 +507,7 @@ public class Engine implements Runnable, UiExecutor {
 	 */
 	private void updateWorldViewData() {
 		ui.clearWorldLocatables();
-		ui.setWorldView(world.getTiles());
+		ui.setWorldView(world.getTiles(), world.getLandName());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
 	}

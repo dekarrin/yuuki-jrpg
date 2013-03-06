@@ -583,18 +583,20 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void setWorldView(Grid<Tile> view) {
+	public void setWorldView(Grid<Tile> view, String name) {
 		class Runner implements Runnable {
 			private Grid<Tile> view;
-			public Runner(Grid<Tile> tg) {
+			private String name;
+			public Runner(Grid<Tile> tg, String n) {
 				view = tg;
+				name = n;
 			}
 			@Override
 			public void run() {
-				overworldScreen.setWorldView(view);
+				overworldScreen.setWorldView(view, name);
 			}
 		}
-		Runner r = new Runner(view);
+		Runner r = new Runner(view, name);
 		SwingUtilities.invokeLater(r);
 	}
 	
@@ -885,7 +887,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			}
 			@Override
 			public void run() {
-				overworldScreen.updateWorldView(p);
+				overworldScreen.updateWorldViewport(p);
 			}
 		}
 		Runner r = new Runner(center);
