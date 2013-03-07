@@ -22,7 +22,7 @@ public class ModPanel extends JPanel {
 	/**
 	 * The minimum height of a mod sub-panel.
 	 */
-	private static final int MIN_MOD_HEIGHT = 20;
+	private static final int MOD_HEIGHT = 20;
 	
 	/**
 	 * The list that contains all individual mods.
@@ -38,11 +38,8 @@ public class ModPanel extends JPanel {
 	public ModPanel(int width, int height) {
 		Dimension size = new Dimension(width, height);
 		setPreferredSize(size);
-		setMinimumSize(size);
-		setMaximumSize(size);
-		setSize(size);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		createComponents();
+		createComponents(width);
 		addComponents(width, height);
 		addMod("Super cool awesome funtime");
 	}
@@ -73,11 +70,16 @@ public class ModPanel extends JPanel {
 	
 	/**
 	 * Creates the child components of this ModPanel that are properties of it.
+	 * 
+	 * @param width The width of this ModPanel.
 	 */
-	private void createComponents() {
+	private void createComponents(int width) {
 		modList = new JPanel();
 		modList.setBackground(Color.LIGHT_GRAY);
 		modList.setLayout(new BoxLayout(modList, BoxLayout.Y_AXIS));
+		Dimension max = modList.getMaximumSize();
+		max.width = width;
+		modList.setMaximumSize(max);
 	}
 	
 	/**
@@ -121,15 +123,17 @@ public class ModPanel extends JPanel {
 	 */
 	private JPanel createModPanel(String name) {
 		JPanel panel = new JPanel();
-		JPanel title = createModTitlePanel(name);
-		JPanel enabler = createModEnablerPanel();
+	//	JPanel title = createModTitlePanel(name);
+	//	JPanel enabler = createModEnablerPanel();
 		Dimension s = getPreferredSize();
-		Dimension pSize = new Dimension(s.width, MIN_MOD_HEIGHT);
+		Dimension pSize = new Dimension(s.width, MOD_HEIGHT);
 		panel.setPreferredSize(pSize);
 		panel.setMinimumSize(pSize);
+		panel.setMaximumSize(pSize);
 		panel.setLayout(new BorderLayout());
-		panel.add(title, BorderLayout.WEST);
-		panel.add(enabler, BorderLayout.EAST);
+	//	panel.add(title, BorderLayout.WEST);
+	//	panel.add(enabler, BorderLayout.EAST);
+		panel.setBackground(Color.RED);
 		return panel;
 	}
 	
@@ -155,8 +159,8 @@ public class ModPanel extends JPanel {
 	 */
 	private JScrollPane createViewPort(int width, int height) {
 		JScrollPane view = new JScrollPane(modList);
-		view.setPreferredSize(new Dimension(width, height));
-		view.setMinimumSize(new Dimension(width, 1));
+		view.setPreferredSize(new Dimension(1, height));
+		//view.setMinimumSize(new Dimension(width, 1));
 		return view;
 	}
 	
