@@ -45,6 +45,7 @@ public class ModPanel extends JPanel {
 		public ModList(int width, int height) {
 			viewerWidth = width;
 			viewerHeight = height;
+			setOpaque(false);
 		}
 		
 		@Override
@@ -131,9 +132,29 @@ public class ModPanel extends JPanel {
 	public static final int MOD_HEIGHT = 50;
 	
 	/**
+	 * The color of a mod with the alternate color scheme.
+	 */
+	private static final Color MOD_COLOR_ALT = new Color(0xdadada);
+	
+	/**
+	 * The color of a mod with the main color scheme.
+	 */
+	private static final Color MOD_COLOR_MAIN = new Color(0xc9c9c9);
+	
+	/**
+	 * Whether the next mod to be added should have alt colors.
+	 */
+	private boolean modAltScheme;
+	
+	/**
 	 * The list that contains all individual mods.
 	 */
-	private JPanel modList;
+	private ModList modList;
+	
+	/**
+	 * Whether any mods have been added to the list.
+	 */
+	private boolean modsAdded;
 	
 	/**
 	 * Creates a new ModPanel.
@@ -142,10 +163,11 @@ public class ModPanel extends JPanel {
 	 * @param height The height of the scroll view.
 	 */
 	public ModPanel(int width, int height) {
+		modsAdded = false;
+		modAltScheme = false;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		createComponents(width, height);
-		addComponents(width, height);
-		//addMod("Super cool awesome funtime");
+		addComponents();
 	}
 	
 	/**
@@ -154,21 +176,34 @@ public class ModPanel extends JPanel {
 	 * @param name The name of the mod.
 	 */
 	public void addMod(String name) {
+		if (!modsAdded) {
+			modList.removeAll();
+			modsAdded = true;
+		}
 		JPanel modPanel = createModPanel(name);
 		modList.add(modPanel);
 	}
 	
 	/**
-	 * Adds all child components to this ModPanel.
-	 * 
-	 * @param width The width of this ModPanel.
-	 * @param height The height of this ModPanel.
+	 * Clears all mods from the list.
 	 */
-	private void addComponents(int width, int height) {
-		//JPanel labelPanel = createLabelPanel(width, "Mods:");
-		JScrollPane modListView = createViewPort(width, height);
-		//add(labelPanel);
-		//add(Box.createVerticalStrut(2));
+	public void clearMods() {
+		modList.removeAll();
+		modList.add(createNoModsPanel());
+		modsAdded = false;
+		modAltScheme = false;
+	}
+	
+	/**
+	 * Adds all child components to this ModPanel.
+	 */
+	private void addComponents() {
+		JPanel labelPanel = createLabelPanel("Mods:");
+		JScrollPane modListView = createViewPort();
+		JPanel noMods = createNoModsPanel();
+		modList.add(noMods);
+		add(labelPanel);
+		add(Box.createVerticalStrut(2));
 		add(modListView);
 	}
 	
@@ -176,29 +211,24 @@ public class ModPanel extends JPanel {
 	 * Creates the child components of this ModPanel that are properties of it.
 	 * 
 	 * @param width The width of this ModPanel.
+	 * @param height The height of this ModPanel.
 	 */
 	private void createComponents(int width, int height) {
 		modList = new ModList(width, height);
-		modList.setBackground(Color.LIGHT_GRAY);
 		modList.setLayout(new BoxLayout(modList, BoxLayout.Y_AXIS));
-		//	Dimension max = modList.getMaximumSize();
-		//	max.width = width;
-		//	modList.setMaximumSize(max);
 	}
 	
 	/**
 	 * Creates a panel with center alignment containing a label with left
 	 * alignment.
 	 * 
-	 * @param width The width of the panel.
 	 * @param text The text of the label.
 	 * @return The created panel.
 	 */
-	private JPanel createLabelPanel(int width, String text) {
+	private JPanel createLabelPanel(String text) {
 		JPanel panel = new JPanel();
 		JLabel label = new JLabel(text);
 		label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-		panel.setPreferredSize(new Dimension(width, 1));
 		panel.setLayout(new BorderLayout());
 		panel.add(label, BorderLayout.WEST);
 		return panel;
@@ -233,15 +263,17 @@ public class ModPanel extends JPanel {
 		JPanel panel = new JPanel();
 		JPanel title = createModTitlePanel(name);
 		JPanel enabler = createModEnablerPanel();
-		Dimension s = getPreferredSize();
-		Dimension pSize = new Dimension(s.width, MOD_HEIGHT);
-		//panel.setPreferredSize(pSize);
-		panel.setMinimumSize(new Dimension(1, MOD_HEIGHT));
-		panel.setMaximumSize(pSize);
+		Dimension s = modList.getPreferredScrollableViewportSize();
+		panel.setPreferredSize(new Dimension(s.width, MOD_HEIGHT));
 		panel.setLayout(new BorderLayout());
 		panel.add(title, BorderLayout.WEST);
 		panel.add(enabler, BorderLayout.EAST);
-		//	panel.setBackground();
+		if (modAltScheme) {
+			panel.setBackground(MOD_COLOR_MAIN);
+		} else {
+			panel.setBackground(MOD_COLOR_ALT);
+		}
+		modAltScheme = ! modAltScheme;
 		return panel;
 	}
 	
@@ -262,15 +294,27 @@ public class ModPanel extends JPanel {
 	}
 	
 	/**
+	 * Creates a panel with a message indicated that no mods have been loaded.
+	 * 
+	 * @return The created panel.
+	 */
+	private JPanel createNoModsPanel() {
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel("No mods detected.");
+		label.setFont(new Font(Font.SERIF, Font.ITALIC, 12));
+		panel.add(label);
+		panel.setOpaque(false);
+		return panel;
+	}
+	
+	/**
 	 * Creates the view port for the mod list.
 	 * 
-	 * @param width The width of the view port.
-	 * @param height The height of the view port.
 	 * @return The created view port.
 	 */
-	private JScrollPane createViewPort(int width, int height) {
+	private JScrollPane createViewPort() {
 		JScrollPane view = new JScrollPane(modList);
-		//view.setPreferredSize(new Dimension(1, height));
+		view.getViewport().setBackground(new Color(0xb8b8b8));
 		return view;
 	}
 	
