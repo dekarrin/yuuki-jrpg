@@ -2,7 +2,6 @@ package yuuki.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -22,16 +21,6 @@ import javax.swing.SwingConstants;
  */
 @SuppressWarnings("serial")
 public class ModPanel extends JPanel {
-	
-	/**
-	 * The minimum height of a mod sub-panel.
-	 */
-	public static final int MOD_HEIGHT = 50;
-	
-	/**
-	 * The list that contains all individual mods.
-	 */
-	private JPanel modList;
 	
 	/**
 	 * Displays the mods.
@@ -59,20 +48,8 @@ public class ModPanel extends JPanel {
 		}
 		
 		@Override
-		public int getScrollableUnitIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
-			final int y = visibleRect.y;
-			final int h = visibleRect.height;
-			if (orientation == SwingConstants.HORIZONTAL) {
-				return 1;
-			} else {
-				if (direction > 0) {
-					int viewRemainder = getInitial(y, h) + getFullRows(y, h);
-					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
-				} else {
-					return ModPanel.MOD_HEIGHT - getInitial(y, h);
-				}
-			}
+		public Dimension getPreferredScrollableViewportSize() {
+			return new Dimension(viewerWidth, viewerHeight);
 		}
 		
 		@Override
@@ -92,11 +69,6 @@ public class ModPanel extends JPanel {
 		}
 		
 		@Override
-		public Dimension getPreferredScrollableViewportSize() {
-			return new Dimension(viewerWidth, viewerHeight);
-		}
-		
-		@Override
 		public boolean getScrollableTracksViewportHeight() {
 			return false;
 		}
@@ -104,6 +76,23 @@ public class ModPanel extends JPanel {
 		@Override
 		public boolean getScrollableTracksViewportWidth() {
 			return true;
+		}
+		
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+			final int y = visibleRect.y;
+			final int h = visibleRect.height;
+			if (orientation == SwingConstants.HORIZONTAL) {
+				return 1;
+			} else {
+				if (direction > 0) {
+					int viewRemainder = getInitial(y, h) + getFullRows(y, h);
+					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
+				} else {
+					return ModPanel.MOD_HEIGHT - getInitial(y, h);
+				}
+			}
 		}
 		
 		/**
@@ -135,6 +124,16 @@ public class ModPanel extends JPanel {
 		}
 		
 	}
+	
+	/**
+	 * The minimum height of a mod sub-panel.
+	 */
+	public static final int MOD_HEIGHT = 50;
+	
+	/**
+	 * The list that contains all individual mods.
+	 */
+	private JPanel modList;
 	
 	/**
 	 * Creates a new ModPanel.
@@ -182,9 +181,9 @@ public class ModPanel extends JPanel {
 		modList = new ModList(width, height);
 		modList.setBackground(Color.LIGHT_GRAY);
 		modList.setLayout(new BoxLayout(modList, BoxLayout.Y_AXIS));
-	//	Dimension max = modList.getMaximumSize();
-	//	max.width = width;
-	//	modList.setMaximumSize(max);
+		//	Dimension max = modList.getMaximumSize();
+		//	max.width = width;
+		//	modList.setMaximumSize(max);
 	}
 	
 	/**
@@ -242,7 +241,7 @@ public class ModPanel extends JPanel {
 		panel.setLayout(new BorderLayout());
 		panel.add(title, BorderLayout.WEST);
 		panel.add(enabler, BorderLayout.EAST);
-	//	panel.setBackground();
+		//	panel.setBackground();
 		return panel;
 	}
 	
