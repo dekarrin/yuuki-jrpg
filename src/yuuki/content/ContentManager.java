@@ -138,6 +138,22 @@ public class ContentManager {
 	}
 	
 	/**
+	 * Gets the IDs of all mods.
+	 * 
+	 * @return The IDs.
+	 */
+	public String[] getModIds() {
+		String[] ids = new String[packs.size() - 1];
+		int c = 0;
+		for (String id : packs.keySet()) {
+			if (!id.equals(ContentPack.BUILT_IN_NAME)) {
+				ids[c++] = id;
+			}
+		}
+		return ids;
+	}
+	
+	/**
 	 * Gets the sound engine that this ContentManager controls.
 	 * 
 	 * @return The sound engine.
