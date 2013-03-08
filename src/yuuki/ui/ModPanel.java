@@ -41,12 +41,12 @@ public class ModPanel extends JPanel {
 		/**
 		 * The height of the view.
 		 */
-		private int viewerHeight;
+		private final int viewerHeight;
 		
 		/**
 		 * The width of the view.
 		 */
-		private int viewerWidth;
+		private final int viewerWidth;
 		
 		/**
 		 * Creates a new ModList.
@@ -66,31 +66,39 @@ public class ModPanel extends JPanel {
 			if (orientation == SwingConstants.HORIZONTAL) {
 				return 1;
 			} else {
-				int exposedPixels;
 				if (direction > 0) {
 					int viewRemainder = getInitial(y, h) + getFullRows(y, h);
-					exposedPixels = h - viewRemainder;
+					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
 				} else {
-					exposedPixels = getInitial(y, h);
+					return ModPanel.MOD_HEIGHT - getInitial(y, h);
 				}
-				return ModPanel.MOD_HEIGHT - exposedPixels;
 			}
 		}
 		
 		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect,
 				int orientation, int direction) {
-			return 1;
+			final int y = visibleRect.y;
+			final int h = visibleRect.height;
+			if (orientation == SwingConstants.HORIZONTAL) {
+				return 1;
+			} else {
+				if (direction > 0) {
+					return getInitial(y, h) + getFullRows(y, h);
+				} else {
+					return (h - getInitial(y, h));
+				}
+			}
 		}
 		
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
-			return new Dimension(1, 1);
+			return new Dimension(viewerWidth, viewerHeight);
 		}
 		
 		@Override
 		public boolean getScrollableTracksViewportHeight() {
-			return true;
+			return false;
 		}
 		
 		@Override
