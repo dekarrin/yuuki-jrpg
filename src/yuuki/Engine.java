@@ -348,7 +348,6 @@ public class Engine implements Runnable, UiExecutor {
 				Thread.currentThread().interrupt();
 			}
 			ui.switchToIntroScreen();
-			resourceManager.enable("testmod");
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -487,6 +486,8 @@ public class Engine implements Runnable, UiExecutor {
 					DialogHandler.showError(e);
 				}
 			}
+			String[] ids = resourceManager.getModIds();
+			ui.addMods(ids, ids);
 		}
 	}
 	
