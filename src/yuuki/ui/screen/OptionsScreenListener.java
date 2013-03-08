@@ -29,4 +29,18 @@ public interface OptionsScreenListener extends ScreenListener {
 	 */
 	public void sfxVolumeChanged(int volume);
 	
+	/**
+	 * Fired when a mod is enabled.
+	 * 
+	 * @param id The ID of the enabled mod.
+	 */
+	public void modEnabled(String id);
+	
+	/**
+	 * Fired when a mod is disabled.
+	 * 
+	 * @param id The ID of the disabled mod.
+	 */
+	public void modDisabled(String id);
+	
 }

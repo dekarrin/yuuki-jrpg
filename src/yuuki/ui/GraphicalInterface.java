@@ -490,6 +490,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void modDisabled(String id) {
+		mainProgram.requestModDisable(id);
+	}
+	
+	@Override
+	public void modEnabled(String id) {
+		mainProgram.requestModEnable(id);
+	}
+	
+	@Override
 	public void newGameClicked() {
 		mainProgram.requestNewGame();
 	}
@@ -584,10 +594,25 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void setLoadingIndeterminate(boolean ind) {
+		class Runner implements Runnable {
+			private boolean ind;
+			public Runner(boolean ind) {
+				this.ind = ind;
+			}
+			@Override
+			public void run() {
+				loadingScreen.setIndeterminate(ind);
+			}
+		}
+		SwingUtilities.invokeLater(new Runner(ind));
+	}
+	
+	@Override
 	public void setWorldView(Grid<Tile> view, String name) {
 		class Runner implements Runnable {
-			private Grid<Tile> view;
 			private String name;
+			private Grid<Tile> view;
 			public Runner(Grid<Tile> tg, String n) {
 				view = tg;
 				name = n;
@@ -845,21 +870,6 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void switchToPauseScreen() {
 		switchWindow(pauseScreen);
-	}
-	
-	@Override
-	public void setLoadingIndeterminate(boolean ind) {
-		class Runner implements Runnable {
-			private boolean ind;
-			public Runner(boolean ind) {
-				this.ind = ind;
-			}
-			@Override
-			public void run() {
-				loadingScreen.setIndeterminate(ind);
-			}
-		}
-		SwingUtilities.invokeLater(new Runner(ind));
 	}
 	
 	@Override

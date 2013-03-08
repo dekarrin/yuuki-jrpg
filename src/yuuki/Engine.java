@@ -275,6 +275,26 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestModDisable(final String id) {
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resourceManager.disable(id);
+			}
+		}, "Worker")).start();
+	}
+	
+	@Override
+	public void requestModEnable(final String id) {
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resourceManager.enable(id);
+			}
+		}, "Worker")).start();
+	}
+	
+	@Override
 	public void requestNewGame() {
 		requestBattleKill();
 		if (worldRunner.isRunning()) {
