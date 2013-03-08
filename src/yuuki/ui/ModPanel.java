@@ -2,8 +2,10 @@ package yuuki.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -11,6 +13,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 
 /**
  * Shows mods that have been enabled, and allows the user to enable/disable
@@ -22,7 +26,7 @@ public class ModPanel extends JPanel {
 	/**
 	 * The minimum height of a mod sub-panel.
 	 */
-	private static final int MOD_HEIGHT = 20;
+	public static final int MOD_HEIGHT = 50;
 	
 	/**
 	 * The list that contains all individual mods.
@@ -30,18 +34,111 @@ public class ModPanel extends JPanel {
 	private JPanel modList;
 	
 	/**
+	 * Displays the mods.
+	 */
+	private static class ModList extends JPanel implements Scrollable {
+		
+		/**
+		 * The height of the view.
+		 */
+		private int viewerHeight;
+		
+		/**
+		 * The width of the view.
+		 */
+		private int viewerWidth;
+		
+		/**
+		 * Creates a new ModList.
+		 * @param width The width of the view.
+		 * @param height The height of the view.
+		 */
+		public ModList(int width, int height) {
+			viewerWidth = width;
+			viewerHeight = height;
+		}
+		
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+			final int y = visibleRect.y;
+			final int h = visibleRect.height;
+			if (orientation == SwingConstants.HORIZONTAL) {
+				return 1;
+			} else {
+				int exposedPixels;
+				if (direction > 0) {
+					int viewRemainder = getInitial(y, h) + getFullRows(y, h);
+					exposedPixels = h - viewRemainder;
+				} else {
+					exposedPixels = getInitial(y, h);
+				}
+				return ModPanel.MOD_HEIGHT - exposedPixels;
+			}
+		}
+		
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+			return 1;
+		}
+		
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return new Dimension(1, 1);
+		}
+		
+		@Override
+		public boolean getScrollableTracksViewportHeight() {
+			return true;
+		}
+		
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+		
+		/**
+		 * Gets the number of full rows contained inside the view.
+		 * 
+		 * @param scroll The amount, in pixels, that the view is scrolled down.
+		 * @param height The height, in pixels, of the view.
+		 * @return The number of rows that are completely exposed within the
+		 * view.
+		 */
+		private int getFullRows(int scroll, int height) {
+			int pixelsAfterInitial = height - getInitial(scroll, height);
+			return pixelsAfterInitial / ModPanel.MOD_HEIGHT;
+		}
+		
+		/**
+		 * Gets the number of pixels exposed of the first unit in the view, if
+		 * and only if the first unit is partially exposed. If the first unit
+		 * is fully exposed, this method will return 0.
+		 * 
+		 * @param scroll The amount, in pixels, that the view is scrolled down.
+		 * @param height The height, in pixels, of the view.
+		 * @return The number of exposed pixels of the first unit in the view,
+		 * or 0 if the first unit is fully exposed.
+		 */
+		private int getInitial(int scroll, int height) {
+			int remaining = scroll - (scroll / height);
+			return ModPanel.MOD_HEIGHT - remaining;
+		}
+		
+	}
+	
+	/**
 	 * Creates a new ModPanel.
 	 * 
-	 * @param width The width of the panel.
-	 * @param height The height of the panel.
+	 * @param width The width of the scroll view.
+	 * @param height The height of the scroll view.
 	 */
 	public ModPanel(int width, int height) {
-		Dimension size = new Dimension(width, height);
-		setPreferredSize(size);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		createComponents(width);
+		createComponents(width, height);
 		addComponents(width, height);
-		addMod("Super cool awesome funtime");
+		//addMod("Super cool awesome funtime");
 	}
 	
 	/**
@@ -61,10 +158,10 @@ public class ModPanel extends JPanel {
 	 * @param height The height of this ModPanel.
 	 */
 	private void addComponents(int width, int height) {
-		JPanel labelPanel = createLabelPanel(width, "Mods:");
+		//JPanel labelPanel = createLabelPanel(width, "Mods:");
 		JScrollPane modListView = createViewPort(width, height);
-		add(labelPanel);
-		add(Box.createVerticalStrut(2));
+		//add(labelPanel);
+		//add(Box.createVerticalStrut(2));
 		add(modListView);
 	}
 	
@@ -73,13 +170,13 @@ public class ModPanel extends JPanel {
 	 * 
 	 * @param width The width of this ModPanel.
 	 */
-	private void createComponents(int width) {
-		modList = new JPanel();
+	private void createComponents(int width, int height) {
+		modList = new ModList(width, height);
 		modList.setBackground(Color.LIGHT_GRAY);
 		modList.setLayout(new BoxLayout(modList, BoxLayout.Y_AXIS));
-		Dimension max = modList.getMaximumSize();
-		max.width = width;
-		modList.setMaximumSize(max);
+	//	Dimension max = modList.getMaximumSize();
+	//	max.width = width;
+	//	modList.setMaximumSize(max);
 	}
 	
 	/**
@@ -94,7 +191,7 @@ public class ModPanel extends JPanel {
 		JPanel panel = new JPanel();
 		JLabel label = new JLabel(text);
 		label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
-		panel.setMinimumSize(new Dimension(width, 1));
+		panel.setPreferredSize(new Dimension(width, 1));
 		panel.setLayout(new BorderLayout());
 		panel.add(label, BorderLayout.WEST);
 		return panel;
@@ -109,9 +206,13 @@ public class ModPanel extends JPanel {
 		JPanel panel = new JPanel();
 		JLabel label = new JLabel("Enable:");
 		JCheckBox box = new JCheckBox();
+		box.setOpaque(false);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.setOpaque(false);
 		panel.add(label);
+		panel.add(Box.createHorizontalStrut(2));
 		panel.add(box);
+		panel.add(Box.createHorizontalStrut(10));
 		return panel;
 	}
 	
@@ -123,17 +224,17 @@ public class ModPanel extends JPanel {
 	 */
 	private JPanel createModPanel(String name) {
 		JPanel panel = new JPanel();
-	//	JPanel title = createModTitlePanel(name);
-	//	JPanel enabler = createModEnablerPanel();
+		JPanel title = createModTitlePanel(name);
+		JPanel enabler = createModEnablerPanel();
 		Dimension s = getPreferredSize();
 		Dimension pSize = new Dimension(s.width, MOD_HEIGHT);
-		panel.setPreferredSize(pSize);
-		panel.setMinimumSize(pSize);
+		//panel.setPreferredSize(pSize);
+		panel.setMinimumSize(new Dimension(1, MOD_HEIGHT));
 		panel.setMaximumSize(pSize);
 		panel.setLayout(new BorderLayout());
-	//	panel.add(title, BorderLayout.WEST);
-	//	panel.add(enabler, BorderLayout.EAST);
-		panel.setBackground(Color.RED);
+		panel.add(title, BorderLayout.WEST);
+		panel.add(enabler, BorderLayout.EAST);
+	//	panel.setBackground();
 		return panel;
 	}
 	
@@ -146,6 +247,9 @@ public class ModPanel extends JPanel {
 	private JPanel createModTitlePanel(String name) {
 		JPanel panel = new JPanel();
 		JLabel label = new JLabel(name);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.setOpaque(false);
+		panel.add(Box.createHorizontalStrut(10));
 		panel.add(label);
 		return panel;
 	}
@@ -159,8 +263,7 @@ public class ModPanel extends JPanel {
 	 */
 	private JScrollPane createViewPort(int width, int height) {
 		JScrollPane view = new JScrollPane(modList);
-		view.setPreferredSize(new Dimension(1, height));
-		//view.setMinimumSize(new Dimension(width, 1));
+		//view.setPreferredSize(new Dimension(1, height));
 		return view;
 	}
 	
