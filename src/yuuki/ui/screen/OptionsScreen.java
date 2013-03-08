@@ -19,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import yuuki.Options;
+import yuuki.ui.ModControlListener;
 import yuuki.ui.ModPanel;
 
 /**
@@ -32,11 +33,6 @@ ChangeListener {
 	 * The slider for background music volume.
 	 */
 	private JSlider bgmVolumeSlider;
-	
-	/**
-	 * The panel for mod loading.
-	 */
-	private ModPanel modPanel;
 	
 	/**
 	 * Listens for enter presses.
@@ -53,6 +49,11 @@ ChangeListener {
 			}
 		}
 	};
+	
+	/**
+	 * The panel for mod loading.
+	 */
+	private ModPanel modPanel;
 	
 	/**
 	 * Button for testing SFX.
@@ -96,6 +97,7 @@ ChangeListener {
 		submitButton.addMouseListener(mAdapter);
 		submitButton.addKeyListener(enterListener);
 		modPanel = new ModPanel(width - 80, 200);
+		modPanel.setModListener(createModListener());
 		form.add(createLabeledComponent("BGM: ", bgmVolumeSlider));
 		form.add(createLabeledComponent("SFX: ", sfxVolumeSlider));
 		form.add(sfxTestButton);
@@ -120,6 +122,20 @@ ChangeListener {
 	public void setValues(Options options) {
 		bgmVolumeSlider.setValue(options.bgmVolume);
 		sfxVolumeSlider.setValue(options.sfxVolume);
+	}
+	
+	/**
+	 * Adds all mods to the list.
+	 * 
+	 * @param names The names to display as mod titles.
+	 * @param ids The unique identifier for the mods.
+	 */
+	public void addMods(String[] names, String[] ids) {
+		for (int i = 0; i < names.length; i++) {
+			String name = names[i];
+			String id = ids[i];
+			modPanel.addMod(name, id);
+		}
 	}
 	
 	/**
@@ -153,6 +169,24 @@ ChangeListener {
 	}
 	
 	/**
+	 * Creates a listener for the mod panel.
+	 * 
+	 * @return The created listener.
+	 */
+	private ModControlListener createModListener() {
+		return new ModControlListener() {
+			@Override
+			public void modDisabled(String id) {
+				fireModDisabled(id);
+			}
+			@Override
+			public void modEnabled(String id) {
+				fireModEnabled(id);
+			}
+		};
+	}
+	
+	/**
 	 * Creates a slider for discrete values in the range [0, 100].
 	 * 
 	 * @return The slider.
@@ -180,6 +214,24 @@ ChangeListener {
 	private void fireEnterClicked() {
 		for (OptionsScreenListener l : getElementListeners()) {
 			l.optionsSubmitted();
+		}
+	}
+	
+	/**
+	 * Calls modDisabled() on all listeners.
+	 */
+	private void fireModDisabled(String id) {
+		for (OptionsScreenListener l : getElementListeners()) {
+			l.modDisabled(id);
+		}
+	}
+	
+	/**
+	 * Calls modEnabled() on all listeners.
+	 */
+	private void fireModEnabled(String id) {
+		for (OptionsScreenListener l : getElementListeners()) {
+			l.modEnabled(id);
 		}
 	}
 	
