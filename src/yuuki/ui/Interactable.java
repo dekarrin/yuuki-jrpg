@@ -42,6 +42,14 @@ public interface Interactable {
 	public void applyOptions(yuuki.Options options);
 	
 	/**
+	 * Adds mods to the options screen.
+	 * 
+	 * @param names The names of the mods.
+	 * @param ids The IDs of the mods.
+	 */
+	public void addMods(String[] names, String[] ids);
+	
+	/**
 	 * Clears the Locatables from the world viewer.
 	 */
 	public void clearWorldLocatables();

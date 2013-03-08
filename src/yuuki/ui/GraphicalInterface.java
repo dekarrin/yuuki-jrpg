@@ -206,6 +206,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void addMods(final String[] names, final String[] ids) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				optionsScreen.addMods(names, ids);
+			}
+		});
+	}
+	
+	@Override
 	public void addWorldEntities(ArrayList<Movable> characters) {
 		addWorldLocatables(characters, OverworldScreen.Z_INDEX_ENTITY_LAYER);
 	}
