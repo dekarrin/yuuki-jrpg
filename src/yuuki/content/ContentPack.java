@@ -34,6 +34,11 @@ public class ContentPack {
 	private static final String BUILT_IN_ROOT = "yuuki/resource/";
 	
 	/**
+	 * Whether this ContentPack's non-map data has been loaded.
+	 */
+	private boolean assetsLoaded = false;
+	
+	/**
 	 * The content loaded from disk.
 	 */
 	private final Content content = new Content();
@@ -47,16 +52,6 @@ public class ContentPack {
 	 * Whether the resources included in this ContentPack are in a ZIP archive.
 	 */
 	private final boolean inArchive;
-	
-	/**
-	 * Whether this ContentPack's map data has been loaded.
-	 */
-	private boolean mapLoaded = false;
-	
-	/**
-	 * Whether this ContentPack's non-map data has been loaded.
-	 */
-	private boolean assetsLoaded = false;
 	
 	/**
 	 * Handles the actual loading of resources from the content pack.
@@ -75,6 +70,11 @@ public class ContentPack {
 	 * The manifest for this ContentPack.
 	 */
 	private final ContentManifest manifest;
+	
+	/**
+	 * Whether this ContentPack's map data has been loaded.
+	 */
+	private boolean mapLoaded = false;
 	
 	/**
 	 * The name of this ContentPack.
@@ -136,22 +136,12 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Sets whether this ContentPack has loaded certain parts of it based on
-	 * whether it has them.
+	 * Checks whether this ContentPack has loaded its non-map data.
+	 * 
+	 * @return True if the non-map data has been loaded, or if there is none.
 	 */
-	private void setLoaded() {
-		mapLoaded = !(hasWorld() || hasLands());
-		assetsLoaded = !(
-				hasMusicDefinitions() ||
-				hasEffectDefinitions() ||
-				hasImageDefinitions() ||
-				hasMusic() ||
-				hasEffects() ||
-				hasImages() ||
-				hasActions() ||
-				hasEntities() ||
-				hasPortals() ||
-				hasTiles());
+	public boolean assetsAreLoaded() {
+		return assetsLoaded;
 	}
 	
 	/**
@@ -304,24 +294,6 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Checks whether this ContentPack has loaded its map data.
-	 * 
-	 * @return True if the map data has been loaded, or if there is none.
-	 */
-	public boolean mapsAreLoaded() {
-		return mapLoaded;
-	}
-	
-	/**
-	 * Checks whether this ContentPack has loaded its non-map data.
-	 * 
-	 * @return True if the non-map data has been loaded, or if there is none.
-	 */
-	public boolean assetsAreLoaded() {
-		return assetsLoaded;
-	}
-	
-	/**
 	 * Loads all content that this ContentPack has. If any content is included
 	 * that requires some other content that exists outside of this
 	 * ContentPack, then the required item is taken from the given Content
@@ -404,6 +376,15 @@ public class ContentPack {
 		loadWorld();
 		loadLands(resolver);
 		mapLoaded = true;
+	}
+	
+	/**
+	 * Checks whether this ContentPack has loaded its map data.
+	 * 
+	 * @return True if the map data has been loaded, or if there is none.
+	 */
+	public boolean mapsAreLoaded() {
+		return mapLoaded;
 	}
 	
 	/**
@@ -545,6 +526,20 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Gets the number of loads necessary to load every type of world content
+	 * that this ContentPack has.
+	 * 
+	 * @return The number of different world resource types that this
+	 * ContentPack has.
+	 */
+	private int getMapLoadCount() {
+		int count = 0;
+		count += (hasWorld())	? 1 : 0;
+		count += (hasLands())	? 1 : 0;
+		return count;
+	}
+	
+	/**
 	 * Counts the number of packages in a class name.
 	 * 
 	 * @param className The fully-qualified class name to count the number of
@@ -598,20 +593,6 @@ public class ContentPack {
 				(resolver != null) ? resolver.getPortals() : null,
 				"Cannot get pop. factory with no portal factory"));
 		return new PopulationFactory(tf, ef, pf);
-	}
-	
-	/**
-	 * Gets the number of loads necessary to load every type of world content
-	 * that this ContentPack has.
-	 * 
-	 * @return The number of different world resource types that this
-	 * ContentPack has.
-	 */
-	private int getMapLoadCount() {
-		int count = 0;
-		count += (hasWorld())	? 1 : 0;
-		count += (hasLands())	? 1 : 0;
-		return count;
 	}
 	
 	/**
@@ -871,6 +852,25 @@ public class ContentPack {
 			throw new IllegalStateException(msg);
 		}
 		return resolved;
+	}
+	
+	/**
+	 * Sets whether this ContentPack has loaded certain parts of it based on
+	 * whether it has them.
+	 */
+	private void setLoaded() {
+		mapLoaded = !(hasWorld() || hasLands());
+		assetsLoaded = !(
+				hasMusicDefinitions() ||
+				hasEffectDefinitions() ||
+				hasImageDefinitions() ||
+				hasMusic() ||
+				hasEffects() ||
+				hasImages() ||
+				hasActions() ||
+				hasEntities() ||
+				hasPortals() ||
+				hasTiles());
 	}
 	
 }

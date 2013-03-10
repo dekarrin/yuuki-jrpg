@@ -107,6 +107,20 @@ ChangeListener {
 	}
 	
 	/**
+	 * Adds all mods to the list.
+	 * 
+	 * @param names The names to display as mod titles.
+	 * @param ids The unique identifier for the mods.
+	 */
+	public void addMods(String[] names, String[] ids) {
+		for (int i = 0; i < names.length; i++) {
+			String name = names[i];
+			String id = ids[i];
+			modPanel.addMod(name, id);
+		}
+	}
+	
+	/**
 	 * Sets the initial focus to the primary element in the options screen.
 	 */
 	@Override
@@ -122,20 +136,6 @@ ChangeListener {
 	public void setValues(Options options) {
 		bgmVolumeSlider.setValue(options.bgmVolume);
 		sfxVolumeSlider.setValue(options.sfxVolume);
-	}
-	
-	/**
-	 * Adds all mods to the list.
-	 * 
-	 * @param names The names to display as mod titles.
-	 * @param ids The unique identifier for the mods.
-	 */
-	public void addMods(String[] names, String[] ids) {
-		for (int i = 0; i < names.length; i++) {
-			String name = names[i];
-			String id = ids[i];
-			modPanel.addMod(name, id);
-		}
 	}
 	
 	/**
