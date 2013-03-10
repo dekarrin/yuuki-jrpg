@@ -250,10 +250,11 @@ public class Engine implements Runnable, UiExecutor {
 				} catch (IOException e) {
 					DialogHandler.showFatalError(e);
 				}
-				world = resourceManager.getWorldEngine();
-				setInitialWorld();
-				player.setLocation(world.getPlayerStart());
-				world.addResident(player);
+				World w = resourceManager.getWorldEngine();
+				setInitialLand(w);
+				player.setLocation(w.getPlayerStart());
+				w.addResident(player);
+				world = w;
 				enterOverworldMode();
 				ui.setLoadingIndeterminate(false);
 			}
@@ -493,11 +494,13 @@ public class Engine implements Runnable, UiExecutor {
 	
 	/**
 	 * Sets the world to use the initial land.
+	 * 
+	 * @param w The world to use.
 	 */
-	private void setInitialWorld() {
-		String[] lands = world.getAllLandNames();
+	private void setInitialLand(World w) {
+		String[] lands = w.getAllLandNames();
 		try {
-			world.changeLand(lands[0]);
+			w.changeLand(lands[0]);
 		} catch (InvalidIndexException e) {
 			// should never happen
 			DialogHandler.showFatalError(e);
