@@ -21,6 +21,14 @@ import yuuki.world.WalkGraph;
 public interface Interactable {
 	
 	/**
+	 * Adds mods to the options screen.
+	 * 
+	 * @param names The names of the mods.
+	 * @param ids The IDs of the mods.
+	 */
+	public void addMods(String[] names, String[] ids);
+	
+	/**
 	 * Adds Characters to the world viewer.
 	 * 
 	 * @param characters The Characters to add.
@@ -40,14 +48,6 @@ public interface Interactable {
 	 * @param options The options.
 	 */
 	public void applyOptions(yuuki.Options options);
-	
-	/**
-	 * Adds mods to the options screen.
-	 * 
-	 * @param names The names of the mods.
-	 * @param ids The IDs of the mods.
-	 */
-	public void addMods(String[] names, String[] ids);
 	
 	/**
 	 * Clears the Locatables from the world viewer.
@@ -274,6 +274,13 @@ public interface Interactable {
 	public Character selectTarget(ArrayList<ArrayList<Character>> fighters);
 	
 	/**
+	 * Sets whether the loading bar is in indeterminate mode.
+	 * 
+	 * @param b Whether to put the loading bar in indeterminate mode.
+	 */
+	public void setLoadingIndeterminate(boolean b);
+	
+	/**
 	 * Sets the world view to the given tile grid.
 	 * 
 	 * @param view The tiles that make up the world view.
@@ -462,12 +469,5 @@ public interface Interactable {
 	 * Waits for the message to stop displaying.
 	 */
 	public void waitForDisplay();
-	
-	/**
-	 * Sets whether the loading bar is in indeterminate mode.
-	 * 
-	 * @param b Whether to put the loading bar in indeterminate mode.
-	 */
-	public void setLoadingIndeterminate(boolean b);
 	
 }

@@ -55,6 +55,11 @@ class Content implements Mergeable<Content> {
 	private List<Land> lands;
 	
 	/**
+	 * Contains paths to land files.
+	 */
+	private List<String> map;
+	
+	/**
 	 * Contains music data.
 	 */
 	private Map<String, Deque<byte[]>> music;
@@ -73,11 +78,6 @@ class Content implements Mergeable<Content> {
 	 * Contains tile definitions.
 	 */
 	private Map<Integer, Deque<Tile.Definition>> tiles;
-	
-	/**
-	 * Contains paths to land files.
-	 */
-	private List<String> map;
 	
 	/**
 	 * Creates a new Content instance. All properties are set to null.

@@ -100,6 +100,11 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	};
 	
 	/**
+	 * The label that shows the name of the current land.
+	 */
+	private JLabel landName;
+	
+	/**
 	 * The button that moves the character east.
 	 */
 	private JButton moveEastButton;
@@ -148,11 +153,6 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 * The button that moves the character west.
 	 */
 	private JButton moveWestButton;
-	
-	/**
-	 * The label that shows the name of the current land.
-	 */
-	private JLabel landName;
 	
 	/**
 	 * Listens for directional keypad pushes.
@@ -260,21 +260,6 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	}
 	
 	/**
-	 * Creates a movement button and sets standard movement button properties
-	 * on it.
-	 * 
-	 * @param label The text to show on the button.
-	 * 
-	 * @return The movement button.
-	 */
-	private JButton createMoveButton(String label) {
-		JButton button = new JButton(label);
-		button.setFocusable(false);
-		button.addActionListener(hitListener);
-		return button;
-	}
-	
-	/**
 	 * Removes a listener from the list of movement listeners.
 	 * 
 	 * @param l The listener to remove.
@@ -342,6 +327,21 @@ public class OverworldScreen extends Screen<ScreenListener> {
 		vertBox.add(Box.createVerticalStrut(15));
 		vertBox.add(moveBox);
 		add(vertBox);
+	}
+	
+	/**
+	 * Creates a movement button and sets standard movement button properties
+	 * on it.
+	 * 
+	 * @param label The text to show on the button.
+	 * 
+	 * @return The movement button.
+	 */
+	private JButton createMoveButton(String label) {
+		JButton button = new JButton(label);
+		button.setFocusable(false);
+		button.addActionListener(hitListener);
+		return button;
 	}
 	
 	/**
