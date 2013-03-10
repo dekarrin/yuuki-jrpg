@@ -217,8 +217,7 @@ public class ContentManager {
 	IOException {
 		for (String id : packs.keySet()) {
 			ContentPack c = packs.get(id);
-			if (c.isEnabled() && c.hasWorld() && c.hasLands() &&
-					!c.mapsAreLoaded()) {
+			if (c.isEnabled() && c.hasWorld() && c.hasLands()) {
 				loadWorld(id);
 			}
 		}
