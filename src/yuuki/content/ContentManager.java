@@ -3,6 +3,7 @@ package yuuki.content;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,14 +154,14 @@ public class ContentManager {
 	 * @return The IDs.
 	 */
 	public String[] getModIds() {
-		String[] ids = new String[packs.size() - 1];
-		int c = 0;
+		ArrayList<String> ids = new ArrayList<String>();
 		for (String id : packs.keySet()) {
 			if (!id.equals(ContentPack.BUILT_IN_NAME)) {
-				ids[c++] = id;
+				ids.add(id);
 			}
 		}
-		return ids;
+		Collections.sort(ids);
+		return ids.toArray(new String[0]);
 	}
 	
 	/**
