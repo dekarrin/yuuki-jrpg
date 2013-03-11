@@ -2,7 +2,9 @@ package yuuki.content;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
@@ -52,10 +54,16 @@ public class ContentManager {
 	private Map<String, ContentPack> packs;
 	
 	/**
+	 * The content packs that have been enabled.
+	 */
+	private List<ContentPack> enabledPacks;
+	
+	/**
 	 * Creates a new ContentManager.
 	 */
 	public ContentManager() {
 		packs = new HashMap<String, ContentPack>();
+		enabledPacks = new ArrayList<ContentPack>();
 		contentModel = new Content();
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
@@ -87,6 +95,7 @@ public class ContentManager {
 			imageFactory.subtract(c.getImages());
 		}
 		contentModel.subtract(c);
+		enabledPacks.remove(pack);
 		pack.setEnabled(false);
 	}
 	
@@ -116,6 +125,7 @@ public class ContentManager {
 			imageFactory.merge(c.getImages());
 		}
 		contentModel.merge(c);
+		enabledPacks.add(pack);
 		pack.setEnabled(true);
 	}
 	
@@ -170,9 +180,8 @@ public class ContentManager {
 	 */
 	public World getWorldEngine() {
 		World world = new World();
-		for (ContentPack cp : packs.values()) {
-			if (cp.isEnabled() && cp.hasWorld() && cp.hasLands() &&
-					cp.mapsAreLoaded()) {
+		for (ContentPack cp : enabledPacks) {
+			if (cp.hasWorld() && cp.hasLands() && cp.mapsAreLoaded()) {
 				world.merge(cp.getContent().getLands());
 			}
 		}
@@ -215,10 +224,9 @@ public class ContentManager {
 	 */
 	public void loadEnabledWorlds() throws ResourceNotFoundException,
 	IOException {
-		for (String id : packs.keySet()) {
-			ContentPack c = packs.get(id);
-			if (c.isEnabled() && c.hasWorld() && c.hasLands()) {
-				loadWorld(id);
+		for (ContentPack c : enabledPacks) {
+			if (c.hasWorld() && c.hasLands()) {
+				loadWorld(c.getName());
 			}
 		}
 	}
