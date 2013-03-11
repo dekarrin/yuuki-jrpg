@@ -263,10 +263,7 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCloseGame() {
-		requestBattleKill();
-		if (worldRunner.isRunning()) {
-			worldRunner.stop();
-		}
+		killGameThreads();
 		ui.switchToIntroScreen();
 	}
 	
@@ -297,10 +294,7 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestNewGame() {
-		requestBattleKill();
-		if (worldRunner.isRunning()) {
-			worldRunner.stop();
-		}
+		killGameThreads();
 		ui.switchToCharacterCreationScreen();
 	}
 	
@@ -433,6 +427,16 @@ public class Engine implements Runnable, UiExecutor {
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		return updateThread;
+	}
+	
+	/**
+	 * Stops the world thread and the battle thread.
+	 */
+	private void killGameThreads() {
+		requestBattleKill();
+		if (worldRunner.isRunning()) {
+			worldRunner.stop();
+		}
 	}
 	
 	/**

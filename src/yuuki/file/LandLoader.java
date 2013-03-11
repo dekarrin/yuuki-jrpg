@@ -277,8 +277,8 @@ public class LandLoader extends ResourceLoader {
 			try {
 				readEntityData(line);
 			} catch (RecordFormatException e) {
-				String msg = "'" + resourceName + "':\n" + e.getMessage();
-				DialogHandler.showMessage(msg + " - skipping");
+				String msg = "Skipping record in '" + resourceName + "':";
+				DialogHandler.showMessage(msg, e);
 				entities.add(null);
 			}
 			return true;
@@ -334,8 +334,8 @@ public class LandLoader extends ResourceLoader {
 			try {
 				readPortalData(line);
 			} catch (RecordFormatException e) {
-				String msg = "'" + resourceName + "':\n" + e.getMessage();
-				DialogHandler.showMessage(msg + " - skipping");
+				String msg = "Skipping record in '" + resourceName + "':";
+				DialogHandler.showMessage(msg, e);
 				portals.add(null);
 			}
 			return true;

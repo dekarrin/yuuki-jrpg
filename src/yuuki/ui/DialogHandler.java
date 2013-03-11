@@ -59,6 +59,36 @@ public class DialogHandler {
 	}
 	
 	/**
+	 * Shows a message with an exception.
+	 * 
+	 * @param msg The message to show.
+	 * @param t The exception that caused the message.
+	 */
+	public static void showMessage(String msg, Throwable t) {
+		DialogHandler.showMessage(msg + '\n' +
+				DialogHandler.getMessageTrace(t));
+	}
+	
+	/**
+	 * Gets the trace of messages only from a Throwable.
+	 * 
+	 * @param t The Throwable to get the messages from.
+	 * @return The messages.
+	 */
+	private static String getMessageTrace(Throwable t) {
+		StringBuilder buffer = new StringBuilder();
+		Throwable current = t;
+		while (true) {
+			buffer.append(current.getMessage() + '\n');
+			current = current.getCause();
+			if (current == null) {
+				break;
+			}
+		}
+		return buffer.toString();
+	}
+	
+	/**
 	 * Gets the stack trace from a Throwable as a String.
 	 * 
 	 * @param t The Throwable to get the stack trace from.
@@ -66,13 +96,21 @@ public class DialogHandler {
 	 */
 	private static String getTrace(Throwable t) {
 		StringBuilder buffer = new StringBuilder();
-		buffer.append(t.getMessage());
-		buffer.append("\n\n");
-		buffer.append(t.getClass().getCanonicalName());
-		buffer.append("\n");
-		for (StackTraceElement trace : t.getStackTrace()) {
-			buffer.append(trace.toString());
+		Throwable current = t;
+		while (true) {
+			buffer.append(current.getMessage() + '\n');
+			buffer.append(current.getClass().getCanonicalName());
 			buffer.append("\n");
+			for (StackTraceElement trace : current.getStackTrace()) {
+				buffer.append("\t" + trace.toString());
+				buffer.append("\n");
+			}
+			current = current.getCause();
+			if (current != null) {
+				buffer.append("Caused by: ");
+			} else {
+				break;
+			}
 		}
 		return buffer.toString();
 	}
