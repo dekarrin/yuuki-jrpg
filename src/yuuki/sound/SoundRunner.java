@@ -147,7 +147,9 @@ class SoundRunner implements Runnable {
 	 * Stops playing immediately.
 	 */
 	public void stop() {
-		playerThread.interrupt();
+		if (playerThread != null) {
+			playerThread.interrupt();
+		}
 	}
 	
 	/**
