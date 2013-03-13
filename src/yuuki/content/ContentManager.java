@@ -35,6 +35,11 @@ public class ContentManager {
 	private EffectEngine effectEngine;
 	
 	/**
+	 * The content packs that have been enabled.
+	 */
+	private List<ContentPack> enabledPacks;
+	
+	/**
 	 * Handles Entity creation.
 	 */
 	private EntityFactory entityFactory;
@@ -53,11 +58,6 @@ public class ContentManager {
 	 * The content packs.
 	 */
 	private Map<String, ContentPack> packs;
-	
-	/**
-	 * The content packs that have been enabled.
-	 */
-	private List<ContentPack> enabledPacks;
 	
 	/**
 	 * Creates a new ContentManager.
