@@ -583,15 +583,24 @@ public class ContentPack {
 		EntityFactory ef = new EntityFactory();
 		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
-		ef.merge(resolve(content.getEntities(),
-				(resolver != null) ? resolver.getEntities() : null,
-				"Cannot get pop. factory with no ent. factory"));
-		tf.merge(resolve(content.getTiles(),
-				(resolver != null) ? resolver.getTiles() : null,
-				"Cannot get pop. factory with no tile factory"));
-		pf.merge(resolve(content.getPortals(),
-				(resolver != null) ? resolver.getPortals() : null,
-				"Cannot get pop. factory with no portal factory"));
+		if (hasEntities()) {
+			ef.merge(content.getEntities());
+		}
+		if (resolver != null && resolver.getEntities() != null) {
+			ef.merge(resolver.getEntities());
+		}
+		if (hasTiles()) {
+			tf.merge(content.getTiles());
+		}
+		if (resolver != null && resolver.getTiles() != null) {
+			tf.merge(resolver.getTiles());
+		}
+		if (hasPortals()) {
+			pf.merge(content.getPortals());
+		}
+		if (resolver != null && resolver.getPortals() != null) {
+			pf.merge(resolver.getPortals());
+		}
 		return new PopulationFactory(tf, ef, pf);
 	}
 	
