@@ -98,7 +98,7 @@ public class EntityLoader extends CsvResourceLoader {
 			try {
 				actions[i] = actionFactory.createAction(actionIds[i]);
 			} catch (InvalidIndexException e) {
-				throw new FieldFormatException("moves", value);
+				throw new FieldFormatException("moves", actionIds[i]);
 			}
 		}
 		return actions;

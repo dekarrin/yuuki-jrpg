@@ -24,7 +24,18 @@ public class FieldFormatException extends FormatException {
 	 * @param value The value of the invalid field. This is converted to a
 	 * string value using toString().
 	 */
-	public FieldFormatException(String field, String value) {
+	public FieldFormatException(String field, int value) {
+		this(field, new Integer(value));
+	}
+	
+	/**
+	 * Creates a new InvalidFieldException.
+	 * 
+	 * @param field The name of the invalid field.
+	 * @param value The value of the invalid field. This is converted to a
+	 * string value using toString().
+	 */
+	public FieldFormatException(String field, Object value) {
 		super("'"+field+"' contains invalid value '"+value+"'");
 		this.field = field;
 		this.value = value.toString();
