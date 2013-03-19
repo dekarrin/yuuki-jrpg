@@ -580,9 +580,16 @@ public class ContentPack {
 	 * @return The PopulationFactory composed of loaded content.
 	 */
 	private PopulationFactory getPopFactory(Content resolver) {
-		EntityFactory ef = new EntityFactory();
+		ActionFactory af = new ActionFactory();
+		EntityFactory ef = new EntityFactory(af);
 		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
+		if (hasActions()) {
+			af.merge(content.getActions());
+		}
+		if (resolver != null && resolver.getActions() != null) {
+			af.merge(resolver.getActions());
+		}
 		if (hasEntities()) {
 			ef.merge(content.getEntities());
 		}

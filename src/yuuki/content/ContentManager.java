@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
+import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.graphic.ImageFactory;
@@ -23,6 +24,11 @@ import yuuki.world.World;
  * Handles content and loaders for Yuuki.
  */
 public class ContentManager {
+	
+	/**
+	 * Holds all loaded actions.
+	 */
+	private ActionFactory actionFactory;
 	
 	/**
 	 * Represents the current model of all loaded content.
@@ -69,7 +75,8 @@ public class ContentManager {
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
-		entityFactory = new EntityFactory();
+		actionFactory = new ActionFactory();
+		entityFactory = new EntityFactory(actionFactory);
 	}
 	
 	/**
@@ -91,6 +98,9 @@ public class ContentManager {
 		}
 		if (pack.hasEntities()) {
 			entityFactory.subtract(c.getEntities());
+		}
+		if (pack.hasActions()) {
+			actionFactory.subtract(c.getActions());
 		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.subtract(c.getImages());
@@ -123,7 +133,7 @@ public class ContentManager {
 			entityFactory.merge(c.getEntities());
 		}
 		if (pack.hasActions()) {
-			
+			actionFactory.merge(c.getActions());
 		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.merge(c.getImages());
