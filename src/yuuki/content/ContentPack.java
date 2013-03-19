@@ -677,15 +677,8 @@ public class ContentPack {
 	private void loadEntities(Content resolver) throws
 	ResourceNotFoundException, IOException {
 		if (hasEntities()) {
-			ActionFactory a = new ActionFactory();
-			if (resolver != null && resolver.getActions() != null) {
-				a.merge(resolver.getActions());
-			}
-			if (content.getActions() != null) {
-				a.merge(content.getActions());
-			}
 			String msg = "Loading entities...";
-			content.setEntities(loader.loadEntities(msg, a));
+			content.setEntities(loader.loadEntities(msg));
 		}
 	}
 	

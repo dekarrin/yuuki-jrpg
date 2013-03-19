@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import yuuki.action.Action;
-import yuuki.action.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
@@ -162,12 +161,11 @@ public class ContentLoader {
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public Map<String, Character.Definition> loadEntities(String text,
-			ActionFactory actions) throws ResourceNotFoundException,
-			IOException {
+	public Map<String, Character.Definition> loadEntities(String text)
+	throws ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
 		Map<String, Character.Definition> entities = null;
-		EntityLoader loader = createEntityLoader(actions);
+		EntityLoader loader = createEntityLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_ENTITIES);
 		try {
@@ -507,11 +505,10 @@ public class ContentLoader {
 	/**
 	 * Creates a loader for reading entity definition files.
 	 * 
-	 * @param af The ActionFactory to use with entity creation.
 	 * @return The created EntityLoader.
 	 */
-	protected EntityLoader createEntityLoader(ActionFactory af) {
-		return new EntityLoader(root, af);
+	protected EntityLoader createEntityLoader() {
+		return new EntityLoader(root);
 	}
 	
 	/**

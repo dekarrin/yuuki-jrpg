@@ -122,6 +122,9 @@ public class ContentManager {
 		if (pack.hasEntities()) {
 			entityFactory.merge(c.getEntities());
 		}
+		if (pack.hasActions()) {
+			
+		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.merge(c.getImages());
 		}
