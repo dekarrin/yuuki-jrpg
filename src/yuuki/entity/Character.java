@@ -51,9 +51,9 @@ public abstract class Character implements Movable, Displayable {
 		public Stat mag;
 		
 		/**
-		 * The actions that the Character may perform.
+		 * The indexes to the actions that the Character may perform.
 		 */
-		public Action[] moves;
+		public int[] moves;
 		
 		/**
 		 * The mana points of the Character.
@@ -101,9 +101,9 @@ public abstract class Character implements Movable, Displayable {
 			d2.acc = acc.clone();
 			d2.mag = mag.clone();
 			d2.luk = luk.clone();
-			d2.moves = new Action[moves.length];
+			d2.moves = new int[moves.length];
 			for (int i = 0; i < moves.length; i++) {
-				d2.moves[i] = moves[i].clone();
+				d2.moves[i] = moves[i];
 			}
 			return d2;
 		}

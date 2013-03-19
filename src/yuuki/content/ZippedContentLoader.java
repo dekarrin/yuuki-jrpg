@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
-import yuuki.action.ActionFactory;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
@@ -77,12 +76,12 @@ public class ZippedContentLoader extends ContentLoader {
 	}
 	
 	@Override
-	protected EntityLoader createEntityLoader(ActionFactory af) {
+	protected EntityLoader createEntityLoader() {
 		EntityLoader loader = null;
 		try {
 			ZipFile zip = null;
 			zip = new ZipFile(root);
-			loader = new EntityLoader(zip, zipRoot, af);
+			loader = new EntityLoader(zip, zipRoot);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
