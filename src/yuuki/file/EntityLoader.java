@@ -80,7 +80,7 @@ public class EntityLoader extends CsvResourceLoader {
 		String[] moves = splitMultiValue(value);
 		int[] actions = null;
 		try {
-			parseIntArray(moves, 0);
+			actions = parseIntArray(moves, 0);
 		} catch (NumberFormatException e) {
 			throw new FieldFormatException("moves", value);
 		}
