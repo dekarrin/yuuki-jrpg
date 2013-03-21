@@ -263,8 +263,13 @@ public class Engine implements Runnable, UiExecutor {
 	
 	@Override
 	public void requestCloseGame() {
-		killGameThreads();
-		ui.switchToIntroScreen();
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				killGameThreads();
+				ui.switchToIntroScreen();
+			}
+		}, "Worker")).start();
 	}
 	
 	@Override
