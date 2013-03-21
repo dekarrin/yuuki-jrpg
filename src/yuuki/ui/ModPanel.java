@@ -57,8 +57,15 @@ public class ModPanel extends JPanel {
 			return new Dimension(viewerWidth, viewerHeight);
 		}
 		
-		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+			int a = getScrollableBlockIncrementA(visibleRect, orientation, direction);
+			System.out.println("BLOCK: " + a);
+			return a;
+		}
+		
+		//@Override
+		public int getScrollableBlockIncrementA(Rectangle visibleRect,
 				int orientation, int direction) {
 			final int y = visibleRect.y;
 			final int h = visibleRect.height;
@@ -66,9 +73,9 @@ public class ModPanel extends JPanel {
 				return 1;
 			} else {
 				if (direction > 0) {
-					return getInitial(y, h) + getFullRows(y, h);
+					return getInitial(y) + getFullRows(y, h);
 				} else {
-					return (h - getInitial(y, h));
+					return (h - getInitial(y));
 				}
 			}
 		}
@@ -83,8 +90,15 @@ public class ModPanel extends JPanel {
 			return true;
 		}
 		
-		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect,
+				int orientation, int direction) {
+			int a = getScrollableUnitIncrementA(visibleRect, orientation, direction);
+			System.out.println("UNIT: " + a);
+			return a;
+		}
+		
+		//@Override
+		public int getScrollableUnitIncrementA(Rectangle visibleRect,
 				int orientation, int direction) {
 			final int y = visibleRect.y;
 			final int h = visibleRect.height;
@@ -92,10 +106,12 @@ public class ModPanel extends JPanel {
 				return 1;
 			} else {
 				if (direction > 0) {
-					int viewRemainder = getInitial(y, h) + getFullRows(y, h);
+					int fullRows = getFullRows(y, h);
+					int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
+					int viewRemainder = getInitial(y) + fullPixels;
 					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
 				} else {
-					return ModPanel.MOD_HEIGHT - getInitial(y, h);
+					return ModPanel.MOD_HEIGHT - getInitial(y);
 				}
 			}
 		}
@@ -109,7 +125,7 @@ public class ModPanel extends JPanel {
 		 * view.
 		 */
 		private int getFullRows(int scroll, int height) {
-			int pixelsAfterInitial = height - getInitial(scroll, height);
+			int pixelsAfterInitial = height - getInitial(scroll);
 			return pixelsAfterInitial / ModPanel.MOD_HEIGHT;
 		}
 		
@@ -119,13 +135,16 @@ public class ModPanel extends JPanel {
 		 * is fully exposed, this method will return 0.
 		 * 
 		 * @param scroll The amount, in pixels, that the view is scrolled down.
-		 * @param height The height, in pixels, of the view.
 		 * @return The number of exposed pixels of the first unit in the view,
 		 * or 0 if the first unit is fully exposed.
 		 */
-		private int getInitial(int scroll, int height) {
-			int remaining = scroll - (scroll / height);
-			return ModPanel.MOD_HEIGHT - remaining;
+		private int getInitial(int scroll) {
+			int remaining = scroll % ModPanel.MOD_HEIGHT;
+			if (remaining != 0) {
+				return ModPanel.MOD_HEIGHT - remaining;
+			} else {
+				return 0;
+			}
 		}
 		
 	}
