@@ -57,15 +57,8 @@ public class ModPanel extends JPanel {
 			return new Dimension(viewerWidth, viewerHeight);
 		}
 		
+		@Override
 		public int getScrollableBlockIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
-			int a = getScrollableBlockIncrementA(visibleRect, orientation, direction);
-			System.out.println("BLOCK: " + a);
-			return a;
-		}
-		
-		//@Override
-		public int getScrollableBlockIncrementA(Rectangle visibleRect,
 				int orientation, int direction) {
 			final int y = visibleRect.y;
 			final int h = visibleRect.height;
@@ -108,23 +101,6 @@ public class ModPanel extends JPanel {
 		}
 		
 		/**
-		 * Gets the amount of view up to and excluding the last
-		 * partially-exposed unit.
-		 * 
-		 * @param scroll The amount, in pixels, that the view is scrolled down.
-		 * @param height The height, in pixels, of the view.
-		 * @return The number of pixels leading up to the last
-		 * partially-exposed unit. If the last unit is fully exposed, this will
-		 * return all of the pixels.
-		 */
-		private int getViewRemainder(int scroll, int height) {
-			int fullRows = getFullRows(scroll, height);
-			int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
-			int viewRemainder = getInitial(scroll) + fullPixels;
-			return viewRemainder;
-		}
-		
-		/**
 		 * Gets the number of full rows contained inside the view.
 		 * 
 		 * @param scroll The amount, in pixels, that the view is scrolled down.
@@ -153,6 +129,23 @@ public class ModPanel extends JPanel {
 			} else {
 				return 0;
 			}
+		}
+		
+		/**
+		 * Gets the amount of view up to and excluding the last
+		 * partially-exposed unit.
+		 * 
+		 * @param scroll The amount, in pixels, that the view is scrolled down.
+		 * @param height The height, in pixels, of the view.
+		 * @return The number of pixels leading up to the last
+		 * partially-exposed unit. If the last unit is fully exposed, this will
+		 * return all of the pixels.
+		 */
+		private int getViewRemainder(int scroll, int height) {
+			int fullRows = getFullRows(scroll, height);
+			int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
+			int viewRemainder = getInitial(scroll) + fullPixels;
+			return viewRemainder;
 		}
 		
 	}
