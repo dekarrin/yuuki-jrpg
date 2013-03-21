@@ -73,7 +73,7 @@ public class ModPanel extends JPanel {
 				return 1;
 			} else {
 				if (direction > 0) {
-					return getInitial(y) + getFullRows(y, h);
+					return getViewRemainder(y, h);
 				} else {
 					return (h - getInitial(y));
 				}
@@ -90,15 +90,8 @@ public class ModPanel extends JPanel {
 			return true;
 		}
 		
+		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
-			int a = getScrollableUnitIncrementA(visibleRect, orientation, direction);
-			System.out.println("UNIT: " + a);
-			return a;
-		}
-		
-		//@Override
-		public int getScrollableUnitIncrementA(Rectangle visibleRect,
 				int orientation, int direction) {
 			final int y = visibleRect.y;
 			final int h = visibleRect.height;
@@ -106,14 +99,29 @@ public class ModPanel extends JPanel {
 				return 1;
 			} else {
 				if (direction > 0) {
-					int fullRows = getFullRows(y, h);
-					int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
-					int viewRemainder = getInitial(y) + fullPixels;
+					int viewRemainder = getViewRemainder(y, h);
 					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
 				} else {
 					return ModPanel.MOD_HEIGHT - getInitial(y);
 				}
 			}
+		}
+		
+		/**
+		 * Gets the amount of view up to and excluding the last
+		 * partially-exposed unit.
+		 * 
+		 * @param scroll The amount, in pixels, that the view is scrolled down.
+		 * @param height The height, in pixels, of the view.
+		 * @return The number of pixels leading up to the last
+		 * partially-exposed unit. If the last unit is fully exposed, this will
+		 * return all of the pixels.
+		 */
+		private int getViewRemainder(int scroll, int height) {
+			int fullRows = getFullRows(scroll, height);
+			int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
+			int viewRemainder = getInitial(scroll) + fullPixels;
+			return viewRemainder;
 		}
 		
 		/**
