@@ -6,6 +6,11 @@ package yuuki.item;
 public class Item {
 	
 	/**
+	 * The unique identifier for this item's type.
+	 */
+	private final long id;
+	
+	/**
 	 * The name of this Item.
 	 */
 	private final String name;
@@ -18,12 +23,32 @@ public class Item {
 	/**
 	 * Creates a new Item.
 	 * 
+	 * @param id The ID of this item's type.
 	 * @param name The name of this item.
 	 * @param value The value of this item.
 	 */
-	public Item(String name, int value) {
+	public Item(long id, String name, int value) {
 		this.name = name;
 		this.value = value;
+		this.id = id;
+	}
+	
+	/**
+	 * Checks whether this Item is the same type as another.
+	 * 
+	 * @param i2 The item to check against.
+	 */
+	public boolean equals(Item i2) {
+		return this.id == i2.id;
+	}
+	
+	/**
+	 * Gets the type ID of this Item.
+	 * 
+	 * @return The ID.
+	 */
+	public long getId() {
+		return id;
 	}
 	
 	/**
