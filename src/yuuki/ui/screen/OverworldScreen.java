@@ -29,7 +29,7 @@ import yuuki.world.WalkGraph;
  * The screen displayed when at the overworld.
  */
 @SuppressWarnings("serial")
-public class OverworldScreen extends Screen<ScreenListener> {
+public class OverworldScreen extends Screen<OverworldScreenListener> {
 	
 	/**
 	 * Unlocks the buttons after a set amount of time.
@@ -212,6 +212,11 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	private WorldViewer worldViewer;
 	
 	/**
+	 * Button to show the inventory.
+	 */
+	private JButton invenButton;
+	
+	/**
 	 * Creates a new OverworldScreen. The child components are created and
 	 * added to the screen.
 	 * 
@@ -228,7 +233,23 @@ public class OverworldScreen extends Screen<ScreenListener> {
 		landName.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 		landName.setAlignmentX(Component.CENTER_ALIGNMENT);
 		createMovementButtons();
+		invenButton = new JButton("Inventory");
+		invenButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireInvenClicked();
+			}
+		});
 		addElements();
+	}
+	
+	/**
+	 * Called when the inventory button is clicked.
+	 */
+	private void fireInvenClicked() {
+		for (OverworldScreenListener l : getElementListeners()) {
+			l.invenButtonClicked();
+		}
 	}
 	
 	/**
@@ -320,12 +341,16 @@ public class OverworldScreen extends Screen<ScreenListener> {
 	 */
 	private void addElements() {
 		Box moveBox = createMovementBox();
+		Box underViewer = Box.createHorizontalBox();
 		Box vertBox = Box.createVerticalBox();
 		vertBox.add(landName);
 		vertBox.add(Box.createVerticalStrut(10));
 		vertBox.add(worldViewer);
 		vertBox.add(Box.createVerticalStrut(15));
-		vertBox.add(moveBox);
+		underViewer.add(moveBox);
+		underViewer.add(Box.createHorizontalStrut(50));
+		underViewer.add(invenButton);
+		vertBox.add(underViewer);
 		add(vertBox);
 	}
 	

@@ -31,11 +31,13 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.InventoryScreen;
 import yuuki.ui.screen.LoadingScreen;
 import yuuki.ui.screen.OptionsScreen;
 import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
+import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
 import yuuki.util.Grid;
 import yuuki.util.InvalidIndexException;
@@ -49,7 +51,8 @@ import yuuki.world.WalkGraph;
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
+CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener,
+OverworldScreenListener {
 	
 	/**
 	 * The speed of game animation.
@@ -139,6 +142,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * The intro screen.
 	 */
 	private IntroScreen introScreen;
+	
+	/**
+	 * The screen that shows inventory and stats.
+	 */
+	private InventoryScreen invenScreen;
 	
 	/**
 	 * The loading screen.
@@ -459,6 +467,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	public void initializeSounds(DualSoundEngine soundEngine) {
 		this.soundEngine = soundEngine;
 		introScreen.setSoundEngine(soundEngine);
+	}
+	
+	@Override
+	public void invenButtonClicked() {
+		mainProgram.requestInventoryOpen();
 	}
 	
 	@Override
@@ -853,6 +866,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void switchToInvenScreen() {
+		switchWindow(invenScreen);
+	}
+	
+	@Override
 	public void switchToLastScreen() {
 		switchWindow(formerScreen);
 	}
@@ -977,6 +995,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		createPauseScreen();
 		createEndingScreen();
 		createPlayerCreationScreen();
+		createInventoryScreen();
 	}
 	
 	/**
@@ -1003,6 +1022,14 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 		introScreen.setBackgroundImage("BG_INTRO_SCREEN");
+	}
+	
+	/**
+	 * Creates the inventory screen.
+	 */
+	private void createInventoryScreen() {
+		int height = getScreenHeight();
+		invenScreen = new InventoryScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**

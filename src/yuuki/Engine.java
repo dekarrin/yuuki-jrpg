@@ -262,6 +262,16 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestInventoryOpen() {
+		ui.switchToInvenScreen();
+	}
+	
+	@Override
+	public void requestInventoryClose() {
+		ui.switchToOverworldScreen();
+	}
+	
+	@Override
 	public void requestCloseGame() {
 		(new Thread(new Runnable() {
 			@Override

@@ -11,6 +11,16 @@ import yuuki.entity.Character;
 public interface UiExecutor {
 	
 	/**
+	 * Requests that the inventory screen be opened.
+	 */
+	public void requestInventoryOpen();
+	
+	/**
+	 * Requests that the inventory screen be closed.
+	 */
+	public void requestInventoryClose();
+	
+	/**
 	 * Requests that a battle be initialized and its intro shown if main. The
 	 * main battle is shown on screen, but there can only be one at a time.
 	 * Non-main battles are run through as fast as possible. Battles that

@@ -426,6 +426,11 @@ public interface Interactable {
 	public void switchToIntroScreen();
 	
 	/**
+	 * Switches to the inventory screen.
+	 */
+	public void switchToInvenScreen();
+	
+	/**
 	 * Switches to the previous screen.
 	 */
 	public void switchToLastScreen();
