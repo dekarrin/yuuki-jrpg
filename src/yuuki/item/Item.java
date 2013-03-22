@@ -39,7 +39,7 @@ public class Item {
 	 * @param i2 The item to check against.
 	 */
 	public boolean equals(Item i2) {
-		return this.id == i2.id;
+		return (this.id == i2.id);
 	}
 	
 	/**
