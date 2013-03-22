@@ -44,6 +44,24 @@ public class Item {
 		return value;
 	}
 	
+	/**
+	 * Checks whether this Item may be used outside of battle.
+	 * 
+	 * @return false in the general case; subclasses may override.
+	 */
+	public boolean isExternal() {
+		return false;
+	}
+	
+	/**
+	 * Checks whether this Item may be used.
+	 * 
+	 * @return false in the general case; subclasses may override.
+	 */
+	public boolean isUsable() {
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return getName();

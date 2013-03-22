@@ -69,6 +69,11 @@ public class UsableItem extends Item {
 		return uses;
 	}
 	
+	@Override
+	public boolean isUsable() {
+		return true;
+	}
+	
 	/**
 	 * Sets the use count for this item. This is bounded by the maxUses.
 	 * 

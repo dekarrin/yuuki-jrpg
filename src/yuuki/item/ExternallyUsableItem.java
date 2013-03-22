@@ -21,6 +21,11 @@ public class ExternallyUsableItem extends UsableItem {
 		super(name, value, action, uses);
 	}
 	
+	@Override
+	public boolean isExternal() {
+		return true;
+	}
+	
 	/**
 	 * Uses this item.
 	 * 
