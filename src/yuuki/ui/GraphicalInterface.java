@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
@@ -202,6 +203,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		formerScreen = null;
 		animationEngine = new AnimationManager(ANIMATION_FPS);
 		soundEngine = null;
+	}
+	
+	@Override
+	public void addMods(final String[] names, final String[] ids) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				optionsScreen.addMods(names, ids);
+			}
+		});
 	}
 	
 	@Override
@@ -489,6 +500,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void modDisabled(String id) {
+		mainProgram.requestModDisable(id);
+	}
+	
+	@Override
+	public void modEnabled(String id) {
+		mainProgram.requestModEnable(id);
+	}
+	
+	@Override
 	public void newGameClicked() {
 		mainProgram.requestNewGame();
 	}
@@ -583,18 +604,35 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public void setWorldView(Grid<Tile> view) {
+	public void setLoadingIndeterminate(boolean ind) {
 		class Runner implements Runnable {
-			private Grid<Tile> view;
-			public Runner(Grid<Tile> tg) {
-				view = tg;
+			private boolean ind;
+			public Runner(boolean ind) {
+				this.ind = ind;
 			}
 			@Override
 			public void run() {
-				overworldScreen.setWorldView(view);
+				loadingScreen.setIndeterminate(ind);
 			}
 		}
-		Runner r = new Runner(view);
+		SwingUtilities.invokeLater(new Runner(ind));
+	}
+	
+	@Override
+	public void setWorldView(Grid<Tile> view, String name) {
+		class Runner implements Runnable {
+			private String name;
+			private Grid<Tile> view;
+			public Runner(Grid<Tile> tg, String n) {
+				view = tg;
+				name = n;
+			}
+			@Override
+			public void run() {
+				overworldScreen.setWorldView(view, name);
+			}
+		}
+		Runner r = new Runner(view, name);
 		SwingUtilities.invokeLater(r);
 	}
 	
@@ -870,7 +908,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			}
 			@Override
 			public void run() {
-				overworldScreen.updateWorldView(p);
+				overworldScreen.updateWorldViewport(p);
 			}
 		}
 		Runner r = new Runner(center);
@@ -988,12 +1026,16 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 				mainProgram.requestQuit();
 			}
 		};
+		Dimension windowSize = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(
 				WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
 		mainWindow.setContentPane(contentPane);
+		mainWindow.setPreferredSize(windowSize);
+		mainWindow.setSize(windowSize);
+		mainWindow.setLocationRelativeTo(null);
 	}
 	
 	/**

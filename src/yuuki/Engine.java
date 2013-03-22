@@ -2,6 +2,8 @@ package yuuki;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import yuuki.battle.Battle;
 import yuuki.battle.BattleRunner;
@@ -18,6 +20,7 @@ import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
 import yuuki.util.InvalidIndexException;
 import yuuki.util.Progressable;
+import yuuki.world.InvalidLinkNameException;
 import yuuki.world.World;
 
 /**
@@ -84,6 +87,9 @@ public class Engine implements Runnable, UiExecutor {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
+			} catch (InvalidLinkNameException e) {
+				DialogHandler.showFatalError("Invalid portal link: '" +
+						e.getMessage() + "'");
 			}
 		}
 		public void setPaused(boolean paused) {
@@ -236,34 +242,34 @@ public class Engine implements Runnable, UiExecutor {
 		(new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ui.updateLoadingProgress(0.0, "Loading...");
-				Progressable m = resourceManager.startWorldLoadMonitor(
-						ContentPack.BUILT_IN_NAME);
+				ui.setLoadingIndeterminate(true);
+				ui.updateLoadingProgress(0.0, "Loading worlds...");
 				ui.switchToLoadingScreen();
-				Thread updateThread = getLoadUpdater(m);
-				updateThread.start();
 				try {
-					resourceManager.loadWorld(ContentPack.BUILT_IN_NAME);
+					resourceManager.loadEnabledWorlds();
 				} catch (IOException e) {
 					DialogHandler.showFatalError(e);
 				}
-				updateThread.interrupt();
-				world = resourceManager.getWorldEngine();
-				setInitialWorld();
-				player.setLocation(world.getPlayerStart());
-				world.addResident(player);
+				World w = resourceManager.getWorldEngine();
+				setInitialLand(w);
+				player.setLocation(w.getPlayerStart());
+				w.addResident(player);
+				world = w;
 				enterOverworldMode();
+				ui.setLoadingIndeterminate(false);
 			}
 		}, "WorldLoadingThread")).start();
 	}
 	
 	@Override
 	public void requestCloseGame() {
-		requestBattleKill();
-		if (worldRunner.isRunning()) {
-			worldRunner.stop();
-		}
-		ui.switchToIntroScreen();
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				killGameThreads();
+				ui.switchToIntroScreen();
+			}
+		}, "Worker")).start();
 	}
 	
 	@Override
@@ -272,11 +278,28 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestModDisable(final String id) {
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resourceManager.disable(id);
+			}
+		}, "Worker")).start();
+	}
+	
+	@Override
+	public void requestModEnable(final String id) {
+		(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				resourceManager.enable(id);
+			}
+		}, "Worker")).start();
+	}
+	
+	@Override
 	public void requestNewGame() {
-		requestBattleKill();
-		if (worldRunner.isRunning()) {
-			worldRunner.stop();
-		}
+		killGameThreads();
 		ui.switchToCharacterCreationScreen();
 	}
 	
@@ -317,6 +340,7 @@ public class Engine implements Runnable, UiExecutor {
 			ui.switchToLoadingScreen();
 			scanMods();
 			loadAssets();
+			loadMods();
 			applyOptions();
 			try {
 				ui.playMusicAndWait("BGM_MAIN_MENU");
@@ -337,8 +361,11 @@ public class Engine implements Runnable, UiExecutor {
 	 * 
 	 * @throws InterruptedException If the current thread is interrupted while
 	 * waiting for the player to select a move.
+	 * @throws InvalidLinkNameException If a resident tries to use a portal
+	 * with an invalid link.
 	 */
-	private void advanceWorld() throws InterruptedException {
+	private void advanceWorld() throws InterruptedException,
+	InvalidLinkNameException {
 		world.advance();
 		yuuki.world.Movable bumped = world.getLastBump(player);
 		if (bumped != null) {
@@ -356,6 +383,15 @@ public class Engine implements Runnable, UiExecutor {
 			Character[] npcs = {(NonPlayerCharacter) bumped};
 			Runner r = new Runner(npcs);
 			(new Thread(r, "WorldCommunication")).start();
+		}
+		String externalLinkName = world.getExternalLinkName(player);
+		if (externalLinkName != null) {
+			try {
+				world.changeLand(externalLinkName);
+			} catch (InvalidIndexException e) {
+				DialogHandler.showFatalError("Could not transfer to new map");
+			}
+			updateWorldViewData();
 		}
 		ui.updateWorldView(player.getLocation());
 	}
@@ -377,7 +413,8 @@ public class Engine implements Runnable, UiExecutor {
 		} else {
 			worldRunner.start();
 		}
-		updateWorldViewer();
+		updateWorldViewData();
+		ui.updateWorldView(player.getLocation());
 		ui.switchToOverworldScreen();
 	}
 	
@@ -395,6 +432,16 @@ public class Engine implements Runnable, UiExecutor {
 		LoadingBarUpdater updater = new LoadingBarUpdater(p, ui);
 		Thread updateThread = new Thread(updater, "LoadingBarUpdater");
 		return updateThread;
+	}
+	
+	/**
+	 * Stops the world thread and the battle thread.
+	 */
+	private void killGameThreads() {
+		requestBattleKill();
+		if (worldRunner.isRunning()) {
+			worldRunner.stop();
+		}
 	}
 	
 	/**
@@ -419,6 +466,22 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
+	 * Loads all scanned mods.
+	 */
+	private void loadMods() {
+		ui.setLoadingIndeterminate(true);
+		ui.updateLoadingProgress(100.0, "Loading mods");
+		Set<String> x = new HashSet<String>(1);
+		x.add(ContentPack.BUILT_IN_NAME);
+		try {
+			resourceManager.loadAll(x);
+		} catch (Exception e) {
+			DialogHandler.showError(e);
+		}
+		ui.setLoadingIndeterminate(false);
+	}
+	
+	/**
 	 * Scans a folder called 'mods' at the same location as the root and loads
 	 * any valid mods found.
 	 */
@@ -433,16 +496,20 @@ public class Engine implements Runnable, UiExecutor {
 					DialogHandler.showError(e);
 				}
 			}
+			String[] ids = resourceManager.getModIds();
+			ui.addMods(ids, ids);
 		}
 	}
 	
 	/**
 	 * Sets the world to use the initial land.
+	 * 
+	 * @param w The world to use.
 	 */
-	private void setInitialWorld() {
-		String[] lands = world.getAllLandNames();
+	private void setInitialLand(World w) {
+		String[] lands = w.getAllLandNames();
 		try {
-			world.changeLand(lands[0]);
+			w.changeLand(lands[0]);
 		} catch (InvalidIndexException e) {
 			// should never happen
 			DialogHandler.showFatalError(e);
@@ -469,15 +536,13 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	/**
-	 * Starts the thread running the world. If the thread has not yet been
-	 * created, it is created.
+	 * Updates the world view with the active land.
 	 */
-	private void updateWorldViewer() {
+	private void updateWorldViewData() {
 		ui.clearWorldLocatables();
-		ui.setWorldView(world.getTiles());
+		ui.setWorldView(world.getTiles(), world.getLandName());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
-		ui.updateWorldView(player.getLocation());
 	}
 	
 }

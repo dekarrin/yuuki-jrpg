@@ -6,12 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
-import yuuki.action.Action;
-import yuuki.action.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.entity.Stat;
 import yuuki.entity.VariableStat;
-import yuuki.util.InvalidIndexException;
 
 /**
  * Loads entity definition files.
@@ -19,23 +16,14 @@ import yuuki.util.InvalidIndexException;
 public class EntityLoader extends CsvResourceLoader {
 	
 	/**
-	 * Creates Action instances in EntityFactory instances loaded by this
-	 * EntityLoader.
-	 */
-	private ActionFactory actionFactory;
-	
-	/**
 	 * Creates a new EntityLoader for entity definition files at the specified
 	 * location.
 	 * 
 	 * @param directory The directory containing the definition files to be
 	 * loaded.
-	 * @param actions The ActionFactory to use for creating the definition
-	 * actions.
 	 */
-	public EntityLoader(File directory, ActionFactory actions) {
+	public EntityLoader(File directory) {
 		super(directory);
-		this.actionFactory = actions;
 	}
 	
 	/**
@@ -46,10 +34,8 @@ public class EntityLoader extends CsvResourceLoader {
 	 * @param actions The ActionFactory to use for creating the definition
 	 * actions.
 	 */
-	public EntityLoader(ZipFile archive, String zipRoot, ActionFactory
-			actions) {
+	public EntityLoader(ZipFile archive, String zipRoot) {
 		super(archive, zipRoot);
-		this.actionFactory = actions;
 	}
 	
 	/**
@@ -85,21 +71,18 @@ public class EntityLoader extends CsvResourceLoader {
 	 * 
 	 * @param value The exact value of the field containing the moves.
 	 * 
-	 * @return The Actions that the value refers to.
+	 * @return The Action indexes
 	 * 
 	 * @throws FieldFormatException If the moves field contains an invalid
 	 * value.
 	 */
-	private Action[] parseMoves(String value) throws FieldFormatException {
+	private int[] parseMoves(String value) throws FieldFormatException {
 		String[] moves = splitMultiValue(value);
-		int[] actionIds = parseIntArray(moves, 0);
-		Action[] actions = new Action[actionIds.length];
-		for (int i = 0; i < actionIds.length; i++) {
-			try {
-				actions[i] = actionFactory.createAction(actionIds[i]);
-			} catch (InvalidIndexException e) {
-				throw new FieldFormatException("moves", value);
-			}
+		int[] actions = null;
+		try {
+			actions = parseIntArray(moves, 0);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException("moves", value);
 		}
 		return actions;
 	}

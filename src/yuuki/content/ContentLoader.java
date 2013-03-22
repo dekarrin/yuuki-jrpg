@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import yuuki.action.Action;
-import yuuki.action.ActionFactory;
 import yuuki.entity.Character;
 import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
@@ -124,6 +123,7 @@ public class ContentLoader {
 		} catch (ResourceFormatException e) {
 			DialogHandler.showError(e);
 		}
+		finishLoadingOperation(sub);
 		return actions;
 	}
 	
@@ -161,12 +161,11 @@ public class ContentLoader {
 	 * @throws ResourceNotFoundException If the given path does not exist.
 	 * @throws IOException If an I/O error occurs.
 	 */
-	public Map<String, Character.Definition> loadEntities(String text,
-			ActionFactory actions) throws ResourceNotFoundException,
-			IOException {
+	public Map<String, Character.Definition> loadEntities(String text)
+			throws ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
 		Map<String, Character.Definition> entities = null;
-		EntityLoader loader = createEntityLoader(actions);
+		EntityLoader loader = createEntityLoader();
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_ENTITIES);
 		try {
@@ -174,6 +173,7 @@ public class ContentLoader {
 		} catch (ResourceFormatException e) {
 			DialogHandler.showError(e);
 		}
+		finishLoadingOperation(sub);
 		return entities;
 	}
 	
@@ -214,16 +214,19 @@ public class ContentLoader {
 			PopulationFactory pop) {
 		Progressable sub = startLoadingOperation(text);
 		LandLoader loader = createLandLoader(pop);
-		loader.setProgressMonitor(sub);
 		List<Land> lands = new ArrayList<Land>();
 		for (String p : paths) {
 			try {
+				Progressable m = sub.getSubProgressable(1.0 / paths.size());
+				loader.setProgressMonitor(m);
 				Land land = loader.load(p);
 				lands.add(land);
+				m.finishProgress();
 			} catch (Exception e) {
 				DialogHandler.showError(e);
 			}
 		}
+		finishLoadingOperation(sub);
 		return lands;
 	}
 	
@@ -268,6 +271,7 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_PORTALS);
 		portals = loader.load(path);
+		finishLoadingOperation(sub);
 		return portals;
 	}
 	
@@ -287,6 +291,7 @@ public class ContentLoader {
 		loader.setProgressMonitor(sub);
 		String path = manifest.get(ContentManifest.FILE_TILES);
 		tiles = loader.load(path);
+		finishLoadingOperation(sub);
 		return tiles;
 	}
 	
@@ -391,11 +396,13 @@ public class ContentLoader {
 			Map<String, String> indexes, String pathIndex) {
 		Progressable sub = startLoadingOperation(text);
 		ByteArrayLoader loader = createFileLoader(pathIndex);
-		loader.setProgressMonitor(sub);
 		Map<String, byte[]> data = new HashMap<String, byte[]>();
 		for (String i : indexes.keySet()) {
+			loader.setProgressMonitor(sub);
 			byte[] fileData = null;
 			try {
+				Progressable m = sub.getSubProgressable(1.0 / indexes.size());
+				loader.setProgressMonitor(m);
 				fileData = loader.load(indexes.get(i));
 				data.put(i, fileData);
 			} catch (IOException e) {
@@ -447,6 +454,7 @@ public class ContentLoader {
 			String item = r[0];
 			list.add(item);
 		}
+		finishLoadingOperation(sub);
 		return list;
 	}
 	
@@ -497,11 +505,10 @@ public class ContentLoader {
 	/**
 	 * Creates a loader for reading entity definition files.
 	 * 
-	 * @param af The ActionFactory to use with entity creation.
 	 * @return The created EntityLoader.
 	 */
-	protected EntityLoader createEntityLoader(ActionFactory af) {
-		return new EntityLoader(root, af);
+	protected EntityLoader createEntityLoader() {
+		return new EntityLoader(root);
 	}
 	
 	/**

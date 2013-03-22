@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 import yuuki.entity.NonPlayerCharacter;
@@ -235,57 +236,113 @@ public class LandLoader extends ResourceLoader {
 		currentLine = 0;
 		while ((line = reader.readLine()) != null) {
 			currentLine++;
-			switch (mode) {
-				case METADATA:
-					try {
-						readMetaData(line);
-					} catch (RecordFormatException e) {
-						throw new ResourceFormatException(resourceName, e);
-					}
-					mode = ParserMode.MAP;
-					break;
-					
-				case MAP:
-					tileData.addAll(readMapData(line));
-					heightCount++;
-					if (heightCount == meta.size.height) {
-						mode = ParserMode.PORTALS;
-					}
-					break;
-					
-				case PORTALS:
-					try {
-						readPortalData(line);
-					} catch (RecordFormatException e) {
-						String msg = e.getMessage() + " - skipping";
-						DialogHandler.showMessage(msg);
-						portals.add(null);
-					}
-					if (portals.size() == meta.portals) {
-						mode = ParserMode.ENTITIES;
-					}
-					break;
-					
-				case ENTITIES:
-					try {
-						readEntityData(line);
-					} catch (RecordFormatException e) {
-						String msg = e.getMessage() + " - skipping";
-						DialogHandler.showMessage(msg);
-						entities.add(null);
-					}
-					break;
+			boolean complete = false;
+			while (!complete) {
+				switch (mode) {
+					case METADATA:
+						complete = parseMetaData(line);
+						break;
+						
+					case MAP:
+						complete = parseMapData(line, tileData, heightCount);
+						heightCount++;
+						break;
+						
+					case PORTALS:
+						complete = parsePortalData(line);
+						break;
+						
+					case ENTITIES:
+						complete = parseEntityData(line);
+						break;
+				}
 			}
 			advanceProgress(1.0 / getLineCount());
-			if (entities.size() == meta.entities) {
-				break;
-			}
 		}
 		fillRemainingHeight(tileData, heightCount);
 		Tile[] tiles = new Tile[tileData.size()];
 		tileData.toArray(tiles);
 		Land land = new Land(meta.name, meta.size, meta.start, tiles);
 		return land;
+	}
+	
+	/**
+	 * Parses entity data.
+	 * 
+	 * @param line The line to parse.
+	 * @return Whether the line was parsed.
+	 */
+	private boolean parseEntityData(String line) {
+		if (entities.size() != meta.entities) {
+			try {
+				readEntityData(line);
+			} catch (RecordFormatException e) {
+				String msg = "Skipping record in '" + resourceName + "':";
+				DialogHandler.showMessage(msg, e);
+				entities.add(null);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Parses map data.
+	 * 
+	 * @param line The line to parse.
+	 * @param tiles Where to store parsed tiles.
+	 * @param count The number of lines of map data that have already been
+	 * parsed.
+	 * @return Whether the line was parsed.
+	 */
+	private boolean parseMapData(String line, List<Tile> tiles, int count) {
+		if (count < meta.size.height) {
+			tiles.addAll(readMapData(line));
+			return true;
+		} else {
+			mode = ParserMode.PORTALS;
+			return false;
+		}
+	}
+	
+	/**
+	 * Parses meta data.
+	 * 
+	 * @param line The line to parse.
+	 * @throws ResourceFormatException If the line is not formated correctly.
+	 * @return Whether the line was parsed.
+	 */
+	private boolean parseMetaData(String line) throws ResourceFormatException {
+		try {
+			readMetaData(line);
+		} catch (RecordFormatException e) {
+			throw new ResourceFormatException(resourceName, e);
+		}
+		mode = ParserMode.MAP;
+		return true;
+	}
+	
+	/**
+	 * Parses portal data.
+	 * 
+	 * @param line The line to parse.
+	 * @return Whether the line was parsed.
+	 */
+	private boolean parsePortalData(String line) {
+		if (portals.size() < meta.portals) {
+			try {
+				readPortalData(line);
+			} catch (RecordFormatException e) {
+				String msg = "Skipping record in '" + resourceName + "':";
+				DialogHandler.showMessage(msg, e);
+				portals.add(null);
+			}
+			return true;
+		} else {
+			mode = ParserMode.ENTITIES;
+			return false;
+		}
 	}
 	
 	/**
@@ -299,7 +356,8 @@ public class LandLoader extends ResourceLoader {
 	private void readEntityData(String line) throws RecordFormatException {
 		String[] parts = line.split(";");
 		if (parts.length < ENTITY_FIELD_COUNT) {
-			throw new RecordFormatException(currentLine, "missing fields");
+			throw new RecordFormatException(currentLine, "missing entity " +
+					"parameters");
 		}
 		try {
 			Point location = parsePointField("location", parts[0]);
@@ -387,7 +445,8 @@ public class LandLoader extends ResourceLoader {
 	private void readPortalData(String line) throws RecordFormatException {
 		String[] parts = line.split(";");
 		if (parts.length < PORTAL_FIELD_COUNT) {
-			throw new RecordFormatException(currentLine, "missing parameters");
+			throw new RecordFormatException(currentLine, "missing portal " +
+					"parameters");
 		}
 		try {
 			Point location = parsePointField("location", parts[0]);

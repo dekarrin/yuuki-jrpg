@@ -19,6 +19,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import yuuki.Options;
+import yuuki.ui.ModControlListener;
+import yuuki.ui.ModPanel;
 
 /**
  * The screen containing the options for the game.
@@ -49,6 +51,11 @@ ChangeListener {
 	};
 	
 	/**
+	 * The panel for mod loading.
+	 */
+	private ModPanel modPanel;
+	
+	/**
 	 * Button for testing SFX.
 	 */
 	private JButton sfxTestButton;
@@ -70,7 +77,7 @@ ChangeListener {
 	 */
 	public OptionsScreen(int width, int height) {
 		super(width, height);
-		MouseListener ma = new MouseAdapter() {
+		MouseListener mAdapter = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getSource() == submitButton) {
@@ -84,16 +91,33 @@ ChangeListener {
 		bgmVolumeSlider = createPercentSlider();
 		sfxVolumeSlider = createPercentSlider();
 		sfxTestButton = new JButton("SFX Test");
-		sfxTestButton.addMouseListener(ma);
+		sfxTestButton.addMouseListener(mAdapter);
 		sfxTestButton.addKeyListener(enterListener);
 		submitButton = new JButton("OK");
-		submitButton.addMouseListener(ma);
+		submitButton.addMouseListener(mAdapter);
 		submitButton.addKeyListener(enterListener);
+		modPanel = new ModPanel(width - 80, 200);
+		modPanel.setModListener(createModListener());
 		form.add(createLabeledComponent("BGM: ", bgmVolumeSlider));
 		form.add(createLabeledComponent("SFX: ", sfxVolumeSlider));
 		form.add(sfxTestButton);
 		form.add(submitButton);
+		form.add(modPanel);
 		add(form);
+	}
+	
+	/**
+	 * Adds all mods to the list.
+	 * 
+	 * @param names The names to display as mod titles.
+	 * @param ids The unique identifier for the mods.
+	 */
+	public void addMods(String[] names, String[] ids) {
+		for (int i = 0; i < names.length; i++) {
+			String name = names[i];
+			String id = ids[i];
+			modPanel.addMod(name, id);
+		}
 	}
 	
 	/**
@@ -145,6 +169,24 @@ ChangeListener {
 	}
 	
 	/**
+	 * Creates a listener for the mod panel.
+	 * 
+	 * @return The created listener.
+	 */
+	private ModControlListener createModListener() {
+		return new ModControlListener() {
+			@Override
+			public void modDisabled(String id) {
+				fireModDisabled(id);
+			}
+			@Override
+			public void modEnabled(String id) {
+				fireModEnabled(id);
+			}
+		};
+	}
+	
+	/**
 	 * Creates a slider for discrete values in the range [0, 100].
 	 * 
 	 * @return The slider.
@@ -172,6 +214,24 @@ ChangeListener {
 	private void fireEnterClicked() {
 		for (OptionsScreenListener l : getElementListeners()) {
 			l.optionsSubmitted();
+		}
+	}
+	
+	/**
+	 * Calls modDisabled() on all listeners.
+	 */
+	private void fireModDisabled(String id) {
+		for (OptionsScreenListener l : getElementListeners()) {
+			l.modDisabled(id);
+		}
+	}
+	
+	/**
+	 * Calls modEnabled() on all listeners.
+	 */
+	private void fireModEnabled(String id) {
+		for (OptionsScreenListener l : getElementListeners()) {
+			l.modEnabled(id);
 		}
 	}
 	

@@ -2,10 +2,15 @@ package yuuki.content;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipFile;
 
+import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.graphic.ImageFactory;
@@ -21,6 +26,11 @@ import yuuki.world.World;
 public class ContentManager {
 	
 	/**
+	 * Holds all loaded actions.
+	 */
+	private ActionFactory actionFactory;
+	
+	/**
 	 * Represents the current model of all loaded content.
 	 */
 	private Content contentModel;
@@ -29,6 +39,11 @@ public class ContentManager {
 	 * Handles sound effect content.
 	 */
 	private EffectEngine effectEngine;
+	
+	/**
+	 * The content packs that have been enabled.
+	 */
+	private List<ContentPack> enabledPacks;
 	
 	/**
 	 * Handles Entity creation.
@@ -55,12 +70,13 @@ public class ContentManager {
 	 */
 	public ContentManager() {
 		packs = new HashMap<String, ContentPack>();
+		enabledPacks = new ArrayList<ContentPack>();
 		contentModel = new Content();
-		contentModel.init();
 		effectEngine = new EffectEngine();
 		musicEngine = new MusicEngine();
 		imageFactory = new ImageFactory();
-		entityFactory = new EntityFactory();
+		actionFactory = new ActionFactory();
+		entityFactory = new EntityFactory(actionFactory);
 	}
 	
 	/**
@@ -83,10 +99,14 @@ public class ContentManager {
 		if (pack.hasEntities()) {
 			entityFactory.subtract(c.getEntities());
 		}
+		if (pack.hasActions()) {
+			actionFactory.subtract(c.getActions());
+		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.subtract(c.getImages());
 		}
 		contentModel.subtract(c);
+		enabledPacks.remove(pack);
 		pack.setEnabled(false);
 	}
 	
@@ -112,10 +132,14 @@ public class ContentManager {
 		if (pack.hasEntities()) {
 			entityFactory.merge(c.getEntities());
 		}
+		if (pack.hasActions()) {
+			actionFactory.merge(c.getActions());
+		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.merge(c.getImages());
 		}
 		contentModel.merge(c);
+		enabledPacks.add(pack);
 		pack.setEnabled(true);
 	}
 	
@@ -138,6 +162,22 @@ public class ContentManager {
 	}
 	
 	/**
+	 * Gets the IDs of all mods.
+	 * 
+	 * @return The IDs.
+	 */
+	public String[] getModIds() {
+		ArrayList<String> ids = new ArrayList<String>();
+		for (String id : packs.keySet()) {
+			if (!id.equals(ContentPack.BUILT_IN_NAME)) {
+				ids.add(id);
+			}
+		}
+		Collections.sort(ids);
+		return ids.toArray(new String[0]);
+	}
+	
+	/**
 	 * Gets the sound engine that this ContentManager controls.
 	 * 
 	 * @return The sound engine.
@@ -154,9 +194,8 @@ public class ContentManager {
 	 */
 	public World getWorldEngine() {
 		World world = new World();
-		for (ContentPack cp : packs.values()) {
-			if (cp.isEnabled() && cp.hasWorld() && cp.hasLands() &&
-					cp.mapDataIsLoaded()) {
+		for (ContentPack cp : enabledPacks) {
+			if (cp.hasWorld() && cp.hasLands() && cp.mapsAreLoaded()) {
 				world.merge(cp.getContent().getLands());
 			}
 		}
@@ -164,18 +203,17 @@ public class ContentManager {
 	}
 	
 	/**
-	 * Loads the map data in all content packs that are enabled.
+	 * Loads non-map data in all but the given content packs.
 	 * 
-	 * @throws ResourceNotFoundException 
-	 * @throws IOException 
+	 * @param exclude A list of IDs to exclude.
+	 * @throws ResourceNotFoundException
+	 * @throws IOException
 	 */
-	public void loadEnabledWorlds() throws ResourceNotFoundException,
+	public void loadAll(Set<String> exclude) throws ResourceNotFoundException,
 	IOException {
-		for (String id : packs.keySet()) {
-			ContentPack c = packs.get(id);
-			if (c.isEnabled() && c.hasWorld() && c.hasLands() &&
-					!c.mapDataIsLoaded()) {
-				loadWorld(id);
+		for (String k : packs.keySet()) {
+			if (!exclude.contains(k)) {
+				loadAssets(k);
 			}
 		}
 	}
@@ -193,6 +231,21 @@ public class ContentManager {
 	}
 	
 	/**
+	 * Loads the map data in all content packs that are enabled.
+	 * 
+	 * @throws ResourceNotFoundException
+	 * @throws IOException
+	 */
+	public void loadEnabledWorlds() throws ResourceNotFoundException,
+	IOException {
+		for (ContentPack c : enabledPacks) {
+			if (c.hasWorld() && c.hasLands()) {
+				loadWorld(c.getName());
+			}
+		}
+	}
+	
+	/**
 	 * Loads all map content in a content pack.
 	 * 
 	 * @param name The name of the content pack.
@@ -201,7 +254,7 @@ public class ContentManager {
 	 */
 	public void loadWorld(String name) throws ResourceNotFoundException,
 	IOException {
-		packs.get(name).loadWorldAssets(contentModel);
+		packs.get(name).loadMaps(contentModel);
 	}
 	
 	/**
@@ -220,7 +273,7 @@ public class ContentManager {
 		if (file.isDirectory()) {
 			pack = new ContentPack(file);
 		} else {
-			ZipFile z = new ZipFile(file);
+			ZipFile z = new ZipFile(file.getCanonicalFile());
 			pack = new ContentPack(z);
 			z.close();
 		}
@@ -271,7 +324,7 @@ public class ContentManager {
 	 * @return The monitor.
 	 */
 	public Progressable startWorldLoadMonitor(String name) {
-		return packs.get(name).startWorldLoadMonitor();
+		return packs.get(name).startMapLoadMonitor();
 	}
 	
 }

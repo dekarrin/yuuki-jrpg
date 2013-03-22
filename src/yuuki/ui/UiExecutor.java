@@ -68,6 +68,20 @@ public interface UiExecutor {
 	public void requestLoadGame();
 	
 	/**
+	 * Requests that a mod be disabled.
+	 * 
+	 * @param id The ID of the mod to disable.
+	 */
+	public void requestModDisable(String id);
+	
+	/**
+	 * Requests that a mod be enabled.
+	 * 
+	 * @param id The ID of the mod to enable.
+	 */
+	public void requestModEnable(String id);
+	
+	/**
 	 * Requests that a new game be started.
 	 */
 	public void requestNewGame();

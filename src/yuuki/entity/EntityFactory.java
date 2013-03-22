@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import yuuki.action.Action;
+import yuuki.action.ActionFactory;
 import yuuki.content.Mergeable;
 import yuuki.ui.Interactable;
 import yuuki.util.InvalidIndexException;
@@ -23,6 +24,11 @@ Mergeable<Map<String, Character.Definition>> {
 	private static final String PLAYER_CHARACTER_NAME = "__PLAYER";
 	
 	/**
+	 * Interprets action IDs.
+	 */
+	private ActionFactory actionFactory;
+	
+	/**
 	 * All defined entities as read from the entity definitions file. When a
 	 * definition is used to create an instance, it must be cloned, or else
 	 * multiple instances of characters will share the same references to
@@ -33,9 +39,13 @@ Mergeable<Map<String, Character.Definition>> {
 	/**
 	 * Allocates a new EntityFactory. The definition files are read and the
 	 * list of base actions is populated.
+	 * 
+	 * @param actions The ActionFactory that is to be used to interpret action
+	 * indexes.
 	 */
-	public EntityFactory() {
+	public EntityFactory(ActionFactory actions) {
 		definitions = new HashMap<String, Deque<Character.Definition>>();
+		this.actionFactory = actions;
 	}
 	
 	/**
@@ -79,7 +89,7 @@ Mergeable<Map<String, Character.Definition>> {
 	 */
 	public void addDefinition(String name, int hp, int hpg, int mp, int mpg,
 			int str, int strg, int def, int defg, int agl, int aglg, int acc,
-			int accg, int mag, int magg, int luk, int lukg, Action[] moves,
+			int accg, int mag, int magg, int luk, int lukg, int[] moves,
 			String overworldArt, int xp) {
 		Character.Definition cd = new Character.Definition();
 		cd.name = name;
@@ -111,8 +121,9 @@ Mergeable<Map<String, Character.Definition>> {
 	public NonPlayerCharacter createNpc(String name, int level) throws
 	InvalidIndexException {
 		Character.Definition d = getDefinition(name);
+		Action[] moves = interpretActions(d.moves);
 		NonPlayerCharacter m;
-		m = new NonPlayerCharacter(d.name, level, d.moves, d.hp, d.mp, d.str,
+		m = new NonPlayerCharacter(d.name, level, moves, d.hp, d.mp, d.str,
 				d.def, d.agl, d.acc, d.mag, d.luk, d.overworldArt, d.xp);
 		return m;
 	}
@@ -135,8 +146,9 @@ Mergeable<Map<String, Character.Definition>> {
 			// should never happen
 			throw new Error("PLAYER_CHARACTER_NAME is invalid", e);
 		}
+		Action[] moves = interpretActions(d.moves);
 		PlayerCharacter m;
-		m = new PlayerCharacter(name, level, d.moves, d.hp, d.mp, d.str, d.def,
+		m = new PlayerCharacter(name, level, moves, d.hp, d.mp, d.str, d.def,
 				d.agl, d.acc, d.mag, d.luk, d.overworldArt, ui);
 		return m;
 	}
@@ -239,6 +251,24 @@ Mergeable<Map<String, Character.Definition>> {
 		}
 		Character.Definition def = dq.peek();
 		return def.clone();
+	}
+	
+	/**
+	 * Interprets an array of move indexes into an array of Action objects.
+	 * 
+	 * @param indexes The indexes to convert.
+	 * @return The Actions that the indexes refer to.
+	 */
+	private Action[] interpretActions(int[] indexes) {
+		Action[] actions = new Action[indexes.length];
+		for (int i = 0; i < indexes.length; i++) {
+			try {
+				actions[i] = actionFactory.createAction(indexes[i]);
+			} catch (InvalidIndexException e) { // TODO: Propagate exception
+				e.printStackTrace();
+			}
+		}
+		return actions;
 	}
 	
 }

@@ -34,6 +34,11 @@ public class ContentPack {
 	private static final String BUILT_IN_ROOT = "yuuki/resource/";
 	
 	/**
+	 * Whether this ContentPack's non-map data has been loaded.
+	 */
+	private boolean assetsLoaded = false;
+	
+	/**
 	 * The content loaded from disk.
 	 */
 	private final Content content = new Content();
@@ -47,16 +52,6 @@ public class ContentPack {
 	 * Whether the resources included in this ContentPack are in a ZIP archive.
 	 */
 	private final boolean inArchive;
-	
-	/**
-	 * Whether this ContentPack's map data has been loaded.
-	 */
-	private boolean mapLoaded = false;
-	
-	/**
-	 * Whether this ContentPack's non-map data has been loaded.
-	 */
-	private boolean assetsLoaded = false;
 	
 	/**
 	 * Handles the actual loading of resources from the content pack.
@@ -75,6 +70,11 @@ public class ContentPack {
 	 * The manifest for this ContentPack.
 	 */
 	private final ContentManifest manifest;
+	
+	/**
+	 * Whether this ContentPack's map data has been loaded.
+	 */
+	private boolean mapLoaded = false;
 	
 	/**
 	 * The name of this ContentPack.
@@ -128,7 +128,7 @@ public class ContentPack {
 	public ContentPack(ZipFile archive) throws ResourceNotFoundException,
 	IOException {
 		location = new File(archive.getName());
-		loader = new ContentLoader(location);
+		loader = new ZippedContentLoader(location);
 		inArchive = true;
 		name = location.getName();
 		manifest = loader.readManifest();
@@ -136,14 +136,12 @@ public class ContentPack {
 	}
 	
 	/**
-	 * Sets whether this ContentPack has loaded certain parts of it based on
-	 * whether it has them.
+	 * Checks whether this ContentPack has loaded its non-map data.
+	 * 
+	 * @return True if the non-map data has been loaded, or if there is none.
 	 */
-	private void setLoaded() {
-		mapLoaded = !(hasPortals() || hasTiles() || hasWorld() || hasLands());
-		assetsLoaded = !(hasMusicDefinitions() || hasEffectDefinitions() ||
-				hasImageDefinitions() || hasMusic() || hasEffects() ||
-				hasImages() || hasActions() || hasEntities());
+	public boolean assetsAreLoaded() {
+		return assetsLoaded;
 	}
 	
 	/**
@@ -292,25 +290,7 @@ public class ContentPack {
 	 * @return Whether it has been.
 	 */
 	public boolean isLoaded() {
-		return (mapDataIsLoaded() && assetDataIsLoaded());
-	}
-	
-	/**
-	 * Checks whether this ContentPack has loaded its map data.
-	 * 
-	 * @return True if the map data has been loaded, or if there is none.
-	 */
-	public boolean mapDataIsLoaded() {
-		return mapLoaded;
-	}
-	
-	/**
-	 * Checks whether this ContentPack has loaded its non-map data.
-	 * 
-	 * @return True if the non-map data has been loaded, or if there is none.
-	 */
-	public boolean assetDataIsLoaded() {
-		return assetsLoaded;
+		return (mapsAreLoaded() && assetsAreLoaded());
 	}
 	
 	/**
@@ -337,7 +317,7 @@ public class ContentPack {
 			startLoadMonitor();
 		}
 		loadAssets(resolver);
-		loadWorldAssets(resolver);
+		loadMaps(resolver);
 	}
 	
 	/**
@@ -368,6 +348,8 @@ public class ContentPack {
 		loadImages(resolver);
 		loadActions();
 		loadEntities(resolver);
+		loadPortals();
+		loadTiles();
 		assetsLoaded = true;
 	}
 	
@@ -385,17 +367,24 @@ public class ContentPack {
 	 * found.
 	 * @throws IOException If an I/O error occurs during the load.
 	 */
-	public void loadWorldAssets(Content resolver) throws
+	public void loadMaps(Content resolver) throws
 	ResourceNotFoundException, IOException {
-		content.resetWorld();
+		content.resetMaps();
 		if (!loader.isInLoad()) {
-			startWorldLoadMonitor();
+			startMapLoadMonitor();
 		}
-		loadPortals();
-		loadTiles();
 		loadWorld();
 		loadLands(resolver);
 		mapLoaded = true;
+	}
+	
+	/**
+	 * Checks whether this ContentPack has loaded its map data.
+	 * 
+	 * @return True if the map data has been loaded, or if there is none.
+	 */
+	public boolean mapsAreLoaded() {
+		return mapLoaded;
 	}
 	
 	/**
@@ -451,8 +440,8 @@ public class ContentPack {
 	 * 
 	 * @return The monitor.
 	 */
-	public Progressable startWorldLoadMonitor() {
-		return loader.initLoad(getWorldLoadCount());
+	public Progressable startMapLoadMonitor() {
+		return loader.initLoad(getMapLoadCount());
 	}
 	
 	/**
@@ -502,6 +491,8 @@ public class ContentPack {
 		count += (hasImages())				? 1 : 0;
 		count += (hasActions())				? 1 : 0;
 		count += (hasEntities())			? 1 : 0;
+		count += (hasPortals())				? 1 : 0;
+		count += (hasTiles())				? 1 : 0;
 		return count;
 	}
 	
@@ -531,7 +522,21 @@ public class ContentPack {
 	 * has.
 	 */
 	private int getLoadCount() {
-		return getAssetLoadCount() + getWorldLoadCount();
+		return getAssetLoadCount() + getMapLoadCount();
+	}
+	
+	/**
+	 * Gets the number of loads necessary to load every type of world content
+	 * that this ContentPack has.
+	 * 
+	 * @return The number of different world resource types that this
+	 * ContentPack has.
+	 */
+	private int getMapLoadCount() {
+		int count = 0;
+		count += (hasWorld())	? 1 : 0;
+		count += (hasLands())	? 1 : 0;
+		return count;
 	}
 	
 	/**
@@ -575,35 +580,35 @@ public class ContentPack {
 	 * @return The PopulationFactory composed of loaded content.
 	 */
 	private PopulationFactory getPopFactory(Content resolver) {
-		EntityFactory ef = new EntityFactory();
+		ActionFactory af = new ActionFactory();
+		EntityFactory ef = new EntityFactory(af);
 		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
-		ef.merge(resolve(content.getEntities(),
-				(resolver != null) ? resolver.getEntities() : null,
-				"Cannot get pop. factory with no ent. factory"));
-		tf.merge(resolve(content.getTiles(),
-				(resolver != null) ? resolver.getTiles() : null,
-				"Cannot get pop. factory with no tile factory"));
-		pf.merge(resolve(content.getPortals(),
-				(resolver != null) ? resolver.getPortals() : null,
-				"Cannot get pop. factory with no portal factory"));
+		if (hasActions()) {
+			af.merge(content.getActions());
+		}
+		if (resolver != null && resolver.getActions() != null) {
+			af.merge(resolver.getActions());
+		}
+		if (hasEntities()) {
+			ef.merge(content.getEntities());
+		}
+		if (resolver != null && resolver.getEntities() != null) {
+			ef.merge(resolver.getEntities());
+		}
+		if (hasTiles()) {
+			tf.merge(content.getTiles());
+		}
+		if (resolver != null && resolver.getTiles() != null) {
+			tf.merge(resolver.getTiles());
+		}
+		if (hasPortals()) {
+			pf.merge(content.getPortals());
+		}
+		if (resolver != null && resolver.getPortals() != null) {
+			pf.merge(resolver.getPortals());
+		}
 		return new PopulationFactory(tf, ef, pf);
-	}
-	
-	/**
-	 * Gets the number of loads necessary to load every type of world content
-	 * that this ContentPack has.
-	 * 
-	 * @return The number of different world resource types that this
-	 * ContentPack has.
-	 */
-	private int getWorldLoadCount() {
-		int count = 0;
-		count += (hasPortals())	? 1 : 0;
-		count += (hasTiles())	? 1 : 0;
-		count += (hasWorld())	? 1 : 0;
-		count += (hasLands())	? 1 : 0;
-		return count;
 	}
 	
 	/**
@@ -679,12 +684,8 @@ public class ContentPack {
 	private void loadEntities(Content resolver) throws
 	ResourceNotFoundException, IOException {
 		if (hasEntities()) {
-			ActionFactory a = new ActionFactory();
-			a.merge(resolve(content.getActions(),
-					(resolver != null) ? resolver.getActions() : null,
-					"Cannot load entities with no actions"));
 			String msg = "Loading entities...";
-			content.setEntities(loader.loadEntities(msg, a));
+			content.setEntities(loader.loadEntities(msg));
 		}
 	}
 	
@@ -863,6 +864,25 @@ public class ContentPack {
 			throw new IllegalStateException(msg);
 		}
 		return resolved;
+	}
+	
+	/**
+	 * Sets whether this ContentPack has loaded certain parts of it based on
+	 * whether it has them.
+	 */
+	private void setLoaded() {
+		mapLoaded = !(hasWorld() || hasLands());
+		assetsLoaded = !(
+				hasMusicDefinitions() ||
+				hasEffectDefinitions() ||
+				hasImageDefinitions() ||
+				hasMusic() ||
+				hasEffects() ||
+				hasImages() ||
+				hasActions() ||
+				hasEntities() ||
+				hasPortals() ||
+				hasTiles());
 	}
 	
 }

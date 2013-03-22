@@ -1,5 +1,6 @@
 package yuuki.file;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,8 @@ public class ByteArrayLoader extends ResourceLoader {
 	 */
 	public byte[] load(String resource) throws ResourceNotFoundException,
 	IOException {
-		InputStream s = getStream(resource);
+		InputStream stream = getStream(resource);
+		BufferedInputStream s = new BufferedInputStream(stream);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		int n = 0;
 		while ((n = s.read()) != -1) {

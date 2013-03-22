@@ -55,6 +55,11 @@ class Content implements Mergeable<Content> {
 	private List<Land> lands;
 	
 	/**
+	 * Contains paths to land files.
+	 */
+	private List<String> map;
+	
+	/**
 	 * Contains music data.
 	 */
 	private Map<String, Deque<byte[]>> music;
@@ -73,11 +78,6 @@ class Content implements Mergeable<Content> {
 	 * Contains tile definitions.
 	 */
 	private Map<Integer, Deque<Tile.Definition>> tiles;
-	
-	/**
-	 * Contains paths to land files.
-	 */
-	private List<String> world;
 	
 	/**
 	 * Creates a new Content instance. All properties are set to null.
@@ -195,55 +195,26 @@ class Content implements Mergeable<Content> {
 	 * @return The paths.
 	 */
 	public List<String> getWorld() {
-		return world;
-	}
-	
-	/**
-	 * Initializes all internal content to empty collections.
-	 */
-	public void init() {
-		initAssets();
-		initWorld();
-	}
-	
-	/**
-	 * Initializes all non-world properties to empty collections.
-	 */
-	public void initAssets() {
-		musicDefinitions = new HashMap<String, Deque<String>>();
-		effectDefinitions = new HashMap<String, Deque<String>>();
-		imageDefinitions = new HashMap<String, Deque<String>>();
-		music = new HashMap<String, Deque<byte[]>>();
-		effects = new HashMap<String, Deque<byte[]>>();
-		images = new HashMap<String, Deque<byte[]>>();
-		actions = new HashMap<Integer, Deque<Action.Definition>>();
-		entities = new HashMap<String, Deque<Character.Definition>>();
-	}
-	
-	/**
-	 * Initializes all world properties to empty collections.
-	 */
-	public void initWorld() {
-		lands = new ArrayList<Land>();
-		portals = new HashMap<String, Deque<Portal.Definition>>();
-		tiles = new HashMap<Integer, Deque<Tile.Definition>>();
-		world = new ArrayList<String>();
+		return map;
 	}
 	
 	@Override
 	public void merge(Content content) {
-		mergeItems(musicDefinitions, content.musicDefinitions);
-		mergeItems(effectDefinitions, content.effectDefinitions);
-		mergeItems(imageDefinitions, content.imageDefinitions);
-		mergeItems(music, content.music);
-		mergeItems(effects, content.effects);
-		mergeItems(images, content.images);
-		mergeItems(actions, content.actions);
-		mergeItems(entities, content.entities);
-		mergeItems(lands, content.lands);
-		mergeItems(portals, content.portals);
-		mergeItems(tiles, content.tiles);
-		mergeItems(world, content.world);
+		musicDefinitions =
+				mergeMaps(musicDefinitions, content.musicDefinitions);
+		effectDefinitions =
+				mergeMaps(effectDefinitions, content.effectDefinitions);
+		imageDefinitions =
+				mergeMaps(imageDefinitions, content.imageDefinitions);
+		music = mergeMaps(music, content.music);
+		effects = mergeMaps(effects, content.effects);
+		images = mergeMaps(images, content.images);
+		actions = mergeMaps(actions, content.actions);
+		entities = mergeMaps(entities, content.entities);
+		lands = mergeLists(lands, content.lands);
+		portals = mergeMaps(portals, content.portals);
+		tiles = mergeMaps(tiles, content.tiles);
+		map = mergeLists(map, content.map);
 	}
 	
 	/**
@@ -251,7 +222,7 @@ class Content implements Mergeable<Content> {
 	 */
 	public void reset() {
 		resetAssets();
-		resetWorld();
+		resetMaps();
 	}
 	
 	/**
@@ -266,16 +237,16 @@ class Content implements Mergeable<Content> {
 		images = null;
 		actions = null;
 		entities = null;
+		portals = null;
+		tiles = null;
 	}
 	
 	/**
 	 * Resets all world properties to null.
 	 */
-	public void resetWorld() {
+	public void resetMaps() {
 		lands = null;
-		portals = null;
-		tiles = null;
-		world = null;
+		map = null;
 	}
 	
 	/**
@@ -383,23 +354,26 @@ class Content implements Mergeable<Content> {
 	 * @param paths The paths.
 	 */
 	public void setWorld(List<String> paths) {
-		world = paths;
+		map = paths;
 	}
 	
 	@Override
 	public void subtract(Content content) {
-		subtractItems(musicDefinitions, content.musicDefinitions);
-		subtractItems(effectDefinitions, content.effectDefinitions);
-		subtractItems(imageDefinitions, content.imageDefinitions);
-		subtractItems(music, content.music);
-		subtractItems(effects, content.effects);
-		subtractItems(images, content.images);
-		subtractItems(actions, content.actions);
-		subtractItems(entities, content.entities);
-		subtractItems(lands, content.lands);
-		subtractItems(portals, content.portals);
-		subtractItems(tiles, content.tiles);
-		subtractItems(world, content.world);
+		musicDefinitions =
+				subtractMaps(musicDefinitions, content.musicDefinitions);
+		effectDefinitions =
+				subtractMaps(effectDefinitions, content.effectDefinitions);
+		imageDefinitions =
+				subtractMaps(imageDefinitions, content.imageDefinitions);
+		music = subtractMaps(music, content.music);
+		effects = subtractMaps(effects, content.effects);
+		images = subtractMaps(images, content.images);
+		actions = subtractMaps(actions, content.actions);
+		entities = subtractMaps(entities, content.entities);
+		lands = subtractLists(lands, content.lands);
+		portals = subtractMaps(portals, content.portals);
+		tiles = subtractMaps(tiles, content.tiles);
+		map = subtractLists(map, content.map);
 	}
 	
 	/**
@@ -440,10 +414,12 @@ class Content implements Mergeable<Content> {
 	/**
 	 * Merges the items in one list with those of another.
 	 * 
-	 * @param original The items in the original list.
-	 * @param merging The items in the list to be merged.
+	 * @param original The original list.
+	 * @param merging The list containing the items to be merged.
+	 * @return The original list after the merge is applied to it. This may
+	 * differ from the given original list if a null original list is given.
 	 */
-	private <E> void mergeItems(List<E> original, List<E> merging) {
+	private <E> List<E> mergeLists(List<E> original, List<E> merging) {
 		if (merging != null) {
 			if (original == null) {
 				original = new ArrayList<E>();
@@ -452,15 +428,18 @@ class Content implements Mergeable<Content> {
 				original.add(element);
 			}
 		}
+		return original;
 	}
 	
 	/**
 	 * Merges the items in one map with those of another.
 	 * 
-	 * @param original The items in the original map.
-	 * @param merging The items in the map to be merged.
+	 * @param original The original map.
+	 * @param merging The map containing the entries to be merged.
+	 * @return The original map after the merge is applied to it. This may
+	 * differ from the given original map if a null original map is given.
 	 */
-	private <V, K> void mergeItems(Map<K, Deque<V>> original,
+	private <V, K> Map<K, Deque<V>> mergeMaps(Map<K, Deque<V>> original,
 			Map<K, Deque<V>> merging) {
 		if (merging != null) {
 			if (original == null) {
@@ -479,29 +458,38 @@ class Content implements Mergeable<Content> {
 				}
 			}
 		}
+		return original;
 	}
 	
 	/**
-	 * Subtracts the items in one list with those of another.
+	 * Subtracts the items in one list from those of another.
 	 * 
-	 * @param original The items in the original list.
-	 * @param subtracting The items in the list to be subtracting.
+	 * @param original The original list.
+	 * @param subtracting The list containing the items to be subtracted.
+	 * @return The original list after the subtraction is applied to it. This
+	 * will be null if the subtraction causes the original list to be empty.
 	 */
-	private <E> void subtractItems(List<E> original, List<E> subtracting) {
+	private <E> List<E> subtractLists(List<E> original, List<E> subtracting) {
 		if (original != null && subtracting != null) {
 			for (E element : subtracting) {
 				original.remove(element);
 			}
+			if (original.isEmpty()) {
+				original = null;
+			}
 		}
+		return original;
 	}
 	
 	/**
-	 * Merges the items in one map with those of another.
+	 * Subtracts the entries in one map from those of another.
 	 * 
-	 * @param original The items in the original map.
-	 * @param merging The items in the map to be merged.
+	 * @param original The original map.
+	 * @param merging The map containing the entries to be subtracted.
+	 * @return The original map after the subtraction is applied to it. This
+	 * will be null if the subtraction causes the original map to be empty.
 	 */
-	private <V, K> void subtractItems(Map<K, Deque<V>> original,
+	private <V, K> Map<K, Deque<V>> subtractMaps(Map<K, Deque<V>> original,
 			Map<K, Deque<V>> subtracting) {
 		if (original != null && subtracting != null) {
 			for (K key : subtracting.keySet()) {
@@ -516,7 +504,11 @@ class Content implements Mergeable<Content> {
 					}
 				}
 			}
+			if (original.isEmpty()) {
+				original = null;
+			}
 		}
+		return original;
 	}
 	
 }
