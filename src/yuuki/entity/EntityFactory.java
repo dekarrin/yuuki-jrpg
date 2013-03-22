@@ -24,17 +24,17 @@ Mergeable<Map<String, Character.Definition>> {
 	private static final String PLAYER_CHARACTER_NAME = "__PLAYER";
 	
 	/**
+	 * Interprets action IDs.
+	 */
+	private ActionFactory actionFactory;
+	
+	/**
 	 * All defined entities as read from the entity definitions file. When a
 	 * definition is used to create an instance, it must be cloned, or else
 	 * multiple instances of characters will share the same references to
 	 * stats.
 	 */
 	private Map<String, Deque<Character.Definition>> definitions;
-	
-	/**
-	 * Interprets action IDs.
-	 */
-	private ActionFactory actionFactory;
 	
 	/**
 	 * Allocates a new EntityFactory. The definition files are read and the
@@ -154,24 +154,6 @@ Mergeable<Map<String, Character.Definition>> {
 	}
 	
 	/**
-	 * Interprets an array of move indexes into an array of Action objects.
-	 * 
-	 * @param indexes The indexes to convert.
-	 * @return The Actions that the indexes refer to.
-	 */
-	private Action[] interpretActions(int[] indexes) {
-		Action[] actions = new Action[indexes.length];
-		for (int i = 0; i < indexes.length; i++) {
-			try {
-				actions[i] = actionFactory.createAction(indexes[i]);
-			} catch (InvalidIndexException e) { // TODO: Propagate exception
-				e.printStackTrace();
-			}
-		}
-		return actions;
-	}
-	
-	/**
 	 * Creates a random NPC from a set of names.
 	 * 
 	 * @param levelMin The minimum (inclusive) level of the NPC.
@@ -269,6 +251,24 @@ Mergeable<Map<String, Character.Definition>> {
 		}
 		Character.Definition def = dq.peek();
 		return def.clone();
+	}
+	
+	/**
+	 * Interprets an array of move indexes into an array of Action objects.
+	 * 
+	 * @param indexes The indexes to convert.
+	 * @return The Actions that the indexes refer to.
+	 */
+	private Action[] interpretActions(int[] indexes) {
+		Action[] actions = new Action[indexes.length];
+		for (int i = 0; i < indexes.length; i++) {
+			try {
+				actions[i] = actionFactory.createAction(indexes[i]);
+			} catch (InvalidIndexException e) { // TODO: Propagate exception
+				e.printStackTrace();
+			}
+		}
+		return actions;
 	}
 	
 }
