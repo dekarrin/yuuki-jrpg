@@ -31,6 +31,7 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.InvenScreenListener;
 import yuuki.ui.screen.InventoryScreen;
 import yuuki.ui.screen.LoadingScreen;
 import yuuki.ui.screen.OptionsScreen;
@@ -52,7 +53,7 @@ import yuuki.world.WalkGraph;
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
 CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener,
-OverworldScreenListener {
+OverworldScreenListener, InvenScreenListener {
 	
 	/**
 	 * The speed of game animation.
@@ -253,6 +254,11 @@ OverworldScreenListener {
 				overworldScreen.clearWorldLocatables();
 			}
 		});
+	}
+	
+	@Override
+	public void closeInvenClicked() {
+		mainProgram.requestInventoryClose();
 	}
 	
 	@Override
@@ -867,6 +873,7 @@ OverworldScreenListener {
 	
 	@Override
 	public void switchToInvenScreen() {
+		invenScreen.addListener(this);
 		switchWindow(invenScreen);
 	}
 	
