@@ -162,7 +162,7 @@ public class ContentLoader {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public Map<String, Character.Definition> loadEntities(String text)
-	throws ResourceNotFoundException, IOException {
+			throws ResourceNotFoundException, IOException {
 		Progressable sub = startLoadingOperation(text);
 		Map<String, Character.Definition> entities = null;
 		EntityLoader loader = createEntityLoader();
