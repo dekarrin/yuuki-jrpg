@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
+import yuuki.item.InventoryPouch;
 import yuuki.sprite.Sprite;
 import yuuki.ui.Displayable;
 import yuuki.world.Movable;
@@ -175,6 +176,11 @@ public abstract class Character implements Movable, Displayable {
 	 * The hit point stat.
 	 */
 	private VariableStat hp;
+	
+	/**
+	 * The inventory for this character.
+	 */
+	private InventoryPouch inventory;
 	
 	/**
 	 * Modifies critical strike percent.
@@ -556,6 +562,15 @@ public abstract class Character implements Movable, Displayable {
 	 */
 	public VariableStat getHPStat() {
 		return hp;
+	}
+	
+	/**
+	 * Gets the inventory pouch for this Character.
+	 * 
+	 * @return The pouch.
+	 */
+	public InventoryPouch getInventory() {
+		return inventory;
 	}
 	
 	/**
