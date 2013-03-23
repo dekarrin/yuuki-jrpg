@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+/**
+ * Shows the user's inventory and stats.
+ */
 @SuppressWarnings("serial")
 public class InventoryScreen extends Screen<InvenScreenListener> {
 	
