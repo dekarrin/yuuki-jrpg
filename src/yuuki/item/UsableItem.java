@@ -28,12 +28,13 @@ public class UsableItem extends Item {
 	 * @param id The ID of this item's type.
 	 * @param name The name of the item.
 	 * @param value The value of the item.
+	 * @param image The index of the image for this item.
 	 * @param action The action that using this item performs.
 	 * @param uses The number of times that this item may be used.
 	 */
-	public UsableItem(long id, String name, int value, Action action,
-			int uses) {
-		super(id, name, value);
+	public UsableItem(long id, String name, int value, String image,
+			Action action, int uses) {
+		super(id, name, value, image);
 		this.action = action;
 		this.maxUses = uses;
 		this.uses = 0;

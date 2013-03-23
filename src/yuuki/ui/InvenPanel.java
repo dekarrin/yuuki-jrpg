@@ -1,14 +1,17 @@
 package yuuki.ui;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import yuuki.graphic.ImageComponent;
+import yuuki.graphic.ImageFactory;
 import yuuki.item.Item;
+import yuuki.util.InvalidIndexException;
 
 /**
  * Shows all items in the user's possession. Exactly one item may register
@@ -21,7 +24,7 @@ public class InvenPanel extends JPanel {
 	 * A single cell in this InvenPanel. Each cell represents exactly one item
 	 * in the user's inventory.
 	 */
-	private static class ItemCell extends JPanel {
+	private class ItemCell extends ImageComponent {
 		
 		/**
 		 * The item that this cell represents.
@@ -37,9 +40,25 @@ public class InvenPanel extends JPanel {
 		public ItemCell(Item item, int size) {
 			this.item = item;
 			setPreferredSize(new Dimension(size, size));
+			try {
+				Image img = images.createImage(item.getImage());
+				setBackgroundImage(img);
+			} catch (InvalidIndexException e) {
+				// do nothing; simply keep the image blank
+			}
 			addMouseListener(new MouseAdapter() {
-				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					fireClicked();
+				}
 			});
+		}
+		
+		/**
+		 * Fires the clicked event on the InvenPanel.
+		 */
+		private void fireClicked() {
+			fireItemCellClicked(item);
 		}
 		
 	}
@@ -48,6 +67,11 @@ public class InvenPanel extends JPanel {
 	 * The height of a cell in the items list.
 	 */
 	public static final int ITEM_CELL_SIZE = 40;
+	
+	/**
+	 * Used for generating tile images.
+	 */
+	private ImageFactory images;
 	
 	/**
 	 * Shows the items.
@@ -72,13 +96,6 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * Clears all items from the list.
-	 */
-	public void clearItems() {
-		itemList.removeAll();
-	}
-	
-	/**
 	 * Adds a new item to the list.
 	 * 
 	 * @param item The item to add.
@@ -86,6 +103,13 @@ public class InvenPanel extends JPanel {
 	public void addItem(Item item) {
 		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
 		itemList.add(cell);
+	}
+	
+	/**
+	 * Clears all items from the list.
+	 */
+	public void clearItems() {
+		itemList.removeAll();
 	}
 	
 	/**

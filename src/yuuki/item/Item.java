@@ -21,16 +21,32 @@ public class Item {
 	private final int value;
 	
 	/**
+	 * The index of this item's image.
+	 */
+	private final String image;
+	
+	/**
 	 * Creates a new Item.
 	 * 
 	 * @param id The ID of this item's type.
 	 * @param name The name of this item.
 	 * @param value The value of this item.
+	 * @param image The index of the image for this item.
 	 */
-	public Item(long id, String name, int value) {
+	public Item(long id, String name, int value, String image) {
 		this.name = name;
 		this.value = value;
 		this.id = id;
+		this.image = image;
+	}
+	
+	/**
+	 * Gets the index of the image for this item.
+	 * 
+	 * @return The image index.
+	 */
+	public String getImage() {
+		return image;
 	}
 	
 	/**

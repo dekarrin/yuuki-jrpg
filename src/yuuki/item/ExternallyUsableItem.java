@@ -14,12 +14,13 @@ public class ExternallyUsableItem extends UsableItem {
 	 * @param id The ID of this item's type.
 	 * @param name The name of this item.
 	 * @param value The value of this item in in-game currency.
+	 * @param image The index of the image for this item.
 	 * @param action The action that this item performs.
 	 * @param uses The number of times that this item can be used.
 	 */
-	public ExternallyUsableItem(long id, String name, int value, Action action,
-			int uses) {
-		super(id, name, value, action, uses);
+	public ExternallyUsableItem(long id, String name, int value, String image,
+			Action action, int uses) {
+		super(id, name, value, image, action, uses);
 	}
 	
 	@Override
