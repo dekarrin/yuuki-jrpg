@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashMap;
@@ -16,8 +15,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
 
 /**
  * Shows mods that have been enabled, and allows the user to enable/disable
@@ -25,130 +22,6 @@ import javax.swing.SwingConstants;
  */
 @SuppressWarnings("serial")
 public class ModPanel extends JPanel {
-	
-	/**
-	 * Displays the mods.
-	 */
-	private static class ModList extends JPanel implements Scrollable {
-		
-		/**
-		 * The height of the view.
-		 */
-		private final int viewerHeight;
-		
-		/**
-		 * The width of the view.
-		 */
-		private final int viewerWidth;
-		
-		/**
-		 * Creates a new ModList.
-		 * @param width The width of the view.
-		 * @param height The height of the view.
-		 */
-		public ModList(int width, int height) {
-			viewerWidth = width;
-			viewerHeight = height;
-			setOpaque(false);
-		}
-		
-		@Override
-		public Dimension getPreferredScrollableViewportSize() {
-			return new Dimension(viewerWidth, viewerHeight);
-		}
-		
-		@Override
-		public int getScrollableBlockIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
-			final int y = visibleRect.y;
-			final int h = visibleRect.height;
-			if (orientation == SwingConstants.HORIZONTAL) {
-				return 1;
-			} else {
-				if (direction > 0) {
-					return getViewRemainder(y, h);
-				} else {
-					return (h - getInitial(y));
-				}
-			}
-		}
-		
-		@Override
-		public boolean getScrollableTracksViewportHeight() {
-			return false;
-		}
-		
-		@Override
-		public boolean getScrollableTracksViewportWidth() {
-			return true;
-		}
-		
-		@Override
-		public int getScrollableUnitIncrement(Rectangle visibleRect,
-				int orientation, int direction) {
-			final int y = visibleRect.y;
-			final int h = visibleRect.height;
-			if (orientation == SwingConstants.HORIZONTAL) {
-				return 1;
-			} else {
-				if (direction > 0) {
-					int viewRemainder = getViewRemainder(y, h);
-					return ModPanel.MOD_HEIGHT - (h - viewRemainder);
-				} else {
-					return ModPanel.MOD_HEIGHT - getInitial(y);
-				}
-			}
-		}
-		
-		/**
-		 * Gets the number of full rows contained inside the view.
-		 * 
-		 * @param scroll The amount, in pixels, that the view is scrolled down.
-		 * @param height The height, in pixels, of the view.
-		 * @return The number of rows that are completely exposed within the
-		 * view.
-		 */
-		private int getFullRows(int scroll, int height) {
-			int pixelsAfterInitial = height - getInitial(scroll);
-			return pixelsAfterInitial / ModPanel.MOD_HEIGHT;
-		}
-		
-		/**
-		 * Gets the number of pixels exposed of the first unit in the view, if
-		 * and only if the first unit is partially exposed. If the first unit
-		 * is fully exposed, this method will return 0.
-		 * 
-		 * @param scroll The amount, in pixels, that the view is scrolled down.
-		 * @return The number of exposed pixels of the first unit in the view,
-		 * or 0 if the first unit is fully exposed.
-		 */
-		private int getInitial(int scroll) {
-			int remaining = scroll % ModPanel.MOD_HEIGHT;
-			if (remaining != 0) {
-				return ModPanel.MOD_HEIGHT - remaining;
-			} else {
-				return 0;
-			}
-		}
-		
-		/**
-		 * Gets the amount of view up to and excluding the last
-		 * partially-exposed unit.
-		 * 
-		 * @param scroll The amount, in pixels, that the view is scrolled down.
-		 * @param height The height, in pixels, of the view.
-		 * @return The number of pixels leading up to the last
-		 * partially-exposed unit. If the last unit is fully exposed, this will
-		 * return all of the pixels.
-		 */
-		private int getViewRemainder(int scroll, int height) {
-			int fullRows = getFullRows(scroll, height);
-			int fullPixels = fullRows * ModPanel.MOD_HEIGHT;
-			int viewRemainder = getInitial(scroll) + fullPixels;
-			return viewRemainder;
-		}
-		
-	}
 	
 	/**
 	 * The minimum height of a mod sub-panel.
@@ -183,7 +56,7 @@ public class ModPanel extends JPanel {
 	/**
 	 * The list that contains all individual mods.
 	 */
-	private ModList modList;
+	private VerticalScrollPaneClient modList;
 	
 	/**
 	 * Whether any mods have been added to the list.
@@ -259,7 +132,7 @@ public class ModPanel extends JPanel {
 	 * @param height The height of this ModPanel.
 	 */
 	private void createComponents(int width, int height) {
-		modList = new ModList(width, height);
+		modList = new VerticalScrollPaneClient(width, height, MOD_HEIGHT);
 		modList.setLayout(new BoxLayout(modList, BoxLayout.Y_AXIS));
 	}
 	
