@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 
 import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
 import yuuki.util.InvalidIndexException;
 
@@ -110,6 +111,18 @@ public class InvenPanel extends JPanel {
 	 */
 	public void clearItems() {
 		itemList.removeAll();
+	}
+	
+	/**
+	 * Display all items in a pouch.
+	 * 
+	 * @param pouch The InventoryPouch to show the contents of.
+	 */
+	public void displayPouch(InventoryPouch pouch) {
+		Item[] items = pouch.getItems();
+		for (Item i : items) {
+			addItem(i);
+		}
 	}
 	
 	/**
