@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import yuuki.ui.InvenPanel;
+
 /**
  * Shows the user's inventory and stats.
  */
@@ -17,6 +19,11 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private JButton closeButton;
 	
 	/**
+	 * Shows the inventory.
+	 */
+	private InvenPanel invenPanel;
+	
+	/**
 	 * Creates a new Inventory Screen.
 	 * 
 	 * @param width The width of the screen.
@@ -24,13 +31,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 */
 	public InventoryScreen(int width, int height) {
 		super(width, height);
-		closeButton = new JButton("Close");
-		closeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				fireCloseInvenClicked();
-			}
-		});
+		createComponents(width, height);
 		addComponents();
 	}
 	
@@ -41,7 +42,25 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 * Adds all child components to this InventoryScreen.
 	 */
 	private void addComponents() {
+		add(invenPanel);
 		add(closeButton);
+	}
+	
+	/**
+	 * Creates the child components.
+	 * 
+	 * @param width The width of this screen.
+	 * @param height The height of this screen.
+	 */
+	private void createComponents(int width, int height) {
+		invenPanel = new InvenPanel(width, height);
+		closeButton = new JButton("Close");
+		closeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireCloseInvenClicked();
+			}
+		});
 	}
 	
 	/**
