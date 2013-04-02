@@ -21,6 +21,11 @@ public class Item {
 		public boolean external;
 		
 		/**
+		 * The ID of the Item.
+		 */
+		public long id;
+		
+		/**
 		 * The image for the Item.
 		 */
 		public String image;
@@ -36,14 +41,14 @@ public class Item {
 		public boolean usable;
 		
 		/**
+		 * The number of times that this Item may be used.
+		 */
+		public int uses;
+		
+		/**
 		 * The Item's value in copper.
 		 */
 		public int value;
-		
-		/**
-		 * The ID of the Item.
-		 */
-		public long id;
 		
 	}
 	

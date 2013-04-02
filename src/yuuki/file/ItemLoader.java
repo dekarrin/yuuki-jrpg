@@ -16,8 +16,8 @@ public class ItemLoader extends CsvResourceLoader {
 	/**
 	 * The names of columns in an item resource file.
 	 */
-	private static final String[] COLUMNS =
-		{"id", "name", "value", "image", "usable", "external", "action"};
+	private static final String[] COLUMNS = {"id", "name", "value", "image",
+		"usable", "external", "action", "uses"};
 	
 	/**
 	 * Creates a new ItemLoader for item files in the given directory.
@@ -84,6 +84,7 @@ public class ItemLoader extends CsvResourceLoader {
 			d.usable = getBooleanField("usable");
 			d.external = getBooleanField("external");
 			d.action = getIntField("action");
+			d.uses = getIntField("uses");
 		} catch (FieldFormatException e) {
 			throw new RecordFormatException(num, e);
 		}
