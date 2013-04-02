@@ -31,6 +31,11 @@ public class LandLoader extends ResourceLoader {
 	private static class MetaData {
 		
 		/**
+		 * The number of items in the map.
+		 */
+		public int items;
+		
+		/**
 		 * The number of entities in the map.
 		 */
 		public int entities;

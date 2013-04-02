@@ -254,6 +254,39 @@ public class ResourceLoader implements Closeable {
 	}
 	
 	/**
+	 * Parses a long field.
+	 * 
+	 * @param field The name of the field containing the value.
+	 * @param value The field containing the long.
+	 * @return The long.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * long.
+	 */
+	protected long parseLongField(String field, String value) throws
+	FieldFormatException {
+		long l = 0;
+		try {
+			l = Long.parseLong(value);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException(field, value);
+		}
+		return l;
+	}
+	
+	/**
+	 * Parses a boolean field.
+	 * 
+	 * @param value The field containing the boolean.
+	 * @return True if the field's value matches against a caseless version of
+	 * "1", "True", "Yes", or "Y"; otherwise, false.
+	 */
+	protected boolean parseBooleanField(String value) {
+		return (value.equals("1") || value.equalsIgnoreCase("True") ||
+				value.equalsIgnoreCase("Yes") ||
+				value.equalsIgnoreCase("Y"));
+	}
+	
+	/**
 	 * Parses a point field.
 	 * 
 	 * @param field The name of the field containing the value.

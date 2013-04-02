@@ -6,9 +6,56 @@ package yuuki.item;
 public class Item {
 	
 	/**
+	 * The definition of an Item.
+	 */
+	public static class Definition {
+		
+		/**
+		 * The index of the Action that this Item activates when used.
+		 */
+		public int action;
+		
+		/**
+		 * Whether the Item may be used outside of battle.
+		 */
+		public boolean external;
+		
+		/**
+		 * The image for the Item.
+		 */
+		public String image;
+		
+		/**
+		 * The name of the Item.
+		 */
+		public String name;
+		
+		/**
+		 * Whether the Item may be used.
+		 */
+		public boolean usable;
+		
+		/**
+		 * The Item's value in copper.
+		 */
+		public int value;
+		
+		/**
+		 * The ID of the Item.
+		 */
+		public long id;
+		
+	}
+	
+	/**
 	 * The unique identifier for this item's type.
 	 */
 	private final long id;
+	
+	/**
+	 * The index of this item's image.
+	 */
+	private final String image;
 	
 	/**
 	 * The name of this Item.
@@ -19,11 +66,6 @@ public class Item {
 	 * The value of this Item.
 	 */
 	private final int value;
-	
-	/**
-	 * The index of this item's image.
-	 */
-	private final String image;
 	
 	/**
 	 * Creates a new Item.
@@ -38,15 +80,6 @@ public class Item {
 		this.value = value;
 		this.id = id;
 		this.image = image;
-	}
-	
-	/**
-	 * Gets the index of the image for this item.
-	 * 
-	 * @return The image index.
-	 */
-	public String getImage() {
-		return image;
 	}
 	
 	/**
@@ -65,6 +98,15 @@ public class Item {
 	 */
 	public long getId() {
 		return id;
+	}
+	
+	/**
+	 * Gets the index of the image for this item.
+	 * 
+	 * @return The image index.
+	 */
+	public String getImage() {
+		return image;
 	}
 	
 	/**
