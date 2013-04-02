@@ -2,17 +2,23 @@ package yuuki.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.zip.ZipFile;
-import yuuki.item.Item;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
+
+import yuuki.item.Item;
 
 /**
  * Loads Item resource files.
  */
-class ItemLoader extends CsvResourceLoader {
-
+public class ItemLoader extends CsvResourceLoader {
+	
+	/**
+	 * The names of columns in an item resource file.
+	 */
+	private static final String[] COLUMNS =
+		{"id", "name", "value", "image", "usable", "external", "action"};
+	
 	/**
 	 * Creates a new ItemLoader for item files in the given directory.
 	 * 
@@ -20,6 +26,7 @@ class ItemLoader extends CsvResourceLoader {
 	 */
 	public ItemLoader(File directory) {
 		super(directory);
+		setColumnNames(COLUMNS);
 	}
 	
 	/**
@@ -30,6 +37,7 @@ class ItemLoader extends CsvResourceLoader {
 	 */
 	public ItemLoader(ZipFile archive, String zipRoot) {
 		super(archive, zipRoot);
+		setColumnNames(COLUMNS);
 	}
 	
 	/**
@@ -37,23 +45,23 @@ class ItemLoader extends CsvResourceLoader {
 	 * 
 	 * @param resource The location of the file to load.
 	 * @return The item data.
-	 * @throws IOException 
-	 * @throws ResourceNotFoundException 
-	 * @throws ResourceFormatException 
+	 * @throws IOException
+	 * @throws ResourceNotFoundException
+	 * @throws ResourceFormatException
 	 */
 	public Map<Long, Item.Definition> load(String resource) throws
 	IOException, ResourceNotFoundException, ResourceFormatException {
 		Map<Long, Item.Definition> items;
 		items = new HashMap<Long, Item.Definition>();
-		String[][] records = loadRecords(resource);
-		for (int i = 0; i < records.length; i++) {
+		readRecords(resource);
+		for (int i = 0; i < getRecordCount(); i++) {
 			try {
-				Item.Definition def = parseRecord(records, i);
+				Item.Definition def = parseRecord(i);
 				items.put(def.id, def);
 			} catch (RecordFormatException e) {
 				throw new ResourceFormatException(resource, e);
 			}
-			advanceProgress(1.0 / records.length);
+			advanceProgress(1.0 / getRecordCount());
 		}
 		return items;
 	}
@@ -61,23 +69,21 @@ class ItemLoader extends CsvResourceLoader {
 	/**
 	 * Parses a record into an item definition.
 	 * 
-	 * @param records The records to parse from.
 	 * @param num The index of the record to parse.
 	 * @return The parsed item definition.
 	 * @throws RecordFormatException If the given record is invalid.
 	 */
-	private Item.Definition parseRecord(String[][] records, int num) throws
-	RecordFormatException {
-		String[] r = records[num];
+	private Item.Definition parseRecord(int num) throws	RecordFormatException {
+		setRecord(num);
 		Item.Definition d = new Item.Definition();
 		try {
-			d.id = parseLongField("ID", r[0]);
-			d.name = r[1];
-			d.value = parseIntField("Value", r[2]);
-			d.image = r[3];
-			d.usable = parseBooleanField(r[4]);
-			d.external = parseBooleanField(r[5]);
-			d.action = parseIntField("Action", r[6]);
+			d.id = getLongField("id");
+			d.name = getField("name");
+			d.value = getIntField("value");
+			d.image = getField("image");
+			d.usable = getBooleanField("usable");
+			d.external = getBooleanField("external");
+			d.action = getIntField("action");
 		} catch (FieldFormatException e) {
 			throw new RecordFormatException(num, e);
 		}
