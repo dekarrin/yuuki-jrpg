@@ -193,6 +193,19 @@ public class ResourceLoader implements Closeable {
 	}
 	
 	/**
+	 * Parses a boolean field.
+	 * 
+	 * @param value The field containing the boolean.
+	 * @return True if the field's value matches against a caseless version of
+	 * "1", "True", "Yes", or "Y"; otherwise, false.
+	 */
+	protected boolean parseBooleanField(String value) {
+		return (value.equals("1") || value.equalsIgnoreCase("True") ||
+				value.equalsIgnoreCase("Yes") ||
+				value.equalsIgnoreCase("Y"));
+	}
+	
+	/**
 	 * Parses a dimension field.
 	 * 
 	 * @param field The name of the field containing the value.
@@ -215,6 +228,26 @@ public class ResourceLoader implements Closeable {
 			throw new FieldFormatException(field, value, e);
 		}
 		return d;
+	}
+	
+	/**
+	 * Parses a double field.
+	 * 
+	 * @param field The name of the field containing the value.
+	 * @param value The field containing the double.
+	 * @return The double.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * double.
+	 */
+	protected double parseDoubleField(String field, String value) throws
+	FieldFormatException {
+		double v = 0;
+		try {
+			v = Double.parseDouble(value);
+		} catch (NumberFormatException e) {
+			throw new FieldFormatException(field, value);
+		}
+		return v;
 	}
 	
 	/**
@@ -271,19 +304,6 @@ public class ResourceLoader implements Closeable {
 			throw new FieldFormatException(field, value);
 		}
 		return l;
-	}
-	
-	/**
-	 * Parses a boolean field.
-	 * 
-	 * @param value The field containing the boolean.
-	 * @return True if the field's value matches against a caseless version of
-	 * "1", "True", "Yes", or "Y"; otherwise, false.
-	 */
-	protected boolean parseBooleanField(String value) {
-		return (value.equals("1") || value.equalsIgnoreCase("True") ||
-				value.equalsIgnoreCase("Yes") ||
-				value.equalsIgnoreCase("Y"));
 	}
 	
 	/**

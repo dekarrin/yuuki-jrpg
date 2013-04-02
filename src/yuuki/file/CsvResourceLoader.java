@@ -56,6 +56,90 @@ public class CsvResourceLoader extends ResourceLoader {
 	}
 	
 	/**
+	 * Gets a field from the current record as an array of Strings.
+	 * 
+	 * @param field The name of the field.
+	 * @return An array of the field's contents split at the delimiter defined
+	 * in ResourceLoader, or null if the given field does not exist for the
+	 * current record.
+	 */
+	public String[] getArrayField(String field) {
+		String val = getField(field);
+		return (val != null) ? splitMultiValue(val) : null;
+	}
+	
+	/**
+	 * Gets an array of booleans from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return An array of the booleans, or null if the given field does not
+	 * exist.
+	 */
+	public boolean[] getBooleanArrayField(String field) {
+		String[] arr = getArrayField(field);
+		boolean[] values = null;
+		if (arr != null) {
+			values = new boolean[arr.length];
+			for (int i = 0; i < arr.length; i++) {
+				values[i] = parseBooleanField(arr[i]);
+			}
+		}
+		return values;
+	}
+	
+	/**
+	 * Gets a boolean field from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return True if the current record contains a value for the given field
+	 * and the field's value matches against a caseless version of "1", "True",
+	 * "Yes", or "Y"; otherwise, false.
+	 */
+	public boolean getBooleanField(String field) {
+		return parseBooleanField(getField(field));
+	}
+	
+	/**
+	 * Gets an array of doubles from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return An array of the doubles.
+	 * @throws FieldFormatException If the field contains an invalid double.
+	 */
+	public double[] getDoubleArrayField(String field) throws
+	FieldFormatException {
+		String[] arr = getArrayField(field);
+		double[] values = new double[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			values[i] = parseDoubleField(field, arr[i]);
+		}
+		return values;
+	}
+	
+	/**
+	 * Gets a double field from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return The double in the field.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * double.
+	 * @throws IllegalArgumentException If the given field does not exist.
+	 */
+	public double getDoubleField(String field) throws FieldFormatException {
+		if (field == null) {
+			// NPE will be masked later, so check for it on arg now
+			throw new NullPointerException();
+		}
+		double v = 0;
+		try {
+			v = parseDoubleField(field, getField(field));
+		} catch (NullPointerException e) {
+			throw new IllegalArgumentException();
+		}
+		return v;
+	}
+	
+	/**
 	 * Gets a field from the current record as a String.
 	 * 
 	 * @param field The name of the field.
@@ -65,6 +149,84 @@ public class CsvResourceLoader extends ResourceLoader {
 	public String getField(String field) {
 		Map<String, String> record = getCurrentRecord();
 		return record.get(field);
+	}
+	
+	/**
+	 * Gets an array of ints from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return An array of the ints.
+	 * @throws FieldFormatException If the field contains an invalid integer.
+	 */
+	public int[] getIntArrayField(String field) throws FieldFormatException {
+		String[] arr = getArrayField(field);
+		int[] values = new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			values[i] = parseIntField(field, arr[i]);
+		}
+		return values;
+	}
+	
+	/**
+	 * Gets an integer field from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return The integer in the field.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * integer.
+	 * @throws IllegalArgumentException If the given field does not exist.
+	 */
+	public int getIntField(String field) throws FieldFormatException {
+		if (field == null) {
+			// NPE will be masked later, so check for it on arg now
+			throw new NullPointerException();
+		}
+		int v = 0;
+		try {
+			v = parseIntField(field, getField(field));
+		} catch (NullPointerException e) {
+			throw new IllegalArgumentException();
+		}
+		return v;
+	}
+	
+	/**
+	 * Gets an array of longs from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return An array of the longs.
+	 * @throws FieldFormatException If the field contains an invalid long.
+	 */
+	public long[] getLongArrayField(String field) throws FieldFormatException {
+		String[] arr = getArrayField(field);
+		long[] values = new long[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			values[i] = parseLongField(field, arr[i]);
+		}
+		return values;
+	}
+	
+	/**
+	 * Gets a long field from the current record.
+	 * 
+	 * @param field The name of the field.
+	 * @return The long in the field.
+	 * @throws FieldFormatException If the field does not contain a valid
+	 * long.
+	 * @throws IllegalArgumentException If the given field does not exist.
+	 */
+	public long getLongField(String field) throws FieldFormatException {
+		if (field == null) {
+			// NPE will be masked later, so check for it on arg now
+			throw new NullPointerException();
+		}
+		long v = 0;
+		try {
+			v = parseLongField(field, getField(field));
+		} catch (NullPointerException e) {
+			throw new IllegalArgumentException();
+		}
+		return v;
 	}
 	
 	/**
