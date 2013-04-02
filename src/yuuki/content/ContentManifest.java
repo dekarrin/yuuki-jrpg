@@ -49,6 +49,11 @@ public class ContentManifest {
 	public static final String FILE_IMAGES = "IMAGE_DEFS_FILE";
 	
 	/**
+	 * The key that contains the path for the item definition file.
+	 */
+	public static final String FILE_ITEMS = "ITEM_DEFS_FILE";
+	
+	/**
 	 * The key that contains the path for the music definition file.
 	 */
 	public static final String FILE_MUSIC = "MUSIC_DEFS_FILE";

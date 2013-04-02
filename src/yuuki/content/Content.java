@@ -10,6 +10,7 @@ import java.util.Map;
 
 import yuuki.action.Action;
 import yuuki.entity.Character;
+import yuuki.item.Item;
 import yuuki.world.Land;
 import yuuki.world.Portal;
 import yuuki.world.Tile;
@@ -48,6 +49,11 @@ class Content implements Mergeable<Content> {
 	 * Contains image data.
 	 */
 	private Map<String, Deque<byte[]>> images;
+	
+	/**
+	 * Contains item definitions.
+	 */
+	private Map<Long, Deque<Item.Definition>> items;
 	
 	/**
 	 * Contains land data.
@@ -141,6 +147,15 @@ class Content implements Mergeable<Content> {
 	}
 	
 	/**
+	 * Gets item definitions.
+	 * 
+	 * @return The definitions.
+	 */
+	public Map<Long, Item.Definition> getItems() {
+		return createMapView(items);
+	}
+	
+	/**
 	 * Gets land data.
 	 * 
 	 * @return The land data.
@@ -210,6 +225,7 @@ class Content implements Mergeable<Content> {
 		effects = mergeMaps(effects, content.effects);
 		images = mergeMaps(images, content.images);
 		actions = mergeMaps(actions, content.actions);
+		items = mergeMaps(items, content.items);
 		entities = mergeMaps(entities, content.entities);
 		lands = mergeLists(lands, content.lands);
 		portals = mergeMaps(portals, content.portals);
@@ -239,6 +255,7 @@ class Content implements Mergeable<Content> {
 		entities = null;
 		portals = null;
 		tiles = null;
+		items = null;
 	}
 	
 	/**
@@ -301,6 +318,15 @@ class Content implements Mergeable<Content> {
 	 */
 	public void setImages(Map<String, byte[]> data) {
 		images = createMap(data);
+	}
+	
+	/**
+	 * Sets item definitions.
+	 * 
+	 * @param defs The definitions.
+	 */
+	public void setItems(Map<Long, Item.Definition> defs) {
+		items = createMap(defs);
 	}
 	
 	/**
@@ -369,6 +395,7 @@ class Content implements Mergeable<Content> {
 		effects = subtractMaps(effects, content.effects);
 		images = subtractMaps(images, content.images);
 		actions = subtractMaps(actions, content.actions);
+		items = subtractMaps(items, content.items);
 		entities = subtractMaps(entities, content.entities);
 		lands = subtractLists(lands, content.lands);
 		portals = subtractMaps(portals, content.portals);

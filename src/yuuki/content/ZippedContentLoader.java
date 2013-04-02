@@ -8,6 +8,7 @@ import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
+import yuuki.file.ItemLoader;
 import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
 import yuuki.file.TileLoader;
@@ -55,6 +56,20 @@ public class ZippedContentLoader extends ContentLoader {
 			ZipFile zip = null;
 			zip = new ZipFile(root);
 			loader = new ActionLoader(zip, zipRoot);
+			zip.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return loader;
+	}
+	
+	@Override
+	protected ItemLoader createItemLoader() {
+		ItemLoader loader = null;
+		try {
+			ZipFile zip = null;
+			zip = new ZipFile(root);
+			loader = new ItemLoader(zip, zipRoot);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
