@@ -14,6 +14,25 @@ import yuuki.world.WalkGraph;
 public class PlayerCharacter extends Character {
 	
 	/**
+	 * The direction that a player is facing.
+	 */
+	public static enum Orientation {
+		EAST,
+		NORTH,
+		NORTHEAST,
+		NORTHWEST,
+		SOUTH,
+		SOUTHEAST,
+		SOUTHWEST,
+		WEST
+	}
+	
+	/**
+	 * The direction that the player character is facing.
+	 */
+	public Orientation orientation;
+	
+	/**
 	 * A reference to the user interface for this PC to get its moves from.
 	 */
 	private Interactable ui;
@@ -45,6 +64,7 @@ public class PlayerCharacter extends Character {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
 				magic, luck, overworldArt);
 		this.ui = ui;
+		orientation = Orientation.SOUTH;
 	}
 	
 	@Override
@@ -56,6 +76,46 @@ public class PlayerCharacter extends Character {
 	public Point getNextMove(Land land) throws InterruptedException {
 		WalkGraph graph = land.getWalkGraph(getLocation(), true);
 		return ui.selectMove(graph);
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		String baseName = super.getOverworldImage();
+		String ext = null;
+		switch (orientation) {
+			case NORTH:
+				ext = "N";
+				break;
+				
+			case SOUTH:
+				ext = "S";
+				break;
+				
+			case WEST:
+				ext = "W";
+				break;
+				
+			case EAST:
+				ext = "E";
+				break;
+				
+			case NORTHEAST:
+				ext = "NE";
+				break;
+				
+			case NORTHWEST:
+				ext = "NW";
+				break;
+				
+			case SOUTHEAST:
+				ext = "SE";
+				break;
+				
+			case SOUTHWEST:
+				ext = "SW";
+				break;
+		}
+		return baseName + "_" + ext;
 	}
 	
 	@Override
