@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.zip.ZipFile;
 
 import yuuki.entity.NonPlayerCharacter;
+import yuuki.item.Item;
 import yuuki.ui.DialogHandler;
 import yuuki.util.InvalidIndexException;
 import yuuki.world.Land;
@@ -31,14 +32,14 @@ public class LandLoader extends ResourceLoader {
 	private static class MetaData {
 		
 		/**
-		 * The number of items in the map.
-		 */
-		public int items;
-		
-		/**
 		 * The number of entities in the map.
 		 */
 		public int entities;
+		
+		/**
+		 * The number of items in the map.
+		 */
+		public int items;
 		
 		/**
 		 * The name of the map.
@@ -67,6 +68,7 @@ public class LandLoader extends ResourceLoader {
 	 */
 	private enum ParserMode {
 		ENTITIES,
+		ITEMS,
 		MAP,
 		METADATA,
 		PORTALS
@@ -76,6 +78,11 @@ public class LandLoader extends ResourceLoader {
 	 * The number of fields in a line of entity data.
 	 */
 	private static final int ENTITY_FIELD_COUNT = 3;
+	
+	/**
+	 * The number of fields in a line of item data.
+	 */
+	private static final int ITEM_FIELD_COUNT = 2;
 	
 	/**
 	 * The number of fields in the header line.
@@ -96,6 +103,11 @@ public class LandLoader extends ResourceLoader {
 	 * The loaded entities.
 	 */
 	private ArrayList<Movable> entities;
+	
+	/**
+	 * The loaded items.
+	 */
+	private List<Item> items;
 	
 	/**
 	 * The meta data from the land file currently being read.
@@ -172,22 +184,55 @@ public class LandLoader extends ResourceLoader {
 		mode = ParserMode.METADATA;
 		portals = new ArrayList<Portal>();
 		entities = new ArrayList<Movable>();
+		items = new ArrayList<Item>();
 		Land land = null;
 		InputStream stream = getStream(resource);
 		reader = new BufferedReader(new InputStreamReader(stream));
 		land = loadLand();
+		addPortals(land);
+		addResidents(land);
+		addItems(land);
+		resourceName = null;
+		return land;
+	}
+	
+	/**
+	 * Adds the loaded items to a Land.
+	 * 
+	 * @param land The Land to add them to.
+	 */
+	private void addItems(Land land) {
+		for (Item i : items) {
+			if (i != null) {
+				land.addItem(i);
+			}
+		}
+	}
+	
+	/**
+	 * Adds the loaded portals to a Land.
+	 * 
+	 * @param land The Land to add them to.
+	 */
+	private void addPortals(Land land) {
 		for (Portal p : portals) {
 			if (p != null) {
 				land.addPortal(p);
 			}
 		}
+	}
+	
+	/**
+	 * Adds the loaded entities to a Land.
+	 * 
+	 * @param land The Land to add them to.
+	 */
+	private void addResidents(Land land) {
 		for (Movable m : entities) {
 			if (m != null) {
 				land.addResident(m);
 			}
 		}
-		resourceName = null;
-		return land;
 	}
 	
 	/**
@@ -257,6 +302,10 @@ public class LandLoader extends ResourceLoader {
 						complete = parsePortalData(line);
 						break;
 						
+					case ITEMS:
+						complete = parseItemData(line);
+						break;
+						
 					case ENTITIES:
 						complete = parseEntityData(line);
 						break;
@@ -288,6 +337,28 @@ public class LandLoader extends ResourceLoader {
 			}
 			return true;
 		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Parses item data.
+	 * 
+	 * @param line The line to parse.
+	 * @return Whether the line was parsed.
+	 */
+	private boolean parseItemData(String line) {
+		if (items.size() < meta.items) {
+			try {
+				readItemData(line);
+			} catch (RecordFormatException e) {
+				String msg = "Skipping record in '" + resourceName + "':";
+				DialogHandler.showMessage(msg, e);
+				items.add(null);
+			}
+			return true;
+		} else {
+			mode = ParserMode.ENTITIES;
 			return false;
 		}
 	}
@@ -345,7 +416,7 @@ public class LandLoader extends ResourceLoader {
 			}
 			return true;
 		} else {
-			mode = ParserMode.ENTITIES;
+			mode = ParserMode.ITEMS;
 			return false;
 		}
 	}
@@ -371,6 +442,30 @@ public class LandLoader extends ResourceLoader {
 			NonPlayerCharacter npc = populator.createNpc(name, level);
 			npc.setLocation(location);
 			entities.add(npc);
+		} catch (Exception e) {
+			throw new RecordFormatException(currentLine, e);
+		}
+	}
+	
+	/**
+	 * Reads a line containing item data.
+	 * 
+	 * @param line The line with the item data.
+	 * @throws RecordFormatException If one of the fields of the item data is
+	 * invalid or if some of the parts are missing.
+	 */
+	private void readItemData(String line) throws RecordFormatException {
+		String[] parts = line.split(";");
+		if (parts.length < ITEM_FIELD_COUNT) {
+			throw new RecordFormatException(currentLine, "missing item " +
+					"parameters");
+		}
+		try {
+			Point location = parsePointField("location", parts[0]);
+			long id = parseLongField("item_id", parts[1]);
+			Item i = populator.createItem(id);
+			i.setLocation(location);
+			items.add(i);
 		} catch (Exception e) {
 			throw new RecordFormatException(currentLine, e);
 		}
@@ -433,6 +528,8 @@ public class LandLoader extends ResourceLoader {
 					meta.name = value;
 				} else if (key.equalsIgnoreCase("entities")) {
 					meta.entities = parseIntField("entities", value);
+				} else if (key.equalsIgnoreCase("items")) {
+					meta.items = parseIntField("items", value);
 				}
 			}
 		} catch (FieldFormatException e) {

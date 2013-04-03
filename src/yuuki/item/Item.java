@@ -1,9 +1,14 @@
 package yuuki.item;
 
+import java.awt.Point;
+
+import yuuki.ui.Displayable;
+import yuuki.world.Locatable;
+
 /**
  * Something that can be held in a character's inventory.
  */
-public class Item {
+public class Item implements Locatable {
 	
 	/**
 	 * The definition of an Item.
@@ -63,6 +68,12 @@ public class Item {
 	private final String image;
 	
 	/**
+	 * This item's location on the map. May be null if this Item is not
+	 * currently on a map.
+	 */
+	private Point location = null;
+	
+	/**
 	 * The name of this Item.
 	 */
 	private final String name;
@@ -96,6 +107,11 @@ public class Item {
 		return (this.id == i2.id);
 	}
 	
+	@Override
+	public Displayable getDisplayable() {
+		return null;
+	}
+	
 	/**
 	 * Gets the type ID of this Item.
 	 * 
@@ -112,6 +128,11 @@ public class Item {
 	 */
 	public String getImage() {
 		return image;
+	}
+	
+	@Override
+	public Point getLocation() {
+		return location;
 	}
 	
 	/**
@@ -148,6 +169,11 @@ public class Item {
 	 */
 	public boolean isUsable() {
 		return false;
+	}
+	
+	@Override
+	public void setLocation(Point l) {
+		location = l;
 	}
 	
 	@Override

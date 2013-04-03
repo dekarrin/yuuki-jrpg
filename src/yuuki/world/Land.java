@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import yuuki.item.Item;
 import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 
@@ -368,6 +369,15 @@ public class Land {
 				it.remove();
 			}
 		}
+	}
+
+	/**
+	 * Adds an item to this map.
+	 * 
+	 * @param item The item to add.
+	 */
+	public void addItem(Item item) {
+		
 	}
 	
 }
