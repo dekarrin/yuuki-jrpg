@@ -8,11 +8,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
+import yuuki.item.Item;
 
 import yuuki.Options;
 import yuuki.action.Action;
@@ -233,6 +236,11 @@ OverworldScreenListener, InvenScreenListener {
 	@Override
 	public void addWorldPortals(ArrayList<Portal> portals) {
 		addWorldLocatables(portals, OverworldScreen.Z_INDEX_PORTAL_LAYER);
+	}
+	
+	@Override
+	public void addWorldItems(List<Item> items) {
+		addWorldLocatables(items, OverworldScreen.Z_INDEX_ITEM_LAYER);
 	}
 	
 	@Override
@@ -966,8 +974,7 @@ OverworldScreenListener, InvenScreenListener {
 	 * @param l The list of Locatables to add.
 	 * @param zIndex The Z-index of the layer to add the Locatables to.
 	 */
-	private void addWorldLocatables(ArrayList<? extends Locatable> l,
-			int zIndex) {
+	private void addWorldLocatables(List<? extends Locatable> l, int zIndex) {
 		ArrayList<Locatable> list = new ArrayList<Locatable>(l);
 		class Runner implements Runnable {
 			private ArrayList<Locatable> list;

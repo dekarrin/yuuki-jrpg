@@ -2,6 +2,7 @@ package yuuki.ui;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
@@ -9,6 +10,7 @@ import yuuki.entity.Character;
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.Item;
 import yuuki.sound.DualSoundEngine;
 import yuuki.util.Grid;
 import yuuki.world.Movable;
@@ -35,6 +37,13 @@ public interface Interactable {
 	 * @param characters The Characters to add.
 	 */
 	public void addWorldEntities(ArrayList<Movable> characters);
+	
+	/**
+	 * Adds Items to the world viewer.
+	 * 
+	 * @param items The Items to add.
+	 */
+	public void addWorldItems(List<Item> items);
 	
 	/**
 	 * Adds portals to the world viewer.
