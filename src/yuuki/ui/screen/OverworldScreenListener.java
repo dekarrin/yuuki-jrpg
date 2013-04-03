@@ -10,4 +10,9 @@ public interface OverworldScreenListener extends ScreenListener {
 	 */
 	public void invenButtonClicked();
 	
+	/**
+	 * Fired when the get item button is pushed.
+	 */
+	public void getItemClicked();
+	
 }

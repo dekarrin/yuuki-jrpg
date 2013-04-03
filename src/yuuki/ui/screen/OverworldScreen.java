@@ -167,6 +167,14 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
+				case KeyEvent.VK_G:
+					fireGetItem();
+					break;
+					
+				case KeyEvent.VK_I:
+					fireInvenClicked();
+					break;
+					
 				case KeyEvent.VK_NUMPAD1:
 					moveSouthWestButton.doClick();
 					break;
@@ -446,6 +454,15 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private void fireInvenClicked() {
 		for (OverworldScreenListener l : getElementListeners()) {
 			l.invenButtonClicked();
+		}
+	}
+	
+	/**
+	 * Called when the get item button is pushed.
+	 */
+	private void fireGetItem() {
+		for (OverworldScreenListener l : getElementListeners()) {
+			l.getItemClicked();
 		}
 	}
 	

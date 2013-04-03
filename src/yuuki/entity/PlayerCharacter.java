@@ -153,5 +153,54 @@ public class PlayerCharacter extends Character {
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
 	}
+
+	/**
+	 * Gets the location of the point that the player is facing.
+	 */
+	public Point getFacingPoint() {
+		Point loc = new Point(getLocation());
+		int dx = 0;
+		int dy = 0;
+		switch (orientation) {
+			case NORTH:
+				dy = -1;
+				break;
+				
+			case NORTHEAST:
+				dy = -1;
+				dx = 1;
+				break;
+				
+			case EAST:
+				dx = 1;
+				break;
+				
+			case SOUTHEAST:
+				dy = 1;
+				dx = 1;
+				break;
+				
+			case SOUTH:
+				dy = 1;
+				break;
+				
+			case SOUTHWEST:
+				dy = 1;
+				dx = -1;
+				break;
+				
+			case WEST:
+				dx = -1;
+				break;
+				
+			case NORTHWEST:
+				dx = -1;
+				dy = -1;
+				break;
+		}
+		loc.x += dx;
+		loc.y += dy;
+		return loc;
+	}
 	
 }

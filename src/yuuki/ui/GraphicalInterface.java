@@ -1231,5 +1231,10 @@ OverworldScreenListener, InvenScreenListener {
 		}
 		mainProgram.requestBattleResume();
 	}
+
+	@Override
+	public void getItemClicked() {
+		mainProgram.requestGetItem();
+	}
 	
 }

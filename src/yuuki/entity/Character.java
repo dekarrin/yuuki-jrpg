@@ -7,6 +7,8 @@ import java.util.Iterator;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
+import yuuki.item.PouchFullException;
 import yuuki.sprite.Sprite;
 import yuuki.ui.Displayable;
 import yuuki.world.Movable;
@@ -571,6 +573,25 @@ public abstract class Character implements Movable, Displayable {
 	 */
 	public InventoryPouch getInventory() {
 		return inventory;
+	}
+	
+	/**
+	 * Puts items into this Character's inventory.
+	 * 
+	 * @param items The items to add.
+	 * @return The number of items actually added.
+	 */
+	public int giveItems(Item[] items) {
+		int added = 0;
+		for (Item i : items) {
+			try {
+				inventory.addItem(i);
+				added++;
+			} catch (PouchFullException e) {
+				break;
+			}
+		}
+		return added;
 	}
 	
 	/**

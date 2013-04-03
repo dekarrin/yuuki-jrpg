@@ -15,6 +15,7 @@ import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.file.ResourceNotFoundException;
+import yuuki.item.Item;
 import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
@@ -559,6 +560,17 @@ public class Engine implements Runnable, UiExecutor {
 		ui.setWorldView(world.getTiles(), world.getLandName());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
+	}
+
+	@Override
+	public void requestGetItem() {
+		Item[] items = world.getItemsAt(player.getFacingPoint());
+		if (items.length == 0) {
+			ui.display(null, "There are no items in front of you.", false);
+		} else {
+			int added = player.giveItems(items);
+			world.clearItems(player.getFacingPoint(), added);
+		}
 	}
 	
 }

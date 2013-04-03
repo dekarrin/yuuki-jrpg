@@ -128,5 +128,10 @@ public interface UiExecutor {
 	 * @param orientation The direction that the player is to face.
 	 */
 	public void requestPlayerTurn(Orientation orientation);
+
+	/**
+	 * Requests that the player pick up an item in front of him.
+	 */
+	public void requestGetItem();
 	
 }
