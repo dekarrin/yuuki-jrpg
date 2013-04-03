@@ -19,6 +19,7 @@ import yuuki.action.Action;
 import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
@@ -577,12 +578,15 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
-	public Point selectMove(WalkGraph graph) throws InterruptedException {
+	public Point selectMove(WalkGraph graph, Orientation orientation) throws
+	InterruptedException {
 		class Runner implements Runnable, OverworldMovementListener {
 			public Point move = null;
 			private WalkGraph graph;
-			public Runner(WalkGraph graph) {
+			private Orientation orientation;
+			public Runner(WalkGraph graph, Orientation orientation) {
 				this.graph = graph;
+				this.orientation = orientation;
 			}
 			@Override
 			public void movementButtonClicked(Point moveLocation) {
@@ -590,12 +594,21 @@ OverworldScreenListener, InvenScreenListener {
 				this.move = moveLocation;
 			}
 			@Override
+			public void turnButtonClicked(Orientation orientation) {
+				mainProgram.requestPlayerTurn(orientation);
+				overworldScreen.setWalkOrientation(orientation);
+				overworldScreen.redrawWorldViewport();
+				overworldScreen.refreshButtons();
+			}
+			@Override
 			public void run() {
 				overworldScreen.setWalkGraph(graph);
+				overworldScreen.setWalkOrientation(orientation);
+				overworldScreen.refreshButtons();
 				overworldScreen.addMovementListener(this);
 			}
 		};
-		Runner r = new Runner(graph);
+		Runner r = new Runner(graph, orientation);
 		SwingUtilities.invokeLater(r);
 		try {
 			while (r.move == null) {
@@ -603,6 +616,8 @@ OverworldScreenListener, InvenScreenListener {
 			}
 		} catch (InterruptedException e) {
 			overworldScreen.setWalkGraph(null);
+			overworldScreen.setWalkOrientation(null);
+			overworldScreen.refreshButtons();
 			overworldScreen.removeMovementListener(r);
 			throw e;
 		}

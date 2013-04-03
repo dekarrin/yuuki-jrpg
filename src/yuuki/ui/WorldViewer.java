@@ -36,6 +36,11 @@ public class WorldViewer extends JPanel {
 	public static final int TILE_SIZE = 32;
 	
 	/**
+	 * The current center of the map.
+	 */
+	private Point currentCenter = null;
+	
+	/**
 	 * Generates tile graphics.
 	 */
 	private ImageFactory images;
@@ -142,6 +147,13 @@ public class WorldViewer extends JPanel {
 	}
 	
 	/**
+	 * Redraws the view port.
+	 */
+	public void redrawDisplay() {
+		updateDisplay(currentCenter);
+	}
+	
+	/**
 	 * Sets the image factory for tile graphics.
 	 * 
 	 * @param imageFactory The ImageFactory to use.
@@ -157,6 +169,7 @@ public class WorldViewer extends JPanel {
 	 */
 	public void setLand(Grid<Tile> view) {
 		this.land = view;
+		this.currentCenter = null;
 	}
 	
 	/**
@@ -165,6 +178,7 @@ public class WorldViewer extends JPanel {
 	 * @param center The center of the area to show.
 	 */
 	public void updateDisplay(Point center) {
+		this.currentCenter = center;
 		clearBuffers();
 		Point requested = setLandView(center);
 		setTileBufferView(requested);

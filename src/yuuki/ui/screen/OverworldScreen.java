@@ -18,6 +18,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.graphic.ImageFactory;
 import yuuki.ui.WorldViewer;
 import yuuki.util.Grid;
@@ -98,6 +99,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		}
 		
 	};
+	
+	/**
+	 * Button to show the inventory.
+	 */
+	private JButton invenButton;
 	
 	/**
 	 * The label that shows the name of the current land.
@@ -202,6 +208,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	};
 	
 	/**
+	 * The orientation of the player.
+	 */
+	private Orientation playerOrientation;
+	
+	/**
 	 * Used to calculate where the user wishes to go when a button is clicked.
 	 */
 	private WalkGraph walkGraph;
@@ -210,11 +221,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 * Displays the world.
 	 */
 	private WorldViewer worldViewer;
-	
-	/**
-	 * Button to show the inventory.
-	 */
-	private JButton invenButton;
 	
 	/**
 	 * Creates a new OverworldScreen. The child components are created and
@@ -244,15 +250,6 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
-	 * Called when the inventory button is clicked.
-	 */
-	private void fireInvenClicked() {
-		for (OverworldScreenListener l : getElementListeners()) {
-			l.invenButtonClicked();
-		}
-	}
-	
-	/**
 	 * Adds a listener to the list of movement listeners.
 	 * 
 	 * @param l The listener to add.
@@ -278,6 +275,21 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	public void clearWorldLocatables() {
 		worldViewer.clearLocatables();
+	}
+	
+	/**
+	 * Redraws the world view.
+	 */
+	public void redrawWorldViewport() {
+		worldViewer.redrawDisplay();
+	}
+	
+	/**
+	 * Enables or disables buttons based on the current walk graph and
+	 * orientation.
+	 */
+	public void refreshButtons() {
+		setMoveButtonActivations();
 	}
 	
 	/**
@@ -313,7 +325,15 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	public void setWalkGraph(WalkGraph graph) {
 		this.walkGraph = graph;
-		setMoveButtonActivations();
+	}
+	
+	/**
+	 * Sets the orientation to use to calculate button activations.
+	 * 
+	 * @param orientation The orientation to use.
+	 */
+	public void setWalkOrientation(Orientation orientation) {
+		playerOrientation = orientation;
 	}
 	
 	/**
@@ -421,24 +441,90 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
+	 * Called when the inventory button is clicked.
+	 */
+	private void fireInvenClicked() {
+		for (OverworldScreenListener l : getElementListeners()) {
+			l.invenButtonClicked();
+		}
+	}
+	
+	/**
 	 * Gets the requested movement and calls the movementButtonPressed() method
 	 * on all movement listeners.
 	 * 
 	 * @param c The button that was pressed.
 	 */
 	private void fireMoveButtonClicked(Component c) {
-		Point p = getMovementPoint(c);
-		if (p != null) { // if the user pressed a valid direction
-			int size = movementListeners.size();
-			OverworldMovementListener[] ls;
-			ls = new OverworldMovementListener[size];
-			movementListeners.toArray(ls);
-			for (OverworldMovementListener l : ls) {
-				l.movementButtonClicked(p);
+		Orientation face = getMovementOrientation(c);
+		if (face == playerOrientation) {
+			Point p = getMovementPoint(c);
+			if (p != null) { // if the user pressed a valid direction
+				fireMoved(p);
 			}
+		} else {
+			fireTurned(face);
 		}
 		this.removeKeyListener(numpadListener);
 		(new Thread(new Unlocker(), "KeyLocker")).start();
+	}
+	
+	/**
+	 * Calls movementButtonPressed() on all movement listeners.
+	 * 
+	 * @param p The point that the pressed button represents.
+	 */
+	private void fireMoved(Point p) {
+		int size = movementListeners.size();
+		OverworldMovementListener[] ls;
+		ls = new OverworldMovementListener[size];
+		movementListeners.toArray(ls);
+		for (OverworldMovementListener l : ls) {
+			l.movementButtonClicked(p);
+		}
+	}
+	
+	/**
+	 * Calls turnButtonPressed() on all movement listeners.
+	 * 
+	 * @param o The new orientation.
+	 */
+	private void fireTurned(Orientation o) {
+		int size = movementListeners.size();
+		OverworldMovementListener[] ls;
+		ls = new OverworldMovementListener[size];
+		movementListeners.toArray(ls);
+		for (OverworldMovementListener l : ls) {
+			l.turnButtonClicked(o);
+		}
+	}
+	
+	/**
+	 * Gets the direction that was clicked.
+	 * 
+	 * @param c The movement button that was clicked.
+	 * @return The orientation of the button.
+	 */
+	private Orientation getMovementOrientation(Component c) {
+		if (c == moveSouthWestButton) {
+			return Orientation.SOUTHWEST;
+		} else if (c == moveSouthButton) {
+			return Orientation.SOUTH;
+		} else if (c == moveSouthEastButton) {
+			return Orientation.SOUTHEAST;
+		} else if (c == moveWestButton) {
+			return Orientation.WEST;
+		} else if (c == moveEastButton) {
+			return Orientation.EAST;
+		} else if (c == moveNorthWestButton) {
+			return Orientation.NORTHWEST;
+		} else if (c == moveNorthButton) {
+			return Orientation.NORTH;
+		} else if (c == moveNorthEastButton) {
+			return Orientation.NORTHEAST;
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -489,6 +575,15 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 			nw = (walkGraph.getNorthWest() != null);
 			no = (walkGraph.getNorth() != null);
 			ne = (walkGraph.getNorthEast() != null);
+			// correct for orientation:
+			sw |= (playerOrientation != Orientation.SOUTHWEST);
+			so |= (playerOrientation != Orientation.SOUTH);
+			se |= (playerOrientation != Orientation.SOUTHEAST);
+			we |= (playerOrientation != Orientation.WEST);
+			ea |= (playerOrientation != Orientation.EAST);
+			nw |= (playerOrientation != Orientation.NORTHWEST);
+			no |= (playerOrientation != Orientation.NORTH);
+			ne |= (playerOrientation != Orientation.NORTHEAST);
 		}
 		moveSouthWestButton.setEnabled(sw);
 		moveSouthButton.setEnabled(so);

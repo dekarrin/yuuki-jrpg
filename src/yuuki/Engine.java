@@ -13,6 +13,7 @@ import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
@@ -262,16 +263,6 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
-	public void requestInventoryOpen() {
-		ui.switchToInvenScreen();
-	}
-	
-	@Override
-	public void requestInventoryClose() {
-		ui.switchToOverworldScreen();
-	}
-	
-	@Override
 	public void requestCloseGame() {
 		(new Thread(new Runnable() {
 			@Override
@@ -280,6 +271,16 @@ public class Engine implements Runnable, UiExecutor {
 				ui.switchToIntroScreen();
 			}
 		}, "Worker")).start();
+	}
+	
+	@Override
+	public void requestInventoryClose() {
+		ui.switchToOverworldScreen();
+	}
+	
+	@Override
+	public void requestInventoryOpen() {
+		ui.switchToInvenScreen();
 	}
 	
 	@Override
@@ -327,6 +328,11 @@ public class Engine implements Runnable, UiExecutor {
 	public void requestOptionsSubmission() {
 		// TODO: do not depend on Interactable to set options
 		ui.switchToLastScreen();
+	}
+	
+	@Override
+	public void requestPlayerTurn(Orientation orientation) {
+		player.orientation = orientation;
 	}
 	
 	@Override

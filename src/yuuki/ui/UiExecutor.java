@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 
 /**
  * The class that performs the game logic as requested by the user interface.
@@ -120,5 +121,12 @@ public interface UiExecutor {
 	 * Requests that the game be saved.
 	 */
 	public void requestSaveGame();
+	
+	/**
+	 * Requests that the player be turned to face a different direction.
+	 * 
+	 * @param orientation The direction that the player is to face.
+	 */
+	public void requestPlayerTurn(Orientation orientation);
 	
 }

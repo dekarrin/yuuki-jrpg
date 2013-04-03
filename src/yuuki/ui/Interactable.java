@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
 import yuuki.sound.DualSoundEngine;
@@ -256,13 +257,15 @@ public interface Interactable {
 	 * Gets the next move that the human character wishes to make.
 	 * 
 	 * @param graph The graph of available places to walk to.
+	 * @param orientation The current orientation of the player.
 	 * 
 	 * @return The point that the user wants to move to.
 	 * 
 	 * @throws InterruptedException If the current thread is interrupted while
 	 * waiting for input.
 	 */
-	public Point selectMove(WalkGraph graph) throws InterruptedException;
+	public Point selectMove(WalkGraph graph, Orientation orientation) throws
+	InterruptedException;
 	
 	/**
 	 * Gets the target of a move.
