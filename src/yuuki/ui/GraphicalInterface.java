@@ -489,29 +489,29 @@ OverworldScreenListener, InvenScreenListener {
 	@Override
 	public void menuItemTriggered(int menuId, int itemId) {
 		switch (menuId) {
-			case MenuBar.FILE_MENU_ID:
+			case MenuBar.MENU_ID_FILE:
 				switch (itemId) {
-					case FileMenu.NEW_ITEM_ID:
+					case FileMenu.ITEM_ID_NEW:
 						mainProgram.requestNewGame();
 						break;
 						
-					case FileMenu.LOAD_ITEM_ID:
+					case FileMenu.ITEM_ID_LOAD:
 						mainProgram.requestLoadGame();
 						break;
 						
-					case FileMenu.SAVE_ITEM_ID:
+					case FileMenu.ITEM_ID_SAVE:
 						mainProgram.requestSaveGame();
 						break;
 						
-					case FileMenu.CLOSE_ITEM_ID:
+					case FileMenu.ITEM_ID_CLOSE:
 						mainProgram.requestCloseGame();
 						break;
 						
-					case FileMenu.OPTIONS_ITEM_ID:
+					case FileMenu.ITEM_ID_OPTIONS:
 						mainProgram.requestOptionsScreen();
 						break;
 						
-					case FileMenu.EXIT_ITEM_ID:
+					case FileMenu.ITEM_ID_EXIT:
 						mainProgram.requestQuit();
 						break;
 				}

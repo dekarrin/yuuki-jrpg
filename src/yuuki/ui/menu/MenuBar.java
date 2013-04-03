@@ -19,12 +19,22 @@ MenuListener {
 	/**
 	 * The ID of the file menu.
 	 */
-	public static final int FILE_MENU_ID = 0;
+	public static final int MENU_ID_FILE = 0;
+	
+	/**
+	 * The ID of the actions menu.
+	 */
+	public static final int MENU_ID_ACTIONS = 1;
 	
 	/**
 	 * The File menu. Contains main menu operations.
 	 */
 	private FileMenu fileMenu;
+	
+	/**
+	 * Contains actions related to the game.
+	 */
+	private ActionsMenu actionsMenu;
 	
 	/**
 	 * The list of listeners.
@@ -60,7 +70,9 @@ MenuListener {
 	public void menuItemTriggered(Menu<?> source, int itemId) {
 		int menuId = -1;
 		if (source == fileMenu) {
-			menuId = FILE_MENU_ID;
+			menuId = MENU_ID_FILE;
+		} else if (source == actionsMenu) {
+			menuId = MENU_ID_ACTIONS;
 		}
 		fireMenuItemTriggered(menuId, itemId);
 	}
@@ -75,6 +87,7 @@ MenuListener {
 	 */
 	private void addMenus() {
 		add(fileMenu);
+		add(actionsMenu);
 	}
 	
 	/**
@@ -82,6 +95,7 @@ MenuListener {
 	 */
 	private void createMenus() {
 		fileMenu = new FileMenu();
+		actionsMenu = new ActionsMenu();
 	}
 	
 	/**
@@ -101,6 +115,7 @@ MenuListener {
 	 */
 	private void setListeners() {
 		fileMenu.addListener(this);
+		actionsMenu.addListener(this);
 	}
 	
 }
