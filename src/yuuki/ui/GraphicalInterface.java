@@ -1242,6 +1242,7 @@ OverworldScreenListener, InvenScreenListener {
 	@Override
 	public void getItemClicked() {
 		mainProgram.requestGetItem();
+		overworldScreen.redrawWorldViewport();
 	}
 	
 }
