@@ -6,3 +6,5 @@
 "TILE_FLOOR",			"tiles/floor.png"
 "TILE_VOID",			"tiles/void.png"
 "PORTAL_TELEPORTER",	"portals/teleporter.png"
+"ITEM_RED_POTION",		"items/potion_r.png"
+"ITEM_LOOT_BAG",		"items/money.png"
