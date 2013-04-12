@@ -26,7 +26,7 @@ public class InvenPanel extends JPanel {
 	 * A single cell in this InvenPanel. Each cell represents exactly one item
 	 * in the user's inventory.
 	 */
-	private class ItemCell extends ImageComponent {
+	public class ItemCell extends ImageComponent {
 		
 		/**
 		 * The item that this cell represents.
@@ -117,6 +117,15 @@ public class InvenPanel extends JPanel {
 		for (Item i : items) {
 			addItem(i);
 		}
+	}
+	
+	/**
+	 * Shows a cell as highlighted.
+	 * 
+	 * @param cell The cell to highlight.
+	 */
+	public void highlightCell(ItemCell cell) {
+		
 	}
 	
 	/**

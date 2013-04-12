@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,6 +21,7 @@ import yuuki.graphic.ImageFactory;
 import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
 import yuuki.item.UsableItem;
+import yuuki.ui.InvenItemClickListener;
 import yuuki.ui.InvenPanel;
 import yuuki.util.InvalidIndexException;
 
@@ -180,6 +182,9 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 					INFO_FONT_SIZE));
 			value = new JLabel("No item selected");
 			value.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
+					INFO_FONT_SIZE));
+			uses = new JLabel("No item selected");
+			uses.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
 					INFO_FONT_SIZE));
 			description = new JTextArea("No item selected");
 			description.setFont(new Font(Font.SERIF, Font.ITALIC,
@@ -370,6 +375,13 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private void createComponents(int width, int height) {
 		invenPanel = new InvenPanel(width - INVEN_PANEL_WIDTH_OFFSET,
 				height - INVEN_PANEL_HEIGHT_OFFSET);
+		invenPanel.setListener(new InvenItemClickListener() {
+			@Override
+			public void itemCellClicked(MouseEvent e, Item item) {
+				invenPanel.highlightCell((InvenPanel.ItemCell) e.getSource());
+				infoPanel.showInfo(item);
+			}
+		});
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
 			@Override
