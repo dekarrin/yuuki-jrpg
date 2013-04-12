@@ -1246,8 +1246,8 @@ OverworldScreenListener, InvenScreenListener {
 	}
 
 	@Override
-	public void removeWorldItems(Point point, int count) {
-		overworldScreen.removeWorldItems(point, count);
+	public void removeWorldItems(Item[] items, int count) {
+		overworldScreen.removeWorldItems(items, count);
 	}
 	
 }

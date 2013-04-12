@@ -141,19 +141,21 @@ public class WorldViewer extends JPanel {
 	/**
 	 * Removes locatables from a point.
 	 * 
-	 * @param point The point to remove them from.
+	 * @param locs The locatables to remove.
 	 * @param count The amount to remove.
 	 * @param zIndex The layer to remove them from.
 	 */
-	public void removeLocatables(Point point, int count, int zIndex) {
+	public void removeLocatables(Locatable[] locs, int count, int zIndex) {
 		List<Locatable> layer = getLayer(zIndex);
-		Iterator<Locatable> it = layer.iterator();
-		int removals = 0;
-		while (it.hasNext() && removals < count) {
-			Locatable l = it.next();
-			if (l.getLocation().equals(point)) {
-				it.remove();
-				removals++;
+		for (int i = 0; i < count; i++) {
+			Locatable toRemove = locs[i];
+			Iterator<Locatable> it = layer.iterator();
+			while (it.hasNext()) {
+				Locatable toCompare = it.next();
+				if (toCompare == toRemove) {
+					it.remove();
+					break;
+				}
 			}
 		}
 	}

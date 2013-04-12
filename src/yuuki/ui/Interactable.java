@@ -26,10 +26,10 @@ public interface Interactable {
 	/**
 	 * Clears the items from a certain spot on the overworld screen.
 	 * 
-	 * @param point The point to clear items from.
+	 * @param items The items to remove.
 	 * @param count The number of items to remove.
 	 */
-	public void removeWorldItems(Point point, int count);
+	public void removeWorldItems(Item[] items, int count);
 	
 	/**
 	 * Adds mods to the options screen.

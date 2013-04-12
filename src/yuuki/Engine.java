@@ -573,7 +573,7 @@ public class Engine implements Runnable, UiExecutor {
 			Item[] obtainableItems = new Item[]{picked};
 			int added = player.giveItems(obtainableItems);
 			world.clearItems(player.getFacingPoint(), added);
-			ui.removeWorldItems(player.getFacingPoint(), added);
+			ui.removeWorldItems(obtainableItems, added);
 			ui.display(null, "Got " + picked.getName(), false);
 		}
 	}

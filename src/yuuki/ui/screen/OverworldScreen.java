@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.Item;
 import yuuki.ui.WorldViewer;
 import yuuki.util.Grid;
 import yuuki.world.Locatable;
@@ -281,11 +282,11 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	/**
 	 * Removes items from the world viewer.
 	 * 
-	 * @param point The point to remove them from.
+	 * @param items The items to remove.
 	 * @param count The number to remove.
 	 */
-	public void removeWorldItems(Point point, int count) {
-		worldViewer.removeLocatables(point, count, Z_INDEX_ITEM_LAYER);
+	public void removeWorldItems(Item[] items, int count) {
+		worldViewer.removeLocatables(items, count, Z_INDEX_ITEM_LAYER);
 	}
 	
 	/**
