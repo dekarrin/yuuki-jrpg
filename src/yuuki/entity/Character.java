@@ -290,6 +290,7 @@ public abstract class Character implements Movable, Displayable {
 		for (Action move : moves) {
 			move.setOrigin(this);
 		}
+		inventory = new InventoryPouch(10, "Lunch Box");
 	}
 	
 	/**
