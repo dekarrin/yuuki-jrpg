@@ -14,6 +14,7 @@ import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.ItemFactory;
 import yuuki.sound.DualSoundEngine;
 import yuuki.sound.EffectEngine;
 import yuuki.sound.MusicEngine;
@@ -61,6 +62,11 @@ public class ContentManager {
 	private MusicEngine musicEngine;
 	
 	/**
+	 * Holds all loaded item content.
+	 */
+	private ItemFactory itemFactory;
+	
+	/**
 	 * The content packs.
 	 */
 	private Map<String, ContentPack> packs;
@@ -77,6 +83,7 @@ public class ContentManager {
 		imageFactory = new ImageFactory();
 		actionFactory = new ActionFactory();
 		entityFactory = new EntityFactory(actionFactory);
+		itemFactory = new ItemFactory(actionFactory);
 	}
 	
 	/**
@@ -104,6 +111,9 @@ public class ContentManager {
 		}
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.subtract(c.getImages());
+		}
+		if (pack.hasItems()) {
+			itemFactory.subtract(c.getItems());
 		}
 		contentModel.subtract(c);
 		enabledPacks.remove(pack);
@@ -138,9 +148,19 @@ public class ContentManager {
 		if (pack.hasImages() && pack.hasImageDefinitions()) {
 			imageFactory.merge(c.getImages());
 		}
+		if (pack.hasItems()) {
+			itemFactory.merge(c.getItems());
+		}
 		contentModel.merge(c);
 		enabledPacks.add(pack);
 		pack.setEnabled(true);
+	}
+	
+	/**
+	 * Gets the item factory that this ContentManager controls.
+	 */
+	public ItemFactory getItemFactory() {
+		return itemFactory;
 	}
 	
 	/**

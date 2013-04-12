@@ -105,6 +105,7 @@ Mergeable<Map<Integer, Action.Definition>> {
 		bases.put("BasicDefense", new BasicDefense(0));
 		bases.put("Flee", new Flee());
 		bases.put("ItemUse", new ItemUse());
+		bases.put("Heal", new Heal(0, 0));
 	}
 	
 }

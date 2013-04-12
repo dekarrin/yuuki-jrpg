@@ -6,6 +6,7 @@
 "SOUND_DEFS_FILE",		"data/effects.def"
 "TILE_DEFS_FILE",		"data/tiles.def"
 "WORLD_DEFS_FILE",		"data/world.def"
+"ITEM_DEFS_FILE",		"data/items.def"
 "IMAGE_DIR",			"images/"
 "LAND_DIR",				"land/"
 "MUSIC_DIR",			"audio/bgm/"

@@ -15,32 +15,32 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	/**
 	 * The ID of the 'Close' item.
 	 */
-	public static final int CLOSE_ITEM_ID = 1;
+	public static final int ITEM_ID_CLOSE = 1;
 	
 	/**
 	 * The ID of the 'Exit' item.
 	 */
-	public static final int EXIT_ITEM_ID = 5;
+	public static final int ITEM_ID_EXIT = 5;
 	
 	/**
 	 * The ID of the 'Load' item.
 	 */
-	public static final int LOAD_ITEM_ID = 3;
+	public static final int ITEM_ID_LOAD = 3;
 	
 	/**
 	 * The ID of the 'New' item.
 	 */
-	public static final int NEW_ITEM_ID = 0;
+	public static final int ITEM_ID_NEW = 0;
 	
 	/**
 	 * The ID of the 'Options' item.
 	 */
-	public static final int OPTIONS_ITEM_ID = 4;
+	public static final int ITEM_ID_OPTIONS = 4;
 	
 	/**
 	 * The ID of the 'Save' item.
 	 */
-	public static final int SAVE_ITEM_ID = 2;
+	public static final int ITEM_ID_SAVE = 2;
 	
 	/**
 	 * Closes the current game when selected.
@@ -89,17 +89,17 @@ public class FileMenu extends Menu<MenuListener> implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		int selectedId = -1;
 		if (e.getSource() == exitItem) {
-			selectedId = EXIT_ITEM_ID;
+			selectedId = ITEM_ID_EXIT;
 		} else if (e.getSource() == newItem) {
-			selectedId = NEW_ITEM_ID;
+			selectedId = ITEM_ID_NEW;
 		} else if (e.getSource() == optionsItem) {
-			selectedId = OPTIONS_ITEM_ID;
+			selectedId = ITEM_ID_OPTIONS;
 		} else if (e.getSource() == closeItem) {
-			selectedId = CLOSE_ITEM_ID;
+			selectedId = ITEM_ID_CLOSE;
 		} else if (e.getSource() == loadItem) {
-			selectedId = LOAD_ITEM_ID;
+			selectedId = ITEM_ID_LOAD;
 		} else if (e.getSource() == saveItem) {
-			selectedId = SAVE_ITEM_ID;
+			selectedId = ITEM_ID_SAVE;
 		}
 		fireItemTriggered(selectedId);
 	}

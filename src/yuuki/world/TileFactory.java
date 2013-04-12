@@ -77,7 +77,7 @@ public class TileFactory implements Mergeable<Map<Integer, Tile.Definition>> {
 		if (tdDeque == null) {
 			throw new InvalidIndexException(id);
 		}
-		Tile.Definition def = tdDeque.peekFirst();
+		Tile.Definition def = tdDeque.peek();
 		Tile tile = new Tile(def.name, def.walkable, def.image);
 		tile.setId(id);
 		return tile;

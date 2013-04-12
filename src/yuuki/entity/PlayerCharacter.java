@@ -14,6 +14,25 @@ import yuuki.world.WalkGraph;
 public class PlayerCharacter extends Character {
 	
 	/**
+	 * The direction that a player is facing.
+	 */
+	public static enum Orientation {
+		EAST,
+		NORTH,
+		NORTHEAST,
+		NORTHWEST,
+		SOUTH,
+		SOUTHEAST,
+		SOUTHWEST,
+		WEST
+	}
+	
+	/**
+	 * The direction that the player character is facing.
+	 */
+	public Orientation orientation;
+	
+	/**
 	 * A reference to the user interface for this PC to get its moves from.
 	 */
 	private Interactable ui;
@@ -45,6 +64,7 @@ public class PlayerCharacter extends Character {
 		super(name, level, moves, hp, mp, strength, defense, agility, accuracy,
 				magic, luck, overworldArt);
 		this.ui = ui;
+		orientation = Orientation.SOUTH;
 	}
 	
 	@Override
@@ -55,7 +75,47 @@ public class PlayerCharacter extends Character {
 	@Override
 	public Point getNextMove(Land land) throws InterruptedException {
 		WalkGraph graph = land.getWalkGraph(getLocation(), true);
-		return ui.selectMove(graph);
+		return ui.selectMove(graph, orientation);
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		String baseName = super.getOverworldImage();
+		String ext = null;
+		switch (orientation) {
+			case NORTH:
+				ext = "N";
+				break;
+				
+			case SOUTH:
+				ext = "S";
+				break;
+				
+			case WEST:
+				ext = "W";
+				break;
+				
+			case EAST:
+				ext = "E";
+				break;
+				
+			case NORTHEAST:
+				ext = "NE";
+				break;
+				
+			case NORTHWEST:
+				ext = "NW";
+				break;
+				
+			case SOUTHEAST:
+				ext = "SE";
+				break;
+				
+			case SOUTHWEST:
+				ext = "SW";
+				break;
+		}
+		return baseName + "_" + ext;
 	}
 	
 	@Override
@@ -92,6 +152,55 @@ public class PlayerCharacter extends Character {
 	protected Character selectTarget(
 			ArrayList<ArrayList<Character>> fighters) {
 		return ui.selectTarget(fighters);
+	}
+
+	/**
+	 * Gets the location of the point that the player is facing.
+	 */
+	public Point getFacingPoint() {
+		Point loc = new Point(getLocation());
+		int dx = 0;
+		int dy = 0;
+		switch (orientation) {
+			case NORTH:
+				dy = -1;
+				break;
+				
+			case NORTHEAST:
+				dy = -1;
+				dx = 1;
+				break;
+				
+			case EAST:
+				dx = 1;
+				break;
+				
+			case SOUTHEAST:
+				dy = 1;
+				dx = 1;
+				break;
+				
+			case SOUTH:
+				dy = 1;
+				break;
+				
+			case SOUTHWEST:
+				dy = 1;
+				dx = -1;
+				break;
+				
+			case WEST:
+				dx = -1;
+				break;
+				
+			case NORTHWEST:
+				dx = -1;
+				dy = -1;
+				break;
+		}
+		loc.x += dx;
+		loc.y += dy;
+		return loc;
 	}
 	
 }

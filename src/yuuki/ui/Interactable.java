@@ -2,12 +2,16 @@ package yuuki.ui;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
 import yuuki.sound.DualSoundEngine;
 import yuuki.util.Grid;
 import yuuki.world.Movable;
@@ -19,6 +23,21 @@ import yuuki.world.WalkGraph;
  * Shows program input and output.
  */
 public interface Interactable {
+	
+	/**
+	 * Clears the items from a certain spot on the overworld screen.
+	 * 
+	 * @param items The items to remove.
+	 * @param count The number of items to remove.
+	 */
+	public void removeWorldItems(Item[] items, int count);
+	
+	/**
+	 * Sets the inventory screen to show the contents of a pouch.
+	 * 
+	 * @param pouch The pouch to show.
+	 */
+	public void updateInventory(InventoryPouch pouch);
 	
 	/**
 	 * Adds mods to the options screen.
@@ -34,6 +53,13 @@ public interface Interactable {
 	 * @param characters The Characters to add.
 	 */
 	public void addWorldEntities(ArrayList<Movable> characters);
+	
+	/**
+	 * Adds Items to the world viewer.
+	 * 
+	 * @param items The Items to add.
+	 */
+	public void addWorldItems(List<Item> items);
 	
 	/**
 	 * Adds portals to the world viewer.
@@ -256,13 +282,15 @@ public interface Interactable {
 	 * Gets the next move that the human character wishes to make.
 	 * 
 	 * @param graph The graph of available places to walk to.
+	 * @param orientation The current orientation of the player.
 	 * 
 	 * @return The point that the user wants to move to.
 	 * 
 	 * @throws InterruptedException If the current thread is interrupted while
 	 * waiting for input.
 	 */
-	public Point selectMove(WalkGraph graph) throws InterruptedException;
+	public Point selectMove(WalkGraph graph, Orientation orientation) throws
+	InterruptedException;
 	
 	/**
 	 * Gets the target of a move.
@@ -424,6 +452,11 @@ public interface Interactable {
 	 * Shows the Player Name screen.
 	 */
 	public void switchToIntroScreen();
+	
+	/**
+	 * Switches to the inventory screen.
+	 */
+	public void switchToInvenScreen();
 	
 	/**
 	 * Switches to the previous screen.

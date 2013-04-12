@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 
 /**
  * The class that performs the game logic as requested by the user interface.
@@ -9,6 +10,16 @@ import yuuki.entity.Character;
  * handle it.
  */
 public interface UiExecutor {
+	
+	/**
+	 * Requests that the inventory screen be opened.
+	 */
+	public void requestInventoryOpen();
+	
+	/**
+	 * Requests that the inventory screen be closed.
+	 */
+	public void requestInventoryClose();
 	
 	/**
 	 * Requests that a battle be initialized and its intro shown if main. The
@@ -110,5 +121,17 @@ public interface UiExecutor {
 	 * Requests that the game be saved.
 	 */
 	public void requestSaveGame();
+	
+	/**
+	 * Requests that the player be turned to face a different direction.
+	 * 
+	 * @param orientation The direction that the player is to face.
+	 */
+	public void requestPlayerTurn(Orientation orientation);
+
+	/**
+	 * Requests that the player pick up an item in front of him.
+	 */
+	public void requestGetItem();
 	
 }

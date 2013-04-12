@@ -4,11 +4,13 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import yuuki.item.Item;
 import yuuki.util.ElementGrid;
 import yuuki.util.Grid;
 
@@ -58,6 +60,11 @@ public class Land {
 	private Map<Point, Portal> portals;
 	
 	/**
+	 * The Items in this Land.
+	 */
+	private Map<Point, List<Item>> items;
+	
+	/**
 	 * The Movable objects in this Land.
 	 */
 	private List<Movable> residents;
@@ -81,9 +88,72 @@ public class Land {
 		tiles = new ElementGrid<Tile>(size, tileData);
 		residents = new ArrayList<Movable>();
 		portals = new HashMap<Point, Portal>();
+		items = new HashMap<Point, List<Item>>();
 		incomingResidents = new ArrayList<Movable>();
 		outgoingResidents = new ArrayList<Movable>();
 		bumps = new HashMap<Movable, Movable>();
+	}
+	
+	/**
+	 * Adds an item to this map.
+	 * 
+	 * @param item The item to add.
+	 */
+	public void addItem(Item item) {
+		Point p = item.getLocation();
+		List<Item> list = items.get(p);
+		if (list == null) {
+			list = new ArrayList<Item>();
+			items.put(p, list);
+		}
+		list.add(item);
+	}
+	
+	/**
+	 * Gets all items at a point.
+	 * 
+	 * @param point The point to get items at.
+	 * @return A list with the items at the given point. The list is inverted;
+	 * the item on the top of the pile is the first element of the list.
+	 */
+	public Item[] getItemsAt(Point point) {
+		List<Item> list = this.items.get(point);
+		int size = (list == null) ? 0 : list.size();
+		Item[] items = new Item[size];
+		if (size != 0) {
+			Collections.reverse(list);
+			list.toArray(items);
+		}
+		return items;
+	}
+	
+	/**
+	 * Removes all items from a point.
+	 * 
+	 * @param point The point to remove items from.
+	 * @param count The number to remove.
+	 */
+	public void clearItems(Point point, int count) {
+		List<Item> list = items.get(point);
+		for (int i = 0; i < count; i++) {
+			list.remove(0);
+		}
+		if (list.isEmpty()) {
+			items.remove(point);
+		}
+	}
+	
+	/**
+	 * Gets all items in the Land.
+	 * 
+	 * @return All items in this Land.
+	 */
+	public List<Item> getItems() {
+		List<Item> list = new ArrayList<Item>();
+		for (List<Item> i : items.values()) {
+			list.addAll(i);
+		}
+		return list;
 	}
 	
 	/**

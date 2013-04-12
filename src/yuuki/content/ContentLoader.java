@@ -13,11 +13,13 @@ import yuuki.file.ActionLoader;
 import yuuki.file.ByteArrayLoader;
 import yuuki.file.CsvResourceLoader;
 import yuuki.file.EntityLoader;
+import yuuki.file.ItemLoader;
 import yuuki.file.LandLoader;
 import yuuki.file.PortalLoader;
 import yuuki.file.ResourceFormatException;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.file.TileLoader;
+import yuuki.item.Item;
 import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 import yuuki.util.Progression;
@@ -200,6 +202,30 @@ public class ContentLoader {
 	public Map<String, byte[]> loadImages(String text,
 			Map<String, String> indexes) {
 		return loadIndexedFiles(text, indexes, ContentManifest.DIR_IMAGES);
+	}
+	
+	/**
+	 * Loads item definitions.
+	 * 
+	 * @param text What to set the text of the monitor to.
+	 * @return A map containing item IDs mapped to the loaded definitions.
+	 * @throws ResourceNotFoundException If the given path does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public Map<Long, Item.Definition> loadItems(String text) throws
+	ResourceNotFoundException, IOException {
+		Progressable sub = startLoadingOperation(text);
+		Map<Long, Item.Definition> items = null;
+		ItemLoader loader = createItemLoader();
+		loader.setProgressMonitor(sub);
+		String path = manifest.get(ContentManifest.FILE_ITEMS);
+		try {
+			items = loader.load(path);
+		} catch (ResourceFormatException e) {
+			DialogHandler.showError(e);
+		}
+		finishLoadingOperation(sub);
+		return items;
 	}
 	
 	/**
@@ -521,6 +547,15 @@ public class ContentLoader {
 		String path = manifest.get(pathIndex);
 		File fileDir = new File(root, path);
 		return new ByteArrayLoader(fileDir);
+	}
+	
+	/**
+	 * Creates a loader for reading item definition files.
+	 * 
+	 * @return The created ItemLoader.
+	 */
+	protected ItemLoader createItemLoader() {
+		return new ItemLoader(root);
 	}
 	
 	/**
