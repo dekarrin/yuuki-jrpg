@@ -8,10 +8,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -61,7 +59,7 @@ public class WorldViewer extends JPanel {
 	 * the z-ordering of the locatables. Higher layers are drawn above lower
 	 * layers.
 	 */
-	private Map<Integer, Set<Locatable>> locatables;
+	private Map<Integer, List<Locatable>> locatables;
 	
 	/**
 	 * The exact locatables being displayed. This mirrors the land view. Key
@@ -110,7 +108,7 @@ public class WorldViewer extends JPanel {
 		tileHeight = height;
 		Dimension d = new Dimension(width, height);
 		tileBuffer = new ElementGrid<Image>(d);
-		locatables = new HashMap<Integer, Set<Locatable>>();
+		locatables = new HashMap<Integer, List<Locatable>>();
 		resBuffers = new TreeMap<Integer, Grid<List<Image>>>();
 		resBufferViews = new TreeMap<Integer, Grid<List<Image>>>();
 		setLayout(null);
@@ -128,7 +126,7 @@ public class WorldViewer extends JPanel {
 		if (!layerExists(zIndex)) {
 			createLayer(zIndex);
 		}
-		Set<Locatable> layer = getLayer(zIndex);
+		List<Locatable> layer = getLayer(zIndex);
 		layer.add(l);
 	}
 	
@@ -137,6 +135,17 @@ public class WorldViewer extends JPanel {
 	 */
 	public void clearLocatables() {
 		locatables.clear();
+	}
+	
+	/**
+	 * Removes locatables from a point.
+	 * 
+	 * @param point The point to remove them from.
+	 * @param count The amount to remove.
+	 * @param zIndex The layer to remove them from.
+	 */
+	public void removeLocatables(Point point, int count, int zIndex) {
+		List<Locatable> layer = getLayer(zIndex);
 	}
 	
 	/**
@@ -261,7 +270,7 @@ public class WorldViewer extends JPanel {
 	 */
 	private void createLayer(int zIndex) {
 		Dimension d = new Dimension(tileWidth, tileHeight);
-		locatables.put(zIndex, new HashSet<Locatable>());
+		locatables.put(zIndex, new ArrayList<Locatable>());
 		resBuffers.put(zIndex, new ElementGrid<List<Image>>(d));
 	}
 	
@@ -320,7 +329,7 @@ public class WorldViewer extends JPanel {
 	 * 
 	 * @return The layer.
 	 */
-	private Set<Locatable> getLayer(int zIndex) {
+	private List<Locatable> getLayer(int zIndex) {
 		return locatables.get(zIndex);
 	}
 	
@@ -334,7 +343,7 @@ public class WorldViewer extends JPanel {
 	 */
 	private ArrayList<Locatable> getResidentsInBox(Rectangle box, int zIndex) {
 		ArrayList<Locatable> desired = new ArrayList<Locatable>();
-		Set<Locatable> layer = getLayer(zIndex);
+		List<Locatable> layer = getLayer(zIndex);
 		for (Locatable l : layer) {
 			if (box.contains(l.getLocation())) {
 				desired.add(l);
