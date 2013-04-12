@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
+import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
+import yuuki.item.PouchFullException;
 import yuuki.sprite.Sprite;
 import yuuki.ui.Displayable;
 import yuuki.world.Movable;
@@ -177,6 +180,11 @@ public abstract class Character implements Movable, Displayable {
 	private VariableStat hp;
 	
 	/**
+	 * The inventory for this character.
+	 */
+	private InventoryPouch inventory;
+	
+	/**
 	 * Modifies critical strike percent.
 	 */
 	private Stat luck;
@@ -282,6 +290,7 @@ public abstract class Character implements Movable, Displayable {
 		for (Action move : moves) {
 			move.setOrigin(this);
 		}
+		inventory = new InventoryPouch(10, "Lunch Box");
 	}
 	
 	/**
@@ -556,6 +565,34 @@ public abstract class Character implements Movable, Displayable {
 	 */
 	public VariableStat getHPStat() {
 		return hp;
+	}
+	
+	/**
+	 * Gets the inventory pouch for this Character.
+	 * 
+	 * @return The pouch.
+	 */
+	public InventoryPouch getInventory() {
+		return inventory;
+	}
+	
+	/**
+	 * Puts items into this Character's inventory.
+	 * 
+	 * @param items The items to add.
+	 * @return The number of items actually added.
+	 */
+	public int giveItems(Item[] items) {
+		int added = 0;
+		for (Item i : items) {
+			try {
+				inventory.addItem(i);
+				added++;
+			} catch (PouchFullException e) {
+				break;
+			}
+		}
+		return added;
 	}
 	
 	/**

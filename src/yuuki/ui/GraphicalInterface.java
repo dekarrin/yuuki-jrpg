@@ -8,17 +8,22 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
+
 import yuuki.Options;
 import yuuki.action.Action;
 import yuuki.animation.engine.AnimationManager;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
@@ -31,11 +36,14 @@ import yuuki.ui.screen.CharacterCreationScreen;
 import yuuki.ui.screen.CharacterCreationScreenListener;
 import yuuki.ui.screen.IntroScreen;
 import yuuki.ui.screen.IntroScreenListener;
+import yuuki.ui.screen.InvenScreenListener;
+import yuuki.ui.screen.InventoryScreen;
 import yuuki.ui.screen.LoadingScreen;
 import yuuki.ui.screen.OptionsScreen;
 import yuuki.ui.screen.OptionsScreenListener;
 import yuuki.ui.screen.OverworldMovementListener;
 import yuuki.ui.screen.OverworldScreen;
+import yuuki.ui.screen.OverworldScreenListener;
 import yuuki.ui.screen.Screen;
 import yuuki.util.Grid;
 import yuuki.util.InvalidIndexException;
@@ -49,7 +57,8 @@ import yuuki.world.WalkGraph;
  * A graphical user interface that uses the Swing framework.
  */
 public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
+CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener,
+OverworldScreenListener, InvenScreenListener {
 	
 	/**
 	 * The speed of game animation.
@@ -141,6 +150,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	private IntroScreen introScreen;
 	
 	/**
+	 * The screen that shows inventory and stats.
+	 */
+	private InventoryScreen invenScreen;
+	
+	/**
 	 * The loading screen.
 	 */
 	private LoadingScreen loadingScreen;
@@ -226,6 +240,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void addWorldItems(List<Item> items) {
+		addWorldLocatables(items, OverworldScreen.Z_INDEX_ITEM_LAYER);
+	}
+	
+	@Override
 	public void applyOptions(Options options) {
 		soundEngine.setEffectVolume(options.sfxVolume);
 		soundEngine.setMusicVolume(options.bgmVolume);
@@ -245,6 +264,11 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 				overworldScreen.clearWorldLocatables();
 			}
 		});
+	}
+	
+	@Override
+	public void closeInvenClicked() {
+		mainProgram.requestInventoryClose();
 	}
 	
 	@Override
@@ -453,12 +477,18 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	public void initializeImages(ImageFactory factory) {
 		this.imageEngine = factory;
 		overworldScreen.setImageFactory(factory);
+		invenScreen.setImageFactory(factory);
 	}
 	
 	@Override
 	public void initializeSounds(DualSoundEngine soundEngine) {
 		this.soundEngine = soundEngine;
 		introScreen.setSoundEngine(soundEngine);
+	}
+	
+	@Override
+	public void invenButtonClicked() {
+		mainProgram.requestInventoryOpen();
 	}
 	
 	@Override
@@ -469,29 +499,29 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	@Override
 	public void menuItemTriggered(int menuId, int itemId) {
 		switch (menuId) {
-			case MenuBar.FILE_MENU_ID:
+			case MenuBar.MENU_ID_FILE:
 				switch (itemId) {
-					case FileMenu.NEW_ITEM_ID:
+					case FileMenu.ITEM_ID_NEW:
 						mainProgram.requestNewGame();
 						break;
 						
-					case FileMenu.LOAD_ITEM_ID:
+					case FileMenu.ITEM_ID_LOAD:
 						mainProgram.requestLoadGame();
 						break;
 						
-					case FileMenu.SAVE_ITEM_ID:
+					case FileMenu.ITEM_ID_SAVE:
 						mainProgram.requestSaveGame();
 						break;
 						
-					case FileMenu.CLOSE_ITEM_ID:
+					case FileMenu.ITEM_ID_CLOSE:
 						mainProgram.requestCloseGame();
 						break;
 						
-					case FileMenu.OPTIONS_ITEM_ID:
+					case FileMenu.ITEM_ID_OPTIONS:
 						mainProgram.requestOptionsScreen();
 						break;
 						
-					case FileMenu.EXIT_ITEM_ID:
+					case FileMenu.ITEM_ID_EXIT:
 						mainProgram.requestQuit();
 						break;
 				}
@@ -558,12 +588,15 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
-	public Point selectMove(WalkGraph graph) throws InterruptedException {
+	public Point selectMove(WalkGraph graph, Orientation orientation) throws
+	InterruptedException {
 		class Runner implements Runnable, OverworldMovementListener {
 			public Point move = null;
 			private WalkGraph graph;
-			public Runner(WalkGraph graph) {
+			private Orientation orientation;
+			public Runner(WalkGraph graph, Orientation orientation) {
 				this.graph = graph;
+				this.orientation = orientation;
 			}
 			@Override
 			public void movementButtonClicked(Point moveLocation) {
@@ -571,12 +604,21 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 				this.move = moveLocation;
 			}
 			@Override
+			public void turnButtonClicked(Orientation orientation) {
+				mainProgram.requestPlayerTurn(orientation);
+				overworldScreen.setWalkOrientation(orientation);
+				overworldScreen.redrawWorldViewport();
+				overworldScreen.refreshButtons();
+			}
+			@Override
 			public void run() {
 				overworldScreen.setWalkGraph(graph);
+				overworldScreen.setWalkOrientation(orientation);
+				overworldScreen.refreshButtons();
 				overworldScreen.addMovementListener(this);
 			}
 		};
-		Runner r = new Runner(graph);
+		Runner r = new Runner(graph, orientation);
 		SwingUtilities.invokeLater(r);
 		try {
 			while (r.move == null) {
@@ -584,6 +626,8 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			}
 		} catch (InterruptedException e) {
 			overworldScreen.setWalkGraph(null);
+			overworldScreen.setWalkOrientation(null);
+			overworldScreen.refreshButtons();
 			overworldScreen.removeMovementListener(r);
 			throw e;
 		}
@@ -853,6 +897,12 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	}
 	
 	@Override
+	public void switchToInvenScreen() {
+		invenScreen.addListener(this);
+		switchWindow(invenScreen);
+	}
+	
+	@Override
 	public void switchToLastScreen() {
 		switchWindow(formerScreen);
 	}
@@ -926,8 +976,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 	 * @param l The list of Locatables to add.
 	 * @param zIndex The Z-index of the layer to add the Locatables to.
 	 */
-	private void addWorldLocatables(ArrayList<? extends Locatable> l,
-			int zIndex) {
+	private void addWorldLocatables(List<? extends Locatable> l, int zIndex) {
 		ArrayList<Locatable> list = new ArrayList<Locatable>(l);
 		class Runner implements Runnable {
 			private ArrayList<Locatable> list;
@@ -977,6 +1026,7 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		createPauseScreen();
 		createEndingScreen();
 		createPlayerCreationScreen();
+		createInventoryScreen();
 	}
 	
 	/**
@@ -1003,6 +1053,14 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 		introScreen = new IntroScreen(WINDOW_WIDTH, height);
 		introScreen.setBackgroundMusic("BGM_MAIN_MENU");
 		introScreen.setBackgroundImage("BG_INTRO_SCREEN");
+	}
+	
+	/**
+	 * Creates the inventory screen.
+	 */
+	private void createInventoryScreen() {
+		int height = getScreenHeight();
+		invenScreen = new InventoryScreen(WINDOW_WIDTH, height);
 	}
 	
 	/**
@@ -1181,6 +1239,27 @@ CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener {
 			messageBox.unfreeze();
 		}
 		mainProgram.requestBattleResume();
+	}
+
+	@Override
+	public void getItemClicked() {
+		mainProgram.requestGetItem();
+		overworldScreen.redrawWorldViewport();
+	}
+
+	@Override
+	public void removeWorldItems(Item[] items, int count) {
+		overworldScreen.removeWorldItems(items, count);
+	}
+
+	@Override
+	public void updateInventory(final InventoryPouch pouch) {
+		GraphicalInterface.invokeLaterIfNeeded(new Runnable() {
+			public void run() {
+				invenScreen.clearInventory();
+				invenScreen.addPouch(pouch);
+			}
+		});
 	}
 	
 }

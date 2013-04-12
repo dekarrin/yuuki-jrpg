@@ -13,7 +13,10 @@ import yuuki.entity.Character;
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
+import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.file.ResourceNotFoundException;
+
+import yuuki.item.Item;
 import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
@@ -273,6 +276,16 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestInventoryClose() {
+		ui.switchToOverworldScreen();
+	}
+	
+	@Override
+	public void requestInventoryOpen() {
+		ui.switchToInvenScreen();
+	}
+	
+	@Override
 	public void requestLoadGame() {
 		ui.display(null, "Loading hasn't yet been implemented", false);
 	}
@@ -317,6 +330,11 @@ public class Engine implements Runnable, UiExecutor {
 	public void requestOptionsSubmission() {
 		// TODO: do not depend on Interactable to set options
 		ui.switchToLastScreen();
+	}
+	
+	@Override
+	public void requestPlayerTurn(Orientation orientation) {
+		player.orientation = orientation;
 	}
 	
 	@Override
@@ -543,6 +561,23 @@ public class Engine implements Runnable, UiExecutor {
 		ui.setWorldView(world.getTiles(), world.getLandName());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
+		ui.addWorldItems(world.getItems());
+	}
+
+	@Override
+	public void requestGetItem() {
+		Item[] items = world.getItemsAt(player.getFacingPoint());
+		if (items.length == 0) {
+			ui.display(null, "There are no items in front of you.", false);
+		} else {
+			Item picked = items[0];
+			Item[] obtainableItems = new Item[]{picked};
+			int added = player.giveItems(obtainableItems);
+			world.clearItems(player.getFacingPoint(), added);
+			ui.removeWorldItems(obtainableItems, added);
+			ui.updateInventory(player.getInventory());
+			ui.display(null, "Got " + picked.getName(), false);
+		}
 	}
 	
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import yuuki.content.Mergeable;
+import yuuki.item.Item;
 import yuuki.util.Grid;
 import yuuki.util.InvalidIndexException;
 
@@ -55,6 +56,34 @@ public class World implements Mergeable<Map<String, Land>> {
 			lands.put(land.getName(), d);
 		}
 		d.push(land);
+	}
+	
+	/**
+	 * Gets items from a point in the active land.
+	 * 
+	 * @param point The point to get them from.
+	 */
+	public Item[] getItemsAt(Point point) {
+		return activeLand.getItemsAt(point);
+	}
+	
+	/**
+	 * Clears items from a point in the active land.
+	 * 
+	 * @param point The point to clear them from.
+	 * @param count The number to remove.
+	 */
+	public void clearItems(Point point, int count) {
+		activeLand.clearItems(point, count);
+	}
+	
+	/**
+	 * Gets all items in the active land.
+	 * 
+	 * @return All Items in the active land.
+	 */
+	public List<Item> getItems() {
+		return activeLand.getItems();
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import java.util.zip.ZipFile;
 import yuuki.action.ActionFactory;
 import yuuki.entity.EntityFactory;
 import yuuki.file.ResourceNotFoundException;
+import yuuki.item.ItemFactory;
 import yuuki.ui.DialogHandler;
 import yuuki.util.Progressable;
 import yuuki.world.PopulationFactory;
@@ -189,6 +190,13 @@ public class ContentPack {
 	}
 	
 	/**
+	 * Whether this ContentPack contains item definitions.
+	 */
+	public boolean hasItems() {
+		return manifest.has(ContentManifest.FILE_ITEMS);
+	}
+	
+	/**
 	 * Checks whether this ContentPack contains sound effect files.
 	 * 
 	 * @return Whether it does.
@@ -350,6 +358,7 @@ public class ContentPack {
 		loadEntities(resolver);
 		loadPortals();
 		loadTiles();
+		loadItems();
 		assetsLoaded = true;
 	}
 	
@@ -493,6 +502,7 @@ public class ContentPack {
 		count += (hasEntities())			? 1 : 0;
 		count += (hasPortals())				? 1 : 0;
 		count += (hasTiles())				? 1 : 0;
+		count += (hasItems())				? 1 : 0;
 		return count;
 	}
 	
@@ -584,6 +594,7 @@ public class ContentPack {
 		EntityFactory ef = new EntityFactory(af);
 		TileFactory tf = new TileFactory();
 		PortalFactory pf = new PortalFactory();
+		ItemFactory ifact = new ItemFactory(af);
 		if (hasActions()) {
 			af.merge(content.getActions());
 		}
@@ -608,7 +619,13 @@ public class ContentPack {
 		if (resolver != null && resolver.getPortals() != null) {
 			pf.merge(resolver.getPortals());
 		}
-		return new PopulationFactory(tf, ef, pf);
+		if (hasItems()) {
+			ifact.merge(content.getItems());
+		}
+		if (resolver != null && resolver.getItems() != null) {
+			ifact.merge(resolver.getItems());
+		}
+		return new PopulationFactory(tf, ef, pf, ifact);
 	}
 	
 	/**
@@ -727,6 +744,22 @@ public class ContentPack {
 					"Cannot load images with no definitions");
 			String msg = "Loading images...";
 			content.setImages(loader.loadImages(msg, paths));
+		}
+	}
+	
+	/**
+	 * Loads item data. The content is loaded from the content container if
+	 * this ContentPack contains it as indicated by the manifest.
+	 * 
+	 * @throws ResourceNotFoundException If any resource in the load is not
+	 * found.
+	 * @throws IOException If an I/O error occurs during the load.
+	 */
+	private void loadItems() throws ResourceNotFoundException,
+	IOException {
+		if (hasItems()) {
+			String msg = "Loading item data...";
+			content.setItems(loader.loadItems(msg));
 		}
 	}
 	

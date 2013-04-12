@@ -4,14 +4,16 @@ import java.awt.Point;
 
 import yuuki.entity.EntityFactory;
 import yuuki.entity.NonPlayerCharacter;
+import yuuki.item.Item;
+import yuuki.item.ItemFactory;
 import yuuki.util.InvalidIndexException;
 
 /**
  * Creates instances of classes used to populate a Land. PopulationFactory
- * combines the functionality of an EntityFactory, a TileFactory, and a
- * PortalFactory to allow the instantiation of any class used in Land
- * population. PopulationFactory does not provide mutation functionality of its
- * component factories.
+ * combines the functionality of an EntityFactory, a TileFactory,
+ * an ItemFactory, and a PortalFactory to allow the instantiation of any class
+ * used in Land population. PopulationFactory does not provide mutation
+ * functionality of its component factories.
  */
 public class PopulationFactory {
 	
@@ -19,6 +21,11 @@ public class PopulationFactory {
 	 * Creates Character instances.
 	 */
 	private final EntityFactory entities;
+	
+	/**
+	 * Creates Item instances.
+	 */
+	private final ItemFactory items;
 	
 	/**
 	 * Creates Portal instances.
@@ -36,12 +43,25 @@ public class PopulationFactory {
 	 * @param tiles The TileFactory to use.
 	 * @param entities The EntityFactory to use.
 	 * @param portals The PortalFactory to use.
+	 * @param items, The ItemFactory to use.
 	 */
 	public PopulationFactory(TileFactory tiles, EntityFactory entities,
-			PortalFactory portals) {
+			PortalFactory portals, ItemFactory items) {
 		this.tiles = tiles;
 		this.entities = entities;
 		this.portals = portals;
+		this.items = items;
+	}
+	
+	/**
+	 * Creates an Item instance from an ID.
+	 * 
+	 * @param id The ID of the Item to create an instance for.
+	 * @return The created Item.
+	 * @throws InvalidIndexException If the given ID is not an Item.
+	 */
+	public Item createItem(long id) throws InvalidIndexException {
+		return items.createItem(id);
 	}
 	
 	/**
