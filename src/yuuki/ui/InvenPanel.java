@@ -1,11 +1,13 @@
 package yuuki.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -42,6 +44,7 @@ public class InvenPanel extends JPanel {
 		public ItemCell(Item item, int size) {
 			this.item = item;
 			setPreferredSize(new Dimension(size, size));
+			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			try {
 				Image img = images.createImage(item.getImage());
 				setBackgroundImage(img);
@@ -54,6 +57,20 @@ public class InvenPanel extends JPanel {
 					fireClicked(e);
 				}
 			});
+		}
+		
+		/**
+		 * Dims this cell.
+		 */
+		public void dim() {
+			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		}
+		
+		/**
+		 * Highlights this cell.
+		 */
+		public void brighten() {
+			setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		}
 		
 		/**
@@ -117,15 +134,6 @@ public class InvenPanel extends JPanel {
 		for (Item i : items) {
 			addItem(i);
 		}
-	}
-	
-	/**
-	 * Shows a cell as highlighted.
-	 * 
-	 * @param cell The cell to highlight.
-	 */
-	public void highlightCell(ItemCell cell) {
-		
 	}
 	
 	/**

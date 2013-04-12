@@ -367,6 +367,11 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	}
 	
 	/**
+	 * The itemCell that is currently lit.
+	 */
+	private InvenPanel.ItemCell litCell = null;
+	
+	/**
 	 * Creates the child components.
 	 * 
 	 * @param width The width of this screen.
@@ -378,8 +383,14 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		invenPanel.setListener(new InvenItemClickListener() {
 			@Override
 			public void itemCellClicked(MouseEvent e, Item item) {
-				invenPanel.highlightCell((InvenPanel.ItemCell) e.getSource());
+				if (litCell != null) {
+					litCell.dim();
+				}
+				InvenPanel.ItemCell cell = (InvenPanel.ItemCell) e.getSource();
+				litCell = cell;
+				cell.brighten();
 				infoPanel.showInfo(item);
+				repaint();
 			}
 		});
 		closeButton = new JButton("Close");
