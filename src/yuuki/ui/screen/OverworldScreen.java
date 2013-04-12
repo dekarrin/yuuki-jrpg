@@ -279,6 +279,16 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	}
 	
 	/**
+	 * Removes items from the world viewer.
+	 * 
+	 * @param point The point to remove them from.
+	 * @param count The number to remove.
+	 */
+	public void removeWorldItems(Point point, int count) {
+		worldViewer.removeLocatables(point, count, Z_INDEX_ITEM_LAYER);
+	}
+	
+	/**
 	 * Clears all of the world Locatables out of the world viewer.
 	 */
 	public void clearWorldLocatables() {

@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -146,6 +147,15 @@ public class WorldViewer extends JPanel {
 	 */
 	public void removeLocatables(Point point, int count, int zIndex) {
 		List<Locatable> layer = getLayer(zIndex);
+		Iterator<Locatable> it = layer.iterator();
+		int removals = 0;
+		while (it.hasNext() && removals < count) {
+			Locatable l = it.next();
+			if (l.getLocation().equals(point)) {
+				it.remove();
+				removals++;
+			}
+		}
 	}
 	
 	/**

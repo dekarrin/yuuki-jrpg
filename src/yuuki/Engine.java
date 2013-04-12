@@ -569,8 +569,12 @@ public class Engine implements Runnable, UiExecutor {
 		if (items.length == 0) {
 			ui.display(null, "There are no items in front of you.", false);
 		} else {
-			int added = player.giveItems(items);
+			Item picked = items[0];
+			Item[] obtainableItems = new Item[]{picked};
+			int added = player.giveItems(obtainableItems);
 			world.clearItems(player.getFacingPoint(), added);
+			ui.removeWorldItems(player.getFacingPoint(), added);
+			ui.display(null, "Got " + picked.getName(), false);
 		}
 	}
 	

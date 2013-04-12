@@ -1244,5 +1244,10 @@ OverworldScreenListener, InvenScreenListener {
 		mainProgram.requestGetItem();
 		overworldScreen.redrawWorldViewport();
 	}
+
+	@Override
+	public void removeWorldItems(Point point, int count) {
+		overworldScreen.removeWorldItems(point, count);
+	}
 	
 }

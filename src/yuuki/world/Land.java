@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -112,13 +113,15 @@ public class Land {
 	 * Gets all items at a point.
 	 * 
 	 * @param point The point to get items at.
-	 * @return A list with the items at the given point.
+	 * @return A list with the items at the given point. The list is inverted;
+	 * the item on the top of the pile is the first element of the list.
 	 */
 	public Item[] getItemsAt(Point point) {
 		List<Item> list = this.items.get(point);
 		int size = (list == null) ? 0 : list.size();
 		Item[] items = new Item[size];
 		if (size != 0) {
+			Collections.reverse(list);
 			list.toArray(items);
 		}
 		return items;
