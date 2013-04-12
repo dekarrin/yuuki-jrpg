@@ -1,5 +1,7 @@
 package yuuki.ui;
 
+import java.awt.event.MouseEvent;
+
 import yuuki.item.Item;
 
 /**
@@ -12,6 +14,6 @@ public interface InvenItemClickListener {
 	 * 
 	 * @param item The item that the clicked cell represented.
 	 */
-	public void itemCellClicked(Item item);
+	public void itemCellClicked(MouseEvent e, Item item);
 	
 }

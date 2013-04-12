@@ -51,7 +51,7 @@ public class InvenPanel extends JPanel {
 			addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					fireClicked();
+					fireClicked(e);
 				}
 			});
 		}
@@ -59,8 +59,8 @@ public class InvenPanel extends JPanel {
 		/**
 		 * Fires the clicked event on the InvenPanel.
 		 */
-		private void fireClicked() {
-			fireItemCellClicked(item);
+		private void fireClicked(MouseEvent e) {
+			fireItemCellClicked(e, item);
 		}
 		
 	}
@@ -165,9 +165,9 @@ public class InvenPanel extends JPanel {
 	 * 
 	 * @param item The item represented by the clicked-on cell.
 	 */
-	private void fireItemCellClicked(Item item) {
+	private void fireItemCellClicked(MouseEvent e, Item item) {
 		if (listener != null) {
-			listener.itemCellClicked(item);
+			listener.itemCellClicked(e, item);
 		}
 	}
 	
