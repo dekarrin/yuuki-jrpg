@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
 
 import yuuki.Options;
@@ -476,6 +477,7 @@ OverworldScreenListener, InvenScreenListener {
 	public void initializeImages(ImageFactory factory) {
 		this.imageEngine = factory;
 		overworldScreen.setImageFactory(factory);
+		invenScreen.setImageFactory(factory);
 	}
 	
 	@Override
@@ -1248,6 +1250,16 @@ OverworldScreenListener, InvenScreenListener {
 	@Override
 	public void removeWorldItems(Item[] items, int count) {
 		overworldScreen.removeWorldItems(items, count);
+	}
+
+	@Override
+	public void updateInventory(final InventoryPouch pouch) {
+		GraphicalInterface.invokeLaterIfNeeded(new Runnable() {
+			public void run() {
+				invenScreen.clearInventory();
+				invenScreen.addPouch(pouch);
+			}
+		});
 	}
 	
 }

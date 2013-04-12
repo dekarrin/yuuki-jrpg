@@ -10,6 +10,7 @@ import yuuki.entity.Character;
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
 import yuuki.sound.DualSoundEngine;
 import yuuki.util.Grid;
@@ -30,6 +31,13 @@ public interface Interactable {
 	 * @param count The number of items to remove.
 	 */
 	public void removeWorldItems(Item[] items, int count);
+	
+	/**
+	 * Sets the inventory screen to show the contents of a pouch.
+	 * 
+	 * @param pouch The pouch to show.
+	 */
+	public void updateInventory(InventoryPouch pouch);
 	
 	/**
 	 * Adds mods to the options screen.

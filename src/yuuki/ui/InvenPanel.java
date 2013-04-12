@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -67,7 +68,7 @@ public class InvenPanel extends JPanel {
 	/**
 	 * The height of a cell in the items list.
 	 */
-	public static final int ITEM_CELL_SIZE = 40;
+	public static final int ITEM_CELL_SIZE = 100;
 	
 	/**
 	 * Used for generating tile images.
@@ -107,6 +108,18 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
+	 * Adds all items in a pouch.
+	 * 
+	 * @param pouch The InventoryPouch to show the contents of.
+	 */
+	public void addPouch(InventoryPouch pouch) {
+		Item[] items = pouch.getItems();
+		for (Item i : items) {
+			addItem(i);
+		}
+	}
+	
+	/**
 	 * Clears all items from the list.
 	 */
 	public void clearItems() {
@@ -114,15 +127,12 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * Display all items in a pouch.
+	 * Sets the image factory for this screen.
 	 * 
-	 * @param pouch The InventoryPouch to show the contents of.
+	 * @param factory The image factory to use.
 	 */
-	public void displayPouch(InventoryPouch pouch) {
-		Item[] items = pouch.getItems();
-		for (Item i : items) {
-			addItem(i);
-		}
+	public void setImageFactory(ImageFactory factory) {
+		this.images = factory;
 	}
 	
 	/**
@@ -147,6 +157,7 @@ public class InvenPanel extends JPanel {
 	 */
 	private void createComponents(int width, int height) {
 		itemList = new VerticalScrollPaneClient(width, height, ITEM_CELL_SIZE);
+		itemList.setLayout(new FlowLayout(FlowLayout.LEFT));
 	}
 	
 	/**

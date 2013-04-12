@@ -1,10 +1,16 @@
 package yuuki.ui.screen;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
+import yuuki.graphic.ImageFactory;
+import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
 import yuuki.ui.InvenPanel;
 
 /**
@@ -35,6 +41,40 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		addComponents();
 	}
 	
+	/**
+	 * Adds an item to the inventory panel.
+	 * 
+	 * @param item The item to add.
+	 */
+	public void addItem(Item item) {
+		invenPanel.addItem(item);
+	}
+	
+	/**
+	 * Adds all items in a pouch to the inventory panel.
+	 * 
+	 * @param pouch The pouch whose items to add.
+	 */
+	public void addPouch(InventoryPouch pouch) {
+		invenPanel.addPouch(pouch);
+	}
+	
+	/**
+	 * Clears the inventory panel.
+	 */
+	public void clearInventory() {
+		invenPanel.clearItems();
+	}
+	
+	/**
+	 * Sets the image factory for this screen.
+	 * 
+	 * @param factory The image factory to use.
+	 */
+	public void setImageFactory(ImageFactory factory) {
+		invenPanel.setImageFactory(factory);
+	}
+	
 	@Override
 	public void setInitialProperties() {}
 	
@@ -42,8 +82,10 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 * Adds all child components to this InventoryScreen.
 	 */
 	private void addComponents() {
-		add(invenPanel);
-		add(closeButton);
+		Box form = new Box(BoxLayout.Y_AXIS);
+		form.add(invenPanel);
+		form.add(closeButton);
+		add(form);
 	}
 	
 	/**
@@ -53,7 +95,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 * @param height The height of this screen.
 	 */
 	private void createComponents(int width, int height) {
-		invenPanel = new InvenPanel(width, height);
+		invenPanel = new InvenPanel(width - 50, height - 100);
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
 			@Override
@@ -61,6 +103,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 				fireCloseInvenClicked();
 			}
 		});
+		closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
 	
 	/**
