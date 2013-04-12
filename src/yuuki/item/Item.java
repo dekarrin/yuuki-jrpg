@@ -8,7 +8,7 @@ import yuuki.world.Locatable;
 /**
  * Something that can be held in a character's inventory.
  */
-public class Item implements Locatable {
+public class Item implements Locatable, Displayable {
 	
 	/**
 	 * The definition of an Item.
@@ -109,7 +109,7 @@ public class Item implements Locatable {
 	
 	@Override
 	public Displayable getDisplayable() {
-		return null;
+		return this;
 	}
 	
 	/**
@@ -179,6 +179,21 @@ public class Item implements Locatable {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public String getBattleImage() {
+		return null;
+	}
+
+	@Override
+	public char getDisplayChar() {
+		return ' ';
+	}
+
+	@Override
+	public String getOverworldImage() {
+		return image;
 	}
 	
 }

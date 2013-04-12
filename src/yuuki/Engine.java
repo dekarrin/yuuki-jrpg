@@ -560,6 +560,7 @@ public class Engine implements Runnable, UiExecutor {
 		ui.setWorldView(world.getTiles(), world.getLandName());
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
+		ui.addWorldItems(world.getItems());
 	}
 
 	@Override

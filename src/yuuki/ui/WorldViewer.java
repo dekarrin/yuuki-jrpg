@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -66,13 +67,16 @@ public class WorldViewer extends JPanel {
 	 * The exact locatables being displayed. This mirrors the land view. Key
 	 * iteration must be guaranteed to be ordered so that painting routines may
 	 * correctly render lower layers before higher layers.
+	 * 
+	 * This is not a list because there may not necessarily be all indexes 0-n
+	 * for adding n layers.
 	 */
-	private SortedMap<Integer, Grid<Image>> resBuffers;
+	private SortedMap<Integer, Grid<List<Image>>> resBuffers;
 	
 	/**
 	 * The sections of the locatables that contain the drawn residents.
 	 */
-	private Map<Integer, Grid<Image>> resBufferViews;
+	private Map<Integer, Grid<List<Image>>> resBufferViews;
 	
 	/**
 	 * The exact images being displayed. This mirrors the land view.
@@ -107,8 +111,8 @@ public class WorldViewer extends JPanel {
 		Dimension d = new Dimension(width, height);
 		tileBuffer = new ElementGrid<Image>(d);
 		locatables = new HashMap<Integer, Set<Locatable>>();
-		resBuffers = new TreeMap<Integer, Grid<Image>>();
-		resBufferViews = new TreeMap<Integer, Grid<Image>>();
+		resBuffers = new TreeMap<Integer, Grid<List<Image>>>();
+		resBufferViews = new TreeMap<Integer, Grid<List<Image>>>();
 		setLayout(null);
 		Dimension size = new Dimension(width * TILE_SIZE, height * TILE_SIZE);
 		setPreferredSize(size);
@@ -229,7 +233,7 @@ public class WorldViewer extends JPanel {
 	 * @param request The requested upper-left corner.
 	 * @param buffer The buffer that the sub view is being set up on.
 	 */
-	private Grid<Image> createBufferView(Point request, Grid<Image> buffer) {
+	private <T> Grid<T> createBufferView(Point request, Grid<T> buffer) {
 		Rectangle landBox, bufBox, bufViewBox;
 		landBox = new Rectangle(landView.getLocation(), landView.getSize());
 		bufBox = new Rectangle(buffer.getLocation(), buffer.getSize());
@@ -244,7 +248,7 @@ public class WorldViewer extends JPanel {
 			bufViewBox.x += shiftAmount;
 			bufViewBox.width -= (bufBox.width - landBox.width);
 		}
-		Grid<Image> bufferView = buffer.getSubGrid(bufViewBox);
+		Grid<T> bufferView = buffer.getSubGrid(bufViewBox);
 		return bufferView;
 	}
 	
@@ -258,7 +262,7 @@ public class WorldViewer extends JPanel {
 	private void createLayer(int zIndex) {
 		Dimension d = new Dimension(tileWidth, tileHeight);
 		locatables.put(zIndex, new HashSet<Locatable>());
-		resBuffers.put(zIndex, new ElementGrid<Image>(d));
+		resBuffers.put(zIndex, new ElementGrid<List<Image>>(d));
 	}
 	
 	/**
@@ -274,10 +278,15 @@ public class WorldViewer extends JPanel {
 				p.x -= box.x;
 				p.y -= box.y;
 				String imgIndex = l.getDisplayable().getOverworldImage();
-				Grid<Image> bufferView = resBufferViews.get(i);
+				Grid<List<Image>> bufferView = resBufferViews.get(i);
 				try {
 					Image img = images.createImage(imgIndex);
-					bufferView.set(p, img);
+					List<Image> imgList = bufferView.itemAt(p);
+					if (imgList == null) {
+						imgList = new ArrayList<Image>();
+						bufferView.set(p, imgList);
+					}
+					imgList.add(img);
 				} catch (InvalidIndexException e) {
 					DialogHandler.showError(e.getMessage());
 				}
@@ -351,6 +360,28 @@ public class WorldViewer extends JPanel {
 	 * @param g The graphical context to paint the elements on to.
 	 * @param buffer The buffer whose elements are to be painted.
 	 */
+	private void paintElementLists(Graphics2D g, Grid<List<Image>> buffer) {
+		final int w = TILE_SIZE;
+		final int h = TILE_SIZE;
+		Point p = new Point(0, 0);
+		for (p.y = 0; p.y < tileHeight; p.y++) {
+			for (p.x = 0; p.x < tileWidth; p.x++) {
+				List<Image> imgList = buffer.itemAt(p);
+				if (imgList != null) {
+					for (Image img : imgList) {
+						g.drawImage(img, p.x * w, p.y * h, w, h, this);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Paints the elements in a buffer on to a graphical context.
+	 * 
+	 * @param g The graphical context to paint the elements on to.
+	 * @param buffer The buffer whose elements are to be painted.
+	 */
 	private void paintElements(Graphics2D g, Grid<Image> buffer) {
 		final int w = TILE_SIZE;
 		final int h = TILE_SIZE;
@@ -372,8 +403,8 @@ public class WorldViewer extends JPanel {
 	 */
 	private void paintLocatables(Graphics2D g) {
 		for (int i : resBuffers.keySet()) {
-			Grid<Image> buffer = resBuffers.get(i);
-			paintElements(g, buffer);
+			Grid<List<Image>> buffer = resBuffers.get(i);
+			paintElementLists(g, buffer);
 		}
 	}
 	
@@ -410,8 +441,8 @@ public class WorldViewer extends JPanel {
 	 */
 	private void setResBufferViews(Point request) {
 		for (int i : resBuffers.keySet()) {
-			Grid<Image> buffer = resBuffers.get(i);
-			Grid<Image> view = createBufferView(request, buffer);
+			Grid<List<Image>> buffer = resBuffers.get(i);
+			Grid<List<Image>> view = createBufferView(request, buffer);
 			resBufferViews.put(i, view);
 		}
 	}

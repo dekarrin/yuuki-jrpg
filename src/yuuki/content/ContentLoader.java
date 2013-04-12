@@ -218,7 +218,7 @@ public class ContentLoader {
 		Map<Long, Item.Definition> items = null;
 		ItemLoader loader = createItemLoader();
 		loader.setProgressMonitor(sub);
-		String path = manifest.get(ContentManifest.FILE_ACTIONS);
+		String path = manifest.get(ContentManifest.FILE_ITEMS);
 		try {
 			items = loader.load(path);
 		} catch (ResourceFormatException e) {
