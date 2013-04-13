@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
@@ -316,6 +319,20 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private InvenPanel invenPanel;
 	
 	/**
+	 * Listens for key pushes.
+	 */
+	private KeyListener keyListener = new KeyAdapter() {
+		@Override
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_ESCAPE:
+					fireCloseInvenClicked();
+					break;
+			}
+		}
+	};
+	
+	/**
 	 * The itemCell that is currently lit.
 	 */
 	private InvenPanel.ItemCell litCell = null;
@@ -328,6 +345,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 */
 	public InventoryScreen(int width, int height) {
 		super(width, height);
+		addKeyListener(keyListener);
 		createComponents(width, height);
 		addComponents();
 	}
@@ -368,7 +386,9 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	}
 	
 	@Override
-	public void setInitialProperties() {}
+	public void setInitialProperties() {
+		this.requestFocus();
+	}
 	
 	/**
 	 * Adds all child components to this InventoryScreen.
