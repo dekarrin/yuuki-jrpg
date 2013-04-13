@@ -15,9 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import yuuki.item.InventoryPouch;
-import yuuki.item.Item;
-
 import yuuki.Options;
 import yuuki.action.Action;
 import yuuki.animation.engine.AnimationManager;
@@ -27,6 +24,8 @@ import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.entity.Stat;
 import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
+import yuuki.item.InventoryPouch;
+import yuuki.item.Item;
 import yuuki.sound.DualSoundEngine;
 import yuuki.ui.menu.FileMenu;
 import yuuki.ui.menu.MenuBar;
@@ -235,13 +234,13 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
-	public void addWorldPortals(ArrayList<Portal> portals) {
-		addWorldLocatables(portals, OverworldScreen.Z_INDEX_PORTAL_LAYER);
+	public void addWorldItems(List<Item> items) {
+		addWorldLocatables(items, OverworldScreen.Z_INDEX_ITEM_LAYER);
 	}
 	
 	@Override
-	public void addWorldItems(List<Item> items) {
-		addWorldLocatables(items, OverworldScreen.Z_INDEX_ITEM_LAYER);
+	public void addWorldPortals(ArrayList<Portal> portals) {
+		addWorldLocatables(portals, OverworldScreen.Z_INDEX_PORTAL_LAYER);
 	}
 	
 	@Override
@@ -298,6 +297,12 @@ OverworldScreenListener, InvenScreenListener {
 	public void display(Character speaker, String message, boolean animated) {
 		long letterTime = (animated) ? MESSAGE_LETTER_DELAY : 0;
 		messageBox.display(speaker, message, letterTime, MESSAGE_DISPLAY_TIME);
+	}
+	
+	@Override
+	public void dropItemClicked(Item item) {
+		mainProgram.requestItemDrop(item);
+		overworldScreen.redrawWorldViewport();
 	}
 	
 	@Override
@@ -409,6 +414,12 @@ OverworldScreenListener, InvenScreenListener {
 			}
 		}
 		return answer;
+	}
+	
+	@Override
+	public void getItemClicked() {
+		mainProgram.requestGetItem();
+		overworldScreen.redrawWorldViewport();
 	}
 	
 	@Override
@@ -577,6 +588,11 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
+	public void removeWorldItems(Item[] items, int count) {
+		overworldScreen.removeWorldItems(items, count);
+	}
+	
+	@Override
 	public void resetPrompt() {
 		messageBox.exitPrompt();
 		messageBox.clear();
@@ -604,18 +620,18 @@ OverworldScreenListener, InvenScreenListener {
 				this.move = moveLocation;
 			}
 			@Override
-			public void turnButtonClicked(Orientation orientation) {
-				mainProgram.requestPlayerTurn(orientation);
-				overworldScreen.setWalkOrientation(orientation);
-				overworldScreen.redrawWorldViewport();
-				overworldScreen.refreshButtons();
-			}
-			@Override
 			public void run() {
 				overworldScreen.setWalkGraph(graph);
 				overworldScreen.setWalkOrientation(orientation);
 				overworldScreen.refreshButtons();
 				overworldScreen.addMovementListener(this);
+			}
+			@Override
+			public void turnButtonClicked(Orientation orientation) {
+				mainProgram.requestPlayerTurn(orientation);
+				overworldScreen.setWalkOrientation(orientation);
+				overworldScreen.redrawWorldViewport();
+				overworldScreen.refreshButtons();
 			}
 		};
 		Runner r = new Runner(graph, orientation);
@@ -933,6 +949,18 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
+	public void updateInventory(final InventoryPouch pouch) {
+		GraphicalInterface.invokeLaterIfNeeded(new Runnable() {
+			@Override
+			public void run() {
+				invenScreen.clearInventory();
+				invenScreen.addPouch(pouch);
+				invenScreen.repaint();
+			}
+		});
+	}
+	
+	@Override
 	public void updateLoadingProgress(double percent, String text) {
 		class Runner implements Runnable {
 			private double percent;
@@ -963,6 +991,11 @@ OverworldScreenListener, InvenScreenListener {
 		}
 		Runner r = new Runner(center);
 		SwingUtilities.invokeLater(r);
+	}
+	
+	@Override
+	public void useItemClicked(Item item) {
+		mainProgram.requestItemUse(item);
 	}
 	
 	@Override
@@ -1239,27 +1272,6 @@ OverworldScreenListener, InvenScreenListener {
 			messageBox.unfreeze();
 		}
 		mainProgram.requestBattleResume();
-	}
-
-	@Override
-	public void getItemClicked() {
-		mainProgram.requestGetItem();
-		overworldScreen.redrawWorldViewport();
-	}
-
-	@Override
-	public void removeWorldItems(Item[] items, int count) {
-		overworldScreen.removeWorldItems(items, count);
-	}
-
-	@Override
-	public void updateInventory(final InventoryPouch pouch) {
-		GraphicalInterface.invokeLaterIfNeeded(new Runnable() {
-			public void run() {
-				invenScreen.clearInventory();
-				invenScreen.addPouch(pouch);
-			}
-		});
 	}
 	
 }

@@ -34,7 +34,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	/**
 	 * Shows information on an item.
 	 */
-	private static class InfoPanel extends JPanel {
+	private class InfoPanel extends JPanel {
 		
 		/**
 		 * The size of the description font.
@@ -137,18 +137,6 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		}
 		
 		/**
-		 * Sets the info panel for all information based on the current item.
-		 */
-		private void setInfo() {
-			setImage();
-			setTitle();
-			setValueLine();
-			setUsability();
-			setDescription();
-			setButtons();
-		}
-		
-		/**
 		 * Adds child components to this panel.
 		 */
 		private void addComponents() {
@@ -192,8 +180,20 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 			description.setEditable(false);
 			dropButton = new JButton("Drop");
 			dropButton.setEnabled(false);
+			dropButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					fireDropItemClicked(shownItem);
+				}
+			});
 			useButton = new JButton("Use");
 			useButton.setEnabled(false);
+			useButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					fireUseItemClicked(shownItem);
+				}
+			});
 		}
 		
 		/**
@@ -228,6 +228,18 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 				}
 			}
 			image.setBackgroundImage(img);
+		}
+		
+		/**
+		 * Sets the info panel for all information based on the current item.
+		 */
+		private void setInfo() {
+			setImage();
+			setTitle();
+			setValueLine();
+			setUsability();
+			setDescription();
+			setButtons();
 		}
 		
 		/**
@@ -304,6 +316,11 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private InvenPanel invenPanel;
 	
 	/**
+	 * The itemCell that is currently lit.
+	 */
+	private InvenPanel.ItemCell litCell = null;
+	
+	/**
 	 * Creates a new Inventory Screen.
 	 * 
 	 * @param width The width of the screen.
@@ -367,11 +384,6 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	}
 	
 	/**
-	 * The itemCell that is currently lit.
-	 */
-	private InvenPanel.ItemCell litCell = null;
-	
-	/**
 	 * Creates the child components.
 	 * 
 	 * @param width The width of this screen.
@@ -410,6 +422,28 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private void fireCloseInvenClicked() {
 		for (InvenScreenListener l : getElementListeners()) {
 			l.closeInvenClicked();
+		}
+	}
+	
+	/**
+	 * Calls dropItemClicked() on all listeners.
+	 * 
+	 * @param item The item that was selected when the button was clicked.
+	 */
+	private void fireDropItemClicked(Item item) {
+		for (InvenScreenListener l : getElementListeners()) {
+			l.dropItemClicked(item);
+		}
+	}
+	
+	/**
+	 * Calls useItemClicked() on all listeners.
+	 * 
+	 * @param item The item that was selected when the button was clicked.
+	 */
+	private void fireUseItemClicked(Item item) {
+		for (InvenScreenListener l : getElementListeners()) {
+			l.useItemClicked(item);
 		}
 	}
 	

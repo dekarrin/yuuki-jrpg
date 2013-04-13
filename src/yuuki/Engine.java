@@ -1,7 +1,9 @@
 package yuuki;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ import yuuki.entity.PlayerCharacter;
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.file.ResourceNotFoundException;
 import yuuki.item.Item;
+import yuuki.item.ItemNotInPouchException;
 import yuuki.ui.DialogHandler;
 import yuuki.ui.GraphicalInterface;
 import yuuki.ui.Interactable;
@@ -275,6 +278,22 @@ public class Engine implements Runnable, UiExecutor {
 	}
 	
 	@Override
+	public void requestGetItem() {
+		Item[] items = world.getItemsAt(player.getFacingPoint());
+		if (items.length == 0) {
+			ui.display(null, "There are no items in front of you.", false);
+		} else {
+			Item picked = items[0];
+			Item[] obtainableItems = new Item[]{picked};
+			int added = player.giveItems(obtainableItems);
+			world.clearItems(player.getFacingPoint(), added);
+			ui.removeWorldItems(obtainableItems, added);
+			ui.updateInventory(player.getInventory());
+			ui.display(null, "Got " + picked.getName(), false);
+		}
+	}
+	
+	@Override
 	public void requestInventoryClose() {
 		ui.switchToOverworldScreen();
 	}
@@ -282,6 +301,36 @@ public class Engine implements Runnable, UiExecutor {
 	@Override
 	public void requestInventoryOpen() {
 		ui.switchToInvenScreen();
+	}
+	
+	@Override
+	public void requestItemDrop(Item item) {
+		boolean removed = false;
+		try {
+			player.getInventory().removeItem(item);
+			removed = true;
+		} catch (ItemNotInPouchException e) {
+			e.printStackTrace();
+		}
+		if (removed) {
+			Point dropPoint = player.getFacingPoint();
+			if (world.getTiles().itemAt(dropPoint).isWalkable()) {
+				item.setLocation(dropPoint);
+				ArrayList<Item> itemList = new ArrayList<Item>();
+				itemList.add(item);
+				world.addItem(item);
+				ui.addWorldItems(itemList);
+				ui.updateInventory(player.getInventory());
+				ui.display(null, "Dropped " + item.getName(), false);
+			} else {
+				ui.display(null, "Can't drop items there.", false);
+			}
+		}
+	}
+	
+	@Override
+	public void requestItemUse(Item item) {
+		ui.display(null, "External item use hasn't been implemented.", false);
 	}
 	
 	@Override
@@ -561,22 +610,6 @@ public class Engine implements Runnable, UiExecutor {
 		ui.addWorldPortals(world.getPortals());
 		ui.addWorldEntities(world.getResidents());
 		ui.addWorldItems(world.getItems());
-	}
-
-	@Override
-	public void requestGetItem() {
-		Item[] items = world.getItemsAt(player.getFacingPoint());
-		if (items.length == 0) {
-			ui.display(null, "There are no items in front of you.", false);
-		} else {
-			Item picked = items[0];
-			Item[] obtainableItems = new Item[]{picked};
-			int added = player.giveItems(obtainableItems);
-			world.clearItems(player.getFacingPoint(), added);
-			ui.removeWorldItems(obtainableItems, added);
-			ui.updateInventory(player.getInventory());
-			ui.display(null, "Got " + picked.getName(), false);
-		}
 	}
 	
 }

@@ -346,6 +346,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	@Override
 	public void setInitialProperties() {
 		this.requestFocus();
+		worldViewer.redrawDisplay();
 	}
 	
 	/**
