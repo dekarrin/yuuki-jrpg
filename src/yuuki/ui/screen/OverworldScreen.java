@@ -496,13 +496,17 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	private void fireMoveButtonClicked(Component c) {
 		Orientation face = getMovementOrientation(c);
-		if (face == playerOrientation) {
-			Point p = getMovementPoint(c);
-			if (p != null) { // if the user pressed a valid direction
-				fireMoved(p);
+		Point p = getMovementPoint(c);
+		if (face != null) {
+			if (face == playerOrientation) {
+				if (p != null) { // if the user pressed a valid direction
+					fireMoved(p);
+				}
+			} else {
+				fireTurned(face);
 			}
 		} else {
-			fireTurned(face);
+			fireMoved(p);
 		}
 		this.removeKeyListener(numpadListener);
 		(new Thread(new Unlocker(), "KeyLocker")).start();
