@@ -2,7 +2,7 @@ package yuuki.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -60,17 +60,17 @@ public class InvenPanel extends JPanel {
 		}
 		
 		/**
-		 * Dims this cell.
-		 */
-		public void dim() {
-			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-		}
-		
-		/**
 		 * Highlights this cell.
 		 */
 		public void brighten() {
 			setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		}
+		
+		/**
+		 * Dims this cell.
+		 */
+		public void dim() {
+			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		}
 		
 		/**
@@ -91,6 +91,11 @@ public class InvenPanel extends JPanel {
 	 * Used for generating tile images.
 	 */
 	private ImageFactory images;
+	
+	/**
+	 * The number of items added.
+	 */
+	private int itemCount = 0;
 	
 	/**
 	 * Shows the items.
@@ -122,6 +127,8 @@ public class InvenPanel extends JPanel {
 	public void addItem(Item item) {
 		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
 		itemList.add(cell);
+		itemCount++;
+		calcLayout();
 	}
 	
 	/**
@@ -141,6 +148,7 @@ public class InvenPanel extends JPanel {
 	 */
 	public void clearItems() {
 		itemList.removeAll();
+		itemCount = 0;
 	}
 	
 	/**
@@ -170,11 +178,26 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
+	 * Calculates the number of slots in the layout.
+	 */
+	private void calcLayout() {
+		int width = itemList.viewerWidth / ITEM_CELL_SIZE;
+		int height = itemCount / width;
+		if (itemCount % width == 0) {
+			height++;
+		}
+		GridLayout layout = ((GridLayout) itemList.getLayout());
+		layout.setColumns(width);
+		layout.setRows(height);
+	}
+	
+	/**
 	 * Creates the components in this panel.
 	 */
 	private void createComponents(int width, int height) {
 		itemList = new VerticalScrollPaneClient(width, height, ITEM_CELL_SIZE);
-		itemList.setLayout(new FlowLayout(FlowLayout.LEFT));
+		GridLayout layout = new GridLayout(1, 1);
+		itemList.setLayout(layout);
 	}
 	
 	/**
