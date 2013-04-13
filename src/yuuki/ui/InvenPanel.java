@@ -2,7 +2,6 @@ package yuuki.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -83,9 +82,14 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * The height of a cell in the items list.
+	 * How much to pad each item cell by.
 	 */
-	public static final int ITEM_CELL_SIZE = 100;
+	public static final int ITEM_CELL_PAD = 3;
+	
+	/**
+	 * The height and width of a cell in the items list.
+	 */
+	public static final int ITEM_CELL_SIZE = 50;
 	
 	/**
 	 * Used for generating tile images.
@@ -125,10 +129,15 @@ public class InvenPanel extends JPanel {
 	 * @param item The item to add.
 	 */
 	public void addItem(Item item) {
-		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
-		itemList.add(cell);
 		itemCount++;
-		calcLayout();
+		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
+		setCellBounds(cell);
+		itemList.add(cell);
+		int actualCellHeight = ITEM_CELL_SIZE + ITEM_CELL_PAD;
+		int listHeight = ITEM_CELL_PAD + getRowCount() * actualCellHeight;
+		Dimension listSize = new Dimension(itemList.viewerWidth, listHeight);
+		itemList.setPreferredSize(listSize);
+		itemList.setMinimumSize(listSize);
 	}
 	
 	/**
@@ -178,26 +187,11 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * Calculates the number of slots in the layout.
-	 */
-	private void calcLayout() {
-		int width = itemList.viewerWidth / ITEM_CELL_SIZE;
-		int height = itemCount / width;
-		if (itemCount % width == 0) {
-			height++;
-		}
-		GridLayout layout = ((GridLayout) itemList.getLayout());
-		layout.setColumns(width);
-		layout.setRows(height);
-	}
-	
-	/**
 	 * Creates the components in this panel.
 	 */
 	private void createComponents(int width, int height) {
 		itemList = new VerticalScrollPaneClient(width, height, ITEM_CELL_SIZE);
-		GridLayout layout = new GridLayout(1, 1);
-		itemList.setLayout(layout);
+		itemList.setLayout(null);
 	}
 	
 	/**
@@ -209,6 +203,39 @@ public class InvenPanel extends JPanel {
 		if (listener != null) {
 			listener.itemCellClicked(e, item);
 		}
+	}
+	
+	/**
+	 * Gets the number of columns that fit in a row.
+	 * 
+	 * @return The number of cells.
+	 */
+	private int getColCount() {
+		int useableWidth = itemList.viewerWidth - ITEM_CELL_PAD;
+		int rowWidth = useableWidth / (ITEM_CELL_SIZE + ITEM_CELL_PAD);
+		return rowWidth;
+	}
+	
+	/**
+	 * Gets the number of rows in this panel.
+	 * 
+	 * @return The number of cells.
+	 */
+	private int getRowCount() {
+		return (itemCount - 1) / getColCount() + 1;
+	}
+	
+	/**
+	 * Sets the bounds for a new item cell.
+	 * 
+	 * @param cell The cell to set the bounds for.
+	 */
+	private void setCellBounds(ItemCell cell) {
+		int relX = (itemCount - 1) % getColCount();
+		int relY = (itemCount - 1) / getColCount();
+		int x = ITEM_CELL_PAD + relX * (ITEM_CELL_SIZE + ITEM_CELL_PAD);
+		int y = ITEM_CELL_PAD + relY * (ITEM_CELL_SIZE + ITEM_CELL_PAD);
+		cell.setBounds(x, y, ITEM_CELL_SIZE, ITEM_CELL_SIZE);
 	}
 	
 }
