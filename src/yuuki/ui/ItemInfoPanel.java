@@ -1,17 +1,16 @@
 package yuuki.ui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import yuuki.graphic.ImageComponent;
@@ -116,8 +115,10 @@ public class ItemInfoPanel extends JPanel {
 	 * @param height The height of the info panel.
 	 */
 	public ItemInfoPanel(int width, int height) {
+		setLayout(null);
 		createComponents();
 		addComponents();
+		showInfo(null);
 	}
 	
 	/**
@@ -152,52 +153,86 @@ public class ItemInfoPanel extends JPanel {
 	 * Adds child components to this panel.
 	 */
 	private void addComponents() {
-		Box layout = new Box(BoxLayout.Y_AXIS);
-		Box valueLine = new Box(BoxLayout.X_AXIS);
-		layout.add(image);
-		layout.add(title);
-		layout.add(usability);
-		valueLine.add(value);
-		valueLine.add(uses);
-		layout.add(valueLine);
-		layout.add(new JScrollPane(description));
-		Box buttons = new Box(BoxLayout.X_AXIS);
-		buttons.add(dropButton);
-		buttons.add(useButton);
-		layout.add(buttons);
-		add(layout);
+		add(image);
+		add(title);
+		add(usability);
+		add(value);
+		add(uses);
+		add(description);
+		add(dropButton);
+		add(useButton);
 	}
 	
 	/**
 	 * Creates all child components.
 	 */
 	private void createComponents() {
-		image = new ImageComponent();
-		image.setBackgroundImage(null);
-		image.setPreferredSize(new Dimension(IMAGE_SIZE, IMAGE_SIZE));
-		title = new JLabel("No item selected");
-		title.setFont(new Font(Font.SERIF, Font.ITALIC, TITLE_FONT_SIZE));
-		usability = new JLabel("No item selected");
-		usability.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
-				INFO_FONT_SIZE));
-		value = new JLabel("No item selected");
-		value.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
-				INFO_FONT_SIZE));
-		uses = new JLabel("No item selected");
-		uses.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
-				INFO_FONT_SIZE));
-		description = new JTextArea("No item selected");
-		description.setFont(new Font(Font.SERIF, Font.ITALIC,
+		createImage();
+		createTitle();
+		createUsability();
+		createValue();
+		createUses();
+		createDescription();
+		createDropButton();
+		createUseButton();
+	}
+	
+	/**
+	 * Creates the description component.
+	 */
+	private void createDescription() {
+		description = new JTextArea();
+		description.setFont(new Font(Font.SERIF, Font.PLAIN,
 				DESC_FONT_SIZE));
 		description.setEditable(false);
+	}
+	
+	/**
+	 * Creates the drop button component.
+	 */
+	private void createDropButton() {
 		dropButton = new JButton("Drop");
-		dropButton.setEnabled(false);
 		dropButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				listener.dropItemClicked(shownItem);
 			}
 		});
+	}
+	
+	/**
+	 * Creates the image component.
+	 */
+	private void createImage() {
+		Dimension d = new Dimension(IMAGE_SIZE, IMAGE_SIZE);
+		image = new ImageComponent();
+		image.setPreferredSize(d);
+		image.setMinimumSize(d);
+	}
+	
+	/**
+	 * Creates the title component.
+	 */
+	private void createTitle() {
+		title = new JLabel();
+		title.setFont(new Font(Font.SERIF, Font.PLAIN, TITLE_FONT_SIZE));
+		title.setAlignmentX(Component.LEFT_ALIGNMENT);
+	}
+	
+	/**
+	 * Creates the usability component.
+	 */
+	private void createUsability() {
+		usability = new JLabel();
+		usability.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,
+				INFO_FONT_SIZE));
+		usability.setAlignmentX(Component.LEFT_ALIGNMENT);
+	}
+	
+	/**
+	 * Creates the use button component.
+	 */
+	private void createUseButton() {
 		useButton = new JButton("Use");
 		useButton.setEnabled(false);
 		useButton.addActionListener(new ActionListener() {
@@ -206,6 +241,124 @@ public class ItemInfoPanel extends JPanel {
 				listener.useItemClicked(shownItem);
 			}
 		});
+	}
+	
+	/**
+	 * Creates the uses components.
+	 */
+	private void createUses() {
+		uses = new JLabel();
+		uses.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
+				INFO_FONT_SIZE));
+		uses.setAlignmentX(Component.RIGHT_ALIGNMENT);
+	}
+	
+	/**
+	 * Creates the value component.
+	 */
+	private void createValue() {
+		value = new JLabel();
+		value.setFont(new Font(Font.SANS_SERIF, Font.PLAIN,
+				INFO_FONT_SIZE));
+		value.setAlignmentX(Component.LEFT_ALIGNMENT);
+	}
+	
+	/**
+	 * Lays out the components in this panel.
+	 */
+	private void layoutComponents() {
+		layoutImage();
+		layoutTitle();
+		layoutUsability();
+		layoutValue();
+		layoutDescription();
+		layoutDropButton();
+		layoutUseButton();
+		layoutUses();
+		layoutSelf();
+	}
+	
+	/**
+	 * Lays out the description component.
+	 */
+	private void layoutDescription() {
+		Rectangle box = value.getBounds();
+		Dimension d = description.getPreferredSize();
+		description.setBounds(0, box.y + box.height + 1, d.width + 2,
+				d.height);
+	}
+	
+	/**
+	 * Lays out the drop button.
+	 */
+	private void layoutDropButton() {
+		Rectangle box = description.getBounds();
+		Dimension d = dropButton.getPreferredSize();
+		dropButton.setBounds(0, box.y + box.height + 1, d.width, d.height);
+	}
+	
+	/**
+	 * Lays out the image component.
+	 */
+	private void layoutImage() {
+		image.setBounds(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+	}
+	
+	/**
+	 * Sets the bounds of this component.
+	 */
+	private void layoutSelf() {
+		Rectangle box = dropButton.getBounds();
+		Dimension size = new Dimension(box.y + box.height, box.x + box.width);
+		setPreferredSize(size);
+		setMinimumSize(size);
+	}
+	
+	/**
+	 * Lays out the title component.
+	 */
+	private void layoutTitle() {
+		Rectangle box = image.getBounds();
+		Dimension d = title.getPreferredSize();
+		title.setBounds(0, box.y + box.height + 1, d.width + 2, d.height);
+	}
+	
+	/**
+	 * Lays out the usability component.
+	 */
+	private void layoutUsability() {
+		Rectangle box = title.getBounds();
+		Dimension d = usability.getPreferredSize();
+		usability.setBounds(0, box.y + box.height + 1, d.width + 2, d.height);
+	}
+	
+	/**
+	 * Lays out the use button.
+	 */
+	private void layoutUseButton() {
+		Rectangle box = dropButton.getBounds();
+		Dimension d = useButton.getPreferredSize();
+		useButton.setBounds(box.width + 1, box.y, d.width, d.height);
+	}
+	
+	/**
+	 * Lays out the uses component.
+	 */
+	private void layoutUses() {
+		Rectangle box = value.getBounds();
+		Rectangle b2 = useButton.getBounds();
+		Dimension d = uses.getPreferredSize();
+		int x = b2.x + b2.width - (d.width + 2);
+		uses.setBounds(x, box.y, d.width + 2, d.height);
+	}
+	
+	/**
+	 * Lays out the value component.
+	 */
+	private void layoutValue() {
+		Rectangle box = usability.getBounds();
+		Dimension d = value.getPreferredSize();
+		value.setBounds(0, box.y + box.height + 1, d.width + 2, d.height);
 	}
 	
 	/**
@@ -220,10 +373,13 @@ public class ItemInfoPanel extends JPanel {
 	 * Sets the description based on the current item.
 	 */
 	private void setDescription() {
-		String text = "";
+		String text = "No item selected";
+		Font f = description.getFont().deriveFont(Font.ITALIC);
 		if (shownItem != null) {
-			text = "Descriptions are not yet implemented.";
+			text = "";
+			f = f.deriveFont(Font.PLAIN);
 		}
+		description.setFont(f);
 		description.setText(text);
 	}
 	
@@ -252,16 +408,20 @@ public class ItemInfoPanel extends JPanel {
 		setUsability();
 		setDescription();
 		setButtons();
+		layoutComponents();
 	}
 	
 	/**
 	 * Sets the title from the current item.
 	 */
 	private void setTitle() {
-		String titleText = "";
+		String titleText = "No item selected";
+		Font f = title.getFont().deriveFont(Font.ITALIC);
 		if (shownItem != null) {
 			titleText = shownItem.getName();
+			f = f.deriveFont(Font.PLAIN);
 		}
+		title.setFont(f);
 		title.setText(titleText);
 	}
 	
@@ -269,8 +429,10 @@ public class ItemInfoPanel extends JPanel {
 	 * Sets the usability line from the current item.
 	 */
 	private void setUsability() {
-		String usabilityText = "";
+		String usabilityText = "No item selected";
+		Font f = usability.getFont().deriveFont(Font.ITALIC);
 		if (shownItem != null) {
+			f = f.deriveFont(Font.PLAIN);
 			if (shownItem.isUsable()) {
 				usabilityText = "May be used";
 				if (!shownItem.isExternal()) {
@@ -280,6 +442,7 @@ public class ItemInfoPanel extends JPanel {
 				usabilityText = "Not usable";
 			}
 		}
+		usability.setFont(f);
 		usability.setText(usabilityText);
 	}
 	
@@ -287,15 +450,18 @@ public class ItemInfoPanel extends JPanel {
 	 * Sets the value and uses line from the current item.
 	 */
 	private void setValueLine() {
-		String usesText = "";
 		String valueText = "No item selected";
+		String usesText = "";
+		Font f = value.getFont().deriveFont(Font.ITALIC);
 		if (shownItem != null) {
+			f = f.deriveFont(Font.PLAIN);
 			if (shownItem.isUsable()) {
 				UsableItem item = ((UsableItem) shownItem);
 				usesText = item.getUses() + " uses left";
 			}
 			valueText = shownItem.getValue() + "cp";
 		}
+		value.setFont(f);
 		value.setText(valueText);
 		uses.setText(usesText);
 	}
