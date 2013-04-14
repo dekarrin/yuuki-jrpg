@@ -183,6 +183,12 @@ public class InvenPanel extends JPanel {
 		AutoGridLayout layout = new AutoGridLayout(itemList.viewerWidth,
 				ITEM_CELL_SIZE, ITEM_CELL_MIN_SPACE);
 		itemList.setLayout(layout);
+		itemList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				fireItemDeselected();
+			}
+		});
 	}
 	
 	/**
@@ -193,6 +199,15 @@ public class InvenPanel extends JPanel {
 	private void fireItemCellClicked(MouseEvent e, Item item) {
 		if (listener != null) {
 			listener.itemCellClicked(e, item);
+		}
+	}
+	
+	/**
+	 * Calls itemDeselected() on the listener.
+	 */
+	private void fireItemDeselected() {
+		if (listener != null) {
+			listener.itemDeselected();
 		}
 	}
 	

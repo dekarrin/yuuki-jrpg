@@ -119,6 +119,8 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	
 	@Override
 	public void setInitialProperties() {
+		dimSelection();
+		infoPanel.showInfo(null);
 		this.requestFocus();
 	}
 	
@@ -147,14 +149,11 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		invenPanel.setListener(new InvenItemClickListener() {
 			@Override
 			public void itemCellClicked(MouseEvent e, Item item) {
-				if (litCell != null) {
-					litCell.dim();
-				}
-				InvenPanel.ItemCell cell = (InvenPanel.ItemCell) e.getSource();
-				litCell = cell;
-				cell.brighten();
-				infoPanel.showInfo(item);
-				repaint();
+				selectItem(e, item);
+			}
+			@Override
+			public void itemDeselected() {
+				deselectItem();
 			}
 		});
 		closeButton = new JButton("Close");
@@ -176,6 +175,23 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 				fireUseItemClicked(item);
 			}
 		});
+	}
+	
+	/**
+	 * Deselects an item.
+	 */
+	private void deselectItem() {
+		dimSelection();
+		infoPanel.showInfo(null);
+	}
+	
+	/**
+	 * Dims the currently selected cell, if there is one.
+	 */
+	private void dimSelection() {
+		if (litCell != null) {
+			litCell.dim();
+		}
 	}
 	
 	/**
@@ -207,6 +223,21 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		for (InvenScreenListener l : getElementListeners()) {
 			l.useItemClicked(item);
 		}
+	}
+	
+	/**
+	 * Called when an inventory item is clicked.
+	 * 
+	 * @param e The MouseEvent that caused it.
+	 * @param item The item that was clicked.
+	 */
+	private void selectItem(MouseEvent e, Item item) {
+		dimSelection();
+		InvenPanel.ItemCell cell = (InvenPanel.ItemCell) e.getSource();
+		litCell = cell;
+		cell.brighten();
+		infoPanel.showInfo(item);
+		repaint();
 	}
 	
 }
