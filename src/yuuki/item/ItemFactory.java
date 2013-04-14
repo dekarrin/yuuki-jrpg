@@ -67,13 +67,14 @@ public class ItemFactory implements Mergeable<Map<Long, Item.Definition>> {
 			Action a = actionFactory.createAction(def.action);
 			if (def.external) {
 				item = new ExternallyUsableItem(def.id, def.name, def.value,
-						def.image, a, def.uses);
+						def.image, def.description, a, def.uses);
 			} else {
 				item = new UsableItem(def.id, def.name, def.value, def.image,
-						a, def.uses);
+						def.description, a, def.uses);
 			}
 		} else {
-			item = new Item(def.id, def.name, def.value, def.image);
+			item = new Item(def.id, def.name, def.value, def.image,
+					def.description);
 		}
 		return item;
 	}

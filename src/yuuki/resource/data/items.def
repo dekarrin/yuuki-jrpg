@@ -1,3 +1,3 @@
-#id,	name,				value,	image,				usable,		external,	action,		use-count
-"1",	"Health Potion",	"25",	"ITEM_RED_POTION",	"1",		"1",		"6",		"1"
-"2",	"Bag of Gold",		"1000",	"ITEM_LOOT_BAG",	"0",		"0",		"0",		"0"
+#id,	name,				value,	image,				usable,		external,	action,		use-count,	description
+"1",	"Health Potion",	"25",	"ITEM_RED_POTION",	"1",		"1",		"6",		"1",		"A rare extract of eucalyptus that has a sweet-smelling aroma. Quaff this potion to heal your character for 50 HP."
+"2",	"Bag of Gold",		"1000",	"ITEM_LOOT_BAG",	"0",		"0",		"0",		"0",		"Merchants love this stuff, and will probably pay a lot for it."

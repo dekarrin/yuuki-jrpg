@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import yuuki.graphic.ImageComponent;
@@ -57,6 +58,11 @@ public class ItemInfoPanel extends JPanel {
 	 * The description of the item.
 	 */
 	private JTextArea description;
+	
+	/**
+	 * Holds the description as its client.
+	 */
+	private JScrollPane descScroll;
 	
 	/**
 	 * Drops the item when clicked.
@@ -137,7 +143,7 @@ public class ItemInfoPanel extends JPanel {
 	 */
 	public void setListener(InfoPanelListener l) {
 		listener = l;
-	}
+	};
 	
 	/**
 	 * Sets the info panel to show information on an item.
@@ -147,7 +153,7 @@ public class ItemInfoPanel extends JPanel {
 	public void showInfo(Item item) {
 		shownItem = item;
 		setInfo();
-	};
+	}
 	
 	/**
 	 * Adds child components to this panel.
@@ -158,7 +164,7 @@ public class ItemInfoPanel extends JPanel {
 		add(usability);
 		add(value);
 		add(uses);
-		add(description);
+		add(descScroll);
 		add(dropButton);
 		add(useButton);
 	}
@@ -181,10 +187,16 @@ public class ItemInfoPanel extends JPanel {
 	 * Creates the description component.
 	 */
 	private void createDescription() {
-		description = new JTextArea();
+		description = new JTextArea(4, 14);
 		description.setFont(new Font(Font.SERIF, Font.PLAIN,
 				DESC_FONT_SIZE));
 		description.setEditable(false);
+		description.setHighlighter(null);
+		description.setLineWrap(true);
+		description.setWrapStyleWord(true);
+		descScroll = new JScrollPane(description);
+		int policy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+		descScroll.setVerticalScrollBarPolicy(policy);
 	}
 	
 	/**
@@ -276,6 +288,7 @@ public class ItemInfoPanel extends JPanel {
 		layoutUseButton();
 		layoutUses();
 		layoutSelf();
+		repaint();
 	}
 	
 	/**
@@ -283,16 +296,15 @@ public class ItemInfoPanel extends JPanel {
 	 */
 	private void layoutDescription() {
 		Rectangle box = value.getBounds();
-		Dimension d = description.getPreferredSize();
-		description.setBounds(0, box.y + box.height + 1, d.width + 2,
-				d.height);
+		Dimension d = descScroll.getPreferredSize();
+		descScroll.setBounds(0, box.y + box.height + 1, d.width + 2, d.height);
 	}
 	
 	/**
 	 * Lays out the drop button.
 	 */
 	private void layoutDropButton() {
-		Rectangle box = description.getBounds();
+		Rectangle box = descScroll.getBounds();
 		Dimension d = dropButton.getPreferredSize();
 		dropButton.setBounds(0, box.y + box.height + 1, d.width, d.height);
 	}
@@ -376,11 +388,12 @@ public class ItemInfoPanel extends JPanel {
 		String text = "No item selected";
 		Font f = description.getFont().deriveFont(Font.ITALIC);
 		if (shownItem != null) {
-			text = "";
+			text = shownItem.getDescription();
 			f = f.deriveFont(Font.PLAIN);
 		}
 		description.setFont(f);
 		description.setText(text);
+		description.setCaretPosition(0);
 	}
 	
 	/**
