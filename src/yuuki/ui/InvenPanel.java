@@ -42,7 +42,9 @@ public class InvenPanel extends JPanel {
 		 */
 		public ItemCell(Item item, int size) {
 			this.item = item;
-			setPreferredSize(new Dimension(size, size));
+			Dimension s = new Dimension(size, size);
+			setPreferredSize(s);
+			setMinimumSize(s);
 			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			try {
 				Image img = images.createImage(item.getImage());
@@ -97,11 +99,6 @@ public class InvenPanel extends JPanel {
 	private ImageFactory images;
 	
 	/**
-	 * The number of items added.
-	 */
-	private int itemCount = 0;
-	
-	/**
 	 * Shows the items.
 	 */
 	private VerticalScrollPaneClient itemList;
@@ -129,15 +126,8 @@ public class InvenPanel extends JPanel {
 	 * @param item The item to add.
 	 */
 	public void addItem(Item item) {
-		itemCount++;
 		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
-		setCellBounds(cell);
 		itemList.add(cell);
-		int actualCellHeight = ITEM_CELL_SIZE + cellSpacing();
-		int listHeight = cellSpacing() + getRowCount() * actualCellHeight;
-		Dimension listSize = new Dimension(itemList.viewerWidth, listHeight);
-		itemList.setPreferredSize(listSize);
-		itemList.setMinimumSize(listSize);
 	}
 	
 	/**
@@ -157,7 +147,6 @@ public class InvenPanel extends JPanel {
 	 */
 	public void clearItems() {
 		itemList.removeAll();
-		itemCount = 0;
 	}
 	
 	/**
@@ -187,29 +176,13 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * Calculates the spacing between each item cell. The spacing will always
-	 * be at least the amount specified by ITEM_CELL_MIN_SPACE, but if there is
-	 * enough room in this InvenPanel, spacing will stretch so that the item
-	 * cells are uniformly distributed about the width of this container.
-	 * 
-	 * @return The calculated padding for an item cell.
-	 */
-	private int cellSpacing() {
-		int cols = getColCount();
-		int colsWidth = (ITEM_CELL_SIZE + ITEM_CELL_MIN_SPACE) * cols;
-		int usedWidth = colsWidth + ITEM_CELL_MIN_SPACE;
-		int extraWidth = itemList.viewerWidth - usedWidth;
-		int extraSpace = extraWidth / (cols + 1);
-		int totalSpace = ITEM_CELL_MIN_SPACE + extraSpace;
-		return totalSpace;
-	}
-	
-	/**
 	 * Creates the components in this panel.
 	 */
 	private void createComponents(int width, int height) {
 		itemList = new VerticalScrollPaneClient(width, height, ITEM_CELL_SIZE);
-		itemList.setLayout(null);
+		AutoGridLayout layout = new AutoGridLayout(itemList.viewerWidth,
+				ITEM_CELL_SIZE, ITEM_CELL_MIN_SPACE);
+		itemList.setLayout(layout);
 	}
 	
 	/**
@@ -221,39 +194,6 @@ public class InvenPanel extends JPanel {
 		if (listener != null) {
 			listener.itemCellClicked(e, item);
 		}
-	}
-	
-	/**
-	 * Gets the number of columns that fit in a row.
-	 * 
-	 * @return The number of cells.
-	 */
-	private int getColCount() {
-		int useableWidth = itemList.viewerWidth - ITEM_CELL_MIN_SPACE;
-		int colCount = useableWidth / (ITEM_CELL_SIZE + ITEM_CELL_MIN_SPACE);
-		return colCount;
-	}
-	
-	/**
-	 * Gets the number of rows in this panel.
-	 * 
-	 * @return The number of cells.
-	 */
-	private int getRowCount() {
-		return (itemCount - 1) / getColCount() + 1;
-	}
-	
-	/**
-	 * Sets the bounds for a new item cell.
-	 * 
-	 * @param cell The cell to set the bounds for.
-	 */
-	private void setCellBounds(ItemCell cell) {
-		int relX = (itemCount - 1) % getColCount();
-		int relY = (itemCount - 1) / getColCount();
-		int x = cellSpacing() + relX * (ITEM_CELL_SIZE + cellSpacing());
-		int y = cellSpacing() + relY * (ITEM_CELL_SIZE + cellSpacing());
-		cell.setBounds(x, y, ITEM_CELL_SIZE, ITEM_CELL_SIZE);
 	}
 	
 }
