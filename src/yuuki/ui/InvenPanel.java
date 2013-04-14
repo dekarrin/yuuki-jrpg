@@ -82,9 +82,9 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * How much to pad each item cell by.
+	 * The minimum amount of padding to use between each cell.
 	 */
-	public static final int ITEM_CELL_PAD = 3;
+	public static final int ITEM_CELL_MIN_SPACE = 3;
 	
 	/**
 	 * The height and width of a cell in the items list.
@@ -133,8 +133,8 @@ public class InvenPanel extends JPanel {
 		ItemCell cell = new ItemCell(item, ITEM_CELL_SIZE);
 		setCellBounds(cell);
 		itemList.add(cell);
-		int actualCellHeight = ITEM_CELL_SIZE + ITEM_CELL_PAD;
-		int listHeight = ITEM_CELL_PAD + getRowCount() * actualCellHeight;
+		int actualCellHeight = ITEM_CELL_SIZE + cellSpacing();
+		int listHeight = cellSpacing() + getRowCount() * actualCellHeight;
 		Dimension listSize = new Dimension(itemList.viewerWidth, listHeight);
 		itemList.setPreferredSize(listSize);
 		itemList.setMinimumSize(listSize);
@@ -187,6 +187,24 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
+	 * Calculates the spacing between each item cell. The spacing will always
+	 * be at least the amount specified by ITEM_CELL_MIN_SPACE, but if there is
+	 * enough room in this InvenPanel, spacing will stretch so that the item
+	 * cells are uniformly distributed about the width of this container.
+	 * 
+	 * @return The calculated padding for an item cell.
+	 */
+	private int cellSpacing() {
+		int cols = getColCount();
+		int colsWidth = (ITEM_CELL_SIZE + ITEM_CELL_MIN_SPACE) * cols;
+		int usedWidth = colsWidth + ITEM_CELL_MIN_SPACE;
+		int extraWidth = itemList.viewerWidth - usedWidth;
+		int extraSpace = extraWidth / (cols + 1);
+		int totalSpace = ITEM_CELL_MIN_SPACE + extraSpace;
+		return totalSpace;
+	}
+	
+	/**
 	 * Creates the components in this panel.
 	 */
 	private void createComponents(int width, int height) {
@@ -211,9 +229,9 @@ public class InvenPanel extends JPanel {
 	 * @return The number of cells.
 	 */
 	private int getColCount() {
-		int useableWidth = itemList.viewerWidth - ITEM_CELL_PAD;
-		int rowWidth = useableWidth / (ITEM_CELL_SIZE + ITEM_CELL_PAD);
-		return rowWidth;
+		int useableWidth = itemList.viewerWidth - ITEM_CELL_MIN_SPACE;
+		int colCount = useableWidth / (ITEM_CELL_SIZE + ITEM_CELL_MIN_SPACE);
+		return colCount;
 	}
 	
 	/**
@@ -233,8 +251,8 @@ public class InvenPanel extends JPanel {
 	private void setCellBounds(ItemCell cell) {
 		int relX = (itemCount - 1) % getColCount();
 		int relY = (itemCount - 1) / getColCount();
-		int x = ITEM_CELL_PAD + relX * (ITEM_CELL_SIZE + ITEM_CELL_PAD);
-		int y = ITEM_CELL_PAD + relY * (ITEM_CELL_SIZE + ITEM_CELL_PAD);
+		int x = cellSpacing() + relX * (ITEM_CELL_SIZE + cellSpacing());
+		int y = cellSpacing() + relY * (ITEM_CELL_SIZE + cellSpacing());
 		cell.setBounds(x, y, ITEM_CELL_SIZE, ITEM_CELL_SIZE);
 	}
 	
