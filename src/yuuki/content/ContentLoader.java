@@ -544,8 +544,7 @@ public class ContentLoader {
 	 * @return The created ByteArrayLoader.
 	 */
 	protected ByteArrayLoader createFileLoader(String pathIndex) {
-		String path = manifest.get(pathIndex);
-		File fileDir = new File(root, path);
+		File fileDir = manifest.appendFile(root, pathIndex);
 		return new ByteArrayLoader(fileDir);
 	}
 	
@@ -565,8 +564,7 @@ public class ContentLoader {
 	 * @return The created LandLoader.
 	 */
 	protected LandLoader createLandLoader(PopulationFactory pop) {
-		String path = manifest.get(ContentManifest.DIR_LANDS);
-		File landDir = new File(root, path);
+		File landDir = manifest.appendFile(root, ContentManifest.DIR_LANDS);
 		return new LandLoader(landDir, pop);
 	}
 	

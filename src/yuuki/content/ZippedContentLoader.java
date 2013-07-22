@@ -109,12 +109,8 @@ public class ZippedContentLoader extends ContentLoader {
 		ByteArrayLoader loader = null;
 		try {
 			ZipFile zip = new ZipFile(root);
-			String path = manifest.get(pathIndex);
-			if (!zipRoot.equalsIgnoreCase("") && !zipRoot.endsWith("/")) {
-				path = "/" + path;
-			}
-			String fullPath = zipRoot + path;
-			loader = new ByteArrayLoader(zip, fullPath);
+			String path = manifest.appendPath(zipRoot, pathIndex);
+			loader = new ByteArrayLoader(zip, path);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -125,9 +121,10 @@ public class ZippedContentLoader extends ContentLoader {
 	@Override
 	protected LandLoader createLandLoader(PopulationFactory pop) {
 		LandLoader loader = null;
+		String dir = manifest.appendPath(zipRoot, ContentManifest.DIR_LANDS);
 		try {
 			ZipFile zip = new ZipFile(root);
-			loader = new LandLoader(zip, zipRoot, pop);
+			loader = new LandLoader(zip, dir, pop);
 			zip.close();
 		} catch (IOException e) {
 			e.printStackTrace();
