@@ -1,5 +1,6 @@
 package yuuki.content;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,6 +108,42 @@ public class ContentManifest {
 			throw new IllegalArgumentException(index);
 		}
 		return p;
+	}
+	
+	/**
+	 * Gets a directory from this ContentManifest. Formatting is handled
+	 * automatically.
+	 * 
+	 * @param root The file to append the path to.
+	 * @param index The index of the path to get.
+	 */
+	public File appendFile(File root, String index) {
+		String path = get(index);
+		File dir = new File(root, path);
+		return dir;
+	}
+	
+	/**
+	 * Gets a path from this ContentManifest and appends it to an existing path.
+	 * Formatting is handled automatically.
+	 * 
+	 * @param root The file to append the path to.
+	 * @param index The index of the path to get.
+	 */
+	public String appendPath(String root, String index) {
+		String path = get(index);
+		String sep1 = "", sep2 = "";
+		if (!root.endsWith("/")) {
+			sep1 = "/";
+		}
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		if (!path.endsWith("/")) {
+			sep2 = "/";
+		}
+		String full = root + sep1 + path + sep2;
+		return full;
 	}
 	
 	/**
