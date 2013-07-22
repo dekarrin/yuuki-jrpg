@@ -22,8 +22,9 @@ to attempt to manually build the code and debug any problems you find.
 
 To build the project code into a directory rather than a JAR file, execute `ant
 all` at the project's root. The code will be compiled to dist/bin. Execute the
-main class yuuki.Engine to run the program. You must include dist/lib/ and
-dist/bin/ in your classpath when executing the main class manually.
+main class yuuki.Engine to run the program. You must include
+dist/lib/mp3plugin.jar and dist/bin/ in your classpath when executing the main
+class manually.
 
 Attribution
 -----------
