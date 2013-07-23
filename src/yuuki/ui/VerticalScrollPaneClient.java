@@ -15,19 +15,19 @@ import javax.swing.SwingConstants;
 public class VerticalScrollPaneClient extends JPanel implements Scrollable {
 	
 	/**
-	 * The height of a single item in this client.
-	 */
-	private final int unitHeight;
-	
-	/**
 	 * The height of the view.
 	 */
-	private final int viewerHeight;
+	public final int viewerHeight;
 	
 	/**
 	 * The width of the view.
 	 */
-	private final int viewerWidth;
+	public final int viewerWidth;
+	
+	/**
+	 * The height of a single item in this client.
+	 */
+	private final int unitHeight;
 	
 	/**
 	 * Creates a new scroll pane client.

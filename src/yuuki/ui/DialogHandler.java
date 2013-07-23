@@ -1,6 +1,11 @@
 package yuuki.ui;
 
+import java.awt.Dimension;
+import java.awt.Font;
+
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * Displays dialog boxes.
@@ -13,8 +18,16 @@ public class DialogHandler {
 	 * @param msg The message to show.
 	 */
 	public static void showError(String msg) {
-		JOptionPane.showMessageDialog(null, msg, "Error",
-				JOptionPane.WARNING_MESSAGE);
+		String top = "Yuuki encountered an error.\n" +
+				"Thread: '" + Thread.currentThread().getName() + "'\n";
+		JScrollPane mid = DialogHandler.createScrollPane(msg);
+		String bot = "Continue running Yuuki?";
+		Object[] msgs = {top, mid, bot};
+		int keepRunning = JOptionPane.showConfirmDialog(null, msgs, "Error",
+				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (keepRunning != JOptionPane.YES_OPTION) {
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -33,7 +46,15 @@ public class DialogHandler {
 	 * @param msg The message to show.
 	 */
 	public static void showFatalError(String msg) {
-		showFatalError(msg);
+		//String messageTop = "<html>Yuuki encountered a fatal error!<br>" +
+		//		"Thread: '" + Thread.currentThread().getName() + "'</html>";
+		//Box box = DialogHandler.createContentPanel(messageTop, msg, null);
+		String topMessage = "Yuuki encountered a fatal error!\n" +
+				"Thread: '" + Thread.currentThread().getName() + "'\n";
+		JScrollPane scrollPane = createScrollPane(msg);
+		Object[] msgs = {topMessage, scrollPane};
+		JOptionPane.showMessageDialog(null, msgs, "Fatal Error",
+				JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
 	
@@ -70,6 +91,21 @@ public class DialogHandler {
 	}
 	
 	/**
+	 * Creates a panel to display the contents of a dialog.
+	 * 
+	 * @param text The text to put in the scroll pane.
+	 * @return The created panel.
+	 */
+	private static JScrollPane createScrollPane(String text) {
+		JTextArea area = new JTextArea(text);
+		Font old = area.getFont();
+		area.setFont(new Font(old.getName(), old.getStyle(), old.getSize()-2));
+		JScrollPane scroll = new JScrollPane(area);
+		scroll.setPreferredSize(new Dimension(400, 300));
+		return scroll;
+	}
+	
+	/**
 	 * Gets the trace of messages only from a Throwable.
 	 * 
 	 * @param t The Throwable to get the messages from.
@@ -98,7 +134,10 @@ public class DialogHandler {
 		StringBuilder buffer = new StringBuilder();
 		Throwable current = t;
 		while (true) {
-			buffer.append(current.getMessage() + '\n');
+			String msg = current.getMessage();
+			if (msg != null) {
+				buffer.append(current.getMessage() + '\n');
+			}
 			buffer.append(current.getClass().getCanonicalName());
 			buffer.append("\n");
 			for (StackTraceElement trace : current.getStackTrace()) {

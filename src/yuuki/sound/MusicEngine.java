@@ -103,6 +103,8 @@ public class MusicEngine extends AudioEngine {
 			} catch (InvalidIndexException e) {
 				// should never happen.
 				DialogHandler.showError(e);
+			} catch (RuntimeException e) {
+				DialogHandler.showError(e);
 			}
 		}
 	}

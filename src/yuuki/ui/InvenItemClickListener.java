@@ -16,4 +16,9 @@ public interface InvenItemClickListener {
 	 */
 	public void itemCellClicked(MouseEvent e, Item item);
 	
+	/**
+	 * Called when an item is deselected.
+	 */
+	public void itemDeselected();
+	
 }

@@ -2,6 +2,7 @@ package yuuki.ui;
 
 import yuuki.entity.Character;
 import yuuki.entity.PlayerCharacter.Orientation;
+import yuuki.item.Item;
 
 /**
  * The class that performs the game logic as requested by the user interface.
@@ -10,6 +11,21 @@ import yuuki.entity.PlayerCharacter.Orientation;
  * handle it.
  */
 public interface UiExecutor {
+	
+	/**
+	 * Requests that an item be dropped.
+	 * 
+	 * @param item The item to be dropped.
+	 */
+	public void requestItemDrop(Item item);
+	
+	/**
+	 * Requests that an item be used.
+	 * 
+	 * @param item The item to be used.
+	 */
+	public void requestItemUse(Item item);
+	
 	
 	/**
 	 * Requests that the inventory screen be opened.

@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import yuuki.animation.Animation;
+import yuuki.ui.DialogHandler;
 
 /**
  * Animates a number of objects.
@@ -80,15 +81,32 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	private volatile boolean paused = false;
 	
 	/**
+	 * The name of this AnimationDriver. Used in the thread name.
+	 */
+	private final String name;
+	
+	/**
+	 * Allocates a new Animator.
+	 * 
+	 * @param fps The speed that the Animator is to animate at.
+	 * @param name The name of this AnimationDriver. May be set to null for no
+	 * specific name.
+	 */
+	public AnimationDriver(int fps, String name) {
+		this.name = name;
+		anims = new CopyOnWriteArrayList<Animatable>();
+		listeners = new CopyOnWriteArraySet<AnimationListener>();
+		this.fps = fps;
+		animationThread = null;
+	}
+	
+	/**
 	 * Allocates a new Animator.
 	 * 
 	 * @param fps The speed that the Animator is to animate at.
 	 */
 	public AnimationDriver(int fps) {
-		anims = new CopyOnWriteArrayList<Animatable>();
-		listeners = new CopyOnWriteArraySet<AnimationListener>();
-		this.fps = fps;
-		animationThread = null;
+		this(fps, null);
 	}
 	
 	@Override
@@ -170,6 +188,8 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		} catch (RuntimeException e) {
+			DialogHandler.showError(e);
 		}
 	}
 	
@@ -191,7 +211,8 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	public void start() {
 		if (!isAnimating()) {
 			startAnimations();
-			animationThread = new Thread(this, "AnimationDriver");
+			String name = (this.name != null) ? " - " + this.name : "";
+			animationThread = new Thread(this, "AnimationDriver" + name);
 			animationThread.start();
 		}
 	}

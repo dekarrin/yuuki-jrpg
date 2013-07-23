@@ -15,6 +15,8 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import yuuki.ui.DialogHandler;
+
 /**
  * Plays sound data in a thread.
  */
@@ -128,6 +130,8 @@ class SoundRunner implements Runnable {
 			blockUntilPlaybackFinishes();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		}  catch (RuntimeException e) {
+			DialogHandler.showError(e);
 		} finally {
 			closeAudioClip();
 			firePlaybackFinished();
