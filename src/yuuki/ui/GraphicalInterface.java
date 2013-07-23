@@ -611,6 +611,7 @@ OverworldScreenListener, InvenScreenListener {
 			private InventoryScreen subInven;
 			public void run() {
 				subInven = new InventoryScreen(WINDOW_WIDTH, getScreenHeight());
+				subInven.setImageFactory(imageEngine);
 				subInven.addListener(this);
 				for (Item item : choices) {
 					subInven.addItem(item);
