@@ -272,6 +272,15 @@ public interface Interactable {
 	public Action selectAction(Action[] moves);
 	
 	/**
+	 * Has the PC select an item.
+	 * @param usableItems 
+	 * 
+	 * @param choices The items that the player may select from.
+	 * @return The item that the player selected.
+	 */
+	public Item selectItem(Item[] choices);
+	
+	/**
 	 * Gets the next move that the human character wishes to make.
 	 * 
 	 * @param graph The graph of available places to walk to.

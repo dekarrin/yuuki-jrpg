@@ -101,7 +101,7 @@ public class DialogHandler {
 		Font old = area.getFont();
 		area.setFont(new Font(old.getName(), old.getStyle(), old.getSize()-2));
 		JScrollPane scroll = new JScrollPane(area);
-		scroll.setPreferredSize(new Dimension(400, 300));
+		scroll.setPreferredSize(new Dimension(400, 250));
 		return scroll;
 	}
 	

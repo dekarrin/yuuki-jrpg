@@ -131,6 +131,7 @@ class SoundRunner implements Runnable {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}  catch (RuntimeException e) {
+			e.printStackTrace();
 			DialogHandler.showError(e);
 		} finally {
 			closeAudioClip();

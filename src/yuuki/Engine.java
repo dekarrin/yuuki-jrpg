@@ -97,6 +97,7 @@ public class Engine implements Runnable, UiExecutor {
 				DialogHandler.showFatalError("Invalid portal link: '" +
 						e.getMessage() + "'");
 			} catch (RuntimeException e) {
+				e.printStackTrace();
 				DialogHandler.showError(e);
 			}
 		}
@@ -420,6 +421,7 @@ public class Engine implements Runnable, UiExecutor {
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			DialogHandler.showFatalError(e);
 		}
 	}

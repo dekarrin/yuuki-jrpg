@@ -189,6 +189,7 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		} catch (RuntimeException e) {
+			e.printStackTrace();
 			DialogHandler.showError(e);
 		}
 	}
