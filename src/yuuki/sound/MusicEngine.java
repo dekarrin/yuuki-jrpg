@@ -104,6 +104,7 @@ public class MusicEngine extends AudioEngine {
 				// should never happen.
 				DialogHandler.showError(e);
 			} catch (RuntimeException e) {
+				e.printStackTrace();
 				DialogHandler.showError(e);
 			}
 		}

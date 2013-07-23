@@ -604,6 +604,58 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
+	public Item selectItem(final Item[] choices) {
+		class Runner implements Runnable, InvenScreenListener {
+			public boolean exited = false;
+			public volatile Item item;
+			private InventoryScreen subInven;
+			public void run() {
+				subInven = new InventoryScreen(WINDOW_WIDTH, getScreenHeight());
+				subInven.addListener(this);
+				for (Item item : choices) {
+					subInven.addItem(item);
+				}
+				switchToScreen(subInven);
+			}
+
+			@Override
+			public void closeInvenClicked() {
+				exitSubInven();
+			}
+
+			@Override
+			public void useItemClicked(Item item) {
+				exitSubInven();
+				messageBox.display(null, "You used '" + item.getName() +
+						"'...\nBut nothing happened because it isn't " +
+						"implemented yet.", 0, MESSAGE_DISPLAY_TIME);
+			}
+
+			@Override
+			public void dropItemClicked(Item item) {
+				// do nothing; can't drop item in battle!
+			}
+			
+			private void exitSubInven() {
+				subInven.removeListener(this);
+				switchToScreen(battleScreen);
+				exited = true;
+			}
+		}
+		Runner r = new Runner();
+		SwingUtilities.invokeLater(r);
+		try {
+			while (r.exited == false) {
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e) {
+			switchToScreen(battleScreen);
+			Thread.currentThread().interrupt();
+		}
+		return r.item;
+	}
+	
+	@Override
 	public Point selectMove(WalkGraph graph, Orientation orientation) throws
 	InterruptedException {
 		class Runner implements Runnable, OverworldMovementListener {
@@ -1248,19 +1300,7 @@ OverworldScreenListener, InvenScreenListener {
 			}
 			@Override
 			public void run() {
-				clearWindow();
-				mainWindow.add(menuBar, BorderLayout.NORTH);
-				mainWindow.add(screen, BorderLayout.CENTER);
-				mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
-				String index = screen.getBackgroundImage();
-				if (index != null) {
-					contentPane.setBackgroundImage(getImage(index));
-				} else {
-					contentPane.setBackgroundImage(null);
-				}
-				refreshWindow();
-				mainWindow.setVisible(true);
-				screen.setInitialProperties();
+				switchToScreen(screen);
 			}
 		}
 		GraphicalInterface.invokeLaterIfNeeded(new Runner(screen));
@@ -1272,6 +1312,27 @@ OverworldScreenListener, InvenScreenListener {
 			messageBox.unfreeze();
 		}
 		mainProgram.requestBattleResume();
+	}
+	
+	/**
+	 * Swaps out the current screen with the given screen. Only execute on EDT.
+	 * 
+	 * @param screen The screen to switch to.
+	 */
+	private void switchToScreen(Screen<?> screen) {
+		clearWindow();
+		mainWindow.add(menuBar, BorderLayout.NORTH);
+		mainWindow.add(screen, BorderLayout.CENTER);
+		mainWindow.add(messageBox.getComponent(), BorderLayout.SOUTH);
+		String index = screen.getBackgroundImage();
+		if (index != null) {
+			contentPane.setBackgroundImage(getImage(index));
+		} else {
+			contentPane.setBackgroundImage(null);
+		}
+		refreshWindow();
+		mainWindow.setVisible(true);
+		screen.setInitialProperties();
 	}
 	
 }

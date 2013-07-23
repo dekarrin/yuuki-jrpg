@@ -20,6 +20,13 @@ public class ItemUse extends Action {
 		super("use item", 0.0, 0.0, null, null);
 	}
 	
+	@Override
+	public ItemUse clone() {
+		ItemUse iu = (ItemUse) super.clone();
+		iu.item = null; // never copy the item
+		return iu;
+	}
+	
 	/**
 	 * Takes no arguments.
 	 */

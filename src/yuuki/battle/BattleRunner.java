@@ -20,6 +20,11 @@ public class BattleRunner implements Runnable {
 	public volatile boolean paused;
 	
 	/**
+	 * Whether a battle is being run.
+	 */
+	private volatile boolean running;
+	
+	/**
 	 * The battle being run.
 	 */
 	private Battle battle;
@@ -56,12 +61,14 @@ public class BattleRunner implements Runnable {
 	
 	@Override
 	public void run() {
+		running = true;
 		battleThread = Thread.currentThread();
 		try {
 			runBattle(battle);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		} catch (RuntimeException e) {
+			e.printStackTrace();
 			DialogHandler.showError(e);
 		}
 		if (ui != null) {
@@ -69,6 +76,16 @@ public class BattleRunner implements Runnable {
 				main.requestBattleEnd();
 			}
 		}
+		running = false;
+	}
+	
+	/**
+	 * Whether a battle is currently being run.
+	 * 
+	 * @return Whether it is.
+	 */
+	public boolean inBattle() {
+		return running;
 	}
 	
 	/**
