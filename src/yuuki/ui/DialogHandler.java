@@ -1,6 +1,12 @@
 package yuuki.ui;
 
+import java.awt.Dimension;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * Displays dialog boxes.
@@ -15,6 +21,15 @@ public class DialogHandler {
 	public static void showError(String msg) {
 		JOptionPane.showMessageDialog(null, msg, "Error",
 				JOptionPane.WARNING_MESSAGE);
+		String messageTop = "<html>Yuuki encountered an error.<br>" +
+				"Thread: '" + Thread.currentThread().getName() + "'</html>";
+		String bot = "Continue running Yuuki?";
+		Box box = DialogHandler.createContentPanel(messageTop, msg, bot);
+		int keepRunning = JOptionPane.showConfirmDialog(null, box, "Error",
+				JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+		if (keepRunning != JOptionPane.YES_OPTION) {
+			System.exit(1);
+		}
 	}
 	
 	/**
@@ -33,8 +48,42 @@ public class DialogHandler {
 	 * @param msg The message to show.
 	 */
 	public static void showFatalError(String msg) {
-		showFatalError(msg);
+		String messageTop = "<html>Yuuki encountered a fatal error!<br>" +
+				"Thread: '" + Thread.currentThread().getName() + "'</html>";
+		Box box = DialogHandler.createContentPanel(messageTop, msg, null);
+		JOptionPane.showMessageDialog(null, box, "Fatal Error",
+				JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
+	}
+	
+	/**
+	 * Creates a panel to display the contents of a dialog.
+	 * 
+	 * @param top A string to display above the scroll pane. Set to null for no
+	 * string.
+	 * @param mid A string to display in the scroll pane. Set to null for no
+	 * scroll pane.
+	 * @param bot A string to display below the scroll pane. Set to null for no
+	 * string.
+	 * @return The created panel.
+	 */
+	private static Box createContentPanel(String top, String mid, String bot) {
+		Box content = Box.createVerticalBox();
+		content.setMaximumSize(new Dimension(500, 400));
+		if (top != null) {
+			content.add(new JLabel(top));
+		}
+		if (mid == null) {
+			JTextArea midText = new JTextArea(mid);
+			JScrollPane scroll = new JScrollPane(midText);
+			content.add(scroll);
+			midText.setLineWrap(true);
+			midText.setWrapStyleWord(true);
+		}
+		if (bot == null) {
+			content.add(new JLabel());
+		}
+		return content;
 	}
 	
 	/**
