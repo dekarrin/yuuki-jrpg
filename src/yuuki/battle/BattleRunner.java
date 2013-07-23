@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import yuuki.action.Action;
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.ui.DialogHandler;
 import yuuki.ui.Interactable;
 import yuuki.ui.UiExecutor;
 
@@ -60,6 +61,8 @@ public class BattleRunner implements Runnable {
 			runBattle(battle);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		} catch (Throwable e) {
+			DialogHandler.showError(e);
 		}
 		if (ui != null) {
 			if (!Thread.currentThread().isInterrupted()) {
