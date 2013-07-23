@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import yuuki.animation.Animation;
+import yuuki.ui.DialogHandler;
 
 /**
  * Animates a number of objects.
@@ -170,6 +171,8 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		} catch (RuntimeException e) {
+			DialogHandler.showError(e);
 		}
 	}
 	

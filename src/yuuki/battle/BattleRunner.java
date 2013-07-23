@@ -61,7 +61,7 @@ public class BattleRunner implements Runnable {
 			runBattle(battle);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-		} catch (Throwable e) {
+		} catch (RuntimeException e) {
 			DialogHandler.showError(e);
 		}
 		if (ui != null) {

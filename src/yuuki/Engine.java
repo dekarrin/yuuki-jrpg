@@ -95,6 +95,8 @@ public class Engine implements Runnable, UiExecutor {
 			} catch (InvalidLinkNameException e) {
 				DialogHandler.showFatalError("Invalid portal link: '" +
 						e.getMessage() + "'");
+			} catch (RuntimeException e) {
+				DialogHandler.showError(e);
 			}
 		}
 		public void setPaused(boolean paused) {

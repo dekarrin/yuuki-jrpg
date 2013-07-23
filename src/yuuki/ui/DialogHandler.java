@@ -1,11 +1,8 @@
 package yuuki.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.Box;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -21,8 +18,8 @@ public class DialogHandler {
 	 * @param msg The message to show.
 	 */
 	public static void showError(String msg) {
-		String top = "<html>Yuuki encountered an error.<br>" +
-				"Thread: '" + Thread.currentThread().getName() + "'</html>";
+		String top = "Yuuki encountered an error.\n" +
+				"Thread: '" + Thread.currentThread().getName() + "'\n";
 		JScrollPane mid = DialogHandler.createScrollPane(msg);
 		String bot = "Continue running Yuuki?";
 		Object[] msgs = {top, mid, bot};
