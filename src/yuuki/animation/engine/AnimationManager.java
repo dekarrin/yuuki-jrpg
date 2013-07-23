@@ -127,7 +127,7 @@ public class AnimationManager {
 		if (drivers.containsKey(name)) {
 			destroyDriver(name);
 		}
-		AnimationDriver ad = new AnimationDriver(fps);
+		AnimationDriver ad = new AnimationDriver(fps, name);
 		ad.addListener(handler);
 		drivers.put(name, ad);
 	}
