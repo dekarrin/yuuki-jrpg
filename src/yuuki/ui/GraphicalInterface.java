@@ -1118,13 +1118,13 @@ OverworldScreenListener, InvenScreenListener {
 			}
 		};
 		Dimension windowSize = new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT);
+		contentPane.setPreferredSize(windowSize);
 		mainWindow = new JFrame("Yuuki - A JRPG");
 		mainWindow.setDefaultCloseOperation(
 				WindowConstants.DO_NOTHING_ON_CLOSE);
 		mainWindow.setResizable(false);
 		mainWindow.addWindowListener(l);
 		mainWindow.setContentPane(contentPane);
-		mainWindow.setPreferredSize(windowSize);
 		mainWindow.setSize(windowSize);
 		mainWindow.setLocationRelativeTo(null);
 	}
