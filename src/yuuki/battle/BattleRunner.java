@@ -150,6 +150,11 @@ public class BattleRunner implements Runnable {
 				outputActionCost(a);
 			}
 			ui.showActionUse(a);
+			String actionName = a.getName();
+			if (a instanceof yuuki.action.ItemUse) {
+				actionName = "item (" + ((yuuki.action.ItemUse) a).getName() + ")";
+			}
+			System.out.println(a.getOrigin().getName() + " used " + actionName + " on " + a.getTargets().get(0).getName());
 			checkHalted();
 			if (a.getEffectStat() != null) {
 				outputActionEffects(a);

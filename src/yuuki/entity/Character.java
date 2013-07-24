@@ -720,7 +720,7 @@ public abstract class Character implements Movable, Displayable {
 	public Action getNextAction(ArrayList<ArrayList<Character>> fighters) {
 		Action m = selectAction(fighters);
 		if (m != null) {
-			// should only happen if thread is interrupted
+			// should never happen if thread is not interrupted
 			if (m.getTargets().isEmpty()) {
 				m.addTarget(selectTarget(fighters));
 			}
