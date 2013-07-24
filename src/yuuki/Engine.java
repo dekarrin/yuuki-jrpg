@@ -17,6 +17,7 @@ import yuuki.entity.NonPlayerCharacter;
 import yuuki.entity.PlayerCharacter;
 import yuuki.entity.PlayerCharacter.Orientation;
 import yuuki.file.ResourceNotFoundException;
+
 import yuuki.item.Item;
 import yuuki.item.ItemNotInPouchException;
 import yuuki.ui.DialogHandler;

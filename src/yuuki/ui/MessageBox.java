@@ -1,6 +1,7 @@
 package yuuki.ui;
 
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
@@ -89,15 +90,15 @@ public class MessageBox extends Sprite implements MouseListener {
 		@Override
 		public void run() {
 			startTime = System.currentTimeMillis();
-			while (System.currentTimeMillis() - startTime < waitTime) {
-				try {
+			try {
+				while (System.currentTimeMillis() - startTime < waitTime) {
 					Thread.sleep(10);
 					checkPause();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
 				}
+				setText("");
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 			}
-			setText("");
 		}
 		
 		/**
@@ -141,7 +142,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	/**
 	 * The name of this MessageBox's animation driver.
 	 */
-	private static final String DRIVER = "MessageBox";
+	private static final String ANIM_DRIVER_NAME = "MessageBox";
 	
 	/**
 	 * Executes a Runnable synchronously on the EDT. This method is
@@ -172,6 +173,16 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Listens for clicks to advance the printing.
+	 */
+	private MouseAdapter advanceListener = new MouseAdapter() {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			fireMousePressed();
+		}
+	};
+	
+	/**
 	 * The cleaner.
 	 */
 	private Cleaner cleaner;
@@ -185,6 +196,11 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * Whether this MessageBox is inactive and non-responsive.
 	 */
 	private boolean frozen;
+	
+	/**
+	 * Whether this MessageBox is animating a message.
+	 */
+	private boolean isAnimatingMessage = false;
 	
 	/**
 	 * The input field used when a text prompt is displayed.
@@ -222,8 +238,8 @@ public class MessageBox extends Sprite implements MouseListener {
 	public MessageBox(AnimationManager animator, int width, int height) {
 		super(animator, width, height);
 		cleaner = new Cleaner();
-		animator.createDriver(DRIVER);
-		animator.startDriver(DRIVER);
+		animator.createDriver(ANIM_DRIVER_NAME);
+		animator.startDriver(ANIM_DRIVER_NAME);
 		component.setLayout(new FlowLayout());
 		listeners = new ArrayList<MessageBoxInputListener>();
 		textBox = new JTextArea("", 5, 70);
@@ -283,7 +299,9 @@ public class MessageBox extends Sprite implements MouseListener {
 		checkFreeze();
 		String msg = composeMessage(speaker, message);
 		clear();
+		isAnimatingMessage = true;
 		showMessage(msg, letterDelay);
+		isAnimatingMessage = false;
 		spawnCleanerThread(displayTime);
 	}
 	
@@ -303,7 +321,7 @@ public class MessageBox extends Sprite implements MouseListener {
 			}
 		};
 		MessageBox.invokeNow(r);
-		animator.resetDriver(DRIVER);
+		animator.resetDriver(ANIM_DRIVER_NAME);
 		optionValues = null;
 	}
 	
@@ -312,7 +330,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 */
 	public void freeze() {
 		frozen = true;
-		animator.suspendDriver(DRIVER);
+		animator.suspendDriver(ANIM_DRIVER_NAME);
 		cleaner.suspend();
 		MessageBox.invokeNow(new Runnable() {
 			@Override
@@ -423,7 +441,7 @@ public class MessageBox extends Sprite implements MouseListener {
 			}
 		});
 		cleaner.resume();
-		animator.resumeDriver(DRIVER);
+		animator.resumeDriver(ANIM_DRIVER_NAME);
 		frozen = false;
 	}
 	
@@ -450,11 +468,15 @@ public class MessageBox extends Sprite implements MouseListener {
 	private void animateMessage(long letterDelay, String message) {
 		TextTween tween = new TextTween(this, letterDelay, message);
 		try {
-			animator.animateAndWait(tween, DRIVER);
+			animator.animateAndWait(tween, ANIM_DRIVER_NAME);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
 	}
+	
+	/**
+	 * Whether this MessageBox is currently animating a message.
+	 */
 	
 	/**
 	 * Checks whether this message box has been frozen, and if it has, throws
@@ -501,6 +523,18 @@ public class MessageBox extends Sprite implements MouseListener {
 	}
 	
 	/**
+	 * Advances the display if text is being animated, and clears it if it is
+	 * there at all.
+	 */
+	private void fireMousePressed() {
+		if (isAnimatingMessage) {
+			animator.finishDriver(ANIM_DRIVER_NAME);
+		} else {
+			clear();
+		}
+	}
+	
+	/**
 	 * Calls the optionClicked() method on all listeners. This method is called
 	 * when the user selects an option in a choice prompt.
 	 * 
@@ -540,6 +574,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param options The options that the user is to pick from.
 	 */
 	private void showChoicePrompt(String prompt, Object[] options) {
+		getComponent().removeMouseListener(advanceListener);
 		component.removeAll();
 		label.setText(prompt);
 		add(label);
@@ -573,6 +608,8 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * Shows the read-only text box.
 	 */
 	private void showTextArea() {
+		getComponent().addMouseListener(advanceListener);
+		textBox.addMouseListener(advanceListener);
 		component.removeAll();
 		add(textBox);
 		component.revalidate();
@@ -585,6 +622,7 @@ public class MessageBox extends Sprite implements MouseListener {
 	 * @param prompt The text prompt to show the user.
 	 */
 	private void showTextPrompt(String prompt) {
+		getComponent().removeMouseListener(advanceListener);
 		component.removeAll();
 		label.setText(prompt);
 		add(label);
