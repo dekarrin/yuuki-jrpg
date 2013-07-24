@@ -626,10 +626,8 @@ OverworldScreenListener, InvenScreenListener {
 
 			@Override
 			public void useItemClicked(Item item) {
+				this.item = item;
 				exitSubInven();
-				messageBox.display(null, "You used '" + item.getName() +
-						"'...\nBut nothing happened because it isn't " +
-						"implemented yet.", 0, MESSAGE_DISPLAY_TIME);
 			}
 
 			@Override
