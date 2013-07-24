@@ -76,14 +76,23 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	private Set<AnimationListener> listeners;
 	
 	/**
+	 * The name of this AnimationDriver. Used in the thread name.
+	 */
+	private final String name;
+	
+	/**
 	 * Whether the animation is currently paused.
 	 */
 	private volatile boolean paused = false;
 	
 	/**
-	 * The name of this AnimationDriver. Used in the thread name.
+	 * Allocates a new Animator.
+	 * 
+	 * @param fps The speed that the Animator is to animate at.
 	 */
-	private final String name;
+	public AnimationDriver(int fps) {
+		this(fps, null);
+	}
 	
 	/**
 	 * Allocates a new Animator.
@@ -98,15 +107,6 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 		listeners = new CopyOnWriteArraySet<AnimationListener>();
 		this.fps = fps;
 		animationThread = null;
-	}
-	
-	/**
-	 * Allocates a new Animator.
-	 * 
-	 * @param fps The speed that the Animator is to animate at.
-	 */
-	public AnimationDriver(int fps) {
-		this(fps, null);
 	}
 	
 	@Override
@@ -128,6 +128,15 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	 */
 	public void addListener(AnimationListener l) {
 		listeners.add(l);
+	}
+	
+	/**
+	 * Completes all animations.
+	 */
+	public void finish() {
+		for (Animatable a : anims) {
+			a.finish();
+		}
 	}
 	
 	/**
@@ -315,11 +324,11 @@ public class AnimationDriver implements Runnable, AnimationOwner {
 	}
 	
 	/**
-	 * Instructs all animations to stop.
+	 * Stops all animations immediately.
 	 */
 	private void stopAnimations() {
 		for (Animatable a : anims) {
-			a.stop();
+			a.finish();
 		}
 	}
 	

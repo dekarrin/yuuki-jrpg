@@ -176,13 +176,23 @@ public class AnimationManager {
 	}
 	
 	/**
-	 * Stops animating a driver.
+	 * Stops a driver.
 	 * 
 	 * @param driver The name of the driver stop. Set to null for the default
 	 * driver.
 	 */
 	public void stopDriver(String driver) {
 		getDriver(driver).stop();
+	}
+	
+	/**
+	 * Completes all animations that a driver controls.
+	 * 
+	 * @param driver The name of the driver finish. Set to null for the default
+	 * driver.
+	 */
+	public void finishDriver(String driver) {
+		getDriver(driver).finish();
 	}
 	
 	/**
