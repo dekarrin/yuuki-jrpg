@@ -108,6 +108,16 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	}
 	
 	/**
+	 * Sets the enabled status of the Drop button. By default, the enabled
+	 * status is 'true'.
+	 * 
+	 * @param b What to set the enabled status to.
+	 */
+	public void setDropButtonEnabled(boolean b) {
+		infoPanel.setDropButtonEnabled(b);
+	}
+	
+	/**
 	 * Sets the image factory for this screen.
 	 * 
 	 * @param factory The image factory to use.

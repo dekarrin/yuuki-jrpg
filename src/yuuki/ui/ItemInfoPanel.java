@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
@@ -29,7 +30,7 @@ public class ItemInfoPanel extends JPanel {
 	/**
 	 * A listener for events fired from this class.
 	 */
-	public interface InfoPanelListener {
+	public static interface InfoPanelListener {
 		public void dropItemClicked(Item item);
 		public void useItemClicked(Item item);
 	}
@@ -68,6 +69,13 @@ public class ItemInfoPanel extends JPanel {
 	 * Drops the item when clicked.
 	 */
 	private JButton dropButton;
+	
+	/**
+	 * Whether the drop button is free to be enabled/disabled. This is false
+	 * when setDropButtonEnabled is used to force the drop button to be
+	 * disabled.
+	 */
+	private boolean dropButtonEnabledIsFree = true;
 	
 	/**
 	 * The large picture of the currently selected item.
@@ -128,13 +136,24 @@ public class ItemInfoPanel extends JPanel {
 	}
 	
 	/**
+	 * Sets the enabled status of the Drop button. By default, the enabled
+	 * status is 'true'.
+	 * 
+	 * @param b What to set the enabled status to.
+	 */
+	public void setDropButtonEnabled(boolean b) {
+		dropButtonEnabledIsFree = b;
+		dropButton.setEnabled(b);
+	}
+	
+	/**
 	 * Sets the image factory.
 	 * 
 	 * @param factory The image factory to use.
 	 */
 	public void setImageFactory(ImageFactory factory) {
 		imageFactory = factory;
-	}
+	};
 	
 	/**
 	 * Sets the listener for this panel.
@@ -143,7 +162,7 @@ public class ItemInfoPanel extends JPanel {
 	 */
 	public void setListener(InfoPanelListener l) {
 		listener = l;
-	};
+	}
 	
 	/**
 	 * Sets the info panel to show information on an item.
@@ -195,7 +214,7 @@ public class ItemInfoPanel extends JPanel {
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
 		descScroll = new JScrollPane(description);
-		int policy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+		int policy = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 		descScroll.setVerticalScrollBarPolicy(policy);
 	}
 	
@@ -377,7 +396,7 @@ public class ItemInfoPanel extends JPanel {
 	 * Enables buttons based on the current item.
 	 */
 	private void setButtons() {
-		dropButton.setEnabled(shownItem != null);
+		dropButton.setEnabled(dropButtonEnabledIsFree && shownItem != null);
 		useButton.setEnabled(shownItem != null && shownItem.isExternal());
 	}
 	
