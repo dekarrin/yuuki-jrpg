@@ -1,16 +1,17 @@
 package yuuki.ui.menu;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.accessibility.AccessibleContext;
 import javax.swing.JMenuItem;
 
 /**
  * Holds items related to game play.
  */
 @SuppressWarnings("serial")
-public class ActionsMenu extends Menu<MenuListener> implements ActionListener {
+public class ActionsMenu extends Menu<MenuListener> {
 	
 	/**
 	 * The ID of the get item.
@@ -23,63 +24,23 @@ public class ActionsMenu extends Menu<MenuListener> implements ActionListener {
 	public static final int ITEM_ID_INVENTORY = 0;
 	
 	/**
-	 * The menu item for getting an item.
-	 */
-	private JMenuItem menuItemGet;
-	
-	/**
-	 * The menu item for the inventory.
-	 */
-	private JMenuItem menuItemInventory;
-	
-	/**
 	 * Creates a new ActionsMenu.
 	 */
 	public ActionsMenu() {
 		super("Actions", "The Actions menu", KeyEvent.VK_A);
-		setListeners();
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		int id = -1;
-		if (e.getSource() == menuItemGet) {
-			id = ITEM_ID_GET;
-		} else if (e.getSource() == menuItemInventory) {
-			id = ITEM_ID_INVENTORY;
-		}
-		fireItemTriggered(id);
-	}
-	
-	/**
-	 * Calls menuItemTriggered() on all listeners.
-	 * 
-	 * @param id The ID of the item that was selected.
-	 */
-	public void fireItemTriggered(int id) {
-		for (MenuListener l : getElementListeners()) {
-			l.menuItemTriggered(this, id);
-		}
-	}
-	
-	/**
-	 * Sets this ActionsMenu as the listener for all of its items.
-	 */
-	private void setListeners() {
-		menuItemGet.addActionListener(this);
-		menuItemInventory.addActionListener(this);
+	protected List<JMenuItem> buildItems() {
+		List<JMenuItem> list = new ArrayList<JMenuItem>();
+		list.add(new JMenuItem("Inventory"));
+		list.add(new JMenuItem("Get Item"));
+		return list;
 	}
 	
 	@Override
-	protected void addItems() {
-		add(menuItemGet);
-		add(menuItemInventory);
-	}
-	
-	@Override
-	protected void buildItems() {
-		menuItemInventory = new JMenuItem("Inventory");
-		menuItemGet = new JMenuItem("Get Item");
+	protected List<Integer> getSeparatorIndexes() {
+		return new ArrayList<Integer>();
 	}
 	
 	@Override
@@ -91,14 +52,17 @@ public class ActionsMenu extends Menu<MenuListener> implements ActionListener {
 	protected void setItemDescriptions() {
 		String getHelp = "Picks up an item";
 		String invenHelp = "Displays the inventory";
-		menuItemGet.getAccessibleContext().setAccessibleDescription(getHelp);
-		menuItemInventory.getAccessibleContext().setAccessibleDescription(invenHelp);
+		AccessibleContext gc, ic;
+		gc = itemAt(ITEM_ID_GET).getAccessibleContext();
+		ic = itemAt(ITEM_ID_INVENTORY).getAccessibleContext();
+		gc.setAccessibleDescription(getHelp);
+		ic.setAccessibleDescription(invenHelp);
 	}
 	
 	@Override
 	protected void setItemMnemonics() {
-		menuItemGet.setMnemonic(KeyEvent.VK_G);
-		menuItemInventory.setMnemonic(KeyEvent.VK_I);
+		itemAt(ITEM_ID_GET).setMnemonic(KeyEvent.VK_G);
+		itemAt(ITEM_ID_INVENTORY).setMnemonic(KeyEvent.VK_I);
 	}
 	
 }
