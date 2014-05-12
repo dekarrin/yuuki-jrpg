@@ -489,7 +489,9 @@ public class ItemInfoPanel extends JPanel {
 			f = f.deriveFont(Font.PLAIN);
 			if (shownItem.isUsable()) {
 				UsableItem item = ((UsableItem) shownItem);
-				usesText = item.getUses() + " uses left";
+				int remainingUses = item.getMaxUses() - item.getUses();
+				usesText = remainingUses + " use%s left";
+				usesText = String.format(usesText, ((remainingUses != 1) ? "s" : ""));
 			}
 			valueText = shownItem.getValue() + "cp";
 		}
