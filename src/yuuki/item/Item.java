@@ -21,6 +21,11 @@ public class Item implements Locatable, Displayable {
 		public int action;
 		
 		/**
+		 * The description of the item.
+		 */
+		public String description;
+		
+		/**
 		 * Whether the Item may be used outside of battle.
 		 */
 		public boolean external;
@@ -58,6 +63,11 @@ public class Item implements Locatable, Displayable {
 	}
 	
 	/**
+	 * The description of this item.
+	 */
+	private String description;
+	
+	/**
 	 * The unique identifier for this item's type.
 	 */
 	private final long id;
@@ -79,7 +89,7 @@ public class Item implements Locatable, Displayable {
 	private final String name;
 	
 	/**
-	 * The value of this Item.
+	 * The value in copper pieces of this Item.
 	 */
 	private final int value;
 	
@@ -90,12 +100,15 @@ public class Item implements Locatable, Displayable {
 	 * @param name The name of this item.
 	 * @param value The value of this item.
 	 * @param image The index of the image for this item.
+	 * @param description The description of this item.
 	 */
-	public Item(long id, String name, int value, String image) {
+	public Item(long id, String name, int value, String image,
+			String description) {
 		this.name = name;
 		this.value = value;
 		this.id = id;
 		this.image = image;
+		this.description = description;
 	}
 	
 	/**
@@ -108,8 +121,25 @@ public class Item implements Locatable, Displayable {
 	}
 	
 	@Override
+	public String getBattleImage() {
+		return null;
+	}
+	
+	/**
+	 * Gets the description of this Item.
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	@Override
 	public Displayable getDisplayable() {
 		return this;
+	}
+	
+	@Override
+	public char getDisplayChar() {
+		return ' ';
 	}
 	
 	/**
@@ -142,6 +172,11 @@ public class Item implements Locatable, Displayable {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String getOverworldImage() {
+		return image;
 	}
 	
 	/**
@@ -179,21 +214,6 @@ public class Item implements Locatable, Displayable {
 	@Override
 	public String toString() {
 		return getName();
-	}
-
-	@Override
-	public String getBattleImage() {
-		return null;
-	}
-
-	@Override
-	public char getDisplayChar() {
-		return ' ';
-	}
-
-	@Override
-	public String getOverworldImage() {
-		return image;
 	}
 	
 }

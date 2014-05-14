@@ -1,24 +1,23 @@
 package yuuki.ui.screen;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
-import yuuki.graphic.ImageComponent;
 import yuuki.graphic.ImageFactory;
 import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
+import yuuki.ui.InvenItemClickListener;
 import yuuki.ui.InvenPanel;
+import yuuki.ui.ItemInfoPanel;
 
 /**
  * Shows the user's inventory and stats.
@@ -42,121 +41,33 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private JButton closeButton;
 	
 	/**
+	 * Shows information on an item.
+	 */
+	private ItemInfoPanel infoPanel;
+	
+	/**
 	 * Shows the inventory.
 	 */
 	private InvenPanel invenPanel;
 	
 	/**
-	 * Shows information on an item.
+	 * Listens for key pushes.
 	 */
-	private InfoPanel infoPanel;
+	private KeyListener keyListener = new KeyAdapter() {
+		@Override
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_ESCAPE:
+					fireCloseInvenClicked();
+					break;
+			}
+		}
+	};
 	
 	/**
-	 * Shows information on an item.
+	 * The itemCell that is currently lit.
 	 */
-	private static class InfoPanel extends JPanel {
-		
-		/**
-		 * The large picture of the currently selected item.
-		 */
-		private ImageComponent image;
-		
-		/**
-		 * The title of the currently selected item.
-		 */
-		private JLabel title;
-		
-		/**
-		 * The line that explains the use of the item.
-		 */
-		private JLabel usability;
-		
-		/**
-		 * The line that tells the value of the item.
-		 */
-		private JLabel value;
-		
-		/**
-		 * The description of the item.
-		 */
-		private JTextArea description;
-		
-		/**
-		 * Drops the item when clicked.
-		 */
-		private JButton dropButton;
-		
-		/**
-		 * Uses the item when clicked.
-		 */
-		private JButton useButton;
-		
-		/**
-		 * Creates a new InfoPanel.
-		 * 
-		 * @param width The width of the info panel.
-		 * @param height The height of the info panel.
-		 */
-		public InfoPanel(int width, int height) {
-			createComponents();
-			addComponents();
-		}
-		
-		/**
-		 * Adds child components to this panel.
-		 */
-		private void addComponents() {
-			Box layout = new Box(BoxLayout.Y_AXIS);
-			layout.add(image);
-			layout.add(value);
-			layout.add(usability);
-			layout.add(new JScrollPane(description));
-			Box buttons = new Box(BoxLayout.X_AXIS);
-			buttons.add(dropButton);
-			buttons.add(useButton);
-			layout.add(buttons);
-			add(layout);
-		}
-		
-		/**
-		 * The size of the title font.
-		 */
-		private static final int TITLE_FONT_SIZE = 10;
-		
-		/**
-		 * The size of the usability and value fonts.
-		 */
-		private static final int INFO_FONT_SIZE = 8;
-		
-		/**
-		 * The size of the description font.
-		 */
-		private static final int DESC_FONT_SIZE = 8;
-		
-		/**
-		 * Creates all child components.
-		 */
-		private void createComponents() {
-			image = new ImageComponent();
-			image.setBackgroundImage(null);
-			title = new JLabel("No item selected");
-			title.setFont(new Font(Font.SERIF, Font.ITALIC, TITLE_FONT_SIZE));
-			usability = new JLabel("No item selected");
-			usability.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
-					INFO_FONT_SIZE));
-			value = new JLabel("No item selected");
-			value.setFont(new Font(Font.SANS_SERIF, Font.ITALIC,
-					INFO_FONT_SIZE));
-			description = new JTextArea("No item selected");
-			description.setFont(new Font(Font.SERIF, Font.ITALIC,
-					DESC_FONT_SIZE));
-			dropButton = new JButton("Drop");
-			dropButton.setEnabled(false);
-			useButton = new JButton("Use");
-			useButton.setEnabled(false);
-		}
-		
-	}
+	private InvenPanel.ItemCell litCell = null;
 	
 	/**
 	 * Creates a new Inventory Screen.
@@ -166,6 +77,7 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	 */
 	public InventoryScreen(int width, int height) {
 		super(width, height);
+		addKeyListener(keyListener);
 		createComponents(width, height);
 		addComponents();
 	}
@@ -196,16 +108,31 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	}
 	
 	/**
+	 * Sets the enabled status of the Drop button. By default, the enabled
+	 * status is 'true'.
+	 * 
+	 * @param b What to set the enabled status to.
+	 */
+	public void setDropButtonEnabled(boolean b) {
+		infoPanel.setDropButtonEnabled(b);
+	}
+	
+	/**
 	 * Sets the image factory for this screen.
 	 * 
 	 * @param factory The image factory to use.
 	 */
 	public void setImageFactory(ImageFactory factory) {
+		infoPanel.setImageFactory(factory);
 		invenPanel.setImageFactory(factory);
 	}
 	
 	@Override
-	public void setInitialProperties() {}
+	public void setInitialProperties() {
+		dimSelection();
+		infoPanel.showInfo(null);
+		this.requestFocus();
+	}
 	
 	/**
 	 * Adds all child components to this InventoryScreen.
@@ -229,6 +156,16 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 	private void createComponents(int width, int height) {
 		invenPanel = new InvenPanel(width - INVEN_PANEL_WIDTH_OFFSET,
 				height - INVEN_PANEL_HEIGHT_OFFSET);
+		invenPanel.setListener(new InvenItemClickListener() {
+			@Override
+			public void itemCellClicked(MouseEvent e, Item item) {
+				selectItem(e, item);
+			}
+			@Override
+			public void itemDeselected() {
+				deselectItem();
+			}
+		});
 		closeButton = new JButton("Close");
 		closeButton.addActionListener(new ActionListener() {
 			@Override
@@ -237,7 +174,34 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 			}
 		});
 		closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		infoPanel = new InfoPanel(INVEN_PANEL_WIDTH_OFFSET - 10, height);
+		infoPanel = new ItemInfoPanel(INVEN_PANEL_WIDTH_OFFSET - 10, height);
+		infoPanel.setListener(new ItemInfoPanel.InfoPanelListener() {
+			@Override
+			public void dropItemClicked(Item item) {
+				fireDropItemClicked(item);
+			}
+			@Override
+			public void useItemClicked(Item item) {
+				fireUseItemClicked(item);
+			}
+		});
+	}
+	
+	/**
+	 * Deselects an item.
+	 */
+	private void deselectItem() {
+		dimSelection();
+		infoPanel.showInfo(null);
+	}
+	
+	/**
+	 * Dims the currently selected cell, if there is one.
+	 */
+	private void dimSelection() {
+		if (litCell != null) {
+			litCell.dim();
+		}
 	}
 	
 	/**
@@ -247,6 +211,43 @@ public class InventoryScreen extends Screen<InvenScreenListener> {
 		for (InvenScreenListener l : getElementListeners()) {
 			l.closeInvenClicked();
 		}
+	}
+	
+	/**
+	 * Calls dropItemClicked() on all listeners.
+	 * 
+	 * @param item The item that was selected when the button was clicked.
+	 */
+	private void fireDropItemClicked(Item item) {
+		for (InvenScreenListener l : getElementListeners()) {
+			l.dropItemClicked(item);
+		}
+	}
+	
+	/**
+	 * Calls useItemClicked() on all listeners.
+	 * 
+	 * @param item The item that was selected when the button was clicked.
+	 */
+	private void fireUseItemClicked(Item item) {
+		for (InvenScreenListener l : getElementListeners()) {
+			l.useItemClicked(item);
+		}
+	}
+	
+	/**
+	 * Called when an inventory item is clicked.
+	 * 
+	 * @param e The MouseEvent that caused it.
+	 * @param item The item that was clicked.
+	 */
+	private void selectItem(MouseEvent e, Item item) {
+		dimSelection();
+		InvenPanel.ItemCell cell = (InvenPanel.ItemCell) e.getSource();
+		litCell = cell;
+		cell.brighten();
+		infoPanel.showInfo(item);
+		repaint();
 	}
 	
 }

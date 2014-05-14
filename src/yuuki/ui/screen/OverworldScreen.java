@@ -162,9 +162,9 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	private JButton moveWestButton;
 	
 	/**
-	 * Listens for directional keypad pushes.
+	 * Listens for action key pushes. Not limited by the key lock.
 	 */
-	private KeyListener numpadListener = new KeyAdapter() {
+	private KeyListener mainKeyListener = new KeyAdapter() {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
@@ -175,7 +175,17 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 				case KeyEvent.VK_I:
 					fireInvenClicked();
 					break;
-					
+			}
+		}
+	};
+	
+	/**
+	 * Listens for directional keypad pushes.
+	 */
+	private KeyListener numpadListener = new KeyAdapter() {
+		@Override
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
 				case KeyEvent.VK_NUMPAD1:
 					moveSouthWestButton.doClick();
 					break;
@@ -242,6 +252,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 		super(width, height);
 		movementListeners = new HashSet<OverworldMovementListener>();
 		addKeyListener(numpadListener);
+		addKeyListener(mainKeyListener);
 		setLayout(new FlowLayout());
 		worldViewer = new WorldViewer(VIEWER_WIDTH, VIEWER_HEIGHT);
 		landName = new JLabel("");
@@ -335,6 +346,7 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	@Override
 	public void setInitialProperties() {
 		this.requestFocus();
+		worldViewer.redrawDisplay();
 	}
 	
 	/**
@@ -485,13 +497,17 @@ public class OverworldScreen extends Screen<OverworldScreenListener> {
 	 */
 	private void fireMoveButtonClicked(Component c) {
 		Orientation face = getMovementOrientation(c);
-		if (face == playerOrientation) {
-			Point p = getMovementPoint(c);
-			if (p != null) { // if the user pressed a valid direction
-				fireMoved(p);
+		Point p = getMovementPoint(c);
+		if (face != null) {
+			if (face == playerOrientation) {
+				if (p != null) { // if the user pressed a valid direction
+					fireMoved(p);
+				}
+			} else {
+				fireTurned(face);
 			}
 		} else {
-			fireTurned(face);
+			fireMoved(p);
 		}
 		this.removeKeyListener(numpadListener);
 		(new Thread(new Unlocker(), "KeyLocker")).start();

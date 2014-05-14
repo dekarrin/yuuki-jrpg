@@ -1,5 +1,7 @@
 package yuuki.item;
 
+import java.util.List;
+
 import yuuki.action.Action;
 import yuuki.entity.Character;
 
@@ -15,12 +17,13 @@ public class ExternallyUsableItem extends UsableItem {
 	 * @param name The name of this item.
 	 * @param value The value of this item in in-game currency.
 	 * @param image The index of the image for this item.
+	 * @param description The description of this item.
 	 * @param action The action that this item performs.
 	 * @param uses The number of times that this item can be used.
 	 */
 	public ExternallyUsableItem(long id, String name, int value, String image,
-			Action action, int uses) {
-		super(id, name, value, image, action, uses);
+			String description, Action action, int uses) {
+		super(id, name, value, image, description, action, uses);
 	}
 	
 	@Override
@@ -35,12 +38,22 @@ public class ExternallyUsableItem extends UsableItem {
 	 * @param target The character that the item is being used on.
 	 */
 	public void use(Character user, Character target) {
-		Action a = getActionForUse();
+		increaseUses(1);
+		Action a = getAction();
+		// first get the current state of the Action
+		List<Character> originalTargets = a.getTargets();
+		Character originalOrigin = a.getOrigin();
+		// now actually mutate action and apply effects
 		a.clearTargets();
 		a.setSkipCost(true);
 		a.setOrigin(user);
 		a.addTarget(target);
 		a.apply();
+		// now restore the original state
+		for (Character t : originalTargets) {
+			a.addTarget(t);
+		}
+		a.setOrigin(originalOrigin);
 	}
 	
 }

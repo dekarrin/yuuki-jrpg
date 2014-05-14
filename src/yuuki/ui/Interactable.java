@@ -25,21 +25,6 @@ import yuuki.world.WalkGraph;
 public interface Interactable {
 	
 	/**
-	 * Clears the items from a certain spot on the overworld screen.
-	 * 
-	 * @param items The items to remove.
-	 * @param count The number of items to remove.
-	 */
-	public void removeWorldItems(Item[] items, int count);
-	
-	/**
-	 * Sets the inventory screen to show the contents of a pouch.
-	 * 
-	 * @param pouch The pouch to show.
-	 */
-	public void updateInventory(InventoryPouch pouch);
-	
-	/**
 	 * Adds mods to the options screen.
 	 * 
 	 * @param names The names of the mods.
@@ -265,6 +250,14 @@ public interface Interactable {
 	public void playSound(String effectIndex);
 	
 	/**
+	 * Clears the items from a certain spot on the overworld screen.
+	 * 
+	 * @param items The items to remove.
+	 * @param count The number of items to remove.
+	 */
+	public void removeWorldItems(Item[] items, int count);
+	
+	/**
 	 * Resets the active prompt.
 	 */
 	public void resetPrompt();
@@ -277,6 +270,15 @@ public interface Interactable {
 	 * @return The selected Action.
 	 */
 	public Action selectAction(Action[] moves);
+	
+	/**
+	 * Has the PC select an item.
+	 * @param usableItems 
+	 * 
+	 * @param choices The items that the player may select from.
+	 * @return The item that the player selected.
+	 */
+	public Item selectItem(Item[] choices);
 	
 	/**
 	 * Gets the next move that the human character wishes to make.
@@ -482,6 +484,13 @@ public interface Interactable {
 	 * Shows the pause screen.
 	 */
 	public void switchToPauseScreen();
+	
+	/**
+	 * Sets the inventory screen to show the contents of a pouch.
+	 * 
+	 * @param pouch The pouch to show.
+	 */
+	public void updateInventory(InventoryPouch pouch);
 	
 	/**
 	 * Updates the loading progress display.

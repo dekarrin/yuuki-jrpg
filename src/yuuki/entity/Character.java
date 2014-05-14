@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import yuuki.action.Action;
+import yuuki.action.ItemUse;
 import yuuki.buff.Buff;
 import yuuki.item.InventoryPouch;
 import yuuki.item.Item;
@@ -182,7 +183,7 @@ public abstract class Character implements Movable, Displayable {
 	/**
 	 * The inventory for this character.
 	 */
-	private InventoryPouch inventory;
+	protected InventoryPouch inventory;
 	
 	/**
 	 * Modifies critical strike percent.
@@ -235,7 +236,7 @@ public abstract class Character implements Movable, Displayable {
 	protected int level;
 	
 	/**
-	 * The moves that this Character can perform.
+	 * All moves that this Character can perform.
 	 */
 	protected Action[] moves;
 	
@@ -243,6 +244,11 @@ public abstract class Character implements Movable, Displayable {
 	 * The experience of this Character.
 	 */
 	protected int xp;
+	
+	/**
+	 * The use item action of this Character, if there is one.
+	 */
+	protected ItemUse itemUseAction;
 	
 	/**
 	 * Allocates a new Character. Most stats are set manually, but experience
@@ -289,6 +295,10 @@ public abstract class Character implements Movable, Displayable {
 		this.overworldArt = overworldArt;
 		for (Action move : moves) {
 			move.setOrigin(this);
+			// using instanceof to mark ItemUse as special and to only allow one
+			if (move instanceof ItemUse && itemUseAction == null) {
+				itemUseAction = (ItemUse) move;
+			}
 		}
 		inventory = new InventoryPouch(10, "Lunch Box");
 	}
@@ -710,7 +720,7 @@ public abstract class Character implements Movable, Displayable {
 	public Action getNextAction(ArrayList<ArrayList<Character>> fighters) {
 		Action m = selectAction(fighters);
 		if (m != null) {
-			// should only happen if thread is interrupted
+			// should never happen if thread is not interrupted
 			if (m.getTargets().isEmpty()) {
 				m.addTarget(selectTarget(fighters));
 			}

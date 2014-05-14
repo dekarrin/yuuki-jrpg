@@ -56,6 +56,11 @@ public class BasicDefense extends Action implements Cloneable {
 		super.addTarget(performer);
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		return true;
+	}
+	
 	/**
 	 * Applies the defense buff to the origin.
 	 */

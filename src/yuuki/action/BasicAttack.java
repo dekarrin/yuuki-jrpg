@@ -68,4 +68,9 @@ public class BasicAttack extends Skill implements Cloneable {
 		effectStat = c.getHPStat().clone();
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		return false;
+	}
+	
 }

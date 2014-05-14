@@ -1,6 +1,7 @@
 package yuuki.battle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
@@ -17,6 +18,11 @@ public class BattleRunner implements Runnable {
 	 * Whether the battle thread should pause.
 	 */
 	public volatile boolean paused;
+	
+	/**
+	 * Whether a battle is being run.
+	 */
+	private volatile boolean running;
 	
 	/**
 	 * The battle being run.
@@ -55,6 +61,7 @@ public class BattleRunner implements Runnable {
 	
 	@Override
 	public void run() {
+		running = true;
 		battleThread = Thread.currentThread();
 		try {
 			runBattle(battle);
@@ -66,6 +73,16 @@ public class BattleRunner implements Runnable {
 				main.requestBattleEnd();
 			}
 		}
+		running = false;
+	}
+	
+	/**
+	 * Whether a battle is currently being run.
+	 * 
+	 * @return Whether it is.
+	 */
+	public boolean inBattle() {
+		return running;
 	}
 	
 	/**
@@ -130,6 +147,8 @@ public class BattleRunner implements Runnable {
 				outputActionCost(a);
 			}
 			ui.showActionUse(a);
+			String actionName = a.getName();
+			System.out.println(a.getOrigin().getName() + " used " + actionName + " on " + a.getTargets().get(0).getName());
 			checkHalted();
 			if (a.getEffectStat() != null) {
 				outputActionEffects(a);
@@ -165,11 +184,15 @@ public class BattleRunner implements Runnable {
 	 */
 	private void outputActionEffects(Action a) throws InterruptedException {
 		int[] effects = a.getActualEffects();
-		ArrayList<Character> targets = a.getTargets();
+		List<Character> targets = a.getTargets();
 		for (int i = 0; i < effects.length; i++) {
 			Character t = targets.get(i);
-			int damage = effects[i];
-			ui.showDamage(t, a.getEffectStat(), damage);
+			int change = effects[i];
+			if (a.hasPositiveEffect()) {
+				ui.showRecovery(t, a.getEffectStat(), change);
+			} else {
+				ui.showDamage(t, a.getEffectStat(), change);
+			}
 			checkHalted();
 			ui.showStatUpdate(t);
 			checkHalted();

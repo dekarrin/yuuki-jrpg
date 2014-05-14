@@ -29,28 +29,35 @@ public class UsableItem extends Item {
 	 * @param name The name of the item.
 	 * @param value The value of the item.
 	 * @param image The index of the image for this item.
+	 * @param description The description of this item.
 	 * @param action The action that using this item performs.
 	 * @param uses The number of times that this item may be used.
 	 */
 	public UsableItem(long id, String name, int value, String image,
-			Action action, int uses) {
-		super(id, name, value, image);
+			String description, Action action, int uses) {
+		super(id, name, value, image, description);
 		this.action = action;
 		this.maxUses = uses;
 		this.uses = 0;
 	}
 	
 	/**
-	 * Gets the action that this item performs, which counts as a use of this
-	 * Item.
+	 * Increases the use count of this item.
 	 * 
-	 * @return The Action.
+	 * @param amount The amount to increase the use count by.
 	 */
-	public Action getActionForUse() {
-		uses++;
+	public void increaseUses(int amount) {
+		uses += amount;
 		if (uses > maxUses) {
 			throw new IllegalStateException("Item used too many times");
 		}
+	}
+	
+	/**
+	 * Gets the action that this item performs.
+	 * @return
+	 */
+	public Action getAction() {
 		return action;
 	}
 	

@@ -17,9 +17,27 @@ public class MenuBar extends JMenuBar implements Listenable<MenuBarListener>,
 MenuListener {
 	
 	/**
-	 * The ID of the file menu.
+	 * Describes which menus and items are to be enabled/disabled.
 	 */
-	public static final int MENU_ID_FILE = 0;
+	public static class MenuBarEnableInfo {
+		
+		/**
+		 * Constructs a new MenuBarEnableInfo with all menus and items enabled.
+		 */
+		public MenuBarEnableInfo() {
+			this(true);
+		}
+		
+		/**
+		 * Constructs a new MenuBarEnableInfo.
+		 * 
+		 * @param defaultEnable Whether all menus and items are enabled by
+		 * default.
+		 */
+		public MenuBarEnableInfo(boolean defaultEnable) {
+			
+		}
+	}
 	
 	/**
 	 * The ID of the actions menu.
@@ -27,9 +45,9 @@ MenuListener {
 	public static final int MENU_ID_ACTIONS = 1;
 	
 	/**
-	 * The File menu. Contains main menu operations.
+	 * The ID of the file menu.
 	 */
-	private FileMenu fileMenu;
+	public static final int MENU_ID_FILE = 0;
 	
 	/**
 	 * Contains actions related to the game.
@@ -37,12 +55,17 @@ MenuListener {
 	private ActionsMenu actionsMenu;
 	
 	/**
+	 * The File menu. Contains main menu operations.
+	 */
+	private FileMenu fileMenu;
+	
+	/**
 	 * The list of listeners.
 	 */
 	private Set<MenuBarListener> listeners;
 	
 	/**
-	 * Creates a new GameMenuBar. The child components are created and added.
+	 * Creates a new MenuBar. The child components are created and added.
 	 */
 	public MenuBar() {
 		listeners = new HashSet<MenuBarListener>();
@@ -80,6 +103,46 @@ MenuListener {
 	@Override
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);
+	}
+	
+	/**
+	 * Sets the enabled status of a menu.
+	 * 
+	 * @param id An index that identifies the menu. Should be of the MENU_ID_*
+	 * constants from this class.
+	 * @param enabled Whether the menu should be enabled.
+	 */
+	public void setMenuEnabled(int id, boolean enabled) {
+		switch (id) {
+			case MenuBar.MENU_ID_FILE:
+				fileMenu.setEnabled(enabled);
+				break;
+				
+			case MenuBar.MENU_ID_ACTIONS:
+				actionsMenu.setEnabled(enabled);
+				break;
+		}
+	}
+	
+	/**
+	 * Sets the enabled status of a menu item.
+	 * 
+	 * @param menuId An index that identifies the menu. Should be of the
+	 * MENU_ID_* constants from this class.
+	 * @param itemId An index that identifies the menu item. Should be a
+	 * constant taken from the appropriate class.
+	 * @param enabled Whether the menu should be enabled.
+	 */
+	public void setMenuItemEnabled(int menuId, int itemId, boolean enabled) {
+		switch (menuId) {
+			case MenuBar.MENU_ID_FILE:
+				fileMenu.setItemEnabled(itemId, enabled);
+				break;
+				
+			case MenuBar.MENU_ID_ACTIONS:
+				actionsMenu.setItemEnabled(itemId, enabled);
+				break;
+		}
 	}
 	
 	/**

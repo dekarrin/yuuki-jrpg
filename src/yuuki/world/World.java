@@ -45,6 +45,16 @@ public class World implements Mergeable<Map<String, Land>> {
 	}
 	
 	/**
+	 * Adds an item to the current land. The location to add it to is extracted
+	 * from the item via its getLocation() method.
+	 * 
+	 * @param item The item to add.
+	 */
+	public void addItem(Item item) {
+		activeLand.addItem(item);
+	}
+	
+	/**
 	 * Adds a new Land to this world.
 	 * 
 	 * @param land The Land to add.
@@ -56,34 +66,6 @@ public class World implements Mergeable<Map<String, Land>> {
 			lands.put(land.getName(), d);
 		}
 		d.push(land);
-	}
-	
-	/**
-	 * Gets items from a point in the active land.
-	 * 
-	 * @param point The point to get them from.
-	 */
-	public Item[] getItemsAt(Point point) {
-		return activeLand.getItemsAt(point);
-	}
-	
-	/**
-	 * Clears items from a point in the active land.
-	 * 
-	 * @param point The point to clear them from.
-	 * @param count The number to remove.
-	 */
-	public void clearItems(Point point, int count) {
-		activeLand.clearItems(point, count);
-	}
-	
-	/**
-	 * Gets all items in the active land.
-	 * 
-	 * @return All Items in the active land.
-	 */
-	public List<Item> getItems() {
-		return activeLand.getItems();
 	}
 	
 	/**
@@ -119,6 +101,16 @@ public class World implements Mergeable<Map<String, Land>> {
 	}
 	
 	/**
+	 * Clears items from a point in the active land.
+	 * 
+	 * @param point The point to clear them from.
+	 * @param count The number to remove.
+	 */
+	public void clearItems(Point point, int count) {
+		activeLand.clearItems(point, count);
+	}
+	
+	/**
 	 * Gets the names of all lands in this World.
 	 * 
 	 * @return An array containing the names of all loaded Lands.
@@ -139,6 +131,24 @@ public class World implements Mergeable<Map<String, Land>> {
 	 */
 	public String getExternalLinkName(Movable entity) {
 		return externalTransfers.get(entity);
+	}
+	
+	/**
+	 * Gets all items in the active land.
+	 * 
+	 * @return All Items in the active land.
+	 */
+	public List<Item> getItems() {
+		return activeLand.getItems();
+	}
+	
+	/**
+	 * Gets items from a point in the active land.
+	 * 
+	 * @param point The point to get them from.
+	 */
+	public Item[] getItemsAt(Point point) {
+		return activeLand.getItemsAt(point);
 	}
 	
 	/**

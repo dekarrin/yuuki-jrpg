@@ -41,6 +41,11 @@ public class Heal extends Skill implements Cloneable {
 		return new Heal(amount, cost);
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		return true;
+	}
+	
 	/**
 	 * Has no effect.
 	 */
@@ -55,6 +60,7 @@ public class Heal extends Skill implements Cloneable {
 		Character target = targets.get(0);
 		int amount = (int) this.effect;
 		target.gainHP(amount);
+		actualEffects[0] = amount;
 	}
 	
 	@Override

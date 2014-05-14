@@ -1,6 +1,7 @@
 package yuuki.battle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.entity.Character;
@@ -308,7 +309,7 @@ public class Battle {
 	 * Removes the targeted fighter if he is now dead.
 	 */
 	private void checkDeath() {
-		ArrayList<Character> targets = lastAction.getTargets();
+		List<Character> targets = lastAction.getTargets();
 		for (Character c : targets) {
 			if (!c.isAlive()) {
 				removeFighter(c);

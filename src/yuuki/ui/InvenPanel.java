@@ -1,11 +1,12 @@
 package yuuki.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -26,7 +27,7 @@ public class InvenPanel extends JPanel {
 	 * A single cell in this InvenPanel. Each cell represents exactly one item
 	 * in the user's inventory.
 	 */
-	private class ItemCell extends ImageComponent {
+	public class ItemCell extends ImageComponent {
 		
 		/**
 		 * The item that this cell represents.
@@ -41,7 +42,10 @@ public class InvenPanel extends JPanel {
 		 */
 		public ItemCell(Item item, int size) {
 			this.item = item;
-			setPreferredSize(new Dimension(size, size));
+			Dimension s = new Dimension(size, size);
+			setPreferredSize(s);
+			setMinimumSize(s);
+			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			try {
 				Image img = images.createImage(item.getImage());
 				setBackgroundImage(img);
@@ -57,6 +61,20 @@ public class InvenPanel extends JPanel {
 		}
 		
 		/**
+		 * Highlights this cell.
+		 */
+		public void brighten() {
+			setBorder(BorderFactory.createLineBorder(Color.BLUE));
+		}
+		
+		/**
+		 * Dims this cell.
+		 */
+		public void dim() {
+			setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		}
+		
+		/**
 		 * Fires the clicked event on the InvenPanel.
 		 */
 		private void fireClicked(MouseEvent e) {
@@ -66,9 +84,14 @@ public class InvenPanel extends JPanel {
 	}
 	
 	/**
-	 * The height of a cell in the items list.
+	 * The minimum amount of padding to use between each cell.
 	 */
-	public static final int ITEM_CELL_SIZE = 100;
+	public static final int ITEM_CELL_MIN_SPACE = 3;
+	
+	/**
+	 * The height and width of a cell in the items list.
+	 */
+	public static final int ITEM_CELL_SIZE = 50;
 	
 	/**
 	 * Used for generating tile images.
@@ -157,7 +180,15 @@ public class InvenPanel extends JPanel {
 	 */
 	private void createComponents(int width, int height) {
 		itemList = new VerticalScrollPaneClient(width, height, ITEM_CELL_SIZE);
-		itemList.setLayout(new FlowLayout(FlowLayout.LEFT));
+		AutoGridLayout layout = new AutoGridLayout(itemList.viewerWidth,
+				ITEM_CELL_SIZE, ITEM_CELL_MIN_SPACE);
+		itemList.setLayout(layout);
+		itemList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				fireItemDeselected();
+			}
+		});
 	}
 	
 	/**
@@ -168,6 +199,15 @@ public class InvenPanel extends JPanel {
 	private void fireItemCellClicked(MouseEvent e, Item item) {
 		if (listener != null) {
 			listener.itemCellClicked(e, item);
+		}
+	}
+	
+	/**
+	 * Calls itemDeselected() on the listener.
+	 */
+	private void fireItemDeselected() {
+		if (listener != null) {
+			listener.itemDeselected();
 		}
 	}
 	

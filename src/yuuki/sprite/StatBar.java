@@ -127,6 +127,7 @@ public class StatBar extends Sprite {
 		if (stat.getCurrent() != this.value) {
 			int targetWidth = (int) Math.round(getWidth() * getPercent());
 			int dw = targetWidth - foreground.getWidth();
+			this.value = stat.getCurrent();
 			Animation updateAnimation;
 			updateAnimation = new SizeTween(foreground, 1000, dw, 0);
 			try {

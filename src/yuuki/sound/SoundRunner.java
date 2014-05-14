@@ -128,6 +128,8 @@ class SoundRunner implements Runnable {
 			blockUntilPlaybackFinishes();
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		} catch (RuntimeException e) {
+			throw e;
 		} finally {
 			closeAudioClip();
 			firePlaybackFinished();

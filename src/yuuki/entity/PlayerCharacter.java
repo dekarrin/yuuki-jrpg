@@ -4,6 +4,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import yuuki.action.Action;
+import yuuki.action.ItemUse;
+import yuuki.item.Item;
+import yuuki.item.UsableItem;
 import yuuki.ui.Interactable;
 import yuuki.world.Land;
 import yuuki.world.WalkGraph;
@@ -136,6 +139,15 @@ public class PlayerCharacter extends Character {
 		if (m == null) {
 			// should never happen unless current thread has been interrupted
 			return null;
+		} else if (m == itemUseAction) {
+			Item item = ui.selectItem(inventory.getUsableItems());
+			if (item == null) {
+				return null;
+			} else {
+				Action a = m.clone();
+				((ItemUse) a).setItem((UsableItem) item);
+				return a;
+			}
 		} else {
 			return m.clone();
 		}
