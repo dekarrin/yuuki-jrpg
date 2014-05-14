@@ -36,7 +36,7 @@ public class ExternallyUsableItem extends UsableItem {
 	 * @param target The character that the item is being used on.
 	 */
 	public void use(Character user, Character target) {
-		Action a = getActionForUse();
+		increaseUses(1);
 		a.clearTargets();
 		a.setSkipCost(true);
 		a.setOrigin(user);

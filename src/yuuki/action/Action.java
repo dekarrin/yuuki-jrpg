@@ -199,6 +199,7 @@ public abstract class Action implements Cloneable {
 		for (int i = 0; i < this.actualEffects.length; i++) {
 			a2.actualEffects[i] = this.actualEffects[i];
 		}
+		// origin should be kept as the same reference
 		return a2;
 	}
 	
@@ -296,6 +297,15 @@ public abstract class Action implements Cloneable {
 	 */
 	public Buff getOriginBuff() {
 		return originBuff;
+	}
+	
+	/**
+	 * Gets whether cost is skipped for this action.
+	 * 
+	 * @return See above.
+	 */
+	public boolean getSkipCost() {
+		return skipCost;
 	}
 	
 	/**

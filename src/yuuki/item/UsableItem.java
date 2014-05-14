@@ -42,16 +42,22 @@ public class UsableItem extends Item {
 	}
 	
 	/**
-	 * Gets the action that this item performs, which counts as a use of this
-	 * Item.
+	 * Increases the use count of this item.
 	 * 
-	 * @return The Action.
+	 * @param amount The amount to increase the use count by.
 	 */
-	public Action getActionForUse() {
-		uses++;
+	public void increaseUses(int amount) {
+		uses += amount;
 		if (uses > maxUses) {
 			throw new IllegalStateException("Item used too many times");
 		}
+	}
+	
+	/**
+	 * Gets the action that this item performs.
+	 * @return
+	 */
+	public Action getAction() {
 		return action;
 	}
 	
