@@ -96,9 +96,6 @@ public class Engine implements Runnable, UiExecutor {
 			} catch (InvalidLinkNameException e) {
 				DialogHandler.showFatalError("Invalid portal link: '" +
 						e.getMessage() + "'");
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-				DialogHandler.showError(e);
 			}
 		}
 		public void setPaused(boolean paused) {
@@ -127,6 +124,8 @@ public class Engine implements Runnable, UiExecutor {
 	 * @param args Command line arguments. Not used.
 	 */
 	public static void main(String[] args) {
+		GenericExceptionHandler geh = new GenericExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler(geh);
 		Engine game = null;
 		try {
 			game = new Engine();
