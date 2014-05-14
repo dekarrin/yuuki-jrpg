@@ -41,6 +41,11 @@ public class Heal extends Skill implements Cloneable {
 		return new Heal(amount, cost);
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		return true;
+	}
+	
 	/**
 	 * Has no effect.
 	 */

@@ -35,9 +35,7 @@ public class ItemUse extends Action {
 	
 	@Override
 	public boolean apply() {
-		boolean success = item.getAction().apply();
-		item.getAction().clearTargets();
-		return success;
+		return item.getAction().apply();
 	}
 	
 	@Override
@@ -61,6 +59,15 @@ public class ItemUse extends Action {
 	@Override
 	public Action createInstance(String[] args) {
 		return new ItemUse();
+	}
+	
+	@Override
+	public boolean hasPositiveEffect() {
+		if (item == null) {
+			return true;
+		} else {
+			return item.getAction().hasPositiveEffect();
+		}
 	}
 	
 	@Override
@@ -155,6 +162,7 @@ public class ItemUse extends Action {
 	 */
 	public void setItem(UsableItem item) {
 		if (item != null) {
+			item.increaseUses(1);
 			Action a = item.getAction();
 			a.setSkipCost(getSkipCost());
 			a.setOrigin(getOrigin());

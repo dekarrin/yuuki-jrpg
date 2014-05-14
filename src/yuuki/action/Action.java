@@ -393,6 +393,13 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
+	 * Returns whether this Action has a positive effect on the stat.
+	 * 
+	 * @return See above.
+	 */
+	public abstract boolean hasPositiveEffect();
+	
+	/**
 	 * Applies any applicable Buffs to either the targets, origin, or both.
 	 */
 	protected abstract void applyBuffs();

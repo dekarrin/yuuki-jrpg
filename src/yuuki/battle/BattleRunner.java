@@ -187,8 +187,12 @@ public class BattleRunner implements Runnable {
 		List<Character> targets = a.getTargets();
 		for (int i = 0; i < effects.length; i++) {
 			Character t = targets.get(i);
-			int damage = effects[i];
-			ui.showDamage(t, a.getEffectStat(), damage);
+			int change = effects[i];
+			if (a.hasPositiveEffect()) {
+				ui.showRecovery(t, a.getEffectStat(), change);
+			} else {
+				ui.showDamage(t, a.getEffectStat(), change);
+			}
 			checkHalted();
 			ui.showStatUpdate(t);
 			checkHalted();
