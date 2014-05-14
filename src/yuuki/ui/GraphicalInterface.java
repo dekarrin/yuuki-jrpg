@@ -56,9 +56,7 @@ import yuuki.world.WalkGraph;
 /**
  * A graphical user interface that uses the Swing framework.
  */
-public class GraphicalInterface implements Interactable, IntroScreenListener,
-CharacterCreationScreenListener, OptionsScreenListener, MenuBarListener,
-OverworldScreenListener, InvenScreenListener {
+public class GraphicalInterface implements Interactable {
 	
 	/**
 	 * The speed of game animation.
@@ -204,6 +202,20 @@ OverworldScreenListener, InvenScreenListener {
 	 */
 	private DualSoundEngine soundEngine;
 	
+	private OverworldScreenListener overworldListener = new OverworldScreenListener() {
+		
+		@Override
+		public void invenButtonClicked() {
+			mainProgram.requestInventoryOpen();
+		}
+		
+		@Override
+		public void getItemClicked() {
+			mainProgram.requestGetItem();
+			overworldScreen.redrawWorldViewport();
+		}
+	};
+	
 	/**
 	 * Allocates a new GraphicalInterface. Its components are created.
 	 * 
@@ -251,12 +263,6 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
-	public void bgmVolumeChanged(int volume) {
-		options.bgmVolume = volume;
-		mainProgram.requestOptionApplication();
-	}
-	
-	@Override
 	public void clearWorldLocatables() {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -267,26 +273,10 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
-	public void closeInvenClicked() {
-		mainProgram.requestInventoryClose();
-	}
-	
-	@Override
 	public boolean confirm(String prompt, String yes, String no) {
 		String[] ops = {yes, no};
 		String choice = (String) getChoice(prompt, ops);
 		return (choice.equals(yes));
-	}
-	
-	@Override
-	public void createCharacterClicked() {
-		String name = charCreationScreen.getEnteredName();
-		int level = charCreationScreen.getEnteredLevel();
-		if (!name.equals("")) {
-			mainProgram.requestCharacterCreation(name, level);
-		} else {
-			showAlertDialog("You must enter a name!");
-		}
 	}
 	
 	@Override
@@ -298,17 +288,6 @@ OverworldScreenListener, InvenScreenListener {
 	public void display(Character speaker, String message, boolean animated) {
 		long letterTime = (animated) ? MESSAGE_LETTER_DELAY : 0;
 		messageBox.display(speaker, message, letterTime, MESSAGE_DISPLAY_TIME);
-	}
-	
-	@Override
-	public void dropItemClicked(Item item) {
-		mainProgram.requestItemDrop(item);
-		overworldScreen.redrawWorldViewport();
-	}
-	
-	@Override
-	public void exitClicked() {
-		mainProgram.requestQuit();
 	}
 	
 	@Override
@@ -418,12 +397,6 @@ OverworldScreenListener, InvenScreenListener {
 	}
 	
 	@Override
-	public void getItemClicked() {
-		mainProgram.requestGetItem();
-		overworldScreen.redrawWorldViewport();
-	}
-	
-	@Override
 	public String getString() {
 		return getString("Enter a value");
 	}
@@ -496,85 +469,6 @@ OverworldScreenListener, InvenScreenListener {
 	public void initializeSounds(DualSoundEngine soundEngine) {
 		this.soundEngine = soundEngine;
 		introScreen.setSoundEngine(soundEngine);
-	}
-	
-	@Override
-	public void invenButtonClicked() {
-		mainProgram.requestInventoryOpen();
-	}
-	
-	@Override
-	public void loadGameClicked() {
-		mainProgram.requestLoadGame();
-	}
-	
-	@Override
-	public void menuItemTriggered(int menuId, int itemId) {
-		switch (menuId) {
-			case MenuBar.MENU_ID_FILE:
-				switch (itemId) {
-					case FileMenu.ITEM_ID_NEW:
-						mainProgram.requestNewGame();
-						break;
-						
-					case FileMenu.ITEM_ID_LOAD:
-						mainProgram.requestLoadGame();
-						break;
-						
-					case FileMenu.ITEM_ID_SAVE:
-						mainProgram.requestSaveGame();
-						break;
-						
-					case FileMenu.ITEM_ID_CLOSE:
-						mainProgram.requestCloseGame();
-						break;
-						
-					case FileMenu.ITEM_ID_OPTIONS:
-						mainProgram.requestOptionsScreen();
-						break;
-						
-					case FileMenu.ITEM_ID_EXIT:
-						mainProgram.requestQuit();
-						break;
-				}
-				break;
-				
-			case MenuBar.MENU_ID_ACTIONS:
-				switch (itemId) {
-					case ActionsMenu.ITEM_ID_GET:
-						getItemClicked();
-						break;
-						
-					case ActionsMenu.ITEM_ID_INVENTORY:
-						mainProgram.requestInventoryOpen();
-						break;
-				}
-		}
-	}
-	
-	@Override
-	public void modDisabled(String id) {
-		mainProgram.requestModDisable(id);
-	}
-	
-	@Override
-	public void modEnabled(String id) {
-		mainProgram.requestModEnable(id);
-	}
-	
-	@Override
-	public void newGameClicked() {
-		mainProgram.requestNewGame();
-	}
-	
-	@Override
-	public void optionsClicked() {
-		mainProgram.requestOptionsScreen();
-	}
-	
-	@Override
-	public void optionsSubmitted() {
-		mainProgram.requestOptionsSubmission();
 	}
 	
 	@Override
@@ -759,17 +653,6 @@ OverworldScreenListener, InvenScreenListener {
 		}
 		Runner r = new Runner(view, name);
 		SwingUtilities.invokeLater(r);
-	}
-	
-	@Override
-	public void sfxTestClicked() {
-		playSound("SFX_TEST");
-	}
-	
-	@Override
-	public void sfxVolumeChanged(int volume) {
-		options.sfxVolume = volume;
-		mainProgram.requestOptionApplication();
 	}
 	
 	@Override
@@ -963,7 +846,19 @@ OverworldScreenListener, InvenScreenListener {
 	
 	@Override
 	public void switchToCharacterCreationScreen() {
-		charCreationScreen.addListener(this);
+		charCreationScreen.addListener(new CharacterCreationScreenListener() {
+			
+			@Override
+			public void createCharacterClicked() {
+				String name = charCreationScreen.getEnteredName();
+				int level = charCreationScreen.getEnteredLevel();
+				if (!name.equals("")) {
+					mainProgram.requestCharacterCreation(name, level);
+				} else {
+					showAlertDialog("You must enter a name!");
+				}
+			}
+		});
 		switchWindow(charCreationScreen);
 		setupCharacterCreationMenubar();
 	}
@@ -976,14 +871,52 @@ OverworldScreenListener, InvenScreenListener {
 	
 	@Override
 	public void switchToIntroScreen() {
-		introScreen.addListener(this);
+		introScreen.addListener(new IntroScreenListener() {
+			
+			@Override
+			public void optionsClicked() {
+				mainProgram.requestOptionsScreen();
+			}
+			
+			@Override
+			public void newGameClicked() {
+				mainProgram.requestNewGame();
+			}
+			
+			@Override
+			public void loadGameClicked() {
+				mainProgram.requestLoadGame();
+			}
+			
+			@Override
+			public void exitClicked() {
+				mainProgram.requestQuit();
+			}
+		});
 		switchWindow(introScreen);
 		setupIntroMenubar();
 	}
 	
 	@Override
 	public void switchToInvenScreen() {
-		invenScreen.addListener(this);
+		invenScreen.addListener(new InvenScreenListener() {
+			
+			@Override
+			public void useItemClicked(Item item) {
+				mainProgram.requestItemUse(item);
+			}
+			
+			@Override
+			public void dropItemClicked(Item item) {
+				mainProgram.requestItemDrop(item);
+				overworldScreen.redrawWorldViewport();
+			}
+			
+			@Override
+			public void closeInvenClicked() {
+				mainProgram.requestInventoryClose();
+			}
+		});
 		switchWindow(invenScreen);
 		setupInvenMenubar();
 	}
@@ -1003,7 +936,40 @@ OverworldScreenListener, InvenScreenListener {
 	
 	@Override
 	public void switchToOptionsScreen() {
-		optionsScreen.addListener(this);
+		optionsScreen.addListener(new OptionsScreenListener() {
+			
+			@Override
+			public void sfxVolumeChanged(int volume) {
+				options.sfxVolume = volume;
+				mainProgram.requestOptionApplication();
+			}
+			
+			@Override
+			public void sfxTestClicked() {
+				playSound("SFX_TEST");
+			}
+			
+			@Override
+			public void optionsSubmitted() {
+				mainProgram.requestOptionsSubmission();
+			}
+			
+			@Override
+			public void modEnabled(String id) {
+				mainProgram.requestModEnable(id);
+			}
+			
+			@Override
+			public void modDisabled(String id) {
+				mainProgram.requestModDisable(id);
+			}
+			
+			@Override
+			public void bgmVolumeChanged(int volume) {
+				options.bgmVolume = volume;
+				mainProgram.requestOptionApplication();
+			}
+		});
 		optionsScreen.setValues(options);
 		mainProgram.requestBattlePause();
 		switchWindow(optionsScreen);
@@ -1013,7 +979,7 @@ OverworldScreenListener, InvenScreenListener {
 	
 	@Override
 	public void switchToOverworldScreen() {
-		overworldScreen.addListener(this);
+		overworldScreen.addListener(overworldListener);
 		switchWindow(overworldScreen);
 		setupOverworldMenubar();
 	}
@@ -1067,11 +1033,6 @@ OverworldScreenListener, InvenScreenListener {
 		}
 		Runner r = new Runner(center);
 		SwingUtilities.invokeLater(r);
-	}
-	
-	@Override
-	public void useItemClicked(Item item) {
-		mainProgram.requestItemUse(item);
 	}
 	
 	@Override
@@ -1210,7 +1171,52 @@ OverworldScreenListener, InvenScreenListener {
 	 */
 	private void createMenuBar() {
 		menuBar = new MenuBar();
-		menuBar.addListener(this);
+		menuBar.addListener(new MenuBarListener() {
+			
+			@Override
+			public void menuItemTriggered(int menuId, int itemId) {
+				switch (menuId) {
+					case MenuBar.MENU_ID_FILE:
+						switch (itemId) {
+							case FileMenu.ITEM_ID_NEW:
+								mainProgram.requestNewGame();
+								break;
+								
+							case FileMenu.ITEM_ID_LOAD:
+								mainProgram.requestLoadGame();
+								break;
+								
+							case FileMenu.ITEM_ID_SAVE:
+								mainProgram.requestSaveGame();
+								break;
+								
+							case FileMenu.ITEM_ID_CLOSE:
+								mainProgram.requestCloseGame();
+								break;
+								
+							case FileMenu.ITEM_ID_OPTIONS:
+								mainProgram.requestOptionsScreen();
+								break;
+								
+							case FileMenu.ITEM_ID_EXIT:
+								mainProgram.requestQuit();
+								break;
+						}
+						break;
+						
+					case MenuBar.MENU_ID_ACTIONS:
+						switch (itemId) {
+							case ActionsMenu.ITEM_ID_GET:
+								overworldListener.getItemClicked();
+								break;
+								
+							case ActionsMenu.ITEM_ID_INVENTORY:
+								mainProgram.requestInventoryOpen();
+								break;
+						}
+				}
+			}
+		});
 	}
 	
 	/**
