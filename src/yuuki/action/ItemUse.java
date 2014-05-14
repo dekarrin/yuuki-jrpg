@@ -1,6 +1,6 @@
 package yuuki.action;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
@@ -140,7 +140,7 @@ public class ItemUse extends Action {
 	}
 	
 	@Override
-	public ArrayList<Character> getTargets() {
+	public List<Character> getTargets() {
 		if (item != null) {
 			return item.getAction().getTargets();
 		} else {

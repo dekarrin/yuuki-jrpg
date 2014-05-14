@@ -1,6 +1,7 @@
 package yuuki.battle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
@@ -187,7 +188,7 @@ public class BattleRunner implements Runnable {
 	 */
 	private void outputActionEffects(Action a) throws InterruptedException {
 		int[] effects = a.getActualEffects();
-		ArrayList<Character> targets = a.getTargets();
+		List<Character> targets = a.getTargets();
 		for (int i = 0; i < effects.length; i++) {
 			Character t = targets.get(i);
 			int damage = effects[i];

@@ -2,6 +2,7 @@ package yuuki.action;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
@@ -323,8 +324,8 @@ public abstract class Action implements Cloneable {
 	 * @return An array containing the targets, which will be empty if no
 	 * targets have been set.
 	 */
-	public ArrayList<Character> getTargets() {
-		return targets;
+	public List<Character> getTargets() {
+		return java.util.Collections.unmodifiableList(targets);
 	}
 	
 	/**
