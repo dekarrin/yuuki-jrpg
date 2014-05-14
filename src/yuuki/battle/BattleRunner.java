@@ -1,6 +1,7 @@
 package yuuki.battle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import yuuki.action.Action;
 import yuuki.buff.Buff;
@@ -147,9 +148,6 @@ public class BattleRunner implements Runnable {
 			}
 			ui.showActionUse(a);
 			String actionName = a.getName();
-			if (a instanceof yuuki.action.ItemUse) {
-				actionName = "item (" + ((yuuki.action.ItemUse) a).getName() + ")";
-			}
 			System.out.println(a.getOrigin().getName() + " used " + actionName + " on " + a.getTargets().get(0).getName());
 			checkHalted();
 			if (a.getEffectStat() != null) {
@@ -186,11 +184,15 @@ public class BattleRunner implements Runnable {
 	 */
 	private void outputActionEffects(Action a) throws InterruptedException {
 		int[] effects = a.getActualEffects();
-		ArrayList<Character> targets = a.getTargets();
+		List<Character> targets = a.getTargets();
 		for (int i = 0; i < effects.length; i++) {
 			Character t = targets.get(i);
-			int damage = effects[i];
-			ui.showDamage(t, a.getEffectStat(), damage);
+			int change = effects[i];
+			if (a.hasPositiveEffect()) {
+				ui.showRecovery(t, a.getEffectStat(), change);
+			} else {
+				ui.showDamage(t, a.getEffectStat(), change);
+			}
 			checkHalted();
 			ui.showStatUpdate(t);
 			checkHalted();

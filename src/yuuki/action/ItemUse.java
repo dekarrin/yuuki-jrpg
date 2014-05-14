@@ -1,6 +1,10 @@
 package yuuki.action;
 
+import java.util.List;
+
+import yuuki.buff.Buff;
 import yuuki.entity.Character;
+import yuuki.entity.Stat;
 import yuuki.item.UsableItem;
 
 /**
@@ -18,6 +22,35 @@ public class ItemUse extends Action {
 	 */
 	public ItemUse() {
 		super("use item", 0.0, 0.0, null, null);
+		setSkipCost(true);
+	}
+	
+	@Override
+	public void addTarget(Character t) {
+		if (item != null) {
+			item.getAction().addTarget(t);
+		}
+		super.addTarget(t);
+	}
+	
+	@Override
+	public boolean apply() {
+		return item.getAction().apply();
+	}
+	
+	@Override
+	public void clearTargets() {
+		if (item != null) {
+			item.getAction().clearTargets();
+		}
+		super.clearTargets();
+	}
+	
+	@Override
+	public ItemUse clone() {
+		ItemUse iu = (ItemUse) super.clone();
+		iu.item = null; // never copy the item
+		return iu;
 	}
 	
 	@Override
@@ -35,6 +68,45 @@ public class ItemUse extends Action {
 		return new ItemUse();
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		if (item == null) {
+			return true;
+		} else {
+			return item.getAction().hasPositiveEffect();
+		}
+	}
+	
+	@Override
+	public int[] getActualEffects() {
+		return item.getAction().getActualEffects();
+	}
+	
+	@Override
+	public int[] getAffectedTeams() {
+		return item.getAction().getAffectedTeams();
+	}
+	
+	@Override
+	public double getCost() {
+		return item.getAction().getCost();
+	}
+	
+	@Override
+	public Stat getCostStat() {
+		return item.getAction().getCostStat();
+	}
+	
+	@Override
+	public double getEffect() {
+		return item.getAction().getEffect();
+	}
+	
+	@Override
+	public Stat getEffectStat() {
+		return item.getAction().getEffectStat();
+	}
+	
 	/**
 	 * Gets the Item used by this ItemAction.
 	 * 
@@ -44,14 +116,93 @@ public class ItemUse extends Action {
 		return item;
 	}
 	
+	@Override
+	public String getName() {
+		if (item != null) {
+			return "item (" + item.getName() + ")";
+		} else {
+			return super.getName();
+		}
+	}
+	
+	@Override
+	public Character getOrigin() {
+		if (item != null) {
+			return item.getAction().getOrigin();
+		} else {
+			return super.getOrigin();
+		}
+	}
+	
+	@Override
+	public Buff getOriginBuff() {
+		return item.getAction().getOriginBuff();
+	}
+	
+	@Override
+	public boolean getSkipCost() {
+		if (item != null) {
+			return item.getAction().getSkipCost();
+		} else {
+			return super.getSkipCost();
+		}
+	}
+	
+	@Override
+	public Buff getTargetBuff() {
+		return item.getAction().getTargetBuff();
+	}
+	
+	@Override
+	public List<Character> getTargets() {
+		if (item != null) {
+			return item.getAction().getTargets();
+		} else {
+			return super.getTargets();
+		}
+	}
+	
 	/**
 	 * Sets the Item to be used.
 	 * 
 	 * @param item The Item to use.
 	 */
 	public void setItem(UsableItem item) {
+		if (item != null) {
+			item.increaseUses(1);
+			Action a = item.getAction();
+			a.setSkipCost(getSkipCost());
+			a.setOrigin(getOrigin());
+			for (Character t : getTargets()) {
+				a.addTarget(t);
+			}
+		}
 		this.item = item;
 	}
+	
+	@Override
+	public void setOrigin(Character performer) {
+		if (item != null) {
+			item.getAction().setOrigin(performer);
+		}
+		super.setOrigin(performer);
+	}
+	
+	@Override
+	public void setSkipCost(boolean skip) {
+		super.setSkipCost(skip);
+		if (item != null) {
+			item.getAction().setSkipCost(skip);
+		}
+	}
+	
+	@Override
+	public boolean wasSuccessful() {
+		return item.getAction().wasSuccessful();
+	}
+	
+	@Override
+	protected void applyEffect() {}
 	
 	@Override
 	protected void applyBuffs() {}
@@ -59,16 +210,6 @@ public class ItemUse extends Action {
 	@Override
 	protected boolean applyCost() {
 		return true;
-	}
-	
-	@Override
-	protected void applyEffect() {
-		Action a = item.getActionForUse();
-		a.clearTargets();
-		a.setSkipCost(true);
-		a.setOrigin(origin);
-		a.addTarget(targets.get(0));
-		a.apply();
 	}
 	
 	@Override

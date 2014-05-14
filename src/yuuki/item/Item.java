@@ -89,7 +89,7 @@ public class Item implements Locatable, Displayable {
 	private final String name;
 	
 	/**
-	 * The value of this Item.
+	 * The value in copper pieces of this Item.
 	 */
 	private final int value;
 	

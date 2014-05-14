@@ -2,6 +2,7 @@ package yuuki.action;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import yuuki.buff.Buff;
 import yuuki.entity.Character;
@@ -199,6 +200,7 @@ public abstract class Action implements Cloneable {
 		for (int i = 0; i < this.actualEffects.length; i++) {
 			a2.actualEffects[i] = this.actualEffects[i];
 		}
+		// origin should be kept as the same reference
 		return a2;
 	}
 	
@@ -299,6 +301,15 @@ public abstract class Action implements Cloneable {
 	}
 	
 	/**
+	 * Gets whether cost is skipped for this action.
+	 * 
+	 * @return See above.
+	 */
+	public boolean getSkipCost() {
+		return skipCost;
+	}
+	
+	/**
 	 * Gets the target buff.
 	 *
 	 * @return the target buff.
@@ -313,8 +324,8 @@ public abstract class Action implements Cloneable {
 	 * @return An array containing the targets, which will be empty if no
 	 * targets have been set.
 	 */
-	public ArrayList<Character> getTargets() {
-		return targets;
+	public List<Character> getTargets() {
+		return java.util.Collections.unmodifiableList(targets);
 	}
 	
 	/**
@@ -380,6 +391,13 @@ public abstract class Action implements Cloneable {
 			setEffectStat(c);
 		}
 	}
+	
+	/**
+	 * Returns whether this Action has a positive effect on the stat.
+	 * 
+	 * @return See above.
+	 */
+	public abstract boolean hasPositiveEffect();
 	
 	/**
 	 * Applies any applicable Buffs to either the targets, origin, or both.

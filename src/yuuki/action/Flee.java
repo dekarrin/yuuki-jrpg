@@ -86,6 +86,11 @@ public class Flee extends Action implements Cloneable {
 		return flee;
 	}
 	
+	@Override
+	public boolean hasPositiveEffect() {
+		return true;
+	}
+	
 	/**
 	 * Has no effect.
 	 */
