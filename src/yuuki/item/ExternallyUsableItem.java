@@ -1,5 +1,7 @@
 package yuuki.item;
 
+import java.util.List;
+
 import yuuki.action.Action;
 import yuuki.entity.Character;
 
@@ -37,11 +39,21 @@ public class ExternallyUsableItem extends UsableItem {
 	 */
 	public void use(Character user, Character target) {
 		increaseUses(1);
+		Action a = getAction();
+		// first get the current state of the Action
+		List<Character> originalTargets = a.getTargets();
+		Character originalOrigin = a.getOrigin();
+		// now actually mutate action and apply effects
 		a.clearTargets();
 		a.setSkipCost(true);
 		a.setOrigin(user);
 		a.addTarget(target);
 		a.apply();
+		// now restore the original state
+		for (Character t : originalTargets) {
+			a.addTarget(t);
+		}
+		a.setOrigin(originalOrigin);
 	}
 	
 }
